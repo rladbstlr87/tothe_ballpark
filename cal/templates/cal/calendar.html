@@ -1,0 +1,10 @@
+{% extends 'cal/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center my-4">
+  <a href="?{{ prev_month }}" class="nav-button">← 지난달</a>
+  <span class="month-title fs-3 fw-bold">{{ current_month }}</span>
+  <a href="?{{ next_month }}" class="nav-button">다음달 →</a>
+</div>
+{{ calendar }}
+{% endblock %}
