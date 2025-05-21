@@ -2,8 +2,6 @@ from django.shortcuts import render
 from datetime import datetime, timedelta, date
 from django.utils.safestring import mark_safe
 import calendar
-import csv
-from django.conf import settings
 from .models import *
 from .utils import Calendar
 
@@ -14,27 +12,7 @@ def calendar_view(request):
     user_team = None
     if request.user.is_authenticated:
         user_team = request.user.team  # 로그인한 사용자의 팀
-
-        # 기존 일정 삭제 후 새로 저장
-        Game.objects.all().delete()
-        csv_file_path = settings.BASE_DIR / 'data' / 'kbo_schedule.csv'
-        with open(csv_file_path, newline='', encoding='utf-8-sig') as csvfile:
-            reader = csv.DictReader(csvfile)
-            for row in reader:
-                if row['team'] == user_team:
-                    game_date = datetime.strptime(row['day'], '%Y-%m-%d').date()
-                    game = Game(
-                        date=game_date,
-                        home_team=row['team'],
-                        away_team=row['opponent'],
-                        stadium=row['stadium'],
-                        time=row['time'],
-                        play=row['play'],
-                        note=row['note'],
-                        result=row['result']
-                    )
-                    game.save()
-
+    # DB에서 team1 또는 team2에 내가 응원하는 팀이 포함된 경기만 가져오도록 Calendar에 team 전달
     d = get_date(request.GET.get('day', None))
     cal = Calendar(d.year, d.month, team=user_team)  # team 전달
     html_cal = cal.formatmonth(withyear=True)

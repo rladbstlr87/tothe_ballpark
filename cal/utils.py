@@ -15,7 +15,7 @@ class Calendar(HTMLCalendar):
         games_per_day = games.filter(date__day=day)
         d = ''
         for game in games_per_day:
-            d += f'<li>{game.home_team} vs {game.away_team} {game.time}</li>'
+            d += f'<li>{game.team1} vs {game.team2} {game.time.strftime("%H:%M") if game.time else ""}</li>'
         return f"<td><span class='date'>{day}</span><ul> {d} </ul></td>"
 
     def formatweek(self, theweek, games):
@@ -25,9 +25,11 @@ class Calendar(HTMLCalendar):
         return f'<tr> {week} </tr>'
 
     def formatmonth(self, withyear=True):
-        # team이 지정된 경우 해당 팀의 경기만 가져옴
+        # team이 지정된 경우 team1이나 team2에 포함된 경기만 가져옴 (Q 없이)
         if self.team:
-            games = Game.objects.filter(date__year=self.year, date__month=self.month, home_team=self.team)
+            games1 = Game.objects.filter(date__year=self.year, date__month=self.month, team1=self.team)
+            games2 = Game.objects.filter(date__year=self.year, date__month=self.month, team2=self.team)
+            games = games1 | games2
         else:
             games = Game.objects.filter(date__year=self.year, date__month=self.month)
         cal = f'<table border="0" cellpadding="0" cellspacing="0" class="calendar">\n'

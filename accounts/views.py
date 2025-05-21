@@ -1,6 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
 from django.shortcuts import render, redirect  # 템플릿 렌더링 및 리다이렉트를 위한 함수
 from .forms import CustomUserCreationForm, CustomAuthenticationForm  # 커스텀 회원가입 및 로그인 폼
 from django.contrib.auth import login as auth_login  # 사용자 로그인 처리 함수
@@ -15,7 +14,7 @@ def signup(request):
         form = CustomUserCreationForm(request.POST, request.FILES)  # 폼에 데이터와 파일 전달
         if form.is_valid():  # 폼 유효성 검사
             form.save()  # 유효하면 사용자 저장
-            return redirect('cal:calendar')  # 저장 후 게시물 목록 페이지로 리다이렉트
+            return redirect('accounts:login')  # 저장 후 게시물 목록 페이지로 리다이렉트
     else:  # GET 요청일 경우, 빈 폼 생성
         form = CustomUserCreationForm()
 
