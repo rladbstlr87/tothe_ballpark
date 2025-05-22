@@ -119,6 +119,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# 개발서버에서 static 파일을 찾을 디렉토리들을 명시하는 곳 
+# cal 앱 내부 static이면 보통 자동으로 찾지만 혹시라도 안 될 경우를 대비해서 지정 
+STATICFILES_DIRS = [
+    BASE_DIR / 'cal' / 'static',
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
