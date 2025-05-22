@@ -12,7 +12,7 @@ def parsing_0(value):
         else:
             return float(value)
     except:
-        return None  # 또는 np.nan
+        return None
 
 h = pd.read_csv('data/all_hitter_stats.csv')
 p = pd.read_csv('data/all_pitcher_stats.csv')
