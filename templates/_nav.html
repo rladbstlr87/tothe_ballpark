@@ -1,22 +1,26 @@
+{% load static %}
 <!-- HTML head 부분에 Tailwind CDN & Alpine.js 추가 -->
 <head>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-
-<nav class="bg-gray-100 shadow" x-data="{ open: false }">
+<body>
+<nav class="bg-transparent " x-data="{ open: false }">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between h-16">
       <!-- 왼쪽 -->
       <div class="flex items-center">
-        {% if not user.is_authenticated %}
-          <a href="#" class="mr-4">
+        <!-- 로그인한 유저일때 -->
+        {% if user.is_authenticated %}
+          <a href="{%url 'cal:calendar' %}" class="mr-4">
+            <img src="{% static 'images/mascots/' %}{{ user.team }}.png" alt="{{ user.team }} Mascot" class="h-12 w-12 ">
+          </a>
+          {% else %}
+          <a href="{% url "index" %}" class="mr-4">
             <img src="https://em-content.zobj.net/source/google/387/baseball_26be.png" alt="Baseball" class="h-6 w-6">
           </a>
-        {% endif %}
-        <a href="{% url 'index' %}" class="text-lg font-semibold text-gray-700 hover:text-blue-500">Home</a>
+          {% endif %}
       </div>
-
       <!-- 모바일 메뉴 버튼 -->
       <div class="-mr-2 flex items-center sm:hidden">
         <button @click="open = !open" type="button"
@@ -27,7 +31,6 @@
           </svg>
         </button>
       </div>
-
       <!-- PC용 메뉴 -->
       <div class="hidden sm:flex sm:items-center">
         {% if user.is_authenticated %}
@@ -45,7 +48,6 @@
         {% endif %}
       </div>
     </div>
-
     <!-- 모바일용 메뉴 (open 상태에 따라 보이게) -->
     <div class="sm:hidden mt-2" x-show="open">
       {% if user.is_authenticated %}
@@ -58,3 +60,4 @@
     </div>
   </div>
 </nav>
+</body>
