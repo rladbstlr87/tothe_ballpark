@@ -15,7 +15,6 @@ stadium_lng = 126.897240
 link = create_google_maps_direction_link(stadium_lat, stadium_lng)
 
 # 네이버지도
-
 def create_naver_urls(team: str):
     """
     팀 코드를 입력받아 네이버 지도용 PC/모바일 URL을 생성합니다.
