@@ -12,7 +12,7 @@ def parsing_0(value):
         else:
             return float(value)
     except:
-        return None  # 또는 np.nan
+        return None
 
 h = pd.read_csv('data/all_hitter_stats.csv')
 p = pd.read_csv('data/all_pitcher_stats.csv')
@@ -39,13 +39,13 @@ p_num_cols = [col for col in p_cols if col not in p_str_cols]
 
 # -를 0으로 대체하고 숫자형으로 변환
 h[h_num_cols] = h[h_num_cols].replace('-', '0')
-h[h_num_cols] = h[h_num_cols].apply(pd.to_numeric, errors='ignore').fillna(0)
+h[h_num_cols] = h[h_num_cols].apply(pd.to_numeric, errors='ignore')
 
 # IP(이닝)의 분수표시를 실수로 변경
 p[p_num_cols] = p[p_num_cols].replace('-', '0')
-p[p_num_cols] = p[p_num_cols].apply(pd.to_numeric, errors='ignore').fillna(0)
+p[p_num_cols] = p[p_num_cols].apply(pd.to_numeric, errors='ignore')
 
-# 지표 계산
+# 스탯 조합
 h['power'] = (h['HR']/h['PA'] + h['SLG'] + h['IBB']/h['PA']).round(3)
 h['contact'] = (h['AVG'] - h['SO']/h['PA'] + h['OBP'] - h['GDP']/h['PA']).round(3)
 h['batting_eye'] = (h['BB']/h['PA'] - h['SO']/h['PA'] + h['OBP']).round(3)
