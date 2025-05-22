@@ -23,7 +23,7 @@ def calendar_view(request):
         'next_month': next_month(d),
         'user_team': user_team,
     }
-    return render(request, 'cal/calendar.html', context)
+    return render(request, 'calendar.html', context)
 
 def get_date(req_day):
     try:
