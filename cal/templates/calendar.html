@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>캘린더</title>
+  <!-- TailwindCSS & Alpine.js 추가 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+  {% include '_nav.html' %}
+  {% block body %}
+    {% block content %}
+      {{ calendar }}
+    {% endblock %}
+  {% endblock %}
+</body>
+</html>
