@@ -1,33 +1,62 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-    <!-- 로고 및 홈으로 이동하는 링크 -->
-    <!-- 모바일 화면에서 네비게이션 토글 버튼 -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <!-- 네비게이션 메뉴 -->
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        {% if user.is_authenticated %}  <!-- 사용자가 로그인된 경우 -->
-          <li class="nav-item">
-            <!-- 로그아웃 처리 -->
-            <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
-          </li>
-          <li class="nav-item">
-            <!-- 현재 로그인된 사용자 이름 표시 -->
-            <a class="nav-link disabled">{{user}}</a>
-          </li>
-        {% else %}  <!-- 사용자가 로그인되지 않은 경우 -->
-        <li class="nav-item">
-          <!-- 회원가입 페이지로 이동 -->
-          <a class="nav-link" href="{% url 'accounts:signup' %}">SignUp</a>
-        </li>
-        <li class="nav-item">
-          <!-- 로그인 페이지로 이동 -->
-          <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
-        </li>
+<!-- HTML head 부분에 Tailwind CDN & Alpine.js 추가 -->
+<head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<body>
+<nav class="bg-gray-100 shadow" x-data="{ open: false }">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16">
+      <!-- 왼쪽 -->
+      <div class="flex items-center">
+        {% if not user.is_authenticated %}
+          <a href="#" class="mr-4">
+            <img src="https://em-content.zobj.net/source/google/387/baseball_26be.png" alt="Baseball" class="h-6 w-6">
+          </a>
         {% endif %}
-      </ul>
+        <a href="{% url 'index' %}" class="text-lg font-semibold text-gray-700 hover:text-blue-500">Home</a>
+      </div>
+
+      <!-- 모바일 메뉴 버튼 -->
+      <div class="-mr-2 flex items-center sm:hidden">
+        <button @click="open = !open" type="button"
+          class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-white hover:bg-gray-700 focus:outline-none">
+          <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- PC용 메뉴 -->
+      <div class="hidden sm:flex sm:items-center">
+        {% if user.is_authenticated %}
+          <a href="{% url 'accounts:logout' %}" class="text-gray-700 hover:text-red-500 px-4">Logout</a>
+          <span class="text-gray-500 px-4">{{ user }}</span>
+        {% else %}
+          <a href="{% url 'accounts:signup' %}" class="text-gray-700 hover:text-green-600 px-4">Sign up</a>
+          <a href="{% url 'accounts:login' %}" class="text-gray-700 hover:text-blue-600 px-4 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+              <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+            </svg>
+            Log In
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 모바일용 메뉴 (open 상태에 따라 보이게) -->
+    <div class="sm:hidden mt-2" x-show="open">
+      {% if user.is_authenticated %}
+        <a href="{% url 'accounts:logout' %}" class="block text-gray-700 hover:text-red-500 py-2">Logout</a>
+        <span class="block text-gray-500 py-2">{{ user }}</span>
+      {% else %}
+        <a href="{% url 'accounts:signup' %}" class="block text-gray-700 hover:text-green-600 py-2">Sign up</a>
+        <a href="{% url 'accounts:login' %}" class="block text-gray-700 hover:text-blue-600 py-2">Log In</a>
+      {% endif %}
     </div>
   </div>
 </nav>
+</body>
