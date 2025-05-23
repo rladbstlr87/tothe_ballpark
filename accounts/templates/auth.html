@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% comment %} 로그인과 회원가입 폼을 하나의 페이지에서 모드 전환 방식으로 보여주는 구조  {% endcomment %}
+{% block body %}
+{% comment %} 로그인/ 회원가입 폼을 담는 전체 컨테이너 {% endcomment %}
+<div id="container" class="sign-in bg-white p-8 rounded-xl shadow-lg max-w-md mx-auto mt-20">
+
+  <!-- 로그인 폼 -->
+  {% comment %} 로그인 폼을 감싸는 div로 만약 mode가 login이 아니면 hidden클래스가 추가되어 숨겨짐 {% endcomment %}
+  <div class="sign-in-form {% if mode != 'login' %}hidden{% endif %}">
+    {% comment %} 로그인 폼 제목 {% endcomment %}
+    <h2 class="text-2xl font-bold mb-6 text-center">Log In </h2>
+    <form method="POST" action=""> 
+         {% comment %} 로그인 폼의 post제출 시작 {% endcomment %}
+      {% csrf_token %}
+      {% for field in login_form %} 
+      {% comment %} 로그인 폼에 있는 각 입력 필드를 반복해서 출력하고 필드마다 라벨, 입력창, 오류메시지(있으면) 보여주기 {% endcomment %}
+        <div class="mb-4">
+          {{ field.label_tag }}
+          {{ field }}
+          {% if field.errors %}
+            <p class="text-red-600 text-sm">{{ field.errors|striptags }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+      {% comment %} 로그인 버튼 {% endcomment %}
+      <button type="submit" name="action" value="login"
+              class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition">
+        Log in
+      </button>
+    </form>
+    {% comment %} 회원가입 폼으로 전환하는 버튼 (toggle()) 자바스크립트 함수로 폼을 전환 {% endcomment %}
+    <p class="mt-4 text-center text-sm">
+      Don't have an account? 
+      <button type="button" onclick="toggle()" class="text-blue-500 hover:underline">Sign up here</button>
+    </p>
+  </div>
+
+  <!-- 회원가입 폼 -->
+   <!-- mode가 signup이 아니면 hidden 클래스로 숨김  -->
+  <div class="sign-up-form {% if mode != 'signup' %}hidden{% endif %}">
+    <h2 class="text-2xl font-bold mb-6 text-center" >Sign Up</h2>
+    <form method="POST" action="">
+      {% csrf_token %}
+      {% for field in signup_form %}
+        <div class="mb-4">
+          {{ field.label_tag }}
+          {{ field }}
+          {% if field.errors %}
+            <p class="text-red-600 text-sm">{{ field.errors|striptags }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" name="action" value="signup"
+              class="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 transition">
+        Sign up
+      </button>
+    </form>
+    {% comment %} 로그인 폼으로 전환하는 버튼 {% endcomment %}
+    <p class="mt-4 text-center text-sm">
+      Already have an account?
+      <button type="button" onclick="toggle()" class="text-blue-500 hover:underline">Sign in here</button>
+    </p>
+  </div>
+</div>
+
+{% comment %} 
+로그인/ 회원가입 폼을 전환하는 toggle() 함수
+hidden 클래스를 토글해서 둘 중 하나만 보이도록 {% endcomment %}
+<script>
+  let container = document.getElementById('container'); 
+  {% comment %} id=container인 html요소를 js로 가져와서 변수 container에 저장
+  이 container는 로그인/회원가입 폼 전체를 감싸고 있는 div, 맨 첫줄 div {% endcomment %}
+  let signInForm = container.querySelector('.sign-in-form');
+  let signUpForm = container.querySelector('.sign-up-form');
+    {% comment %} 위에서 가져온 container안에서 각각 클래스로 지정된 요소를 찾는 코드로 
+    signform => <div class = "sign-in-form"> {% endcomment %}
+  {% comment %} 로그인 <-> 회원가입 폼을 서로 바꾸는 역할 {% endcomment %}
+    function toggle() {
+    signInForm.classList.toggle('hidden');
+    signUpForm.classList.toggle('hidden');
+}
+</script>
+{% comment %} classlist는 요소의 클래스 목록을 의미, toggle('hidden')은 해당 클래스가 있으면 제거하고 없으면 추가 {% endcomment %}
+{% endblock %}
+{% comment %} 즉 toggle()함수가 호출될 때마다 로기은 폼은 숨기거나 보이고, 회원가입 폼도 반대로 보이거나 숨겨짐 {% endcomment %}
