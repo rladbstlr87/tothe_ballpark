@@ -4,16 +4,58 @@
 <head>
   <meta charset="UTF-8">
   <title>캘린더</title>
-  <!-- TailwindCSS & Alpine.js 추가 -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="stylesheet" href="{% static 'cs/calendar.css' %}">
 </head>
 <body>
   {% include '_nav.html' %}
   {% block body %}
-    {% block content %}
-      {{ calendar }}
-    {% endblock %}
+    <table class="calendar-table">
+      <thead>
+        <tr>
+          <th colspan="7" class="month-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <a href="?{{ prev_month }}" class="nav-link">←</a>
+              <span>{{ cal_data.year }}년 {{ cal_data.month }}월</span>
+              <a href="?{{ next_month }}" class="nav-link">→</a>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          {% for day_name in cal_data.week_header %}
+            <th class="{% if forloop.counter0 == 0 %}mon{% endif %}">
+              {{ day_name }}
+            </th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for week in cal_data.weeks %}
+          <tr>
+            {% for day in week %}
+              {% if day.day == 0 %}
+                <td></td>
+              {% else %}
+                <td class="day-cell">
+                  <span class="day-number">{{ day.day }}</span>
+                  {% for game in day.games %}
+                    <div class="game-info">
+                      <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}">
+                      <span class="game-time">{{ game.time }}</span>
+                      {% if game.result %}
+                        <span class="game-result
+                          {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% endif %}">
+                          {{ game.result }}
+                        </span>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                </td>
+              {% endif %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   {% endblock %}
 </body>
 </html>
