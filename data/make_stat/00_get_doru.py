@@ -53,6 +53,7 @@ for team in teams:
     combined_df = pd.merge(df_basic, df_doru, on=merge_keys, how='left')
 
     combined_df.to_csv('../all_hitter_stats.csv', index=False, encoding='utf-8-sig')
+    # 동일 컬럼 있으면 덮어씌우는 걸로 수정해야하는지 확인해봐야함
 
     print(f"  ✔ all_hitter_stats.csv에 {team} 데이터 추가 완료")
 
