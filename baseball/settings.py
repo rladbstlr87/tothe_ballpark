@@ -56,7 +56,7 @@ ROOT_URLCONF = 'baseball.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/ 'templates'],
+        'DIRS': [BASE_DIR/ 'accounts', 'templates'], # accounts/templates 경로 추가 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
