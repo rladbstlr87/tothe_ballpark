@@ -1,5 +1,6 @@
 import csv
 import time
+from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
@@ -36,26 +37,55 @@ def get_lineup(today, team1_code, team2_code, game_id, driver):
         print(f"라인업 크롤링 실패: {e}")
         return [], []
 
+# 오늘 날짜
+today_str = datetime.today().strftime("%Y.%m.%d")
+today_str_csv = datetime.today().strftime("%Y%m%d")
+
+# 이미 저장된 라인업 읽기 (중복 방지)
+saved_games = set()
+try:
+    with open('lineups.csv', 'r', encoding='utf-8-sig') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            key = (row['date'], row['team1'], row['team2'])
+            saved_games.add(key)
+except FileNotFoundError:
+    pass
+
+# 오늘 경기만 추출
+today_games = []
+with open('kbo_schedule.csv', 'r', encoding='utf-8-sig') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        if row['day'] == today_str:
+            today_games.append(row)
+
+if not today_games:
+    print("오늘 경기 없음")
+    exit()
+
+# (날짜, 팀1, 팀2)별로 시간순 정렬 후 game_id 부여
+game_map = {}
+for row in today_games:
+    date_str = row['day'].replace('.', '')
+    team1 = row['team1']
+    team2 = row['team2']
+    key = (date_str, team1, team2)
+    game_map.setdefault(key, []).append(row)
+
 driver = webdriver.Chrome()
 
-with open('kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
-    reader = list(csv.DictReader(infile))
-    game_map = {}
-    for row in reader:
-        date_str = row['day'].replace('.', '')
-        team1 = row['team1']
-        team2 = row['team2']
-        key = (date_str, team1, team2)
-        game_map.setdefault(key, []).append(row)
+# ...existing code...
 
-with open('lineups.csv', 'w', newline='', encoding='utf-8-sig') as outfile:
+with open('lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile, \
+     open('today_lineup_flatten.csv', 'w', newline='', encoding='utf-8-sig') as flatfile:
     writer = csv.writer(outfile)
-    writer.writerow(['date', 'time', 'team1', 'team2', 'team1_lineup', 'team2_lineup'])
+    flat_writer = csv.writer(flatfile)
+    flat_writer.writerow(['date', 'time', 'team1', 'team2', 'team1_player', 'team2_player'])
 
     for key, games in game_map.items():
         games_sorted = sorted(games, key=lambda x: x['time'])
-        double_header_failed = False  # 첫 경기(12025) 실패 여부
-        first_game_lineup = None      # 첫 경기 라인업 저장용
+        double_header_failed = False
         for idx, row in enumerate(games_sorted):
             date_str = row['day'].replace('.', '')
             time_str = row['time']
@@ -65,6 +95,11 @@ with open('lineups.csv', 'w', newline='', encoding='utf-8-sig') as outfile:
             team2_code = TEAM_CODE.get(team2, '')
             if not team1_code or not team2_code:
                 print(f"팀 코드 없음: {team1}, {team2}")
+                continue
+
+            # 중복 방지
+            if (date_str, team1, team2) in saved_games:
+                print(f"이미 저장됨: {date_str} {team1} vs {team2}")
                 continue
 
             # game_id 결정
@@ -82,30 +117,29 @@ with open('lineups.csv', 'w', newline='', encoding='utf-8-sig') as outfile:
 
             team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, game_id, driver)
 
-            # 첫 경기(12025)에서 라인업이 없으면 flag ON, 라인업 저장
-            if len(games_sorted) > 1 and idx == 0:
-                if not team1_lineup and not team2_lineup:
-                    double_header_failed = True
-                else:
-                    first_game_lineup = team1_lineup  # 첫 경기 라인업 저장
+            # 첫 경기(12025)에서 라인업이 없으면 flag ON
+            if len(games_sorted) > 1 and idx == 0 and not team1_lineup and not team2_lineup:
+                double_header_failed = True
 
             # 두 번째 경기에서 22025로도 라인업이 없으면 02025로 한 번 더 시도
             if len(games_sorted) > 1 and idx == 1 and not team1_lineup and not team2_lineup and game_id == '22025':
                 print("22025 라인업 없음, 02025로 재시도")
                 team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, '02025', driver)
 
-            # 만약 두 번째 경기 라인업이 9명이고, 첫 경기 라인업이 존재하면 한 명 추가
-            if len(games_sorted) > 1 and idx == 1 and len(team1_lineup) == 9 and first_game_lineup and len(first_game_lineup) > 0:
-                print("두 번째 경기 라인업이 9명, 첫 경기 선수 한 명 추가")
-                # 예시: 첫 번째 선수 추가 (원하는 로직에 따라 변경 가능)
-                team1_lineup.append(first_game_lineup[0])
-
             writer.writerow([
                 date_str, time_str, team1, team2,
                 ','.join(team1_lineup),
                 ','.join(team2_lineup)
             ])
+
+            # 1:1 매칭(flatten) 저장
+            max_len = max(len(team1_lineup), len(team2_lineup))
+            team1_lineup += [''] * (max_len - len(team1_lineup))
+            team2_lineup += [''] * (max_len - len(team2_lineup))
+            for p1, p2 in zip(team1_lineup, team2_lineup):
+                flat_writer.writerow([date_str, time_str, team1, team2, p1, p2])
+
             time.sleep(1.5)
 
 driver.quit()
-print("✅ 모든 라인업 저장 완료")
+print("✅ 오늘 경기 라인업 저장 완료 (today_lineup_flatten.csv 포함)")
