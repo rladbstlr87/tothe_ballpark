@@ -37,8 +37,8 @@
           <a href="{% url 'accounts:logout' %}" class="text-gray-700 hover:text-red-500 px-4">Logout</a>
           <span class="text-gray-500 px-4">{{ user }}</span>
         {% else %}
-          <a href="{% url 'accounts:signup' %}" class="text-gray-700 hover:text-green-600 px-4">Sign up</a>
-          <a href="{% url 'accounts:login' %}" class="text-gray-700 hover:text-blue-600 px-4 flex items-center">
+          <a href="{% url 'accounts:auth' %}?mode=signup" class="text-gray-700 hover:text-green-600 px-4">Sign up</a>
+          <a href="{% url 'accounts:auth' %}" class="text-gray-700 hover:text-blue-600 px-4 flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 16 16">
               <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
               <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
