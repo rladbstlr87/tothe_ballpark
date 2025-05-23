@@ -12,8 +12,8 @@
       <div class="flex items-center">
         <!-- 로그인한 유저일때 -->
         {% if user.is_authenticated %}
-          <a href="{%url 'cal:calendar' %}" class="mr-4">
-            <img src="{% static 'images/mascots/' %}{{ user.team }}.png" alt="{{ user.team }} Mascot" class="h-12 w-12 ">
+          <a href="{%url 'index' %}" class="mr-4">
+            <img src="{% static 'images/mascots/' %}{{ user.team }}.png" alt="{{ user.team }} Mascot" class="h-20 w-30 ">
           </a>
           {% else %}
           <a href="{% url "index" %}" class="mr-4">
