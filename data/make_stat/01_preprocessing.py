@@ -35,13 +35,14 @@ h['batting_eye'] = h['BB']/h['PA']*0.4 - h['SO']/h['PA']*0.2 + h['OBP']*0.4
 p['stamina'] = p['NP']/p['IP']*0.4 + p['IP']/p['G']*0.4 + p['TBF']/p['IP']*0.2
 p['control'] = p['SO']/p['G']*0.5 + (1 - p['HBP']/p['G']*0.2) + (1 - p['H']/p['G']*0.3)
 # 정규화된 스탯 적용
-# h['power'] = (normalize(game_count(h['power'], h['G'])) / 2 + 0.5).round(3)
+# h['power'] = (normalize(game_count(h['power'], h['G'])) / 2 + 0.5).round(3) 안씀
 h['contact'] = (normalize(game_count(h['contact'], h['G']))/2 + 0.5).round(3)
 h['batting_eye'] = (normalize(game_count(h['batting_eye'], h['G']))/2 + 0.5).round(3)
-# h['speed'] = (normalize(game_count(h['speed'], h['G']))/2 + 0.5).round(3)
+# h['speed'] = (normalize(game_count(h['speed'], h['G']))/2 + 0.5).round(3) 안씀
 
 p['stamina'] = (normalize(game_count(p['stamina'], p['G']))/2 + 0.5).round(3)
 p['control'] = (normalize(game_count(p['control'], p['G']))/2 + 0.5).round(3)
+# p['fireball'] = (h['velocity']/h['velocity'].max()/2 + 0.5).round(3)
 
 # CSV 저장
 h.to_csv('../all_hitter_stats.csv', index=False)
