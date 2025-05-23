@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cal',
     'accounts',
-    'django_bootstrap5',
 ]
 
 MIDDLEWARE = [
