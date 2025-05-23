@@ -11,39 +11,12 @@ class Calendar(HTMLCalendar):
         self.team = team
 
     def get_opponent(self, game):
-        # 로그인 사용자가 team1이면 team2가 상대, 반대도 마찬가지
         if self.team == game.team1:
             return game.team2
         else:
             return game.team1
 
-    def formatday(self, day, games):
-        if day == 0:
-            return '<td class="border border-gray-300 h-24 align-top"></td>'
-        games_per_day = games.filter(date__day=day)
-        d = ''
-        for game in games_per_day:
-            opponent = self.get_opponent(game)
-            img_url = static(f'images/team/{opponent}.svg')
-            time_str = game.time.strftime("%H:%M") if game.time else ""
-            d += f"""
-            <div class="mt-1 flex items-center space-x-1">
-                <img src="{img_url}" alt="{opponent}" class="h-6 inline-block" title="{opponent}">
-                <span class="text-xs text-gray-600">{time_str}</span>
-            </div>
-            """
-        return f'<td class="border border-gray-300 h-24 align-top p-1 text-sm"><span class="font-bold">{day}</span>{d}</td>'
-
-
-    def formatweek(self, theweek, games):
-        week = ''
-        for d, weekday in theweek:
-            week += self.formatday(d, games)
-        return f'<tr> {week} </tr>'
-
-    def formatmonth(self, withyear=True):
-        from calendar import monthrange
-
+    def get_month_data(self):
         # 경기 필터링
         if self.team:
             games1 = Game.objects.filter(date__year=self.year, date__month=self.month, team1=self.team)
@@ -52,50 +25,43 @@ class Calendar(HTMLCalendar):
         else:
             games = Game.objects.filter(date__year=self.year, date__month=self.month)
 
-        # 지난달/다음달 계산
-        if self.month == 1:
-            prev_year = self.year - 1
-            prev_month = 12
-        else:
-            prev_year = self.year
-            prev_month = self.month - 1
+        # 날짜별 경기 매핑
+        games_by_day = {}
+        for game in games:
+            day = game.date.day
+            if day not in games_by_day:
+                games_by_day[day] = []
+            # 팀이 지정된 경우, 해당 팀의 결과만 표시
+            if self.team == game.team1:
+                result = game.team1_result
+            elif self.team == game.team2:
+                result = game.team2_result
+            else:
+                result = ''
+            games_by_day[day].append({
+                'opponent': self.get_opponent(game),
+                'img_url': static(f'images/team/{self.get_opponent(game)}.svg'),
+                'time': game.time.strftime("%H:%M") if game.time else "",
+                'result': result,
+            })
 
-        if self.month == 12:
-            next_year = self.year + 1
-            next_month = 1
-        else:
-            next_year = self.year
-            next_month = self.month + 1
-
-        prev = f"day={prev_year}-{prev_month}-1"
-        next = f"day={next_year}-{next_month}-1"
-
-        # 달력 HTML 시작
-        cal = f'<table border="0" cellpadding="0" cellspacing="0" class="calendar">\n'
-
-        # 네비게이션 행을 달력의 첫 번째 행으로 추가
-        cal = f"""
-        <table class="w-full table-fixed border-collapse">
-            <thead>
-                <tr>
-                    <th colspan="7" class="text-center py-4">
-                        <div class="flex justify-between items-center">
-                            <a href="?{prev}" class="text-sm text-gray-600 hover:text-blue-500">← 지난달</a>
-                            <span class="text-xl font-bold text-gray-800">{self.year}년 {self.month}월</span>
-                            <a href="?{next}" class="text-sm text-gray-600 hover:text-blue-500">다음달 →</a>
-                        </div>
-                    </th>
-                </tr>
-            </thead>
-        <tbody>
-        """
+        # 달력 주차별 데이터
+        weeks = []
+        for week in self.monthdays2calendar(self.year, self.month):
+            week_data = []
+            for day, weekday in week:
+                week_data.append({
+                    'day': day,
+                    'games': games_by_day.get(day, []) if day != 0 else [],
+                })
+            weeks.append(week_data)
 
         # 요일 헤더
-        cal += f'{self.formatweekheader()}\n'
+        week_header = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']
 
-        # 주차별 날짜 출력
-        for week in self.monthdays2calendar(self.year, self.month):
-            cal += f'{self.formatweek(week, games)}\n'
-
-        cal += '</table>'
-        return cal
+        return {
+            'year': self.year,
+            'month': self.month,
+            'weeks': weeks,
+            'week_header': week_header,
+        }

@@ -11,14 +11,13 @@ def index(request):
 def calendar_view(request):
     user_team = None
     if request.user.is_authenticated:
-        user_team = request.user.team  # 로그인한 사용자의 팀
-    # DB에서 team1 또는 team2에 내가 응원하는 팀이 포함된 경기만 가져오도록 Calendar에 team 전달
+        user_team = request.user.team
     d = get_date(request.GET.get('day', None))
-    cal = Calendar(d.year, d.month, team=user_team)  # team 전달
-    html_cal = cal.formatmonth(withyear=True)
+    cal = Calendar(d.year, d.month, team=user_team)
+    cal_data = cal.get_month_data()
 
     context = {
-        'calendar': mark_safe(html_cal),
+        'cal_data': cal_data,
         'prev_month': prev_month(d),
         'next_month': next_month(d),
         'user_team': user_team,
