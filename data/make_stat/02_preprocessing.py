@@ -16,7 +16,7 @@ p_cols = [
 
 # 문자열 컬럼이 아니면 그대로 반환
 h_str_cols = ['선수명', '팀명']
-p_str_cols = ['선수명', '팀명', '생일']
+p_str_cols = ['선수명', '팀명', 'IP', '생일']
 
 # -를 0으로 대체하고 숫자형으로 변환
 h_num_cols = num_cols(h_cols, h_str_cols)
@@ -25,6 +25,9 @@ p_num_cols = num_cols(p_cols, p_str_cols)
 # 전처리 적용
 h = preprocessing(h, h_num_cols)
 p = preprocessing(p, p_num_cols)
+
+# IP컬럼의 분수>float로 타입변경
+p['IP'] = p['IP'].apply(parsing_0).round(3)
 
 # 옛날 수식 h['power'] = ((h['HR']/h['PA']) * (0.6 + (h['SLG'] - h['AVG'])*0.2 + h['IBB']/h['PA']*0.2))
 h['power'] = (h['HR']/h['HR'].max()/2 + 0.5).round(3)
