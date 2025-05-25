@@ -122,12 +122,17 @@
 
 /* 승: 파란색 */
 .calendar-table .game-result.win {
-  color: #2563eb; /* Tailwind blue-600 */
+  color: #2563eb;
 }
 
 /* 패: 빨간색 */
 .calendar-table .game-result.lose {
-  color: #e11d48; /* Tailwind rose-600 */
+  color: #e11d48;
+}
+
+/* 취소: 회색 */
+.calendar-table .game-result.cancel {
+  color: #888;
 }
 
 /* 반응형: 화면이 600px 이하일 때도 같은 크기의 직사각형 유지 */

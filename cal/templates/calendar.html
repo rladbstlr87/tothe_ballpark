@@ -43,7 +43,7 @@
                       <span class="game-time">{{ game.time }}</span>
                       {% if game.result %}
                         <span class="game-result
-                          {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% endif %}">
+                          {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% elif game.result == '취소' %}cancel{% endif %}">
                           {{ game.result }}
                         </span>
                       {% endif %}
