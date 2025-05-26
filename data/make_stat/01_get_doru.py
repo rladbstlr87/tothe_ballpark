@@ -52,8 +52,10 @@ for team in teams:
         if cells:
             all_rows.append(cells)
     df_doru = pd.DataFrame(all_rows, columns=headers)
-
     print(df_doru)
+    # 팀 정보 추가
+    df_doru["팀"] = team
+
     # df과 병합할 데이터프레임에 추가
     all_team_dfs.append(df_doru)
     print(f"  ✔ {team} 데이터 수집 완료")
