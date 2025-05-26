@@ -76,9 +76,6 @@ for team in teams:
         if '순위' in combined_df.columns:
             combined_df.drop(columns=['순위'], inplace=True)
 
-        # 팀 정보 추가 (선택 사항)
-        combined_df["팀"] = team
-
         # 팀별 CSV 저장 제거됨
         # all_hitter_stats.csv에만 저장
         combined_df.to_csv("all_hitter_stats.csv", mode='w' if first else 'a', header=first, index=False, encoding='utf-8-sig')
