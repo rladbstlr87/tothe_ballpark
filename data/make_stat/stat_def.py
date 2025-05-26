@@ -40,25 +40,22 @@ def preprocessing(df, cols):
 # h_num_cols = [col for col in h_cols if col not in h_str_cols]
 # p_num_cols = [col for col in p_cols if col not in p_str_cols]
 
-max_HR = h['HR'].max() # max를 매번 계산하지 않고 미리 한 번 계산
-max_SBA = h['SBA'].max()
 def hitter_style(row):
-    if row['power'] > 0.7:
+    if row['power'] > 0.65:
         return 0  # 홈런 타입
-    elif row['speed'] > 0.7:
+    elif row['speed'] > 0.65:
         return 1  # 스피드 타입
-    elif row['contact'] > 0.7:
+    elif row['contact'] > 0.65 and row['AVG'] > 0.25:
         return 2  # 컨택 타입
     else:
         return 3 # 노말 타입
 
-max_velocity = p['speed'].max()
 def pitcher_style(row):
-    if row['speed'] >= 150:
+    if row['speed'] >= 148:
         return 0 # 파이어볼러 타입
-    elif row['control'] > 0.7:
+    elif row['control'] > 0.75:
         return 1 # 제구력 타입
-    elif row['stamina'] > 0.7:
+    elif row['stamina'] > 0.65:
         return 2 # 무쇠팔 타입
     else:
         return 3 # 노말 타입
