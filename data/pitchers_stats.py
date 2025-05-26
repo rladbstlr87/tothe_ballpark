@@ -43,6 +43,8 @@ for team in teams:
     print(f"\n▶ {team} 팀 데이터 수집 시작")
     page_dfs = []
     player_birthdays = {}  # 선수명: 생일 저장용 딕셔너리
+    player_ids = {}  # 선수명: playerId 저장용 딕셔너리
+
     wait = WebDriverWait(driver, 10)
 
     # 팀 선택
@@ -65,6 +67,7 @@ for team in teams:
 
             # playerId 추출
             player_id = player_link.get_attribute("href").split("playerId=")[-1]
+            player_ids[player_name] = player_id
 
             # requests로 프로필 페이지에서 생일 수집
             profile_url = f"https://www.koreabaseball.com/Record/Player/PitcherDetail/Basic.aspx?playerId={player_id}"
@@ -143,6 +146,9 @@ for team in teams:
 
         # 생일 컬럼 추가 (선수명 기준 매칭)
         combined_df['생일'] = combined_df['선수명'].map(player_birthdays).fillna("정보 없음")
+
+        # player_id 컬럼 추가 (선수명 기준 매칭)
+        combined_df['player_id'] = combined_df['선수명'].map(player_ids).fillna("정보 없음")
 
         if '순위' in combined_df.columns:
             combined_df.drop(columns=['순위'], inplace=True)
