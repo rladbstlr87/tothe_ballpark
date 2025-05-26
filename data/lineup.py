@@ -1,5 +1,7 @@
 import csv
 import time
+import datetime
+from urllib.parse import urlparse, parse_qs
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
@@ -24,38 +26,79 @@ def get_lineup(today, team1_code, team2_code, game_id, driver):
         lineup_boxes = driver.find_elements(By.CSS_SELECTOR, 'div.Lineup_comp_lineup__361i1 > div > div')
         team1 = []
         team2 = []
+
         for idx, team_box in enumerate(lineup_boxes[:2]):
-            players = team_box.find_elements(By.CSS_SELECTOR, 'ol > li > a > div > strong')
-            player_names = [player.text for player in players]
+            players = team_box.find_elements(By.CSS_SELECTOR, 'ol > li > a')
+            player_info = []
+            for player in players:
+                name_elem = player.find_element(By.CSS_SELECTOR, 'div > strong')
+                name = name_elem.text.strip()
+                href = player.get_attribute('href')
+
+                player_id = ''
+                if href:
+                    parsed_url = urlparse(href)
+                    query = parse_qs(parsed_url.query)
+                    player_id = query.get('playerId', [''])[0]
+
+                player_info.append((name, player_id))
+
             if idx == 0:
-                team1 = player_names
+                team1 = player_info
             else:
-                team2 = player_names
+                team2 = player_info
+
         return team1, team2
     except Exception as e:
         print(f"라인업 크롤링 실패: {e}")
         return [], []
 
-driver = webdriver.Chrome()
+# ⏰ 오늘 날짜 구하기
+today = datetime.date.today()
 
+# 📁 lineups.csv에서 마지막 날짜 구하기
+last_date = None
+try:
+    with open('lineups.csv', 'r', encoding='utf-8-sig') as f:
+        reader = list(csv.DictReader(f))
+        if reader:
+            last_row = reader[-1]
+            last_date = datetime.datetime.strptime(last_row['date'], '%Y%m%d').date()
+except FileNotFoundError:
+    pass
+print(last_date)
+
+# 📅 kbo_schedule.csv 불러오기
 with open('kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
     reader = list(csv.DictReader(infile))
     game_map = {}
     for row in reader:
         date_str = row['day'].replace('.', '')
+        game_date = datetime.datetime.strptime(date_str, '%Y%m%d').date()
+
+        # ⚠️ 오늘까지 + last_date 이후만 필터링
+        if game_date > today or (last_date and game_date <= last_date):
+            continue
+
         team1 = row['team1']
         team2 = row['team2']
         key = (date_str, team1, team2)
         game_map.setdefault(key, []).append(row)
 
-with open('lineups.csv', 'w', newline='', encoding='utf-8-sig') as outfile:
+# ✅ 크롬 드라이버 시작
+driver = webdriver.Chrome()
+
+# ✅ 결과 저장
+with open('lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
     writer = csv.writer(outfile)
-    writer.writerow(['date', 'time', 'team1', 'team2', 'team1_lineup', 'team2_lineup'])
+    if last_date is None:
+        writer.writerow(['date', 'time', 'team', 'player', 'player_id'])
 
     for key, games in game_map.items():
         games_sorted = sorted(games, key=lambda x: x['time'])
-        double_header_failed = False  # 첫 경기(12025) 실패 여부
-        first_game_lineup = None      # 첫 경기 라인업 저장용
+        double_header_failed = False
+        first_game_lineup = None
+
         for idx, row in enumerate(games_sorted):
             date_str = row['day'].replace('.', '')
             time_str = row['time']
@@ -67,43 +110,36 @@ with open('lineups.csv', 'w', newline='', encoding='utf-8-sig') as outfile:
                 print(f"팀 코드 없음: {team1}, {team2}")
                 continue
 
-            # game_id 결정
             if len(games_sorted) == 1:
                 game_id = '02025'
             elif idx == 0:
                 game_id = '12025'
             else:
-                if double_header_failed:
-                    game_id = '02025'
-                else:
-                    game_id = '22025'
+                game_id = '22025' if not double_header_failed else '02025'
 
             print(f"크롤링: {date_str} {team1} vs {team2} ({time_str}) game_id={game_id}")
 
             team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, game_id, driver)
 
-            # 첫 경기(12025)에서 라인업이 없으면 flag ON, 라인업 저장
             if len(games_sorted) > 1 and idx == 0:
                 if not team1_lineup and not team2_lineup:
                     double_header_failed = True
                 else:
-                    first_game_lineup = team1_lineup  # 첫 경기 라인업 저장
+                    first_game_lineup = team1_lineup
 
-            # 두 번째 경기에서 22025로도 라인업이 없으면 02025로 한 번 더 시도
             if len(games_sorted) > 1 and idx == 1 and not team1_lineup and not team2_lineup and game_id == '22025':
                 print("22025 라인업 없음, 02025로 재시도")
                 team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, '02025', driver)
 
-            # 만약 두 번째 경기 라인업이 9명이고, 첫 경기 라인업이 존재하면 한 명 추가
-            if len(games_sorted) > 1 and idx == 1 and len(team1_lineup) == 9 and first_game_lineup and len(first_game_lineup) > 0:
+            if len(games_sorted) > 1 and idx == 1 and len(team1_lineup) == 9 and first_game_lineup:
                 team1_lineup.insert(0, first_game_lineup[0])
 
-            writer.writerow([
-                date_str, time_str, team1, team2,
-                ','.join(team1_lineup),
-                ','.join(team2_lineup)
-            ])
+            for player_name, player_id in team1_lineup:
+                writer.writerow([date_str, time_str, team1, player_name, player_id])
+            for player_name, player_id in team2_lineup:
+                writer.writerow([date_str, time_str, team2, player_name, player_id])
+
             time.sleep(1.5)
 
 driver.quit()
-print("✅ 모든 라인업 저장 완료")
+print("✅ 오늘까지의 라인업 저장 완료")
