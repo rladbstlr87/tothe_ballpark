@@ -52,7 +52,7 @@ for pid in player_ids:
         # 4) 값 추출 (tbody tr 1번째 행, nth-child는 fastball_idx)
         value_xpath = f'//*[@id="record_04"]/div/div/table/tbody/tr[1]/td[{fastball_idx}]'
         value = driver.find_element(By.XPATH, value_xpath).text.strip()
-
+        value = value.split('k')[0]
         print(f"[{pid}] speed 수치: {value}")
         results.append({'player_id': pid, 'speed': value})
 
