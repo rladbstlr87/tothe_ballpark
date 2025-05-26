@@ -96,7 +96,6 @@ for team in teams:
         if '순위' in combined_df.columns:
             combined_df.drop(columns=['순위'], inplace=True)
 
-        # player_id 컬럼 추가 (선수명 기준 매칭)
         combined_df["player_id"] = combined_df["선수명"].map(player_ids).fillna("정보 없음")
 
         # 팀별 CSV 저장 제거됨
