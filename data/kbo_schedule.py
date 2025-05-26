@@ -99,7 +99,9 @@ for month in range(3, 10):
             if not stadium and note:
                 stadium = note
                 note = '-'
-
+            if note and note != '-':
+                r1 = r2 = '취소'
+                
             # 데이터 저장
             days.append(day)
             times.append(time)

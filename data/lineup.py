@@ -96,9 +96,7 @@ with open('lineups.csv', 'w', newline='', encoding='utf-8-sig') as outfile:
 
             # 만약 두 번째 경기 라인업이 9명이고, 첫 경기 라인업이 존재하면 한 명 추가
             if len(games_sorted) > 1 and idx == 1 and len(team1_lineup) == 9 and first_game_lineup and len(first_game_lineup) > 0:
-                print("두 번째 경기 라인업이 9명, 첫 경기 선수 한 명 추가")
-                # 예시: 첫 번째 선수 추가 (원하는 로직에 따라 변경 가능)
-                team1_lineup.append(first_game_lineup[0])
+                team1_lineup.insert(0, first_game_lineup[0])
 
             writer.writerow([
                 date_str, time_str, team1, team2,
