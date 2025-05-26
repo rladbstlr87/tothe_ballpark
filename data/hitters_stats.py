@@ -25,6 +25,26 @@ for team in teams:
     select.select_by_value(team)
     time.sleep(1)
 
+    # 선수명: player_id 매핑용 딕셔너리
+    player_ids = {}
+
+    # 선수 아이디 수집 (1페이지에서만)
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, "#cphContents_cphContents_cphContents_udpContent table"))
+    )
+    html = driver.page_source
+    soup = BeautifulSoup(html, "html.parser")
+    table = soup.select_one("#cphContents_cphContents_cphContents_udpContent table")
+    for row in table.select("tbody tr"):
+        link = row.select_one("td:nth-child(2) a")
+        if link:
+            player_name = link.get_text(strip=True)
+            href = link.get("href", "")
+            # playerId 추출
+            if "playerId=" in href:
+                player_id = href.split("playerId=")[-1]
+                player_ids[player_name] = player_id
+
     for page_num in [1, 2]:
         if page_num == 2:
             try:
@@ -76,8 +96,8 @@ for team in teams:
         if '순위' in combined_df.columns:
             combined_df.drop(columns=['순위'], inplace=True)
 
-        # 팀 정보 추가 (선택 사항)
-        combined_df["팀"] = team
+        # player_id 컬럼 추가 (선수명 기준 매칭)
+        combined_df["player_id"] = combined_df["선수명"].map(player_ids).fillna("정보 없음")
 
         # 팀별 CSV 저장 제거됨
         # all_hitter_stats.csv에만 저장
