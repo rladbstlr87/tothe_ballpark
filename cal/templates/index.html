@@ -1,3 +1,26 @@
-{% extends 'base.html' %}  <!-- base.html을 확장하여 기본 레이아웃 사용 -->
+{% extends 'base.html' %}
+{% load static %}
 {% block body %}
+
+<div class="h-screen bg-fixed bg-center bg-cover" style="background-image: url('/static/images/baseball.png');"></div>
+
+
+{% comment %} <!-- 전체화면 배경 영상 -->
+ <script src="https://cdn.tailwindcss.com"></script>
+<div class="fixed top-0 left-0 w-screen h-screen z-0 overflow-hidden">
+  <video autoplay muted loop class="w-full h-full object-cover pointer-events-none">
+    <source src="{% static 'videos/baseball.mp4' %}" type="video/mp4">
+  </video>
+</div>
+
+<!-- 오버레이 (선택) -->
+<div class="fixed top-0 left-0 w-screen h-screen bg-black/30 z-10 pointer-events-none"></div>
+
+<!-- 콘텐츠 -->
+<div class="relative z-20 flex flex-col items-center justify-center h-screen text-white text-center">
+  
+    <h1 class="text-5xl font-bold">KBO 팬을 위한 캘린더</h1>
+    <p class="text-xl mt-4">당신의 팀을 중심으로 한 시즌 일정을 한눈에</p>
+  
+</div> {% endcomment %}
 {% endblock %}

@@ -1,55 +1,104 @@
+{% extends 'base.html' %}
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Sliding Auth Dynamic</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .transition-slide {
-      transition: all 0.6s ease-in-out;
+{% block body %}
+    <meta charset="UTF-8" />
+    <title>Sliding Auth Dynamic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'accounts/css/auth.css' %}"> <!-- 기존 CSS 연결 -->
+    <style>
+      .transition-slide {
+        transition: all 0.6s ease-in-out;
+      }
+    </style>
+  
+  <body class="h-screen w-screen bg-white overflow-hidden relative">
+
+    <!-- 독립적인 원 배경 -->
+    <div id="bg-circle" class="absolute top-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-[#75A58D] rounded-full z-0 transition-slide flex items-center justify-center pr-20 pb-20" style="left: {% if mode == 'signup' %}100vw{% else %}-500px{% endif %};">
+      <h2 class="text-white text-5xl font-extrabold">
+        {% if mode == 'signup' %}Join with us{% else %}Welcome{% endif %}
+      </h2>
+    </div>
+
+    <!-- 폼 카드 -->
+    <div id="form-card" class="absolute transition-slide top-1/2 -translate-y-1/2 z-20 w-[400px] {% if mode == 'signup' %}left-[150px]{% else %}right-[150px]{% endif %}">
+      {% if mode == 'login' %}
+      <form method="POST" action="" class="bg-white w-full p-10 shadow-xl rounded-2xl">
+        {% csrf_token %}
+        <h2 class="text-2xl font-bold mb-6 text-center">Sign in</h2>
+        {% for field in login_form %}
+          <div class="mb-4">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}<p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>{% endif %}
+          </div>
+        {% endfor %}
+        <button type="submit" name="action" value="login" class="w-full bg-[#75A58D] text-white py-2 rounded">Sign in</button>
+        <p class="text-sm mt-4 text-center">Don't have an account? <a href="#" onclick="triggerSwitch('signup'); return false;" class="text-[#75A58D] font-semibold">Sign up here</a></p>
+      </form>
+      {% endif %}
+
+      {% if mode == 'signup' %}
+      <form method="POST" action="" class="bg-white w-full p-10 shadow-xl rounded-2xl">
+        {% csrf_token %}
+        <h2 class="text-2xl font-bold mb-6 text-center">Sign up</h2>
+        {% for field in signup_form %}
+          <div class="mb-4">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}<p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>{% endif %}
+          </div>
+        {% endfor %}
+        <button type="submit" name="action" value="signup" class="w-full bg-[#75A58D] text-white py-2 rounded hover:bg-sky-700">Sign up</button>
+        <p class="text-sm mt-4 text-center">Already have an account? <a href="#" onclick="triggerSwitch('login'); return false;" class="text-[#75A58D] font-semibold">Sign in here</a></p>
+      </form>
+      {% endif %}
+    </div>
+
+<script>
+  const bg = document.getElementById('bg-circle');
+  const card = document.getElementById('form-card');
+  const currentMode = '{{ mode }}';
+
+  // 1. 페이지 로드 시: 왼쪽 or 오른쪽에서 → 중앙으로 이동
+  setTimeout(() => {
+    bg.style.left = 'calc(50% - 500px)';
+    bg.style.right = '';
+
+    if (currentMode === 'signup') {
+      card.classList.add('left-20');
+    } else {
+      card.classList.add('right-20');
     }
-  </style>
-</head>
-<body class="h-screen w-screen bg-white overflow-hidden relative">
+  }, 50);
 
-  <!-- 반원 배경 (로그인: 왼쪽 / 회원가입: 오른쪽) -->
-  <div class="absolute transition-slide {% if mode == 'signup' %}right-10%{% else %}-left-[300px]{% endif %}   bottom-[10px] w-[1000px] h-[1000px] bg-[#75A58D] rounded-full z-0 flex items-end justify-end pr-20 pb-20">
-    <h2 class="text-white text-5xl font-extrabold">
-      {% if mode == 'signup' %}Join with us{% else %}Welcome{% endif %}
-    </h2>
-  </div>
+  // 2. 클릭 시: 슬라이드 → 서버 전환
+  function triggerSwitch(targetMode) {
+    bg.style.left = '';
+    bg.style.right = '';
+    card.classList.remove('left-20', 'right-20');
 
-  <!-- 폼 카드 (로그인: 오른쪽 / 회원가입: 왼쪽) -->
-  <div class="absolute transition-slide top-1/2 -translate-y-1/2 z-20 w-[400px] {% if mode == 'signup' %}left-[150px]{% else %}right-[150px]{% endif %}">
-    {% if mode == 'login' %}
-    <form method="POST" action="" class="bg-white w-full p-10 shadow-xl rounded-2xl">
-      {% csrf_token %}
-      <h2 class="text-2xl font-bold mb-6 text-center">Sign in</h2>
-      {% for field in login_form %}
-        <div class="mb-4">{{ field.label_tag }}{{ field }}
-          {% if field.errors %}<p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>{% endif %}
-        </div>
-      {% endfor %}
-      <button type="submit" name="action" value="login" class="w-full bg-[#75A58D] text-white py-2 rounded">Sign in</button>
-      <p class="text-sm mt-4 text-center">Don't have an account? <a href="?mode=signup" class="text-[#75A58D] font-semibold">Sign up here</a></p>
-    </form>
-    {% endif %}
+    if (targetMode === 'signup') {
+      bg.style.left = '100vw';
+    } else {
+      bg.style.left = '-500px';
+    }
 
-    {% if mode == 'signup' %}
-    <form method="POST" action="" class="bg-white w-full p-10 shadow-xl rounded-2xl">
-      {% csrf_token %}
-      <h2 class="text-2xl font-bold mb-6 text-center">Sign up</h2>
-      {% for field in signup_form %}
-        <div class="mb-4">{{ field.label_tag }}{{ field }}
-          {% if field.errors %}<p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>{% endif %}
-        </div>
-      {% endfor %}
-      <button type="submit" name="action" value="signup" class="w-full bg-[#75A58D] text-white py-2 rounded">Sign up</button>
-      <p class="text-sm mt-4 text-center">Already have an account? <a href="?mode=login" class="text-[#75A58D] font-semibold">Sign in here</a></p>
-    </form>
-    {% endif %}
-  </div>
+    setTimeout(() => {
+      bg.style.left = 'calc(50% - 500px)';
+      bg.style.right = '';
+      if (targetMode === 'signup') {
+        card.classList.add('left-20');
+      } else {
+        card.classList.add('right-20');
+      }
+    }, 50);
 
-</body>
-</html>
+    setTimeout(() => {
+      window.location.href = `?mode=${targetMode}`;
+    }, 550);
+  }
+</script>
+
+{% endblock %}
