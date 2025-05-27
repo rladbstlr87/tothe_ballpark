@@ -2,8 +2,8 @@ from django.db import models
 from django.conf import settings
 
 class Game(models.Model):
-    date = models.CharField(max_length = 100)
-    time = models.CharField(max_length = 100)
+    date = models.DateField(max_length = 100)
+    time = models.DateField(max_length = 100)
     team1 = models.CharField(max_length = 100)
     team2 = models.CharField(max_length = 100)
     team1_score = models.IntegerField(null=True, blank=True)
@@ -114,7 +114,7 @@ class Pitcher(models.Model):
     IBB = models.PositiveIntegerField()  # 고의4구
     WP = models.PositiveIntegerField()  # 폭투
     BK = models.PositiveIntegerField()  # 보크
-    birthday = models.CharField(max_length = 100)  # 생일
+    birthday = models.DateField(max_length = 100)  # 생일
     speed = models.IntegerField()  # 구속
     stamina = models.FloatField()  # 체력
     control = models.FloatField()  # 제구력

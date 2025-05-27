@@ -22,7 +22,10 @@ class CustomUserCreationForm(UserCreationForm): # usercreationform을 상속받�
                 'team': forms.Select(attrs={
                     'class': 'w-full px-4 py-2 border rounded-lg',
                 }),
-                'nickname': forms.TextInput(attrs={'placeholder': 'Nickname'})
+                'nickname': forms.TextInput(attrs={
+                    'class': 'w-full px-4 py-2 border rounded-lg',
+                    'placeholder': 'Nickname'
+                }),
                 
         }
     # usercreationform이 기본적으로 password1과 password2 필드에 widget을 지정해도 무시하는 경우 발생
@@ -56,10 +59,6 @@ class CustomAuthenticationForm(AuthenticationForm):
         self.fields['password'].widget.attrs.update({
             'class': 'w-full px-4 py-2 border rounded-lg',
             'placeholder': 'Password'
-        })
-        self.fields['nickname'].widget.attrs.update({
-            'class': 'w-full px-4 py-2 border rounded-lg',
-            'placeholder': 'Nickname'
         })
 
 # input 요소에 tailwind 스타일을 적용하기 위해, forms.py에서 각 필드의 widget을 커스터마이징 해주기
