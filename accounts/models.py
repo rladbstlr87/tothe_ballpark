@@ -22,3 +22,4 @@ class User(AbstractUser):
         null=True,
         verbose_name='응원팀'
     )
+    nickname = models.CharField(max_length=20, unique=True)
