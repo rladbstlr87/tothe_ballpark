@@ -3,7 +3,7 @@ from django.conf import settings
 
 class Game(models.Model):
     date = models.DateField(max_length = 100)
-    time = models.DateField(max_length = 100)
+    time = models.TimeField(max_length = 100)
     team1 = models.CharField(max_length = 100)
     team2 = models.CharField(max_length = 100)
     team1_score = models.IntegerField(null=True, blank=True)

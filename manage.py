@@ -3,7 +3,7 @@
 import os
 import sys
 import django
-from datetime import datetime 
+
 import csv
 
 def main():
