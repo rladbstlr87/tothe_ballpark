@@ -8,7 +8,7 @@ class CustomUserCreationForm(UserCreationForm): # usercreationform을 상속받�
         fields = ('username', 'nickname', 'team', 'password1', 'password2') # user 모델을 기반으로 하는 폼 원래는 password1 (비밀번호 입력) password2(비밀번호 확인)은 필요없었지만 하나씩 디자인하기 위해서 추가 
         # 각 필드에 들어갈 HTML input 태그 속성을 커스터 마이징 할 수 있는 곳곳
         widgets = {
-                'username': forms.TextInput(attrs={ # attrs로 HTML 속성 지정정
+                'username': forms.TextInput(attrs={ # attrs로 HTML 속성 지정
                     'class': 'w-full px-4 py-2 border rounded-lg',
                     # class는 tailwindcss 클래스를 지정해서 스타일링
                     # w-full : 너비 px-4 py-2: 좌우 1단위 패딩 4, 상하 2
