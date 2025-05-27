@@ -17,31 +17,8 @@ class Game(models.Model):
         related_name='attendance_game',
     )
 
-class Stadium(models.Model):
-    stadium_name = {
-        'HT': '35.168275,126.888934,광주기아챔피언스필드,19909618',
-        'OB': '37.512898,127.071107,잠실종합운동장잠실야구장,13202577',
-        'LG': '37.512898,127.071107,잠실종합운동장잠실야구장,13202577',
-        'SSG': '37.435123,126.693024,인천SSG 랜더스필드,13202558',
-        'NC': '35.222571,128.582776,NC 다이노스,36046999',
-        'HH': '36.317056,127.428072,(구 한화구장)한화생명이글스파크,11831114',
-        'KW': '37.498184,126.867129,고척스카이돔,18967604',
-        'LT': '35.194956,129.060426,부산사직종합운동장 사직야구장,13202715',
-        'SS': '35.841965,128.681198,대구삼성라이온즈파크,19909612',
-        'KT': '37.299025,126.974983,수원KT위즈파크,13491582'
-    }
-
-    team = models.CharField(
-        max_length=10,
-        choices=stadium_name,
-        blank=True,
-        null=True,
-        verbose_name='응원팀',
-        unique=True,
-    )
-
 class Hitter(models.Model):
-    player_id = models.CharField(max_length=50, unique=True) # KBO 등록번호 5자리
+    player_id = models.CharField(max_length=50, unique=True, primary_key=True, blank=True) # KBO 등록번호 5자리
     player_name = models.CharField(max_length=100)
     team_name = models.CharField(max_length=100)
     AVG = models.FloatField()  # 타율
@@ -81,7 +58,7 @@ class Hitter(models.Model):
     style = models.IntegerField()  # 선수 스타일 (ex: contact hitter 등)
 
 class Pitcher(models.Model):
-    player_id = models.CharField(max_length=50, unique=True)
+    player_id = models.CharField(max_length=50, unique=True, primary_key=True, blank=True)
     player_name = models.CharField(max_length=100)  # 선수명
     team_name = models.CharField(max_length=100)  # 팀명
     ERA = models.FloatField()  # 평균 자책점
@@ -122,7 +99,8 @@ class Pitcher(models.Model):
     style = models.IntegerField()  # 투수 스타일
 
 class Lineup(models.Model):
-    stadium_id = models.ForeignKey(Stadium, on_delete=models.CASCADE)
-    hitter = models.ForeignKey(Hitter, on_delete=models.CASCADE)
-    pitcher = models.ForeignKey(Pitcher, on_delete=models.CASCADE)
-    game_id = models.ForeignKey(Game, on_delete=models.CASCADE)
+    stadium = models.CharField(max_length=100, null=True, blank=True)
+    hitter = models.ForeignKey(Hitter, on_delete=models.CASCADE, null=True, blank=True)
+    pitcher = models.ForeignKey(Pitcher, on_delete=models.CASCADE, null=True, blank=True)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, null=True, blank=True)
+    batting_order = models.PositiveIntegerField(null=True, blank=True)

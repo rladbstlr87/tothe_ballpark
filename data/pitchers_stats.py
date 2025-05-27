@@ -42,8 +42,7 @@ first = True  # all_pitcher_stats.csv 첫 저장 여부
 for team in teams:
     print(f"\n▶ {team} 팀 데이터 수집 시작")
     page_dfs = []
-    player_birthdays = {}  # 선수명: 생일 저장용 딕셔너리
-    player_ids = {}  # 선수명: playerId 저장용 딕셔너리
+    player_info_list = []  # [(선수명, player_id, 생일), ...]
 
     wait = WebDriverWait(driver, 10)
 
@@ -55,7 +54,7 @@ for team in teams:
     select.select_by_value(team)
     time.sleep(1)
 
-    # 생일 정보 수집 (전체 선수 리스트에서 한 번만 크롤링)
+    # 선수 정보 수집 (전체 선수 리스트에서 한 번만 크롤링)
     rows = driver.find_elements(By.CSS_SELECTOR, "#cphContents_cphContents_cphContents_udpContent > div.record_result > table > tbody > tr")
     total_players = len(rows)
 
@@ -67,7 +66,6 @@ for team in teams:
 
             # playerId 추출
             player_id = player_link.get_attribute("href").split("playerId=")[-1]
-            player_ids[player_name] = player_id
 
             # requests로 프로필 페이지에서 생일 수집
             profile_url = f"https://www.koreabaseball.com/Record/Player/PitcherDetail/Basic.aspx?playerId={player_id}"
@@ -83,8 +81,8 @@ for team in teams:
             except:
                 birthday = "정보 없음"
 
-            print(f"팀: {team} | 선수명: {player_name} | 생일: {birthday}")
-            player_birthdays[player_name] = birthday
+            print(f"팀: {team} | 선수명: {player_name} | 생일: {birthday} | player_id: {player_id}")
+            player_info_list.append((player_name, player_id, birthday))
 
         except Exception as e:
             print(f"{team} 팀 {i}번째 선수 생일 크롤링 실패:", e)
@@ -122,6 +120,10 @@ for team in teams:
 
         df = pd.DataFrame(all_rows, columns=headers)
 
+        # WPCT가 '-'이면 0으로 변환
+        if 'WPCT' in df.columns:
+            df['WPCT'] = df['WPCT'].replace('-', 0).astype(float)
+
         # IP 컬럼이 있으면 변환 처리
         if 'IP' in df.columns:
             df['IP'] = df['IP'].apply(convert_ip)
@@ -144,11 +146,12 @@ for team in teams:
         merge_keys = ['순위', '선수명', '팀명', 'ERA']
         combined_df = pd.merge(df1, df2.drop(columns=merge_keys), left_index=True, right_index=True)
 
-        # 생일 컬럼 추가 (선수명 기준 매칭)
-        combined_df['생일'] = combined_df['선수명'].map(player_birthdays).fillna("정보 없음")
-
-        # player_id 컬럼 추가 (선수명 기준 매칭)
-        combined_df['player_id'] = combined_df['선수명'].map(player_ids).fillna("정보 없음")
+        # 동명이인 문제 해결: 순서대로 player_id, 생일 넣기
+        combined_df = combined_df.reset_index(drop=True)
+        min_len = min(len(combined_df), len(player_info_list))
+        combined_df = combined_df.iloc[:min_len]
+        combined_df['player_id'] = [info[1] for info in player_info_list[:min_len]]
+        combined_df['생일'] = [info[2] for info in player_info_list[:min_len]]
 
         if '순위' in combined_df.columns:
             combined_df.drop(columns=['순위'], inplace=True)

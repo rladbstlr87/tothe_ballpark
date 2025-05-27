@@ -68,10 +68,13 @@ except FileNotFoundError:
     pass
 print(last_date)
 
-# 📅 kbo_schedule.csv 불러오기
+# 📅 kbo_schedule.csv 불러오기 및 game_id 부여
 with open('kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
     reader = list(csv.DictReader(infile))
     game_map = {}
+    game_info_map = {}
+    game_id_lookup = {}
+    game_id_counter = 1
     for row in reader:
         date_str = row['day'].replace('.', '')
         game_date = datetime.datetime.strptime(date_str, '%Y%m%d').date()
@@ -82,8 +85,17 @@ with open('kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
 
         team1 = row['team1']
         team2 = row['team2']
-        key = (date_str, team1, team2)
-        game_map.setdefault(key, []).append(row)
+        time_str = row['time']
+        stadium = row.get('stadium', '')
+        key = (date_str, team1, team2, time_str)
+        game_map.setdefault((date_str, team1, team2), []).append(row)
+        # 행 순서대로 game_id 부여
+        game_id_lookup[key] = game_id_counter
+        game_info_map[key] = {
+            'stadium': stadium,
+            'game_id': game_id_counter
+        }
+        game_id_counter += 1
 
 # ✅ 크롬 드라이버 시작
 driver = webdriver.Chrome()
@@ -92,7 +104,7 @@ driver = webdriver.Chrome()
 with open('lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
     writer = csv.writer(outfile)
     if last_date is None:
-        writer.writerow(['date', 'time', 'team', 'player', 'player_id'])
+        writer.writerow(['batting_order', 'game_id', 'hitter_id', 'pitcher_id', 'stadium'])
 
     for key, games in game_map.items():
         games_sorted = sorted(games, key=lambda x: x['time'])
@@ -110,16 +122,20 @@ with open('lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
                 print(f"팀 코드 없음: {team1}, {team2}")
                 continue
 
+            # game_id, stadium 가져오기 (행 순서대로 부여된 game_id 사용)
+            game_id = game_id_lookup.get((date_str, team1, team2, time_str))
+            stadium = row.get('stadium', '')
+
             if len(games_sorted) == 1:
-                game_id = '02025'
+                naver_game_id = '02025'
             elif idx == 0:
-                game_id = '12025'
+                naver_game_id = '12025'
             else:
-                game_id = '22025' if not double_header_failed else '02025'
+                naver_game_id = '22025' if not double_header_failed else '02025'
 
-            print(f"크롤링: {date_str} {team1} vs {team2} ({time_str}) game_id={game_id}")
+            print(f"크롤링: {date_str} {team1} vs {team2} ({time_str}) game_id={naver_game_id}")
 
-            team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, game_id, driver)
+            team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, naver_game_id, driver)
 
             if len(games_sorted) > 1 and idx == 0:
                 if not team1_lineup and not team2_lineup:
@@ -127,17 +143,27 @@ with open('lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
                 else:
                     first_game_lineup = team1_lineup
 
-            if len(games_sorted) > 1 and idx == 1 and not team1_lineup and not team2_lineup and game_id == '22025':
+            if len(games_sorted) > 1 and idx == 1 and not team1_lineup and not team2_lineup and naver_game_id == '22025':
                 print("22025 라인업 없음, 02025로 재시도")
                 team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, '02025', driver)
 
             if len(games_sorted) > 1 and idx == 1 and len(team1_lineup) == 9 and first_game_lineup:
                 team1_lineup.insert(0, first_game_lineup[0])
 
-            for player_name, player_id in team1_lineup:
-                writer.writerow([date_str, time_str, team1, player_name, player_id])
-            for player_name, player_id in team2_lineup:
-                writer.writerow([date_str, time_str, team2, player_name, player_id])
+            # 팀1 라인업 저장
+            for i, (player_name, player_id) in enumerate(team1_lineup):
+                if i == 0:
+                    # 투수
+                    writer.writerow([1, game_id, 1, player_id, stadium])
+                else:
+                    # 타자
+                    writer.writerow([i+1, game_id, player_id, 1, stadium])
+            # 팀2 라인업 저장
+            for i, (player_name, player_id) in enumerate(team2_lineup):
+                if i == 0:
+                    writer.writerow([1, game_id, 1, player_id, stadium])
+                else:
+                    writer.writerow([i+1, game_id, player_id, 1, stadium])
 
             time.sleep(1.5)
 
