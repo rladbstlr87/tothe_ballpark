@@ -5,8 +5,8 @@ from django import forms # django에서 폼을 만들고 다루기 위한 모듈
 class CustomUserCreationForm(UserCreationForm): # usercreationform을 상속받아서 내 사용자 모델(user)에 맞게 확장한 회원가입 폼 생성성
     class Meta():
         model = User
-        fields = ('username', 'team', 'password1', 'password2') # user 모델을 기반으로 하는 폼 원래는 password1 (비밀번호 입력) password2(비밀번호 확인)은 필요없었지만 하나씩 디자인하기 위해서 추가 
-        # 각 필드에 들어갈 HTML input 태그 속성을 커스터 마이징 할 수 있는 곳
+        fields = ('username', 'nickname', 'team', 'password1', 'password2') # user 모델을 기반으로 하는 폼 원래는 password1 (비밀번호 입력) password2(비밀번호 확인)은 필요없었지만 하나씩 디자인하기 위해서 추가 
+        # 각 필드에 들어갈 HTML input 태그 속성을 커스터 마이징 할 수 있는 곳곳
         widgets = {
                 'username': forms.TextInput(attrs={ # attrs로 HTML 속성 지정
                     'class': 'w-full px-4 py-2 border rounded-lg',
@@ -22,6 +22,7 @@ class CustomUserCreationForm(UserCreationForm): # usercreationform을 상속받�
                 'team': forms.Select(attrs={
                     'class': 'w-full px-4 py-2 border rounded-lg',
                 }),
+                'nickname': forms.TextInput(attrs={'placeholder': 'Nickname'})
                 
         }
     # usercreationform이 기본적으로 password1과 password2 필드에 widget을 지정해도 무시하는 경우 발생
@@ -55,6 +56,10 @@ class CustomAuthenticationForm(AuthenticationForm):
         self.fields['password'].widget.attrs.update({
             'class': 'w-full px-4 py-2 border rounded-lg',
             'placeholder': 'Password'
+        })
+        self.fields['nickname'].widget.attrs.update({
+            'class': 'w-full px-4 py-2 border rounded-lg',
+            'placeholder': 'Nickname'
         })
 
 # input 요소에 tailwind 스타일을 적용하기 위해, forms.py에서 각 필드의 widget을 커스터마이징 해주기

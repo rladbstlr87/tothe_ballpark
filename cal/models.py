@@ -1,10 +1,9 @@
 from django.db import models
-
-# Create your models here.
+from django.conf import settings
 
 class Game(models.Model):
-    date = models.DateField()
-    time = models.TimeField()
+    date = models.CharField(max_length = 100)
+    time = models.CharField(max_length = 100)
     team1 = models.CharField(max_length = 100)
     team2 = models.CharField(max_length = 100)
     team1_score = models.IntegerField(null=True, blank=True)
@@ -13,3 +12,117 @@ class Game(models.Model):
     team2_result = models.CharField(max_length = 100)
     stadium = models.CharField(max_length = 100)
     note = models.CharField(max_length=100, null=True, blank=True)
+    attendance_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name='attendance_game',
+    )
+
+class Stadium(models.Model):
+    stadium_name = {
+        'HT': '35.168275,126.888934,광주기아챔피언스필드,19909618',
+        'OB': '37.512898,127.071107,잠실종합운동장잠실야구장,13202577',
+        'LG': '37.512898,127.071107,잠실종합운동장잠실야구장,13202577',
+        'SSG': '37.435123,126.693024,인천SSG 랜더스필드,13202558',
+        'NC': '35.222571,128.582776,NC 다이노스,36046999',
+        'HH': '36.317056,127.428072,(구 한화구장)한화생명이글스파크,11831114',
+        'KW': '37.498184,126.867129,고척스카이돔,18967604',
+        'LT': '35.194956,129.060426,부산사직종합운동장 사직야구장,13202715',
+        'SS': '35.841965,128.681198,대구삼성라이온즈파크,19909612',
+        'KT': '37.299025,126.974983,수원KT위즈파크,13491582'
+    }
+
+    team = models.CharField(
+        max_length=10,
+        choices=stadium_name,
+        blank=True,
+        null=True,
+        verbose_name='응원팀',
+        unique=True,
+    )
+
+class Hitter(models.Model):
+    player_id = models.CharField(max_length=50, unique=True) # KBO 등록번호 5자리
+    player_name = models.CharField(max_length=100)
+    team_name = models.CharField(max_length=100)
+    AVG = models.FloatField()  # 타율
+    G = models.PositiveIntegerField()  # 경기 수
+    PA = models.PositiveIntegerField()  # 타석
+    AB = models.PositiveIntegerField()  # 타수
+    R = models.PositiveIntegerField()  # 득점
+    H = models.PositiveIntegerField()  # 안타
+    _2B = models.PositiveIntegerField()  # 2루타
+    _3B = models.PositiveIntegerField()  # 3루타
+    HR = models.PositiveIntegerField()  # 홈런
+    TB = models.PositiveIntegerField()  # 루타
+    RBI = models.PositiveIntegerField()  # 타점
+    SAC = models.PositiveIntegerField()  # 희생타
+    SF = models.PositiveIntegerField()  # 희생플라이
+    BB = models.PositiveIntegerField()  # 볼넷
+    IBB = models.PositiveIntegerField()  # 고의사구
+    HBP = models.PositiveIntegerField()  # 몸에 맞는 공
+    SO = models.PositiveIntegerField()  # 삼진
+    GDP = models.PositiveIntegerField()  # 병살타
+    SLG = models.FloatField()  # 장타율
+    OBP = models.FloatField()  # 출루율
+    OPS = models.FloatField()  # OPS
+    MH = models.PositiveIntegerField()  # 멀티히트 (추정)
+    RISP = models.FloatField()  # 득점권 타율
+    PH_BA = models.FloatField()  # 대타 타율 (PH-BA)
+    SBA = models.PositiveIntegerField()  # 도루 시도
+    SB = models.PositiveIntegerField()  # 도루 성공
+    CS = models.PositiveIntegerField()  # 도루 실패
+    SB_percent = models.FloatField()  # 도루 성공률
+    OOB = models.PositiveIntegerField()  # 주루사 (Out On Base)
+    PKO = models.PositiveIntegerField()  # 견제사 (Pick Off)
+    power = models.FloatField()  # 파워 (평가값일 경우 Integer로)
+    contact = models.FloatField()  # 컨택트
+    batting_eye = models.FloatField()  # 선구안
+    speed = models.FloatField()  # 스피드
+    style = models.IntegerField()  # 선수 스타일 (ex: contact hitter 등)
+
+class Pitcher(models.Model):
+    player_id = models.CharField(max_length=50, unique=True)
+    player_name = models.CharField(max_length=100)  # 선수명
+    team_name = models.CharField(max_length=100)  # 팀명
+    ERA = models.FloatField()  # 평균 자책점
+    G = models.PositiveIntegerField()  # 경기 수
+    W = models.PositiveIntegerField()  # 승
+    L = models.PositiveIntegerField()  # 패
+    SV = models.PositiveIntegerField()  # 세이브
+    HLD = models.PositiveIntegerField()  # 홀드
+    WPCT = models.FloatField()  # 승률
+    IP = models.FloatField()  # 이닝 (소수점까지 입력되는 경우가 많음)
+    H = models.PositiveIntegerField()  # 피안타
+    HR = models.PositiveIntegerField()  # 피홈런
+    BB = models.PositiveIntegerField()  # 볼넷
+    HBP = models.PositiveIntegerField()  # 사구
+    SO = models.PositiveIntegerField()  # 탈삼진
+    R = models.PositiveIntegerField()  # 실점
+    ER = models.PositiveIntegerField()  # 자책점
+    WHIP = models.FloatField()  # 이닝당 출루 허용 (WHIP)
+    CG = models.PositiveIntegerField()  # 완투
+    SHO = models.PositiveIntegerField()  # 완봉
+    QS = models.PositiveIntegerField()  # 퀄리티스타트
+    BSV = models.PositiveIntegerField()  # 블론세이브
+    TBF = models.PositiveIntegerField()  # 상대 타자 수
+    NP = models.PositiveIntegerField()  # 투구 수
+    AVG = models.FloatField()  # 피안타율
+    _2B = models.PositiveIntegerField()  # 피 2루타
+    _3B = models.PositiveIntegerField()  # 피 3루타
+    SAC = models.PositiveIntegerField()  # 희생번트 허용
+    SF = models.PositiveIntegerField()  # 희생플라이 허용
+    IBB = models.PositiveIntegerField()  # 고의4구
+    WP = models.PositiveIntegerField()  # 폭투
+    BK = models.PositiveIntegerField()  # 보크
+    birthday = models.CharField(max_length = 100)  # 생일
+    speed = models.IntegerField()  # 구속
+    stamina = models.FloatField()  # 체력
+    control = models.FloatField()  # 제구력
+    fireball = models.FloatField()  # 파이어볼러 수치 (또는 fastball strength 등)
+    style = models.IntegerField()  # 투수 스타일
+
+class Lineup(models.Model):
+    stadium_id = models.ForeignKey(Stadium, on_delete=models.CASCADE)
+    hitter = models.ForeignKey(Hitter, on_delete=models.CASCADE)
+    pitcher = models.ForeignKey(Pitcher, on_delete=models.CASCADE)
+    game_id = models.ForeignKey(Game, on_delete=models.CASCADE)
