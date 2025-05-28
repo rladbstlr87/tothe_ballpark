@@ -52,9 +52,16 @@ def next_month(d):
 
 def lineup(request, game_id):
     game = Game.objects.get(id=game_id)
-
+    lineups = Lineup.objects.filter(game=game)
+    pitchers = lineups.filter(batting_order=1)
+    batters = lineups.filter(batting_order__gt=1).order_by('batting_order') # __gt=1 1보다 큰 숫자들
+    user_team = request.user.team
     context = {
-        'game': game
+        'game': game,
+        'lineups': lineups,
+        'pitchers': pitchers,
+        'batters': batters,
+        'user_team': user_team,
     }
     return render(request, 'lineup.html', context)
 
