@@ -28,6 +28,27 @@
             </button>
         </form>
         {% endif %}
+        {% comment %} 라인업 {% endcomment %}
+        {% if game %}
+            
+                 <div class="lineup-container">
+                    <h2>{{ game.date }} 라인업</h2>
+                    <h3>{{ game.home_team }} vs {{ game.away_team }}</h3>
+                    <div class="lineup-details">
+                        <h4>타순</h4>
+                        {% for pitcher in pitchers %}
+                        <p>선발투수: {{ pitcher.pitcher.player_name}}</p>
+                        {% endfor %}
+                        {% for batter in batters %}
+                            <p>{{batter.batting_order|add:"-1"}}번: {{batter.hitter.player_name}}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            
+        
+        
+        {% endif %}
     {% endblock %}
+    
 </body>
 </html>
