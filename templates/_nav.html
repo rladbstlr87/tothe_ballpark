@@ -33,7 +33,7 @@
               </a>
             {% else %}
               <a href="{% url 'index' %}" class="flex items-center">
-                <img src="{% static 'images/Baseball_icon.png' %}" alt="Baseball" class="h-16 w-16">
+                <img src="{% static 'images/logo.png' %}" alt="Baseball" class="h-24">
               </a>
             {% endif %}
           </div>
@@ -64,32 +64,32 @@
           </div>
         </div>
 
-        <!-- 모바일 메뉴 버튼 -->
-        <div class="sm:hidden">
-          <button @click="open = true" class="p-2 text-gray-700">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16" />
+            <!-- 모바일 메뉴 버튼 -->
+            <div class="sm:hidden">
+              <button @click="open = true" class="p-2 text-gray-700 right-0">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 모바일 전체 화면 오버레이 메뉴 -->
+        <div
+          class="fixed inset-0 bg-[#6FC0CB] z-40 flex flex-col items-start px-8 py-6 space-y-10 text-white font-bold text-3xl sm:hidden"
+          x-show="open"
+          x-transition
+          @click.away="open = false"
+        >
+          <!-- 닫기 버튼 -->
+          <button @click="open = false" class="absolute top-4 right-4">
+            <svg class="w-10 h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 8l8 8M16 8l-8 8"/>
             </svg>
           </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 모바일 전체 화면 오버레이 메뉴 -->
-    <div
-      class="fixed inset-0 bg-[#6FC0CB] z-40 flex flex-col items-start px-8 py-6 space-y-10 text-white font-bold text-3xl sm:hidden"
-      x-show="open"
-      x-transition
-      @click.away="open = false"
-    >
-      <!-- 닫기 버튼 -->
-      <button @click="open = false" class="absolute top-4 right-4">
-        <svg class="w-10 h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 8l8 8M16 8l-8 8"/>
-        </svg>
-      </button>
 
       {% if user.is_authenticated %}
         <a href="#" class="hover:text-yellow-300">ABOUT</a>

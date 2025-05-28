@@ -53,14 +53,12 @@ def next_month(d):
 
 def lineup(request, game_id):
     game = Game.objects.get(id=game_id)
-    lineups = Lineup.objects.filter(game=game).order_by('id')
+    lineups = Lineup.objects.filter(game=game).order_by('id') # id 순서로 정렬해서 원정팀 -> 홈팀 순으로 나오게하기 
     user_team = request.user.team
 
-    # 선발투수 2명 위치 파악 (batting_order == 1)
-    pitcher_indexes = [i for i, l in enumerate(lineups) if l.batting_order == 1]
-
-    if len(pitcher_indexes) != 2:
-        raise ValueError("선발투수가 2명 아닙니다.")
+    # 선발투수 2명 위치 파악 (batting_order == 1) 이면 선발투수임 
+    pitcher_indexes = [i for i, l in enumerate(lineups) if l.batting_order == 1] # 선발투수의 인덱스를 리스트로 만들기 [0, 10] 첫번쨰와 11번째 라인업이 선발투수임을 의미
+    
 
     # 각 팀 라인업 분리
     away_lineup = lineups[pitcher_indexes[0]:pitcher_indexes[0]+10]
@@ -68,9 +66,11 @@ def lineup(request, game_id):
 
     # 선호팀 기준으로 나누기
     if user_team == game.team1:
+        opponent_team = game.team2
         user_lineup = away_lineup
         opponent_lineup = home_lineup
     else:
+        opponent_team = game.team1
         user_lineup = home_lineup
         opponent_lineup = away_lineup
 
@@ -81,6 +81,7 @@ def lineup(request, game_id):
         'user_team': user_team,
         'away_team': game.team1,
         'home_team': game.team2,
+        'opponent_team': opponent_team,
     }
     return render(request, 'lineup.html', context)
 
@@ -95,14 +96,3 @@ def attendance(request, game_id):
         game.attendance_users.add(user)
 
     return redirect('cal:lineup', game_id=game_id)
-
-def pitcher_in_lineup(request, game_id):
-    game = Game.objects.get(id=game_id)
-    pitcher_lineup = Lineup.objects.filter(game=game, batting_order=1).first()
-    
-    if pitcher_lineup and pitcher_lineup.pitcher:
-        pitcher_data = {
-            'pitcher': pitcher_lineup.pitcher,
-            'game': game,
-        }
-    return render(request, '_pcard.html', pitcher_data)

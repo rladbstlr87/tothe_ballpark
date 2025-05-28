@@ -29,7 +29,9 @@
                 </div>
 
                 <div class="w-1/2">
-                    
+                    <img src="{% static 'images/team/' %}{{opponent_team}}.svg" alt="상대팀 라인업" class="h-16">
+                    <hr>
+                    <p>{{opponent_team}}</p>
                     {% for lineup in opponent_lineup %}
                     {% if lineup.batting_order == 1 %}
                         <p>선발투수: {{ lineup.pitcher.player_name }}</p>
