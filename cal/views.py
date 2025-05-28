@@ -52,16 +52,34 @@ def next_month(d):
 
 def lineup(request, game_id):
     game = Game.objects.get(id=game_id)
-    lineups = Lineup.objects.filter(game=game)
-    pitchers = lineups.filter(batting_order=1)
-    batters = lineups.filter(batting_order__gt=1).order_by('batting_order') # __gt=1 1보다 큰 숫자들
+    lineups = Lineup.objects.filter(game=game).order_by('id')
     user_team = request.user.team
+
+    # 선발투수 2명 위치 파악 (batting_order == 1)
+    pitcher_indexes = [i for i, l in enumerate(lineups) if l.batting_order == 1]
+
+    if len(pitcher_indexes) != 2:
+        raise ValueError("선발투수가 2명 아닙니다.")
+
+    # 각 팀 라인업 분리
+    away_lineup = lineups[pitcher_indexes[0]:pitcher_indexes[0]+10]
+    home_lineup = lineups[pitcher_indexes[1]:pitcher_indexes[1]+10]
+
+    # 선호팀 기준으로 나누기
+    if user_team == game.team1:
+        user_lineup = away_lineup
+        opponent_lineup = home_lineup
+    else:
+        user_lineup = home_lineup
+        opponent_lineup = away_lineup
+
     context = {
         'game': game,
-        'lineups': lineups,
-        'pitchers': pitchers,
-        'batters': batters,
+        'user_lineup': user_lineup,
+        'opponent_lineup': opponent_lineup,
         'user_team': user_team,
+        'away_team': game.team1,
+        'home_team': game.team2,
     }
     return render(request, 'lineup.html', context)
 

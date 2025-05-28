@@ -1,52 +1,66 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>라인업</title>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>라인업</title>
+    </head>
+    <body>
     
     {% block body %}
-        {% if request.user in game.attendance_users.all %}
-        <form method="post" action="{% url 'cal:attendance' game.id %}">
-            {% csrf_token %}
-            <button type="submit" style="background: none; border: none; padding: 0;">
-                <i class="bi bi-heart-fill" style="color: red;">
-                    <span style="color: black;">간 경기</span>
-                </i>
-            </button>
-        </form>
-        {% else %}
-        <form method="post" action="{% url 'cal:attendance' game.id %}">
-            {% csrf_token %}
-            <button type="submit" style="background: none; border: none; padding: 0;">
-                <i class="bi bi-heart" style="color: gray;">
-                    <span style="color: black;">안 간 경기</span>
-                </i>
-            </button>
-        </form>
-        {% endif %}
-        {% comment %} 라인업 {% endcomment %}
+    {% comment %} 라인업 {% endcomment %}
+    
         {% if game %}
-            
-                 <div class="lineup-container">
-                    <h2>{{ game.date }} 라인업</h2>
-                    <h3>{{ game.home_team }} vs {{ game.away_team }}</h3>
-                    <div class="lineup-details">
-                        <h4>타순</h4>
-                        {% for pitcher in pitchers %}
-                        <p>선발투수: {{ pitcher.pitcher.player_name}}</p>
-                        {% endfor %}
-                        {% for batter in batters %}
-                            <p>{{batter.batting_order|add:"-1"}}번: {{batter.hitter.player_name}}</p>
-                        {% endfor %}
-                    </div>
+                <div class="flex justify-between gap-8 px-10 ">
+                <div class=" w-1/2">
+                    <img src="{% static 'images/team/' %}{{user.team}}.svg" alt="우리팀 라인업업" class="h-16">
+                    <hr>
+                    <p>{{user.team}}</p>
+                    {% for lineup in user_lineup %}
+                    {% if lineup.batting_order == 1 %}
+                        <p>선발투수: {% include '_pcard.html' %}</p>
+                    {% else %}
+                        <p>{{ lineup.batting_order|add:"-1" }}번: {{ lineup.hitter.player_name }}</p>
+                        {% comment %} |add:"-1" 은 1번타자는 실제 batting_order가 2이므로 1씩 뺴기위해서  {% endcomment %}
+                    {% endif %}
+                    {% endfor %}
                 </div>
+
+                <div class="w-1/2">
+                    
+                    {% for lineup in opponent_lineup %}
+                    {% if lineup.batting_order == 1 %}
+                        <p>선발투수: {{ lineup.pitcher.player_name }}</p>
+                    {% else %}
+                        <p>{{ lineup.batting_order|add:"-1" }}번: {{ lineup.hitter.player_name }}</p>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
             
         
-        
+        {% comment %} 간경기/안간경기 표시 {% endcomment %}
+        <div class = "absolute top-0 right-0">
+            {% if request.user in game.attendance_users.all %}
+                <form method="post" action="{% url 'cal:attendance' game.id %}">
+                    {% csrf_token %}
+                    <button type="submit" style="background: none; border: none; padding: 0;">
+                        <img src="{% static 'images/icon/full_glove.png' %}" alt="간 경기" style="width: 40px; height: 40px;">
+                    </button>
+                </form>
+            {% else %}
+                <form method="post" action="{% url 'cal:attendance' game.id %}">
+                    {% csrf_token %}
+                    <button type="submit" style="background: none; border: none; padding: 0;">
+                        <img src="{% static 'images/icon/empty_glove.png' %}" alt="안간경기" style="width: 40px; height: 40px;">
+                        
+                    </button>
+                </form>
+        </div>    
         {% endif %}
     {% endblock %}
     
