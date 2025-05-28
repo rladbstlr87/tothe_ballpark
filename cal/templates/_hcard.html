@@ -1,0 +1,52 @@
+{% load static %}
+<div class="hitter-card">
+    {% if hitter %}
+        <div class="card-layout-horizontal" style="display: none;">
+            <div class="left-section">
+                <div class="player-image-container">
+                    <img src="/static/images/players/{{ pitcher.player_id }}.jpg" 
+                         alt="{{ pitcher.player_name }}" 
+                         class="player-image"
+                         onerror="this.src='/static/images/players/default.jpg'">
+                </div>
+                
+                <div class="player-info">
+                    <h3 class="player-name">{{ pitcher.player_name }}</h3>
+                    <p class="team-name">{{ pitcher.team_name }}</p>
+                </div>
+            </div>
+
+            <div class="right-section">
+                <div class="stats-grid">
+                    <div class="stat-row">
+                        <span class="stat-label">구속</span>
+                        <span class="stat-value">{{ pitcher.speed }}</span>
+                    </div>
+                    
+                    <div class="stat-row">
+                        <span class="stat-label">제구력</span>
+                        <span class="stat-value">{{ pitcher.control }}</span>
+                    </div>
+                    
+                    <div class="stat-row">
+                        <span class="stat-label">체력</span>
+                        <span class="stat-value">{{ pitcher.stamina }}</span>
+                    </div>
+                    
+                    <div class="stat-row">
+                        <span class="stat-label">파워</span>
+                        <span class="stat-value">{{ pitcher.fireball }}</span>
+                    </div>
+                    
+                    <div class="stat-row">
+                        <span class="stat-label">평균자책점</span>
+                        <span class="stat-value">{{ pitcher.ERA }}</span>
+                    </div>
+                    
+                    <div class="stat-row">
+                        <span class="stat-label">승률</span>
+                        <span class="stat-value">{{ pitcher.WPCT|floatformat:3 }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
