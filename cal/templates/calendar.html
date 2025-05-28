@@ -6,7 +6,7 @@
   <title>캘린더</title>
   <link rel="stylesheet" href="{% static 'cs/calendar.css' %}">
 </head>
-<body>
+<body class="pt-[18px]">
   {% include '_nav.html' %}
   {% block body %}
     <table class="calendar-table">
@@ -50,7 +50,6 @@
                             {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% elif game.result == '취소' %}cancel{% endif %}">
                             {{ game.result }}
                           </span>
-                          <h3>{{ game.id }}</h3>
                         {% endif %}
                       </div>
                     {% endfor %}

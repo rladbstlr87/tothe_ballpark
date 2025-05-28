@@ -39,7 +39,7 @@ class Command(BaseCommand):
                         'SLG': float(row.get('SLG', 0) or 0),
                         'OBP': float(row.get('OBP', 0) or 0),
                         'OPS': float(row.get('OPS', 0) or 0),
-                        'MH': int(row.get('MH', 0) or 0),
+                        'MH': float(row.get('MH', 0) or 0),
                         'RISP': float(row.get('RISP', 0) or 0),
                         'PH_BA': float(row.get('PH_BA', 0) or 0),
                         'SBA': float(row.get('SBA', 0) or 0),

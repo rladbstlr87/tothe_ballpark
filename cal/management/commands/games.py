@@ -26,8 +26,8 @@ class Command(BaseCommand):
                     team1=row['team1'],
                     team2=row['team2'],
                     stadium=row['stadium'],
+                    time= game_time,
                     defaults={
-                        'time': game_time,
                         'team1_score': int(row['team1_score']) if row.get('team1_score') else None,
                         'team2_score': int(row['team2_score']) if row.get('team2_score') else None,
                         'team1_result': row.get('team1_result', ''),
@@ -36,13 +36,13 @@ class Command(BaseCommand):
                     }
                 )
                 if not created:
-                    # 이미 있으면 업데이트
-                    obj.time = game_time
-                    obj.team1_score = int(row['team1_score']) if row.get('team1_score') else None
-                    obj.team2_score = int(row['team2_score']) if row.get('team2_score') else None
-                    obj.team1_result = row.get('team1_result', '')
-                    obj.team2_result = row.get('team2_result', '')
-                    obj.note = row.get('note', '')
+                    # 이미 있으면 업데이트 (값이 없으면 기존 값 유지)
+                    obj.time = game_time if game_time is not None else obj.time
+                    obj.team1_score = int(row['team1_score']) if row.get('team1_score') else obj.team1_score
+                    obj.team2_score = int(row['team2_score']) if row.get('team2_score') else obj.team2_score
+                    obj.team1_result = row.get('team1_result', '') if row.get('team1_result') else obj.team1_result
+                    obj.team2_result = row.get('team2_result', '') if row.get('team2_result') else obj.team2_result
+                    obj.note = row.get('note', '') if row.get('note') else obj.note
                     obj.save()
                     count_updated += 1
                 else:
