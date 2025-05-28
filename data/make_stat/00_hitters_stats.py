@@ -100,7 +100,7 @@ for team in teams:
 
         # 팀별 CSV 저장 제거됨
         # all_hitter_stats.csv에만 저장
-        combined_df.to_csv("all_hitter_stats.csv", mode='w' if first else 'a', header=first, index=False, encoding='utf-8-sig')
+        combined_df.to_csv("../all_hitter_stats.csv", mode='w' if first else 'a', header=first, index=False, encoding='utf-8-sig')
         print(f"  ✔ all_hitter_stats.csv에 {team} 데이터 추가 완료")
         first = False
     else:

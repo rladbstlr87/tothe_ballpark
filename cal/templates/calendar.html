@@ -35,11 +35,7 @@
               {% if day.day == 0 %}
                 <td></td>
               {% else %}
-              {% if user in game.attendance_users.all %}
-                <td class="attended-cell">
-              {% else %}
-                <td class="day-cell">
-              {% endif %}
+              <td class="day-cell">
                     <span class="day-number">{{ day.day }}</span>
                     {% for game in day.games %}
                       <div class="game-info">
