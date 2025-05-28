@@ -38,7 +38,7 @@
                 <td class="day-cell">
                     <span class="day-number">{{ day.day }}</span>
                     {% for game in day.games %}
-                      <a href="{% url 'cal:lineup' game.id %}">
+                      {% if game.result == '취소' %}
                         <div class="game-info{% if game.id in user_attendance_game_ids %} highlight{% endif %}">
                           <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}">
                           <span class="game-time">{{ game.time }}</span>
@@ -49,7 +49,20 @@
                             </span>
                           {% endif %}
                         </div>
-                      </a>
+                      {% else %}
+                        <a href="{% url 'cal:lineup' game.id %}">
+                          <div class="game-info{% if game.id in user_attendance_game_ids %} highlight{% endif %}">
+                            <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}">
+                            <span class="game-time">{{ game.time }}</span>
+                            {% if game.result %}
+                              <span class="game-result
+                                {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% elif game.result == '취소' %}cancel{% endif %}">
+                                {{ game.result }}
+                              </span>
+                            {% endif %}
+                          </div>
+                        </a>
+                      {% endif %}
                     {% endfor %}
                 </td>
               {% endif %}
