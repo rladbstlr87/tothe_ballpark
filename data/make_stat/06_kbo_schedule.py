@@ -1,5 +1,3 @@
-import requests
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -7,10 +5,8 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
-from datetime import datetime
 import time
 import re
-
 
 # 날짜 포맷 함수
 def format_date(day_str, year=2025):
@@ -135,6 +131,6 @@ for month in range(3, 10):
 # 전체 결과 저장
 if all_schedules:
     final_df = pd.concat(all_schedules, ignore_index=True)
-    final_df.to_csv("kbo_schedule.csv", index=False, encoding='utf-8-sig')
+    final_df.to_csv("../kbo_schedule.csv", index=False, encoding='utf-8-sig')
 
 driver.quit()

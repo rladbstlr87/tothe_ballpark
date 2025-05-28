@@ -156,7 +156,7 @@ for team in teams:
         if '순위' in combined_df.columns:
             combined_df.drop(columns=['순위'], inplace=True)
 
-        combined_df.to_csv("all_pitcher_stats.csv", mode='w' if first else 'a', header=first, index=False, encoding='utf-8-sig')
+        combined_df.to_csv("../all_pitcher_stats.csv", mode='w' if first else 'a', header=first, index=False, encoding='utf-8-sig')
         print(f"  ✔ all_pitcher_stats.csv에 {team} 데이터 추가 완료")
         first = False
     else:

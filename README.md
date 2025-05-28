@@ -39,25 +39,20 @@
 - `static/style.css`
     - 버튼 꾸며주기
 
-
-# uv 
-- `uv run main.py` : 설치됐던 파일들 실행
-- `uv add program` : 프로그램 설치 
-
 # 작업 순서
 
-## 1. 데이터 전처리
-- `hitters_stats`
-- `pitchers_stats`
-- `00 구속`
-- `01 도루`
+## 1. 데이터 수집/전처리
+- `00 hitters_stats`
+- `01 pitchers_stats`
+- `02 구속`
+- `03 도루`
 - 타자보충에 있는 정보들을 `all_hitter_stats`에 추가
-- `02 전처리`
-- `03 스타일 추가`
-- `kbo_schedule`
-- `lineup`
+- `04 전처리`
+- `05 스타일 추가`
+- `06 kbo_schedule`
+- `07 lineup`
 
-## 2. 디비 저장
+## 2. DB 저장
 - `hitters`
 - `pitchers`
 - `games`
