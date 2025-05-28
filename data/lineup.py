@@ -109,7 +109,8 @@ with open('lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
     for key, games in game_map.items():
         games_sorted = sorted(games, key=lambda x: x['time'])
         double_header_failed = False
-        first_game_lineup = None
+        first_game_lineup1 = None
+        first_game_lineup2 = None
 
         for idx, row in enumerate(games_sorted):
             date_str = row['day'].replace('.', '')
@@ -141,14 +142,19 @@ with open('lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
                 if not team1_lineup and not team2_lineup:
                     double_header_failed = True
                 else:
-                    first_game_lineup = team1_lineup
+                    first_game_lineup1 = team1_lineup
+                    first_game_lineup2 = team2_lineup
 
             if len(games_sorted) > 1 and idx == 1 and not team1_lineup and not team2_lineup and naver_game_id == '22025':
                 print("22025 라인업 없음, 02025로 재시도")
                 team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, '02025', driver)
 
-            if len(games_sorted) > 1 and idx == 1 and len(team1_lineup) == 9 and first_game_lineup:
-                team1_lineup.insert(0, first_game_lineup[0])
+            # 두 번째 경기에서 9명 라인업이고 첫 경기 라인업이 있으면 투수 복사 (양 팀 모두)
+            if len(games_sorted) > 1 and idx == 1:
+                if len(team1_lineup) == 9 and first_game_lineup1:
+                    team1_lineup.insert(0, first_game_lineup1[0])
+                if len(team2_lineup) == 9 and first_game_lineup2:
+                    team2_lineup.insert(0, first_game_lineup2[0])
 
             # 팀1 라인업 저장
             for i, (player_name, player_id) in enumerate(team1_lineup):
