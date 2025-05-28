@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     return render(request, 'index.html')
 
+@login_required
 def calendar_view(request):
     user_team = None
     user_attendance_game_ids = []

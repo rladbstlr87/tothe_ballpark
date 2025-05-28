@@ -14,12 +14,9 @@
   
   <body class="h-screen w-screen bg-white overflow-hidden relative">
 
-    <!-- 독립적인 원 배경 -->
-    <div id="bg-circle"
-        class="absolute top-1/2 -translate-y-1/2 w-[1000px] h-[1000px] z-0 transition-slide flex items-center justify-center pr-20 pb-20"
-        style="left: {% if mode == 'signup' %}100vw{% else %}-500px{% endif %}; background: none;">
-      <img src="{% static 'images/Baseball_icon.png' %}" alt="Baseball"
-          class="w-full h-full object-contain drop-shadow-2xl select-none pointer-events-none" />
+    <!-- 야구공 배경 -->
+    <div id="bg-circle" class="absolute top-1/2 -translate-y-1/2 w-[400px] h-[400px] z-0 transition-slide flex items-center justify-center pr-20 pb-20"
+         style="left: {% if mode == 'signup' %}100vw{% else %}-200px{% endif %};">
       <h2 class="absolute text-white text-5xl font-extrabold left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 drop-shadow-lg">
         {% if mode == 'signup' %}Join with us{% else %}Welcome{% endif %}
       </h2>

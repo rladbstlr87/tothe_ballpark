@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
 import time
 import re
+import datetime
 
 # 날짜 포맷 함수
 def format_date(day_str, year=2025):
@@ -76,17 +77,32 @@ for month in range(3, 10):
             s1 = scores[0] if scores[0].isdigit() else ''
             s2 = scores[1] if scores[1].isdigit() else ''
 
+            # 오늘 날짜와 비교
+            today = datetime.datetime.today().date()
+            try:
+                game_date = datetime.datetime.strptime(day, "%Y.%m.%d").date()
+            except Exception:
+                game_date = today
+
+            # 승/패/무/취소 판정
             if s1 and s2:
-                s1_i = int(s1)
-                s2_i = int(s2)
-                if s1_i > s2_i:
-                    r1, r2 = '승', '패'
-                elif s1_i < s2_i:
-                    r1, r2 = '패', '승'
-                else:
-                    r1 = r2 = '무'
+                try:
+                    s1_i = int(s1)
+                    s2_i = int(s2)
+                    if s1_i > s2_i:
+                        r1, r2 = '승', '패'
+                    elif s1_i < s2_i:
+                        r1, r2 = '패', '승'
+                    else:
+                        r1 = r2 = '무'
+                except ValueError:
+                    r1 = r2 = ''
             else:
-                r1 = r2 = ''
+                # 이미 지난 경기인데 점수가 없으면 '취소'
+                if game_date < today:
+                    r1 = r2 = '취소'
+                else:
+                    r1 = r2 = ''
 
             # 경기장 및 비고
             tds = row.find_elements(By.TAG_NAME, 'td')
