@@ -59,7 +59,7 @@ today = datetime.date.today()
 # 📁 lineups.csv에서 마지막 날짜 구하기
 last_date = None
 try:
-    with open('lineups.csv', 'r', encoding='utf-8-sig') as f:
+    with open('../lineups.csv', 'r', encoding='utf-8-sig') as f:
         reader = list(csv.DictReader(f))
         if reader:
             last_row = reader[-1]
@@ -69,7 +69,7 @@ except FileNotFoundError:
 print(last_date)
 
 # 📅 kbo_schedule.csv 불러오기 및 game_id 부여
-with open('kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
+with open('../kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
     reader = list(csv.DictReader(infile))
     game_map = {}
     game_info_map = {}
@@ -101,7 +101,7 @@ with open('kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
 driver = webdriver.Chrome()
 
 # ✅ 결과 저장
-with open('lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
+with open('../lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
     writer = csv.writer(outfile)
     if last_date is None:
         writer.writerow(['batting_order', 'game_id', 'hitter_id', 'pitcher_id', 'stadium'])

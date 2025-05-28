@@ -4,14 +4,17 @@ from django.utils.safestring import mark_safe
 import calendar
 from .models import *
 from .utils import Calendar
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     return render(request, 'index.html')
 
 def calendar_view(request):
     user_team = None
+    user_attendance_game_ids = []
     if request.user.is_authenticated:
         user_team = request.user.team
+        user_attendance_game_ids = list(request.user.attendance_game.values_list('id', flat=True))
     d = get_date(request.GET.get('day', None))
     cal = Calendar(d.year, d.month, team=user_team)
     cal_data = cal.get_month_data()
@@ -21,6 +24,7 @@ def calendar_view(request):
         'prev_month': prev_month(d),
         'next_month': next_month(d),
         'user_team': user_team,
+        'user_attendance_game_ids': user_attendance_game_ids,
     }
     return render(request, 'calendar.html', context)
 
@@ -61,6 +65,7 @@ def lineup(request, game_id):
     }
     return render(request, 'lineup.html', context)
 
+@login_required
 def attendance(request, game_id):
     user = request.user
     game = Game.objects.get(id=game_id)
