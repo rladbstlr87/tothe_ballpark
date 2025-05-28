@@ -20,6 +20,6 @@ class User(AbstractUser):
         choices=KBO_TEAMS,
         blank=True,
         null=True,
-        verbose_name='응원팀'
+        verbose_name='My Team',
     )
     nickname = models.CharField(max_length=20, unique=True)
