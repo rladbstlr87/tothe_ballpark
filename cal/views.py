@@ -76,3 +76,14 @@ def attendance(request, game_id):
         game.attendance_users.add(user)
 
     return redirect('cal:lineup', game_id=game_id)
+
+def pitcher_in_lineup(request, game_id):
+    game = Game.objects.get(id=game_id)
+    pitcher_lineup = Lineup.objects.filter(game=game, batting_order=1).first()
+    
+    if pitcher_lineup and pitcher_lineup.pitcher:
+        pitcher_data = {
+            'pitcher': pitcher_lineup.pitcher,
+            'game': game,
+        }
+    return render(request, '_pcard.html', pitcher_data)
