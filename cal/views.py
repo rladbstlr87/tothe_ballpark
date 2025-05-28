@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from datetime import datetime, timedelta, date
 from django.utils.safestring import mark_safe
 import calendar
@@ -45,3 +45,22 @@ def next_month(d):
     next_month = last + timedelta(days=1)
     a = 'day=' + str(next_month.year) + '-' + str(next_month.month) + '-' + str(next_month.day)
     return a
+
+def lineup(request, game_id):
+    game = Game.objects.get(id=game_id)
+
+    context = {
+        'game': game
+    }
+    return render(request, 'lineup.html', context)
+
+def attendance(request, game_id):
+    user = request.user
+    game = Game.objects.get(id=game_id)
+
+    if user in game.attendance_users.all():
+        game.attendance_users.remove(user)
+    else:
+        game.attendance_users.add(user)
+
+    return redirect('cal:lineup', game_id=game_id)

@@ -12,6 +12,7 @@ class Game(models.Model):
     team2_result = models.CharField(max_length = 100)
     stadium = models.CharField(max_length = 100)
     note = models.CharField(max_length=100, null=True, blank=True)
+    
     attendance_users = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name='attendance_game',

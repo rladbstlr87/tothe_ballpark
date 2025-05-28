@@ -29,6 +29,8 @@ class Calendar(HTMLCalendar):
         games_by_day = {}
         for game in games:
             day = game.date.day
+            id = game.id
+
             if day not in games_by_day:
                 games_by_day[day] = []
             # 팀이 지정된 경우, 해당 팀의 결과만 표시
@@ -38,11 +40,13 @@ class Calendar(HTMLCalendar):
                 result = game.team2_result
             else:
                 result = ''
+
             games_by_day[day].append({
                 'opponent': self.get_opponent(game),
                 'img_url': static(f'images/team/{self.get_opponent(game)}.svg'),
                 'time': game.time.strftime("%H:%M") if game.time else "",
                 'result': result,
+                'id': id,
             })
 
         # 달력 주차별 데이터
