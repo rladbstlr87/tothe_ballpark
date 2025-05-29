@@ -21,7 +21,7 @@
                     {% if lineup.batting_order == 1 %}
                         <p>선발투수: {% include '_pcard.html' %}</p>
                     {% else %}
-                        <p>{{ lineup.batting_order|add:"-1" }}번: {{ lineup.hitter.player_name }}</p>
+                        <p>{{ lineup.batting_order|add:"-1" }}번: {% include '_hcard.html' %}</p>
                     {% endif %}
                 {% endfor %}
             </div>
@@ -35,7 +35,7 @@
                     {% if lineup.batting_order == 1 %}
                         <p>선발투수: {% include '_pcard.html' %}</p>
                     {% else %}
-                        <p>{{ lineup.batting_order|add:"-1" }}번: {{ lineup.hitter.player_name }}</p>
+                        <p>{{ lineup.batting_order|add:"-1" }}번: {% include '_hcard.html' %}</p>
                     {% endif %}
                 {% endfor %}
             </div>
