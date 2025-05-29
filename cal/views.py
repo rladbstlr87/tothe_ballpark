@@ -16,6 +16,7 @@ def calendar_view(request):
     if request.user.is_authenticated:
         user_team = request.user.team
         user_attendance_game_ids = list(request.user.attendance_game.values_list('id', flat=True))
+
     d = get_date(request.GET.get('day', None))
     cal = Calendar(d.year, d.month, team=user_team)
     cal_data = cal.get_month_data()
@@ -96,3 +97,25 @@ def attendance(request, game_id):
         game.attendance_users.add(user)
 
     return redirect('cal:lineup', game_id=game_id)
+
+@login_required
+def user_games(request, user_id):
+    user = request.user
+    games = user.attendance_game.all().order_by('date', 'time')
+
+    user_team = user.team
+
+    opponent_team = []
+    result = []
+    for game in games:
+        if user_team == game.team1:
+            opponent_team.append(game.team2)
+            result.append(game.team1_result)
+        else:
+            opponent_team.append(game.team1)
+            result.append(game.team2_result)
+    
+    context = {
+        'game_data': zip(games, opponent_team, result),
+    }
+    return render(request, 'user_games.html', context)

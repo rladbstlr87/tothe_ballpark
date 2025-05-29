@@ -63,6 +63,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'accounts.context_processors.win_count_total', # 사용자 승리 횟수 계산을 위한 컨텍스트 프로세서 추가
             ],
         },
     },
