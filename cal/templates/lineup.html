@@ -41,7 +41,6 @@
             </div>
         </div>
 
-        <!-- 출석 버튼 위치 수정 -->
         {% if game %}
             <div class="fixed top-[100px] right-10 z-50">
                 <form method="post" action="{% url 'cal:attendance' game.id %}">

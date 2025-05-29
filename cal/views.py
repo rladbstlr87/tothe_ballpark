@@ -5,6 +5,7 @@ import calendar
 from .models import *
 from .utils import Calendar
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 
 def index(request):
     return render(request, 'index.html')
@@ -123,7 +124,7 @@ def user_games(request, user_id):
         else:
             opponent_team.append(game.team1)
             result.append(game.team2_result)
-    
+
     context = {
         'game_data': zip(games, opponent_team, result),
     }
