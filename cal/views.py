@@ -6,10 +6,12 @@ from .models import *
 from .utils import Calendar
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from django.views.decorators.cache import never_cache
 
 def index(request):
     return render(request, 'index.html')
 
+@never_cache
 @login_required
 def calendar_view(request):
     user_team = None
@@ -28,7 +30,6 @@ def calendar_view(request):
         'next_month': next_month(d),
         'user_team': user_team,
         'user_attendance_game_ids': user_attendance_game_ids,
-        'today': date.today(),
     }
     return render(request, 'calendar.html', context)
 
@@ -54,6 +55,7 @@ def next_month(d):
     a = 'day=' + str(next_month.year) + '-' + str(next_month.month) + '-' + str(next_month.day)
     return a
 
+@never_cache
 @login_required
 def lineup(request, game_id):
     game = get_object_or_404(Game, id=game_id)
@@ -96,6 +98,7 @@ def lineup(request, game_id):
     }
     return render(request, 'lineup.html', context)
 
+@never_cache
 @login_required
 def attendance(request, game_id):
     user = request.user
@@ -108,6 +111,7 @@ def attendance(request, game_id):
 
     return redirect('cal:lineup', game_id=game_id)
 
+@never_cache
 @login_required
 def user_games(request, user_id):
     user = request.user
@@ -129,3 +133,6 @@ def user_games(request, user_id):
         'game_data': zip(games, opponent_team, result),
     }
     return render(request, 'user_games.html', context)
+
+def about_us(request):
+    return render(request, 'about_us.html')
