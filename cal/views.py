@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime, timedelta, date
 from django.utils.safestring import mark_safe
 import calendar
@@ -27,6 +27,7 @@ def calendar_view(request):
         'next_month': next_month(d),
         'user_team': user_team,
         'user_attendance_game_ids': user_attendance_game_ids,
+        'today': date.today(),
     }
     return render(request, 'calendar.html', context)
 
@@ -52,37 +53,45 @@ def next_month(d):
     a = 'day=' + str(next_month.year) + '-' + str(next_month.month) + '-' + str(next_month.day)
     return a
 
+@login_required
 def lineup(request, game_id):
-    game = Game.objects.get(id=game_id)
-    lineups = Lineup.objects.filter(game=game).order_by('id') # id 순서로 정렬해서 원정팀 -> 홈팀 순으로 나오게하기 
-    user_team = request.user.team
-
-    # 선발투수 2명 위치 파악 (batting_order == 1) 이면 선발투수임 
-    pitcher_indexes = [i for i, l in enumerate(lineups) if l.batting_order == 1] # 선발투수의 인덱스를 리스트로 만들기 [0, 10] 첫번쨰와 11번째 라인업이 선발투수임을 의미
+    game = get_object_or_404(Game, id=game_id)
+    lineups = Lineup.objects.filter(game=game).order_by('id')
     
+    has_lineup = lineups.exists()
 
-    # 각 팀 라인업 분리
-    away_lineup = lineups[pitcher_indexes[0]:pitcher_indexes[0]+10]
-    home_lineup = lineups[pitcher_indexes[1]:pitcher_indexes[1]+10]
+    user_lineup = []
+    opponent_lineup = []
+    opponent_team = None
 
-    # 선호팀 기준으로 나누기
-    if user_team == game.team1:
-        opponent_team = game.team2
-        user_lineup = away_lineup
-        opponent_lineup = home_lineup
+    if has_lineup:
+        pitcher_indexes = [i for i, l in enumerate(lineups) if l.batting_order == 1]
+        if len(pitcher_indexes) >= 2:
+            away_lineup = lineups[pitcher_indexes[0]:pitcher_indexes[0]+10]
+            home_lineup = lineups[pitcher_indexes[1]:pitcher_indexes[1]+10]
+
+            user_team = request.user.team
+            if user_team == game.team1:
+                opponent_team = game.team2
+                user_lineup = away_lineup
+                opponent_lineup = home_lineup
+            else:
+                opponent_team = game.team1
+                user_lineup = home_lineup
+                opponent_lineup = away_lineup
+        else:
+            has_lineup = False  # 선발투수 부족하면 라인업 없는 걸로 처리
     else:
-        opponent_team = game.team1
-        user_lineup = home_lineup
-        opponent_lineup = away_lineup
+        user_team = request.user.team
+        opponent_team = game.team2 if request.user.team == game.team1 else game.team1
 
     context = {
         'game': game,
         'user_lineup': user_lineup,
         'opponent_lineup': opponent_lineup,
-        'user_team': user_team,
-        'away_team': game.team1,
-        'home_team': game.team2,
+        'user_team': request.user.team,
         'opponent_team': opponent_team,
+        'has_lineup': has_lineup,
     }
     return render(request, 'lineup.html', context)
 

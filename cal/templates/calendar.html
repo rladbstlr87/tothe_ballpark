@@ -38,7 +38,7 @@
                 <td class="day-cell">
                     <span class="day-number">{{ day.day }}</span>
                     {% for game in day.games %}
-                      {% if game.result == '취소' %}
+                      {% if game.result == '취소'%}
                         <div class="game-info{% if game.id in user_attendance_game_ids %} highlight{% endif %}">
                           <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}">
                           <span class="game-time">{{ game.time }}</span>
