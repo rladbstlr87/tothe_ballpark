@@ -87,7 +87,10 @@ def lineup(request, game_id):
     else:
         user_team = request.user.team
         opponent_team = game.team2 if request.user.team == game.team1 else game.team1
-
+    # stamina_percent
+    # normalized_velocity
+    # control_percent
+    
     context = {
         'game': game,
         'user_lineup': user_lineup,

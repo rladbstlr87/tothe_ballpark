@@ -9,6 +9,20 @@ import time
 import re
 import datetime
 
+# 팀 코드 매핑
+TEAM_CODE = {
+    '롯데': 'LT',
+    'KIA': 'HT',
+    'LG': 'LG',
+    '두산': 'OB',
+    'SSG': 'SK',
+    '키움': 'WO',
+    '삼성': 'SS',
+    '한화': 'HH',
+    'KT': 'KT',
+    'NC': 'NC',
+}
+
 # 날짜 포맷 함수
 def format_date(day_str, year=2025):
     day_clean = re.sub(r'\(.*\)', '', day_str).strip()
@@ -25,7 +39,7 @@ driver.get(url)
 
 all_schedules = []
 
-for month in range(3, 10):
+for month in range(3, 10):  # 3월부터 9월까지
     month_str = str(month).zfill(2)
     select = Select(driver.find_element(By.ID, 'ddlMonth'))
     select.select_by_value(month_str)
@@ -52,7 +66,6 @@ for month in range(3, 10):
             time = time_td.text.strip()
             day = format_date(current_day)
 
-            # play 정보 파싱
             play_cell = row.find_element(By.CLASS_NAME, 'play')
             spans = play_cell.find_elements(By.TAG_NAME, 'span')
             em = play_cell.find_element(By.TAG_NAME, 'em')
@@ -77,14 +90,12 @@ for month in range(3, 10):
             s1 = scores[0] if scores[0].isdigit() else ''
             s2 = scores[1] if scores[1].isdigit() else ''
 
-            # 오늘 날짜와 비교
             today = datetime.datetime.today().date()
             try:
                 game_date = datetime.datetime.strptime(day, "%Y.%m.%d").date()
             except Exception:
                 game_date = today
 
-            # 승/패/무/취소 판정
             if s1 and s2:
                 try:
                     s1_i = int(s1)
@@ -98,7 +109,6 @@ for month in range(3, 10):
                 except ValueError:
                     r1 = r2 = ''
             else:
-                # 이미 지난 경기인데 점수가 없으면 '취소'
                 if game_date < today:
                     r1 = r2 = '취소'
                 else:
@@ -113,14 +123,18 @@ for month in range(3, 10):
                 note = '-'
             if note and note != '-':
                 r1 = r2 = '취소'
-                
+
+            # 팀 이름을 팀 코드로 변환
+            t1_code = TEAM_CODE.get(t1, t1)
+            t2_code = TEAM_CODE.get(t2, t2)
+
             # 데이터 저장
             days.append(day)
             times.append(time)
-            team1s.append(t1)
+            team1s.append(t1_code)
             team1_scores.append(s1)
             team1_results.append(r1)
-            team2s.append(t2)
+            team2s.append(t2_code)
             team2_scores.append(s2)
             team2_results.append(r2)
             stadiums.append(stadium)

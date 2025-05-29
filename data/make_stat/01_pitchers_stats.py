@@ -152,6 +152,7 @@ for team in teams:
         combined_df = combined_df.iloc[:min_len]
         combined_df['player_id'] = [info[1] for info in player_info_list[:min_len]]
         combined_df['생일'] = [info[2] for info in player_info_list[:min_len]]
+        combined_df['팀명'] = team
 
         if '순위' in combined_df.columns:
             combined_df.drop(columns=['순위'], inplace=True)

@@ -11,11 +11,11 @@ driver = webdriver.Chrome()
 driver.get("https://www.koreabaseball.com/Record/Player/HitterBasic/Basic1.aspx?sort=HRA_RT")
 
 teams = ["LG", "HH", "LT", "SS", "SK", "NC", "OB", "HT", "KT", "WO"]
-first = True  # all_hitter_stats.csv 첫 저장 여부
+first = True  # 첫 저장 여부
 
 for team in teams:
     print(f"\n▶ {team} 팀 데이터 수집 시작")
-    page_dfs = []  # 각 페이지 데이터 저장
+    page_dfs = []
 
     # 팀 선택
     select_element = WebDriverWait(driver, 10).until(
@@ -25,22 +25,20 @@ for team in teams:
     select.select_by_value(team)
     time.sleep(1)
 
-    # 선수명: player_id 매핑용 딕셔너리
     player_ids = {}
 
-    # 선수 아이디 수집 (1페이지에서만)
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, "#cphContents_cphContents_cphContents_udpContent table"))
     )
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
     table = soup.select_one("#cphContents_cphContents_cphContents_udpContent table")
+
     for row in table.select("tbody tr"):
         link = row.select_one("td:nth-child(2) a")
         if link:
             player_name = link.get_text(strip=True)
             href = link.get("href", "")
-            # playerId 추출
             if "playerId=" in href:
                 player_id = href.split("playerId=")[-1]
                 player_ids[player_name] = player_id
@@ -58,36 +56,29 @@ for team in teams:
                 print(f"  - 2페이지 이동 실패: {e}")
                 break
 
-        # 페이지 로딩 대기
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "#cphContents_cphContents_cphContents_udpContent table"))
         )
         time.sleep(1)
 
-        # HTML 파싱
         html = driver.page_source
         soup = BeautifulSoup(html, "html.parser")
         table = soup.select_one("#cphContents_cphContents_cphContents_udpContent table")
 
-        # 헤더 추출
         headers = [th.get_text(strip=True) for th in table.select("thead th")]
-
-        # 데이터 추출
-        all_rows = []
+        rows = []
         for row in table.select("tbody tr"):
             cells = [td.get_text(strip=True) for td in row.select("td")]
             if cells:
-                all_rows.append(cells)
+                rows.append(cells)
 
-        df = pd.DataFrame(all_rows, columns=headers)
+        df = pd.DataFrame(rows, columns=headers)
         page_dfs.append(df)
 
-        # 2페이지 끝나면 1페이지로 다시 돌아가기
         if page_num == 2:
             driver.get("https://www.koreabaseball.com/Record/Player/HitterBasic/Basic1.aspx?sort=HRA_RT")
             time.sleep(2)
 
-    # 병합 및 저장
     if len(page_dfs) == 2:
         df1, df2 = page_dfs
         merge_keys = ['순위', '선수명', '팀명', 'AVG']
@@ -98,8 +89,9 @@ for team in teams:
 
         combined_df["player_id"] = combined_df["선수명"].map(player_ids).fillna("정보 없음")
 
-        # 팀별 CSV 저장 제거됨
-        # all_hitter_stats.csv에만 저장
+        # ✅ 기존 '팀명' 컬럼에 두 글자 팀 코드로 덮어쓰기
+        combined_df["팀명"] = team
+
         combined_df.to_csv("../all_hitter_stats.csv", mode='w' if first else 'a', header=first, index=False, encoding='utf-8-sig')
         print(f"  ✔ all_hitter_stats.csv에 {team} 데이터 추가 완료")
         first = False

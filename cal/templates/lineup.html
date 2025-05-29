@@ -33,7 +33,7 @@
                 <p>{{ opponent_team }}</p>
                 {% for lineup in opponent_lineup %}
                     {% if lineup.batting_order == 1 %}
-                        <p>선발투수: {{ lineup.pitcher.player_name }}</p>
+                        <p>선발투수: {% include '_pcard.html' %}</p>
                     {% else %}
                         <p>{{ lineup.batting_order|add:"-1" }}번: {{ lineup.hitter.player_name }}</p>
                     {% endif %}
