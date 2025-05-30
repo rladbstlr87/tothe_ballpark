@@ -13,7 +13,8 @@
     {% if has_lineup and game %}
         <div class="grid grid-cols-2 max-w-3xl mx-auto">
             <!-- 우리 팀 라인업 -->
-            <div class="border">
+            <div class="">
+                <!-- 팀 로고 -->
                 <div class="flex justify-center">
                     <img src="{% static 'images/team/' %}{{ user.team }}.svg" alt="우리팀 라인업" class="h-16">
                 </div>
@@ -22,7 +23,7 @@
                         {% if lineup.batting_order == 1 %}
                             <div class="flex justify-center">{% include '_my_pcard.html' %}</div>
                         {% else %}
-                            <div class="flex items-center justify-center border">
+                            <div class="flex items-center justify-center ">
                                 <span class="relative -top-[11px] text-sm mr-1">{{ lineup.batting_order|add:"-1" }}</span>
                                     <div class="w-24 p-2 cursor-pointer" data-modal-target="modal-face"
                                         data-player-name="{{ lineup.hitter.player_name }}"
@@ -59,7 +60,8 @@
                 </div>
 
         <!-- 상대 팀 라인업 -->
-            <div class="border">
+            <div class="">
+                <!-- 팀 로고 -->
                 <div class="flex justify-center">
                     <img src="{% static 'images/team/' %}{{ opponent_team }}.svg" alt="상대팀 라인업" class="h-16">
                 </div>
@@ -68,7 +70,7 @@
                         {% if lineup.batting_order == 1 %}
                             <div class="flex justify-center">{% include '_your_pcard.html' %}</div>
                         {% else %}
-                            <div class="flex items-center justify-center border">
+                            <div class="flex items-center justify-center ">
                                 {% include '_your_hcard.html' %}
                             <div class="w-24 p-2 cursor-pointer" data-modal-target="modal-face"
                                 data-player-name="{{ lineup.hitter.player_name }}"
