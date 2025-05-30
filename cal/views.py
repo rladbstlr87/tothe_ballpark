@@ -7,6 +7,8 @@ from .utils import Calendar
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.views.decorators.cache import never_cache
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 def index(request):
     return render(request, 'index.html')
@@ -106,10 +108,12 @@ def attendance(request, game_id):
 
     if user in game.attendance_users.all():
         game.attendance_users.remove(user)
+        attended = False
     else:
         game.attendance_users.add(user)
+        attended = True
 
-    return redirect('cal:lineup', game_id=game_id)
+    return JsonResponse({'success': True, 'attended': attended})
 
 @never_cache
 @login_required

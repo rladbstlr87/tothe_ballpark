@@ -11,7 +11,7 @@
     {% include '_nav.html' %}
     {% block body %}
     {% if has_lineup and game %}
-<div class="grid grid-cols-2 max-w-3xl mx-auto">
+        <div class="grid grid-cols-2 max-w-3xl mx-auto">
             <!-- 우리 팀 라인업 -->
             <div class="border">
                 <div class="flex justify-center">
@@ -24,15 +24,41 @@
                         {% else %}
                             <div class="flex items-center justify-center border">
                                 <span class="relative -top-[11px] text-sm mr-1">{{ lineup.batting_order|add:"-1" }}</span>
-                                {% include '_hface.html' %}
-                                {% include '_my_hcard.html' %}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
+                                    <div class="w-24 p-2 cursor-pointer" data-modal-target="modal-face"
+                                        data-player-name="{{ lineup.hitter.player_name }}"
+                                        data-player-id="{{ lineup.hitter.player_id }}"
+                                        data-avg="{{ lineup.hitter.AVG }}"
+                                        data-g="{{ lineup.hitter.G }}"
+                                        data-pa="{{ lineup.hitter.PA }}"
+                                        data-ab="{{ lineup.hitter.AB }}"
+                                        data-r="{{ lineup.hitter.R }}"
+                                        data-h="{{ lineup.hitter.H }}"
+                                        data-hr="{{ lineup.hitter.HR }}"
+                                        data-rbi="{{ lineup.hitter.RBI }}"
+                                        data-bb="{{ lineup.hitter.BB }}"
+                                        data-so="{{ lineup.hitter.SO }}"
+                                        data-obp="{{ lineup.hitter.OBP }}"
+                                        data-slg="{{ lineup.hitter.SLG }}"
+                                        data-ops="{{ lineup.hitter.OPS }}"
+                                        data-sb="{{ lineup.hitter.SB }}"
+                                        data-cs="{{ lineup.hitter.CS }}">
+                                    <div class="flex justify-center">
+                                        <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ lineup.hitter.player_id }}.png?type=w150"
+                                            alt="{{ lineup.hitter.player_name }}"
+                                            class="w-24">
+                                    </div>
+                                    <div class="flex justify-center">
+                                        <p class="mx-2">{{ lineup.hitter.player_name }}</p>
+                                    </div>
+                                </div>
+                                    {% include '_my_hcard.html' %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
 
-            <!-- 상대 팀 라인업 -->
+        <!-- 상대 팀 라인업 -->
             <div class="border">
                 <div class="flex justify-center">
                     <img src="{% static 'images/team/' %}{{ opponent_team }}.svg" alt="상대팀 라인업" class="h-16">
@@ -44,34 +70,151 @@
                         {% else %}
                             <div class="flex items-center justify-center border">
                                 {% include '_your_hcard.html' %}
-                                {% include '_hface.html' %}
+                            <div class="w-24 p-2 cursor-pointer" data-modal-target="modal-face"
+                                data-player-name="{{ lineup.hitter.player_name }}"
+                                data-player-id="{{ lineup.hitter.player_id }}"
+                                data-avg="{{ lineup.hitter.AVG }}"
+                                data-g="{{ lineup.hitter.G }}"
+                                data-pa="{{ lineup.hitter.PA }}"
+                                data-ab="{{ lineup.hitter.AB }}"
+                                data-r="{{ lineup.hitter.R }}"
+                                data-h="{{ lineup.hitter.H }}"
+                                data-hr="{{ lineup.hitter.HR }}"
+                                data-rbi="{{ lineup.hitter.RBI }}"
+                                data-bb="{{ lineup.hitter.BB }}"
+                                data-so="{{ lineup.hitter.SO }}"
+                                data-obp="{{ lineup.hitter.OBP }}"
+                                data-slg="{{ lineup.hitter.SLG }}"
+                                data-ops="{{ lineup.hitter.OPS }}"
+                                data-sb="{{ lineup.hitter.SB }}"
+                                data-cs="{{ lineup.hitter.CS }}">
+                                <div class="flex justify-center">
+                                    <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ lineup.hitter.player_id }}.png?type=w150"
+                                        alt="{{ lineup.hitter.player_name }}"
+                                        class="w-24">
+                                </div>
+                                <div class="flex justify-center">
+                                    <p class="mx-2">{{ lineup.hitter.player_name }}</p>
+                                </div>
+                            </div>
                                 <span class="relative -top-[11px] text-sm ml-1">{{ lineup.batting_order|add:"-1" }}</span>
                             </div>
                         {% endif %}
                     {% endfor %}
-                </div>
             </div>
         </div>
+    </div>
 
-        {% if game %}
-            <div class="fixed top-[100px] right-10 z-50">
-                <form method="post" action="{% url 'cal:attendance' game.id %}">
-                    {% csrf_token %}
-                    <button type="submit" style="background: none; border: none; padding: 0;">
-                        {% if request.user in game.attendance_users.all %}
-                            <img src="{% static 'images/icon/full_glove.png' %}" alt="간 경기" class="w-10 h-10">
-                        {% else %}
-                            <img src="{% static 'images/icon/empty_glove.png' %}" alt="안간 경기" class="w-10 h-10">
-                        {% endif %}
-                    </button>
-                </form>
-            </div>
-        {% endif %}
+    <!-- 참석 아이콘 (AJAX 적용) -->
+    {% if game %}
+        <div class="fixed top-[100px] right-10 z-50">
+            <button id="attendance-btn" type="button" style="background: none; border: none; padding: 0;">
+                {% if request.user in game.attendance_users.all %}
+                    <img id="attendance-icon" src="{% static 'images/icon/full_glove.png' %}" alt="간 경기" class="w-10 h-10">
+                {% else %}
+                    <img id="attendance-icon" src="{% static 'images/icon/empty_glove.png' %}" alt="안간 경기" class="w-10 h-10">
+                {% endif %}
+            </button>
+        </div>
+    {% endif %}
+
+    <!-- 모달 -->
+    <div id="modal-face" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-[320px] shadow-lg relative">
+            <button id="modal-close" class="absolute top-2 right-2 text-gray-500 hover:text-black text-xl">&times;</button>
+            <h2 class="text-xl font-bold mb-4 text-center" id="modal-player-name">선수 이름</h2>
+            <img id="modal-player-img" src="" alt="선수 이미지" class="w-32 mx-auto mb-4">
+
+            <table class="w-full text-sm text-left text-gray-700">
+                <tbody>
+                    <tr><th class="pr-2 py-1">타율</th><td id="modal-player-avg"></td></tr>
+                    <tr><th class="pr-2 py-1">경기수</th><td id="modal-player-g"></td></tr>
+                    <tr><th class="pr-2 py-1">타석</th><td id="modal-player-pa"></td></tr>
+                    <tr><th class="pr-2 py-1">타수</th><td id="modal-player-ab"></td></tr>
+                    <tr><th class="pr-2 py-1">득점</th><td id="modal-player-r"></td></tr>
+                    <tr><th class="pr-2 py-1">안타</th><td id="modal-player-h"></td></tr>
+                    <tr><th class="pr-2 py-1">홈런</th><td id="modal-player-hr"></td></tr>
+                    <tr><th class="pr-2 py-1">타점</th><td id="modal-player-rbi"></td></tr>
+                    <tr><th class="pr-2 py-1">볼넷</th><td id="modal-player-bb"></td></tr>
+                    <tr><th class="pr-2 py-1">삼진</th><td id="modal-player-so"></td></tr>
+                    <tr><th class="pr-2 py-1">출루율</th><td id="modal-player-obp"></td></tr>
+                    <tr><th class="pr-2 py-1">장타율</th><td id="modal-player-slg"></td></tr>
+                    <tr><th class="pr-2 py-1">OPS</th><td id="modal-player-ops"></td></tr>
+                    <tr><th class="pr-2 py-1">도루</th><td id="modal-player-sb"></td></tr>
+                    <tr><th class="pr-2 py-1">도실</th><td id="modal-player-cs"></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     {% else %}
         <div class="text-center mt-10 text-red-500 text-xl">
             ⚠️ 라인업이 아직 등록되지 않았습니다.
         </div>
     {% endif %}
     {% endblock %}
+
+    <!-- JS -->
+    <script>
+    // 모달 열기 이벤트
+    document.querySelectorAll('[data-modal-target]').forEach(el => {
+        el.addEventListener('click', () => {
+            const playerName = el.getAttribute('data-player-name');
+            const playerId = el.getAttribute('data-player-id');
+
+            document.getElementById('modal-player-name').textContent = playerName;
+            document.getElementById('modal-player-img').src = `https://sports-phinf.pstatic.net/player/kbo/default/${playerId}.png?type=w150`;
+
+            const fields = ['avg', 'g', 'pa', 'ab', 'r', 'h', 'hr', 'rbi', 'bb', 'so', 'obp', 'slg', 'ops', 'sb', 'cs'];
+            fields.forEach(field => {
+                const elModal = document.getElementById(`modal-player-${field}`);
+                if(elModal) elModal.textContent = el.getAttribute(`data-${field}`) || '-';
+            });
+
+            document.getElementById('modal-face').classList.remove('hidden');
+        });
+    });
+
+    // 모달 닫기
+    document.getElementById('modal-close').addEventListener('click', () => {
+        document.getElementById('modal-face').classList.add('hidden');
+    });
+
+    // 출석 버튼 AJAX 처리
+    document.getElementById('attendance-btn').addEventListener('click', () => {
+        const url = "{% url 'cal:attendance' game.id %}";
+
+        // CSRF 토큰 가져오기 (템플릿 내 csrf 토큰을 직접 변수에 넣는 방법)
+        const csrfToken = '{{ csrf_token }}';
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('네트워크 응답 오류');
+            return response.json();
+        })
+        .then(data => {
+            const icon = document.getElementById('attendance-icon');
+            if (data.attended) {
+                icon.src = "{% static 'images/icon/full_glove.png' %}";
+                icon.alt = "간 경기";
+            } else {
+                icon.src = "{% static 'images/icon/empty_glove.png' %}";
+                icon.alt = "안간 경기";
+            }
+        })
+        .catch(error => {
+            console.error('출석 등록 실패:', error);
+            alert('출석 등록 중 문제가 발생했습니다.');
+        });
+    });
+    </script>
 </body>
 </html>

@@ -24,9 +24,9 @@
             <span class="ml-2 w-13">스피드</span>
         </div>
         <div class="flex items-center">
-            <span class="stat-value mr-3">{{ lineup.hitter.speed|percent }}</span>
+            <span class="stat-value mr-3">{{ lineup.hitter.batting_eye|percent }}</span>
             <div class="ml-1 bg-gray/100 h-5 flex-grow flex justify-end">
-                <div class="bar-style h-full rounded mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.hitter.speed|percent }}%;"></div>
+                <div class="bar-style h-full rounded mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.hitter.batting_eye|percent }}%;"></div>
             </div>
             <span class="ml-2 w-13">선구안</span>
         </div>
