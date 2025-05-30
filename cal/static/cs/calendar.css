@@ -153,10 +153,76 @@
   color: #888;
 }
 
-.highlight {
-  border: 2px solid #ff9800;
-  background-color: #fff3e0;
+/* LG 트윈스 */
+.highlight-LG {
+  border: 2px solid #C60C30;
+  background-color: #fee9ec;
+  border-radius: 15px;
 }
+
+/* 한화 이글스 */
+.highlight-HH {
+  border: 2px solid #FA6A00;
+  background-color: #fff5e6;
+  border-radius: 15px;
+}
+
+/* 롯데 자이언츠 */
+.highlight-LT {
+  border: 2px solid #002955;
+  background-color: #f0f4fb;
+  border-radius: 15px;
+}
+
+/* 삼성 라이온즈 */
+.highlight-SS {
+  border: 2px solid #005BAC;
+  background-color: #e8f4ff;
+  border-radius: 15px;
+}
+
+/* SSG 랜더스 */
+.highlight-SK {
+  border: 2px solid #c8102e;
+  background-color: #ffe9ea;
+  border-radius: 15px;
+}
+
+/* NC 다이노스 */
+.highlight-NC {
+  border: 2px solid #1F3C88;
+  background-color: #f0f2fa;
+  border-radius: 15px;
+}
+
+/* 두산 베어스 */
+.highlight-OB {
+  border: 2px solid #0E2344;
+  background-color: #f0f2f7;
+  border-radius: 15px;
+}
+
+/* KIA 타이거즈 */
+.highlight-HT {
+  border: 2px solid #C6011F;
+  background-color: #ffe9eb;
+  border-radius: 15px;
+}
+
+/* KT 위즈 */
+.highlight-KT {
+  border: 2px solid #000000;
+  background-color: #f7f7f7;
+  border-radius: 15px;
+}
+
+/* 키움 히어로즈 */
+.highlight-WO {
+  border: 2px solid #6F263D;
+  background-color: #f9efef;
+  border-radius: 15px;
+}
+
 
 /* 반응형: 화면이 600px 이하일 때도 같은 크기의 직사각형 유지 */
 @media (max-width: 600px) {

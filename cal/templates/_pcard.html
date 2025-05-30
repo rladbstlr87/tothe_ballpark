@@ -42,9 +42,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const widthPercent = parseFloat(bar.style.width);
         bar.classList.remove('bg-blue-300', 'bg-blue-500', 'bg-purple-500');
 
-        if (widthPercent >= 90) {
+        if (widthPercent >= 80) {
             bar.classList.add('bg-purple-500');
-        } else if (widthPercent >= 80) {
+        } else if (widthPercent >= 60) {
             bar.classList.add('bg-blue-500');
         } else {
             bar.classList.add('bg-blue-300');
