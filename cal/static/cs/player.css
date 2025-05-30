@@ -17,15 +17,6 @@
     margin: 20px auto;
 }
 
-/* 레이아웃 1: 세로형 (이미지 위, 스탯 아래) */
-.card-layout-vertical {
-    text-align: center;
-}
-
-.player-image-container {
-    margin-bottom: 15px;
-}
-
 .player-image {
     width: 120px;
     height: 120px;

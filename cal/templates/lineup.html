@@ -3,7 +3,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>라인업</title>
 </head>
@@ -11,18 +11,18 @@
     {% include '_nav.html' %}
     {% block body %}
     {% if has_lineup and game %}
-        <div class="gird flex justify-between gap-8 px-10">
+<div class="grid grid-cols-2 max-w-3xl mx-auto">
             <!-- 우리 팀 라인업 -->
-            <div class="w-1/2">
-                <img src="{% static 'images/team/' %}{{ user.team }}.svg" alt="우리팀 라인업" class="h-16">
-                <hr>
-                <p>{{ user.team }}</p>
-                <div class="pl-40 pr-10">
+            <div class="border">
+                <div class="flex justify-center">
+                    <img src="{% static 'images/team/' %}{{ user.team }}.svg" alt="우리팀 라인업" class="h-16">
+                </div>
+                <div class="">
                     {% for lineup in user_lineup %}
                         {% if lineup.batting_order == 1 %}
                             <div class="flex justify-center">{% include '_my_pcard.html' %}</div>
                         {% else %}
-                            <div class="flex items-center">
+                            <div class="flex items-center justify-center border">
                                 <span class="relative -top-[11px] text-sm mr-1">{{ lineup.batting_order|add:"-1" }}</span>
                                 {% include '_hface.html' %}
                                 {% include '_my_hcard.html' %}
@@ -33,19 +33,19 @@
             </div>
 
             <!-- 상대 팀 라인업 -->
-            <div class="w-1/2">
-                <img src="{% static 'images/team/' %}{{ opponent_team }}.svg" alt="상대팀 라인업" class="h-16">
-                <hr>
-                <p>{{ opponent_team }}</p>
-                <div class="pr-40 pl-10">
+            <div class="border">
+                <div class="flex justify-center">
+                    <img src="{% static 'images/team/' %}{{ opponent_team }}.svg" alt="상대팀 라인업" class="h-16">
+                </div>
+                <div class="">
                     {% for lineup in opponent_lineup %}
                         {% if lineup.batting_order == 1 %}
                             <div class="flex justify-center">{% include '_your_pcard.html' %}</div>
                         {% else %}
-                            <div class="flex items-center justify-end">
+                            <div class="flex items-center justify-center border">
                                 {% include '_your_hcard.html' %}
                                 {% include '_hface.html' %}
-                                <span class="relative -top-[11px] text-sm mr-1">{{ lineup.batting_order|add:"-1" }}</span>
+                                <span class="relative -top-[11px] text-sm ml-1">{{ lineup.batting_order|add:"-1" }}</span>
                             </div>
                         {% endif %}
                     {% endfor %}
