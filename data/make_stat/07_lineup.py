@@ -6,14 +6,14 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 TEAM_CODE = {
-    '롯데': 'LT',
-    'KIA': 'HT',
+    'LT': 'LT',
+    'HT': 'HT',
     'LG': 'LG',
-    '두산': 'OB',
-    'SSG': 'SK',
-    '키움': 'WO',
-    '삼성': 'SS',
-    '한화': 'HH',
+    'OB': 'OB',
+    'SK': 'SK',
+    'WO': 'WO',
+    'SS': 'SS',
+    'HH': 'HH',
     'KT': 'KT',
     'NC': 'NC',
 }
@@ -21,7 +21,7 @@ TEAM_CODE = {
 def get_lineup(today, team1_code, team2_code, game_id, driver):
     url = f'https://m.sports.naver.com/game/{today}{team1_code}{team2_code}{game_id}/lineup'
     driver.get(url)
-    time.sleep(2.5)
+    time.sleep(1.5)
     try:
         lineup_boxes = driver.find_elements(By.CSS_SELECTOR, 'div.Lineup_comp_lineup__361i1 > div > div')
         team1 = []
@@ -53,20 +53,22 @@ def get_lineup(today, team1_code, team2_code, game_id, driver):
         print(f"라인업 크롤링 실패: {e}")
         return [], []
 
-# ⏰ 오늘 날짜 구하기
+# ⏰ 오늘 날짜
 today = datetime.date.today()
 
-# 📁 lineups.csv에서 마지막 날짜 구하기
+# 📁 lineups.csv에서 마지막 날짜와 최대 game_id 찾기
 last_date = None
+max_game_id = 0
 try:
     with open('../lineups.csv', 'r', encoding='utf-8-sig') as f:
         reader = list(csv.DictReader(f))
         if reader:
             last_row = reader[-1]
             last_date = datetime.datetime.strptime(last_row['date'], '%Y%m%d').date()
+            max_game_id = max(int(row['game_id']) for row in reader if row['game_id'].isdigit())
 except FileNotFoundError:
     pass
-print(f"마지막 저장된 날짜: {last_date}")
+print(f"마지막 저장된 날짜: {last_date}, 마지막 game_id: {max_game_id}")
 
 # 📅 kbo_schedule.csv 불러오기 및 game_id 부여
 with open('../kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
@@ -74,7 +76,7 @@ with open('../kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
     game_map = {}
     game_info_map = {}
     game_id_lookup = {}
-    game_id_counter = 1
+    game_id_counter = max_game_id + 1  # ← 여기서부터 이어서 game_id 부여
     for row in reader:
         date_str = row['day'].replace('.', '')
         game_date = datetime.datetime.strptime(date_str, '%Y%m%d').date()

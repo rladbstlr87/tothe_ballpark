@@ -1,6 +1,6 @@
 import csv
 from django.core.management.base import BaseCommand
-from cal.models import Lineup, Game, Hitter, Pitcher
+from cal.models import Lineup, Game, Hitter, Pitcher, Stadium  # Stadium import 추가
 from django.conf import settings
 
 class Command(BaseCommand):
@@ -8,7 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         csv_file_path = settings.BASE_DIR / 'data' / 'lineups.csv'
-        with open(csv_file_path,encoding='utf-8-sig', newline='') as f:
+        with open(csv_file_path, encoding='utf-8-sig', newline='') as f:
             reader = csv.DictReader(f)
             count = 0
             print(reader.fieldnames)
@@ -16,14 +16,17 @@ class Command(BaseCommand):
                 game_obj = Game.objects.get(pk=str(row['game_id']))
                 hitter_obj = Hitter.objects.get(pk=str(row['hitter_id']))
                 pitcher_obj = Pitcher.objects.get(pk=str(row['pitcher_id']))
-                print(game_obj, hitter_obj, pitcher_obj, int(row['batting_order']))
+                stadium_obj = Stadium.objects.get(stadium=row['stadium'])  # ✅ Stadium 인스턴스 가져오기
+                print(game_obj, hitter_obj, pitcher_obj, int(row['batting_order']), stadium_obj)
+
                 obj, created = Lineup.objects.update_or_create(
                     batting_order=int(row['batting_order']),
                     game=game_obj,
                     hitter=hitter_obj,
                     pitcher=pitcher_obj,
-                    stadium=row['stadium'],
+                    stadium=stadium_obj,  # ✅ 문자열 대신 Stadium 인스턴스
                     defaults={}
                 )
                 count += 1
+
             self.stdout.write(self.style.SUCCESS(f'{count} lineups imported or updated.'))
