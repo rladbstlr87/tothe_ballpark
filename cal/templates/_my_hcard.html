@@ -1,37 +1,67 @@
 {% load static %}
 {% load custom_filters %}
-<div class="w-48 p-2">
-    <div class="">
-        <div class="flex items-center">
-            <span class="ml-2 w-13">파워</span>
-            <div class="bg-gray/100 h-5 flex-1 flex-grow">
-                <div class="bar-style h-full rounded -mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.hitter.power|percent }}%;"></div>
-            </div>
-            <span class="stat-value ml-3">{{ lineup.hitter.power|percent }}</span>
-        </div>
-        <div class="flex items-center">
-            <span class="ml-2 w-13">컨택</span>
-            <div class="bg-gray/100 h-5 flex-1 flex-grow">
-                <div class="bar-style h-full rounded -mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.hitter.contact|percent }}%;"></div>
-            </div>
-            <span class="stat-value ml-3">{{ lineup.hitter.contact|percent }}</span>
-        </div>
-        <div class="flex items-center">
-            <span class="ml-2 w-13">스피드</span>
-            <div class="bg-gray/100 h-5 flex-1 flex-grow">
-                <div class="bar-style h-full rounded -mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.hitter.speed|percent }}%;"></div>
-            </div>
-            <span class="stat-value ml-3">{{ lineup.hitter.speed|percent }}</span>
-        </div>
-        <div class="flex items-center">
-            <span class="ml-2 w-13">선구안</span>
-            <div class="bg-gray/100 h-5 flex-1 flex-grow">
-                <div class="bar-style h-full rounded -mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.hitter.batting_eye|percent }}%;"></div>
-            </div>
-            <span class="stat-value ml-3">{{ lineup.hitter.batting_eye|percent }}</span>
+<div class="flex justify-center">
+    <div class="w-fit cursor-pointer flex flex-col items-center" data-modal-target="modal-face"
+        data-player-name="{{ lineup.hitter.player_name }}"
+        data-player-id="{{ lineup.hitter.player_id }}"
+        data-avg="{{ lineup.hitter.AVG }}"
+        data-g="{{ lineup.hitter.G }}"
+        data-pa="{{ lineup.hitter.PA }}"
+        data-ab="{{ lineup.hitter.AB }}"
+        data-r="{{ lineup.hitter.R }}"
+        data-h="{{ lineup.hitter.H }}"
+        data-hr="{{ lineup.hitter.HR }}"
+        data-rbi="{{ lineup.hitter.RBI }}"
+        data-bb="{{ lineup.hitter.BB }}"
+        data-so="{{ lineup.hitter.SO }}"
+        data-obp="{{ lineup.hitter.OBP }}"
+        data-slg="{{ lineup.hitter.SLG }}"
+        data-ops="{{ lineup.hitter.OPS }}"
+        data-sb="{{ lineup.hitter.SB }}"
+        data-cs="{{ lineup.hitter.CS }}">
+        <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ lineup.hitter.player_id }}.png?type=w150"
+            alt="{{ lineup.hitter.player_name }}"
+            class="w-[clamp(4rem,6vw,6rem)]  transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
+        <div class="flex items-center mt-1 space-x-1">
+            <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 2a8 8 0 100 16 8 8 0 000-16z" />
+            </svg>
+            <p class="text-[clamp(0.6rem,2vw,1.0rem)]">{{ lineup.hitter.player_name }}</p>
         </div>
     </div>
 </div>
+<div id="my_hstat_bar" class="w-56">
+    <div class="flex items-center">
+        <span class="ml-2 w-13 text-[clamp(0.6rem,2vw,1.0rem)]">파워</span>
+        <div class="bg-gray/100 h-5 flex-1 flex-grow min-w-32">
+            <div class="bar-style h-full rounded -mask-linear-50 mask-linear-from-20% mask-linear-to-100%"
+                style="width: {{ lineup.hitter.power|percent }}%;"></div>
+        </div>
+        <span class="stat-value">{{ lineup.hitter.power|percent }}</span>
+    </div>
+    <div class="flex items-center">
+        <span class="ml-2 w-13 text-[clamp(0.6rem,2vw,1.0rem)]">컨택</span>
+        <div class="bg-gray/100 h-5 flex-1 flex-grow">
+            <div class="bar-style h-full rounded -mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.hitter.contact|percent }}%;"></div>
+        </div>
+        <span class="stat-value ml-3">{{ lineup.hitter.contact|percent }}</span>
+    </div>
+    <div class="flex items-center">
+        <span class="ml-2 w-13 text-[clamp(0.6rem,2vw,1.0rem)]">스피드</span>
+        <div class="bg-gray/100 h-5 flex-1 flex-grow">
+            <div class="bar-style h-full rounded -mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.hitter.speed|percent }}%;"></div>
+        </div>
+        <span class="stat-value ml-3">{{ lineup.hitter.speed|percent }}</span>
+    </div>
+    <div class="flex items-center">
+        <span class="ml-2 w-13 text-[clamp(0.6rem,2vw,1.0rem)]">선구안</span>
+        <div class="bg-gray/100 h-5 flex-1 flex-grow">
+            <div class="bar-style h-full rounded -mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.hitter.batting_eye|percent }}%;"></div>
+        </div>
+        <span class="stat-value ml-3">{{ lineup.hitter.batting_eye|percent }}</span>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const bars = document.querySelectorAll('.bar-style');

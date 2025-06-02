@@ -1,10 +1,11 @@
 {% load static %}
 {% load custom_filters %}
+
 <div class="w-48 p-2">
     <div class="flex justify-center">
     <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ lineup.pitcher.player_id }}.png?type=w150"
         alt="{{ lineup.pitcher.player_name }}"
-        class="w-24 shadow-lg cursor-pointer"
+        class="w-24 shadow-lg cursor-pointer transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl"
         data-modal-target="modal-face"
         data-type="pitcher"
         data-player-name="{{ lineup.pitcher.player_name }}"

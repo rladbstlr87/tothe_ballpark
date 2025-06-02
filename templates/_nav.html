@@ -6,11 +6,11 @@
     }
   </style>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <body x-data="{ open: false }">
-  <nav class="fixed top-0 left-0 w-full bg-transparent z-30 py-2">
+  <nav class="fixed top-0 left-0 w-full bg-white z-30 py-2 shadow-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16 items-center w-full">
         <div class="hidden sm:flex w-full items-center text-shadow">
@@ -26,10 +26,10 @@
             </a>
           </div>
           <!-- 가운데: 홈버튼 -->
-          <div class="flex justify-center flex-1">
+          <div class="flex justify-center flex-1 border w-4">
             {% if user.is_authenticated %}
               <a href="{% url 'index' %}" class="flex items-center">
-                <img src="{% static 'images/mascots/' %}{{ user.team }}.png" alt="{{ user.team }} Mascot" class="h-16 ">
+                <img src="{% static 'images/mascots/' %}{{ user.team }}.png" alt="{{ user.team }} Mascot" class="h-16">
               </a>
             {% else %}
               <a href="{% url 'index' %}" class="flex items-center">
@@ -40,7 +40,7 @@
           <!-- 오른쪽: 회원/로그인/로그아웃/승리요정 -->
           <div class="flex items-center space-x-6 justify-end flex-1">
             {% if user.is_authenticated %}
-              <span class="text-gray-700 tracking-widest">{{ user.nickname }}</span>
+              <span class="text-gray-700 tracking-widest text-[clamp(0.6rem,2vw,1.0rem)]">{{ user.nickname }}</span>
               <a href="{% url 'accounts:logout' %}" class="flex items-center space-x-2 text-black hover:text-blue-500">
                 <span class="w-3 h-3 rounded-full bg-red-400 shadow-md"></span>
                 <span class="tracking-widest">Log Out</span>

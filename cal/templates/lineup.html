@@ -5,105 +5,45 @@
     <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'cs/calendar.css' %}">
     <title>라인업</title>
 </head>
 <body class="pt-[90px]">
     {% include '_nav.html' %}
     {% block body %}
     {% if has_lineup and game %}
+    {% include '_scorebar.html' %}
         <div class="grid grid-cols-2 max-w-3xl mx-auto">
             <!-- 우리 팀 라인업 -->
-            <div class="border">
-                <div class="flex justify-center">
-                    <img src="{% static 'images/team/' %}{{ user.team }}.svg" alt="우리팀 라인업" class="h-16">
-                </div>
                 <div class="">
                     {% for lineup in user_lineup %}
                         {% if lineup.batting_order == 1 %}
                             <div class="flex justify-center">{% include '_my_pcard.html' %}</div>
                         {% else %}
-                            <div class="flex items-center justify-center border">
+                            <div class="flex items-center justify-center grid-cols-2 min-w-64">
                                 <span class="relative -top-[11px] text-sm mr-1">{{ lineup.batting_order|add:"-1" }}</span>
-                                    <div class="w-24 p-2 cursor-pointer" data-modal-target="modal-face"
-                                        data-player-name="{{ lineup.hitter.player_name }}"
-                                        data-player-id="{{ lineup.hitter.player_id }}"
-                                        data-avg="{{ lineup.hitter.AVG }}"
-                                        data-g="{{ lineup.hitter.G }}"
-                                        data-pa="{{ lineup.hitter.PA }}"
-                                        data-ab="{{ lineup.hitter.AB }}"
-                                        data-r="{{ lineup.hitter.R }}"
-                                        data-h="{{ lineup.hitter.H }}"
-                                        data-hr="{{ lineup.hitter.HR }}"
-                                        data-rbi="{{ lineup.hitter.RBI }}"
-                                        data-bb="{{ lineup.hitter.BB }}"
-                                        data-so="{{ lineup.hitter.SO }}"
-                                        data-obp="{{ lineup.hitter.OBP }}"
-                                        data-slg="{{ lineup.hitter.SLG }}"
-                                        data-ops="{{ lineup.hitter.OPS }}"
-                                        data-sb="{{ lineup.hitter.SB }}"
-                                        data-cs="{{ lineup.hitter.CS }}">
-                                    <div class="flex justify-center">
-                                        <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ lineup.hitter.player_id }}.png?type=w150"
-                                            alt="{{ lineup.hitter.player_name }}"
-                                            class="w-24">
-                                    </div>
-                                    <div class="flex justify-center">
-                                        <p class="mx-2">{{ lineup.hitter.player_name }}</p>
-                                    </div>
-                                </div>
-                                    {% include '_my_hcard.html' %}
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
+                                {% include '_my_hcard.html' %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
 
         <!-- 상대 팀 라인업 -->
-            <div class="border">
-                <div class="flex justify-center">
-                    <img src="{% static 'images/team/' %}{{ opponent_team }}.svg" alt="상대팀 라인업" class="h-16">
-                </div>
                 <div class="">
                     {% for lineup in opponent_lineup %}
                         {% if lineup.batting_order == 1 %}
                             <div class="flex justify-center">{% include '_your_pcard.html' %}</div>
                         {% else %}
-                            <div class="flex items-center justify-center border">
+                            <div class="flex items-center justify-center grid-cols-2 min-w-64">
+                                <div class="flex justify-center">
+                                </div>
                                 {% include '_your_hcard.html' %}
-                            <div class="w-24 p-2 cursor-pointer" data-modal-target="modal-face"
-                                data-player-name="{{ lineup.hitter.player_name }}"
-                                data-player-id="{{ lineup.hitter.player_id }}"
-                                data-avg="{{ lineup.hitter.AVG }}"
-                                data-g="{{ lineup.hitter.G }}"
-                                data-pa="{{ lineup.hitter.PA }}"
-                                data-ab="{{ lineup.hitter.AB }}"
-                                data-r="{{ lineup.hitter.R }}"
-                                data-h="{{ lineup.hitter.H }}"
-                                data-hr="{{ lineup.hitter.HR }}"
-                                data-rbi="{{ lineup.hitter.RBI }}"
-                                data-bb="{{ lineup.hitter.BB }}"
-                                data-so="{{ lineup.hitter.SO }}"
-                                data-obp="{{ lineup.hitter.OBP }}"
-                                data-slg="{{ lineup.hitter.SLG }}"
-                                data-ops="{{ lineup.hitter.OPS }}"
-                                data-sb="{{ lineup.hitter.SB }}"
-                                data-cs="{{ lineup.hitter.CS }}">
-                                <div class="flex justify-center">
-                                    <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ lineup.hitter.player_id }}.png?type=w150"
-                                        alt="{{ lineup.hitter.player_name }}"
-                                        class="w-24">
-                                </div>
-                                <div class="flex justify-center">
-                                    <p class="mx-2">{{ lineup.hitter.player_name }}</p>
-                                </div>
-                            </div>
                                 <span class="relative -top-[11px] text-sm ml-1">{{ lineup.batting_order|add:"-1" }}</span>
                             </div>
                         {% endif %}
                     {% endfor %}
-            </div>
+                </div>
         </div>
-    </div>
 
     <!-- 참석 아이콘 (AJAX 적용) -->
     {% if game %}
