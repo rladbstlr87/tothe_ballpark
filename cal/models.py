@@ -99,8 +99,28 @@ class Pitcher(models.Model):
     fireball = models.FloatField()  # 파이어볼러 수치 (또는 fastball strength 등)
     style = models.IntegerField()  # 투수 스타일
 
+class Stadium(models.Model):
+    stadium = models.CharField(max_length=50, unique=True, primary_key=True, blank=True)
+
+class Seat(models.Model):
+    stadium = models.ForeignKey(Stadium, on_delete=models.CASCADE)
+    seat_name = models.CharField(max_length=50)
+    note = models.CharField(max_length=200)
+
+class Parking(models.Model):
+    stadium = models.ForeignKey(Stadium, on_delete=models.CASCADE)
+    parking_name = models.CharField(max_length=50)
+    adress = models.CharField(max_length=100)
+    note = models.CharField(max_length=200)
+
+class Restaurant(models.Model):
+    stadium = models.ForeignKey(Stadium, on_delete=models.CASCADE)
+    restaurant_name = models.CharField(max_length=50)
+    adress = models.CharField(max_length=100)
+    note = models.CharField(max_length=200)
+
 class Lineup(models.Model):
-    stadium = models.CharField(max_length=100, null=True, blank=True)
+    stadium = models.ForeignKey(Stadium, on_delete=models.CASCADE, null=True, blank=True)
     hitter = models.ForeignKey(Hitter, on_delete=models.CASCADE, null=True, blank=True)
     pitcher = models.ForeignKey(Pitcher, on_delete=models.CASCADE, null=True, blank=True)
     game = models.ForeignKey(Game, on_delete=models.CASCADE, null=True, blank=True)

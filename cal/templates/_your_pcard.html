@@ -3,9 +3,42 @@
 
 <div class="w-48 p-2">
     <div class="flex justify-center">
-        <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ lineup.pitcher.player_id }}.png?type=w150"
-            alt="{{ lineup.pitcher.player_name }}"
-            class="w-24 shadow-lg transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
+    <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ lineup.pitcher.player_id }}.png?type=w150"
+        alt="{{ lineup.pitcher.player_name }}"
+        class="w-24 shadow-lg cursor-pointer transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl"
+        data-modal-target="modal-face"
+        data-type="pitcher"
+        data-player-name="{{ lineup.pitcher.player_name }}"
+        data-player-id="{{ lineup.pitcher.player_id }}"
+        data-era="{{ lineup.pitcher.ERA }}"
+        data-g="{{ lineup.pitcher.G }}"
+        data-w="{{ lineup.pitcher.W }}"
+        data-l="{{ lineup.pitcher.L }}"
+        data-sv="{{ lineup.pitcher.SV }}"
+        data-hld="{{ lineup.pitcher.HLD }}"
+        data-wpct="{{ lineup.pitcher.WPCT }}"
+        data-ip="{{ lineup.pitcher.IP }}"
+        data-h="{{ lineup.pitcher.H }}"
+        data-hr="{{ lineup.pitcher.HR }}"
+        data-bb="{{ lineup.pitcher.BB }}"
+        data-hbp="{{ lineup.pitcher.HBP }}"
+        data-so="{{ lineup.pitcher.SO }}"
+        data-r="{{ lineup.pitcher.R }}"
+        data-er="{{ lineup.pitcher.ER }}"
+        data-whip="{{ lineup.pitcher.WHIP }}"
+        data-cg="{{ lineup.pitcher.CG }}"
+        data-sho="{{ lineup.pitcher.SHO }}"
+        data-qs="{{ lineup.pitcher.QS }}"
+        data-bsv="{{ lineup.pitcher.BSV }}"
+        data-tbf="{{ lineup.pitcher.TBF }}"
+        data-np="{{ lineup.pitcher.NP }}"
+        data-avg="{{ lineup.pitcher.AVG }}"
+        data-sac="{{ lineup.pitcher.SAC }}"
+        data-sf="{{ lineup.pitcher.SF }}"
+        data-ibb="{{ lineup.pitcher.IBB }}"
+        data-wp="{{ lineup.pitcher.WP }}"
+        data-bk="{{ lineup.pitcher.BK }}"
+    >
     </div>
     <div class="flex justify-center">
         <p class="mx-2">{{ lineup.pitcher.player_name }}</p>
