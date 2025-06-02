@@ -53,7 +53,9 @@
 - `07 lineup`
 
 ## 2. DB 저장
+- `stadium`
 - `hitters`
 - `pitchers`
 - `games`
 - `lineup`
+- `seats`
