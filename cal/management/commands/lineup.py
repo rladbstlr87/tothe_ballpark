@@ -24,7 +24,7 @@ class Command(BaseCommand):
                     game=game_obj,
                     hitter=hitter_obj,
                     pitcher=pitcher_obj,
-                    stadium=stadium_obj,  # ✅ 문자열 대신 Stadium 인스턴스
+                    stadium=stadium_obj,
                     defaults={}
                 )
                 count += 1
