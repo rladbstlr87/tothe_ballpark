@@ -1,6 +1,6 @@
 {% load static %}
 {% load custom_filters %}
-<div class="w-48 p-2">
+<div class="w-56 p-2">
     <div class="flex justify-center">
     <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ lineup.pitcher.player_id }}.png?type=w150"
         alt="{{ lineup.pitcher.player_name }}"
@@ -39,27 +39,28 @@
         data-bk="{{ lineup.pitcher.BK }}"
     >
     </div>
-    <div class="flex justify-center">
-        <p class="mx-2">{{ lineup.pitcher.player_name }}</p>
+    <div class="flex justify-center mt-1 space-x-1">
+        <img id="style-icon" src="{% static 'images/icon/pitcher_icon/' %}{{ lineup.pitcher.style }}.png" class="w-6 h-6">
+        <p class="">{{ lineup.pitcher.player_name }}</p>
     </div>
-    <div class="">
+    <div id="my_pstat_bar" class="w-54 ml-[-12px]">
         <div class="flex items-center">
             <span class="ml-2 w-10">체력</span>
-            <div class="bg-gray/100 h-5 flex-1 max-w-24">
+            <div class="bg-gray/100 h-5 flex-1">
                 <div class="bar-style h-full rounded -mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.pitcher.stamina|percent }}%;"></div>
             </div>
             <span class="stat-value ml-2">{{ lineup.pitcher.stamina|percent }}</span>
         </div>
         <div class="flex items-center">
             <span class="ml-2 w-10">구속</span>
-            <div class="bg-gray/100 h-5 flex-1 max-w-24">
+            <div class="bg-gray/100 h-5 flex-1">
                 <div class="bar-style h-full rounded -mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.pitcher.speed|speed_percent }}%;"></div>
             </div>
             <span class="stat-value ml-2">{{ lineup.pitcher.speed|speed_percent }}</span>
         </div>
         <div class="flex items-center">
             <span class="ml-2 w-10">제구</span>
-            <div class="bg-gray/100 h-5 flex-1 max-w-24">
+            <div class="bg-gray/100 h-5 flex-1">
                 <div class="bar-style h-full rounded -mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.pitcher.control|percent }}%;"></div>
             </div>
             <span class="stat-value ml-2">{{ lineup.pitcher.control|percent }}</span>

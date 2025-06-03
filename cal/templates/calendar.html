@@ -5,6 +5,19 @@
   <meta charset="UTF-8">
   <title>캘린더</title>
   <link rel="stylesheet" href="{% static 'cs/calendar.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gamja+Flower&display=swap&family=Jua&display=swap&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: "Jua", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+    .font-black-han {
+      font-family: "Black Han Sans", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+  </style>
 </head>
 <body class="pt-[75px]">
   {% include '_nav.html' %}
@@ -15,7 +28,7 @@
           <th colspan="7" class="month-header">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <a href="?{{ prev_month }}" class="nav-link">←</a>
-              <span>{{ cal_data.year }}년 {{ cal_data.month }}월</span>
+              <span class="font-black-han">{{ cal_data.year }}년 {{ cal_data.month }}월</span>
               <a href="?{{ next_month }}" class="nav-link">→</a>
             </div>
           </th>
@@ -35,7 +48,7 @@
               {% if day.day == 0 %}
                 <td></td>
               {% else %}
-                <td class="day-cell">
+                <td class="day-cell rounded-t-md">
                     <span class="day-number">{{ day.day }}</span>
                     {% for game in day.games %}
                       {% if game.result == '취소'%}

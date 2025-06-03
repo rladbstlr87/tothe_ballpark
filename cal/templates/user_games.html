@@ -6,15 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="{% static 'cs/user_games.css' %}">
   <title> 직관 경기</title>
-
-  <!-- TailwindCSS CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
   <!-- Google Fonts - Bangers -->
-    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gamja+Flower&display=swap&family=Jua&display=swap&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gamja+Flower&display=swap&family=Jua&display=swap&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
 
-    <!-- 스타일 태그로 적용 -->
-    <style>
+  <!-- 스타일 태그로 적용 -->
+  <style>
+    body {
+    font-family: "Jua", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    }
+    
     .font-black-han {
     font-family: "Black Han Sans", sans-serif;
     font-weight: 400;
@@ -32,18 +36,7 @@
     font-weight: 400;
     font-style: normal;
     }
-
-    .noto-sans-kr-<uniquifier> {
-    font-family: "Noto Sans KR", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: <weight>;
-    font-style: normal;
-  }
-
-    
-
-    </style>
-  
+  </style>
 </head>
 
 <body class="min-h-screen pt-24 text-gray-800 bg-cover bg-center bg-no-repeat bg-fixed" 
@@ -60,8 +53,8 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
       <!-- 경기 정보 -->
       <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:scale-[1.02] transition">
-        <h2 class="font-jua-regular text-2xl text-black-500 mb-4">📋 {{user.nickname}}님의 경기 내역</h2>
-        <ul class="font-jua-regular list-disc pl-6 text-lg space-y-1">
+        <h2 class="text-2xl text-black-500 mb-4">📋 {{user.nickname}}님의 경기 내역</h2>
+        <ul class="list-disc pl-6 text-lg space-y-1">
           {% for game, opponent, result in game_data %}
             <li>{{ game.date }} - {{ opponent }}:
               <span class="{% if result == '승' %}text-blue-500{% else %}text-red-500{% endif %}">{{ result }}</span>

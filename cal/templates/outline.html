@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>텍스트 및 이미지 아웃라인 효과</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 텍스트 아웃라인 효과 */
+        .text-outline-white {
+            -webkit-text-stroke: 3px white;
+            text-stroke: 3px white;
+            color: #000;
+        }
+        
+        .text-outline-thick {
+            -webkit-text-stroke: 4px white;
+            text-stroke: 4px white;
+        }
+        
+        .text-outline-red {
+            -webkit-text-stroke: 3px white;
+            text-stroke: 3px white;
+            color: #ef4444;
+        }
+        
+        .text-outline-blue {
+            -webkit-text-stroke: 3px white;
+            text-stroke: 3px white;
+            color: #3b82f6;
+        }
+        
+        .text-outline-green {
+            -webkit-text-stroke: 3px white;
+            text-stroke: 3px white;
+            color: #10b981;
+        }
+        
+        /* 그림자 효과와 함께 */
+        .text-shadow-heavy {
+            text-shadow: 
+                3px 3px 0px white,
+                -3px -3px 0px white,
+                3px -3px 0px white,
+                -3px 3px 0px white,
+                6px 6px 0px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 다중 그림자로 굵은 테두리 효과 */
+        .text-border-white {
+            text-shadow:
+                -2px -2px 0 white,
+                2px -2px 0 white,
+                -2px 2px 0 white,
+                2px 2px 0 white,
+                -3px 0 0 white,
+                3px 0 0 white,
+                0 -3px 0 white,
+                0 3px 0 white;
+        }
+        
+        .text-border-thick {
+            text-shadow:
+                -3px -3px 0 white,
+                3px -3px 0 white,
+                -3px 3px 0 white,
+                3px 3px 0 white,
+                -4px 0 0 white,
+                4px 0 0 white,
+                0 -4px 0 white,
+                0 4px 0 white,
+                -2px -2px 0 white,
+                2px -2px 0 white,
+                -2px 2px 0 white,
+                2px 2px 0 white;
+        }
+        
+        /* 부드러운 라운드 효과 + 검정 테두리 + 그림자 */
+        .text-border-round {
+            text-shadow:
+                /* 흰색 아웃라인 (부드러운 라운드) */
+                -3px -3px 0 white, 3px -3px 0 white,
+                -3px 3px 0 white, 3px 3px 0 white,
+                -4px 0 0 white, 4px 0 0 white,
+                0 -4px 0 white, 0 4px 0 white,
+                -2px -4px 0 white, 2px -4px 0 white,
+                -4px -2px 0 white, 4px -2px 0 white,
+                -4px 2px 0 white, 4px 2px 0 white,
+                -2px 4px 0 white, 2px 4px 0 white,
+                
+                /* 검정 바깥 테두리 */
+                -5px -5px 0 black, 5px -5px 0 black,
+                -5px 5px 0 black, 5px 5px 0 black,
+                -6px 0 0 black, 6px 0 0 black,
+                0 -6px 0 black, 0 6px 0 black,
+                -3px -6px 0 black, 3px -6px 0 black,
+                -6px -3px 0 black, 6px -3px 0 black,
+                -6px 3px 0 black, 6px 3px 0 black,
+                -3px 6px 0 black, 3px 6px 0 black,
+                
+                /* 그림자 효과 */
+                8px 8px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .text-border-premium {
+            text-shadow:
+                /* 흰색 아웃라인 */
+                -3px -3px 0 white, 3px -3px 0 white,
+                -3px 3px 0 white, 3px 3px 0 white,
+                -4px 0 0 white, 4px 0 0 white,
+                0 -4px 0 white, 0 4px 0 white,
+                -2px -4px 0 white, 2px -4px 0 white,
+                -4px -2px 0 white, 4px -2px 0 white,
+                -4px 2px 0 white, 4px 2px 0 white,
+                -2px 4px 0 white, 2px 4px 0 white,
+                
+                /* 얇은 검정 테두리 */
+                -5px -5px 0 black, 5px -5px 0 black,
+                -5px 5px 0 black, 5px 5px 0 black,
+                -6px 0 0 black, 6px 0 0 black,
+                0 -6px 0 black, 0 6px 0 black,
+                
+                /* 부드러운 그림자 */
+                6px 6px 8px rgba(0, 0, 0, 0.4),
+                10px 10px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .text-border-glow {
+            text-shadow:
+                /* 흰색 아웃라인 */
+                -3px -3px 0 white, 3px -3px 0 white,
+                -3px 3px 0 white, 3px 3px 0 white,
+                -4px 0 0 white, 4px 0 0 white,
+                0 -4px 0 white, 0 4px 0 white,
+                -2px -4px 0 white, 2px -4px 0 white,
+                -4px -2px 0 white, 4px -2px 0 white,
+                -4px 2px 0 white, 4px 2px 0 white,
+                -2px 4px 0 white, 2px 4px 0 white,
+                
+                /* 검정 테두리 */
+                -5px -5px 0 black, 5px -5px 0 black,
+                -5px 5px 0 black, 5px 5px 0 black,
+                -6px 0 0 black, 6px 0 0 black,
+                0 -6px 0 black, 0 6px 0 black,
+                
+                /* 발광 효과 */
+                0 0 10px rgba(255, 255, 255, 0.8),
+                0 0 20px rgba(255, 255, 255, 0.4),
+                
+                /* 그림자 */
+                8px 8px 0 rgba(0, 0, 0, 0.5);
+        }
+        
+        /* 이미지 아웃라인 효과 */
+        .image-outline {
+            filter: 
+                drop-shadow(-3px -3px 0px white)
+                drop-shadow(3px -3px 0px white)
+                drop-shadow(-3px 3px 0px white)
+                drop-shadow(3px 3px 0px white)
+                drop-shadow(0px -4px 0px white)
+                drop-shadow(0px 4px 0px white)
+                drop-shadow(-4px 0px 0px white)
+                drop-shadow(4px 0px 0px white);
+        }
+        
+        .image-outline-thick {
+            filter: 
+                drop-shadow(-4px -4px 0px white)
+                drop-shadow(4px -4px 0px white)
+                drop-shadow(-4px 4px 0px white)
+                drop-shadow(4px 4px 0px white)
+                drop-shadow(0px -5px 0px white)
+                drop-shadow(0px 5px 0px white)
+                drop-shadow(-5px 0px 0px white)
+                drop-shadow(5px 0px 0px white)
+                drop-shadow(-2px -2px 0px white)
+                drop-shadow(2px -2px 0px white)
+                drop-shadow(-2px 2px 0px white)
+                drop-shadow(2px 2px 0px white);
+        }
+        
+        /* 이미지 부드러운 라운드 + 검정 테두리 + 그림자 */
+        .image-outline-round {
+            filter: 
+                /* 흰색 아웃라인 (부드러운 라운드) */
+                drop-shadow(-3px -3px 0px white)
+                drop-shadow(3px -3px 0px white)
+                drop-shadow(-3px 3px 0px white)
+                drop-shadow(3px 3px 0px white)
+                drop-shadow(0px -4px 0px white)
+                drop-shadow(0px 4px 0px white)
+                drop-shadow(-4px 0px 0px white)
+                drop-shadow(4px 0px 0px white)
+                drop-shadow(-2px -4px 0px white)
+                drop-shadow(2px -4px 0px white)
+                drop-shadow(-4px -2px 0px white)
+                drop-shadow(4px -2px 0px white)
+                drop-shadow(-4px 2px 0px white)
+                drop-shadow(4px 2px 0px white)
+                drop-shadow(-2px 4px 0px white)
+                drop-shadow(2px 4px 0px white)
+                
+                /* 검정 바깥 테두리 */
+                drop-shadow(-5px -5px 0px black)
+                drop-shadow(5px -5px 0px black)
+                drop-shadow(-5px 5px 0px black)
+                drop-shadow(5px 5px 0px black)
+                drop-shadow(0px -6px 0px black)
+                drop-shadow(0px 6px 0px black)
+                drop-shadow(-6px 0px 0px black)
+                drop-shadow(6px 0px 0px black)
+                
+                /* 그림자 효과 */
+                drop-shadow(8px 8px 0px rgba(0, 0, 0, 0.3));
+        }
+        
+        .image-outline-premium {
+            filter: 
+                /* 흰색 아웃라인 */
+                drop-shadow(-3px -3px 0px white)
+                drop-shadow(3px -3px 0px white)
+                drop-shadow(-3px 3px 0px white)
+                drop-shadow(3px 3px 0px white)
+                drop-shadow(0px -4px 0px white)
+                drop-shadow(0px 4px 0px white)
+                drop-shadow(-4px 0px 0px white)
+                drop-shadow(4px 0px 0px white)
+                drop-shadow(-2px -4px 0px white)
+                drop-shadow(2px -4px 0px white)
+                drop-shadow(-4px -2px 0px white)
+                drop-shadow(4px -2px 0px white)
+                drop-shadow(-4px 2px 0px white)
+                drop-shadow(4px 2px 0px white)
+                drop-shadow(-2px 4px 0px white)
+                drop-shadow(2px 4px 0px white)
+                
+                /* 검정 테두리 */
+                drop-shadow(-5px -5px 0px black)
+                drop-shadow(5px -5px 0px black)
+                drop-shadow(-5px 5px 0px black)
+                drop-shadow(5px 5px 0px black)
+                drop-shadow(0px -6px 0px black)
+                drop-shadow(0px 6px 0px black)
+                drop-shadow(-6px 0px 0px black)
+                drop-shadow(6px 0px 0px black)
+                
+                /* 부드러운 그림자 */
+                drop-shadow(6px 6px 8px rgba(0, 0, 0, 0.4))
+                drop-shadow(10px 10px 15px rgba(0, 0, 0, 0.2));
+        }
+        
+        .image-outline-glow {
+            filter: 
+                /* 흰색 아웃라인 */
+                drop-shadow(-3px -3px 0px white)
+                drop-shadow(3px -3px 0px white)
+                drop-shadow(-3px 3px 0px white)
+                drop-shadow(3px 3px 0px white)
+                drop-shadow(0px -4px 0px white)
+                drop-shadow(0px 4px 0px white)
+                drop-shadow(-4px 0px 0px white)
+                drop-shadow(4px 0px 0px white)
+                drop-shadow(-2px -4px 0px white)
+                drop-shadow(2px -4px 0px white)
+                drop-shadow(-4px -2px 0px white)
+                drop-shadow(4px -2px 0px white)
+                drop-shadow(-4px 2px 0px white)
+                drop-shadow(4px 2px 0px white)
+                drop-shadow(-2px 4px 0px white)
+                drop-shadow(2px 4px 0px white)
+                
+                /* 검정 테두리 */
+                drop-shadow(-5px -5px 0px black)
+                drop-shadow(5px -5px 0px black)
+                drop-shadow(-5px 5px 0px black)
+                drop-shadow(5px 5px 0px black)
+                drop-shadow(0px -6px 0px black)
+                drop-shadow(0px 6px 0px black)
+                drop-shadow(-6px 0px 0px black)
+                drop-shadow(6px 0px 0px black)
+                
+                /* 발광 + 그림자 효과 */
+                drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.8))
+                drop-shadow(0px 0px 20px rgba(255, 255, 255, 0.4))
+                drop-shadow(8px 8px 0px rgba(0, 0, 0, 0.5));
+        }
+        
+        /* SVG 아이콘용 */
+        .icon-outline {
+            filter: 
+                drop-shadow(-2px -2px 0px white)
+                drop-shadow(2px -2px 0px white)
+                drop-shadow(-2px 2px 0px white)
+                drop-shadow(2px 2px 0px white)
+                drop-shadow(0px -3px 0px white)
+                drop-shadow(0px 3px 0px white)
+                drop-shadow(-3px 0px 0px white)
+                drop-shadow(3px 0px 0px white);
+        }
+    </style>
+</head>
+<body class="bg-blue-200 p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-5xl font-black text-center mb-8 text-outline-thick" style="color: #ff6b6b;">
+            텍스트 & 이미지 아웃라인 효과
+        </h1>
+        
+        <!-- 텍스트 아웃라인 예제 -->
+        <div class="bg-purple-300 p-8 rounded-lg mb-8">
+            <h2 class="text-3xl font-bold mb-6 text-border-thick" style="color: #333;">텍스트 아웃라인 효과</h2>
+            
+            <div class="space-y-4">
+                <!-- 기본 아웃라인 -->
+                <div class="text-4xl font-black text-outline-red">AWAKE</div>
+                
+                <!-- 굵은 아웃라인 -->
+                <div class="text-5xl font-black text-border-thick" style="color: #ff4757;">LUV3</div>
+                
+                <!-- 부드러운 라운드 + 검정 테두리 + 그림자 -->
+                <div class="text-6xl font-black text-border-round" style="color: #ff6b6b;">AWAKE</div>
+                
+                <!-- 프리미엄 효과 -->
+                <div class="text-5xl font-black text-border-premium" style="color: #3742fa;">STREET</div>
+                
+                <!-- 발광 효과 -->
+                <div class="text-4xl font-black text-border-glow" style="color: #ffa502;">GLOW</div>
+                
+                <!-- 다양한 색상 -->
+                <div class="text-3xl font-bold text-outline-blue">SKATEBOARD</div>
+                <div class="text-3xl font-bold text-outline-green">STREET STYLE</div>
+                
+                <!-- 숫자 -->
+                <div class="text-6xl font-black text-border-round" style="color: #ff4757;">08</div>
+                
+                <!-- 한글 텍스트 -->
+                <div class="text-4xl font-black text-border-premium" style="color: #2ed573;">안녕하세요</div>
+            </div>
+        </div>
+        
+        <!-- 이미지 아웃라인 예제 -->
+        <div class="bg-yellow-200 p-8 rounded-lg mb-8">
+            <h2 class="text-3xl font-bold mb-6 text-border-thick" style="color: #333;">이미지 아웃라인 효과</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <!-- 기본 이모지 아이콘들 -->
+                <div class="text-6xl image-outline">🏀</div>
+                <div class="text-6xl image-outline">🛹</div>
+                <div class="text-6xl image-outline">🎨</div>
+                <div class="text-6xl image-outline">⭐</div>
+                
+                <!-- 부드러운 라운드 + 검정 테두리 + 그림자 -->
+                <div class="text-6xl image-outline-round">🎯</div>
+                <div class="text-6xl image-outline-round">🚀</div>
+                <div class="text-6xl image-outline-premium">💎</div>
+                <div class="text-6xl image-outline-glow">🔥</div>
+                
+                <!-- 추가 효과들 -->
+                <div class="text-8xl image-outline-round">🌟</div>
+                <div class="text-8xl image-outline-premium">⚡</div>
+                <div class="text-8xl image-outline-glow">💫</div>
+                <div class="text-8xl image-outline-round">🎊</div>
+            </div>
+        </div>
+        
+        <!-- SVG 아이콘 아웃라인 예제 -->
+        <div class="bg-green-200 p-8 rounded-lg mb-8">
+            <h2 class="text-3xl font-bold mb-6 text-border-thick" style="color: #333;">SVG 아이콘 아웃라인</h2>
+            
+            <div class="flex space-x-6">
+                <!-- 하트 아이콘 -->
+                <svg class="w-16 h-16 image-outline-round" fill="#ff4757" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                
+                <!-- 별 아이콘 -->
+                <svg class="w-16 h-16 image-outline-premium" fill="#ffa502" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+                
+                <!-- 번개 아이콘 -->
+                <svg class="w-16 h-16 image-outline-glow" fill="#3742fa" viewBox="0 0 24 24">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+                
+                <!-- 다이아몬드 아이콘 -->
+                <svg class="w-16 h-16 image-outline-round" fill="#ff6348" viewBox="0 0 24 24">
+                    <path d="M6,2L18,2L22,8L12,22L2,8L6,2M12,4.5L16.5,4.5L19,8L12,19L5,8L7.5,4.5L12,4.5Z"/>
+                </svg>
+            </div>
+        </div>
+        
+        <!-- Django 구현 예제 코드 -->
+        <div class="bg-gray-800 text-green-400 p-6 rounded-lg">
+            <h2 class="text-xl font-bold mb-4 text-white">Django에서 사용하는 방법</h2>
+            <pre class="text-sm overflow-x-auto"><code class="text-green-300"># static/css/sticker-effects.css
+.text-outline-white {
+    -webkit-text-stroke: 3px white;
+    text-stroke: 3px white;
+}
+
+.text-border-thick {
+    text-shadow:
+        -3px -3px 0 white, 3px -3px 0 white,
+        -3px 3px 0 white, 3px 3px 0 white,
+        -4px 0 0 white, 4px 0 0 white,
+        0 -4px 0 white, 0 4px 0 white;
+}
+
+.image-outline {
+    filter: 
+        drop-shadow(-3px -3px 0px white)
+        drop-shadow(3px -3px 0px white)
+        drop-shadow(-3px 3px 0px white)
+        drop-shadow(3px 3px 0px white);
+}
+
+<!-- Django 템플릿 -->
+{% load static %}
+&lt;link rel="stylesheet" href="{% static 'css/sticker-effects.css' %}"&gt;
+
+&lt;h1 class="text-4xl font-black text-border-thick text-red-500"&gt;
+    {{ title }}
+&lt;/h1&gt;
+
+&lt;img src="{{ image.url }}" class="image-outline" alt="{{ image.alt }}"&gt;
+
+&lt;div class="text-6xl image-outline"&gt;{{ emoji }}&lt;/div&gt;</code></pre>
+        </div>
+        
+        <!-- Tailwind CSS 커스텀 클래스 -->
+        <div class="bg-blue-800 text-blue-100 p-6 rounded-lg mt-6">
+            <h2 class="text-xl font-bold mb-4">Tailwind CSS 커스텀 설정</h2>
+            <pre class="text-sm overflow-x-auto"><code class="text-blue-200"># tailwind.config.js
+module.exports = {
+    theme: {
+    extend: {
+        textShadow: {
+        'outline': `-2px -2px 0 white, 2px -2px 0 white, 
+                    -2px 2px 0 white, 2px 2px 0 white`,
+        'outline-thick': `-3px -3px 0 white, 3px -3px 0 white,
+                            -3px 3px 0 white, 3px 3px 0 white,
+                            -4px 0 0 white, 4px 0 0 white,
+                            0 -4px 0 white, 0 4px 0 white`
+        }
+    }
+    },
+    plugins: [
+    function({ addUtilities }) {
+        addUtilities({
+        '.text-outline': {
+            '-webkit-text-stroke': '2px white',
+            'text-stroke': '2px white'
+        }
+        })
+    }
+    ]
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

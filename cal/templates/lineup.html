@@ -7,6 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'cs/calendar.css' %}">
     <title>라인업</title>
+    <!-- Google Fonts - Bangers -->
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gamja+Flower&display=swap&family=Jua&display=swap&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+
+    <!-- 스타일 태그로 적용 -->
+    <style>
+        body {
+            font-family: "Jua", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+    </style>
 </head>
 <body class="pt-[90px]">
     {% include '_nav.html' %}
@@ -21,7 +32,7 @@
                             <div class="flex justify-center">{% include '_my_pcard.html' %}</div>
                         {% else %}
                             <div class="flex items-center justify-center grid-cols-2 min-w-64">
-                                <span class="relative -top-[11px] text-sm mr-1">{{ lineup.batting_order|add:"-1" }}</span>
+                                <span class="relative -top-[11px] text-2xl text-black-500 mr-1">{{ lineup.batting_order|add:"-1" }}</span>
                                 {% include '_my_hcard.html' %}
                             </div>
                         {% endif %}
@@ -38,7 +49,7 @@
                                 <div class="flex justify-center">
                                 </div>
                                 {% include '_your_hcard.html' %}
-                                <span class="relative -top-[11px] text-sm ml-1">{{ lineup.batting_order|add:"-1" }}</span>
+                                <span class="relative -top-[11px] text-2xl text-black-500 ml-1">{{ lineup.batting_order|add:"-1" }}</span>
                             </div>
                         {% endif %}
                     {% endfor %}
