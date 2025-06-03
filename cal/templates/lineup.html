@@ -8,12 +8,20 @@
     <link rel="stylesheet" href="{% static 'cs/calendar.css' %}">
     <title>라인업</title>
     <!-- Google Fonts - Bangers -->
-    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gamja+Flower&display=swap&family=Jua&display=swap&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gamja+Flower&display=swap&family=Jua&display=swap&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
 
     <!-- 스타일 태그로 적용 -->
     <style>
+        @font-face {
+            font-family: 'font-ydestreetl';
+            src: url('/static/fonts/YdestreetL.woff2') format('woff2');
+        }
         body {
-            font-family: "Jua", sans-serif;
+            font-family: "jua", sans-serif;
+        }
+        .font-black-han {
+            font-family: "Black Han Sans", sans-serif;
             font-weight: 400;
             font-style: normal;
         }
@@ -32,7 +40,7 @@
                             <div class="flex justify-center">{% include '_my_pcard.html' %}</div>
                         {% else %}
                             <div class="flex items-center justify-center grid-cols-2 min-w-64">
-                                <span class="relative -top-[11px] text-2xl text-black-500 mr-1">{{ lineup.batting_order|add:"-1" }}</span>
+                                <span class="relative -top-[11px] text-2xl text-black-500 mr-1 font-black-han">{{ lineup.batting_order|add:"-1" }}</span>
                                 {% include '_my_hcard.html' %}
                             </div>
                         {% endif %}
@@ -49,7 +57,7 @@
                                 <div class="flex justify-center">
                                 </div>
                                 {% include '_your_hcard.html' %}
-                                <span class="relative -top-[11px] text-2xl text-black-500 ml-1">{{ lineup.batting_order|add:"-1" }}</span>
+                                <span class="relative -top-[11px] text-2xl text-black-500 ml-1 font-black-han">{{ lineup.batting_order|add:"-1" }}</span>
                             </div>
                         {% endif %}
                     {% endfor %}

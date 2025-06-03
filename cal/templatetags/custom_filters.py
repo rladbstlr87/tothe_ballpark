@@ -13,7 +13,7 @@ def percent(value):
 def speed_percent(value):
     try:
         value = float(value)
-        min_speed = 100
+        min_speed = 105
         max_speed = 156
         normalized = (value - min_speed) / (max_speed - min_speed)
         # 0~1 사이로 제한 (클램핑)

@@ -4,31 +4,44 @@
 <head>
   <meta charset="UTF-8">
   <title>캘린더</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="{% static 'cs/calendar.css' %}">
-  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gamja+Flower&display=swap&family=Jua&display=swap&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'cs/fonts.css' %}">
   <style>
-    body {
-      font-family: "Jua", sans-serif;
-      font-weight: 400;
+    @font-face {
+      font-family: 'YdestreetB';
+      src: url('/static/fonts/YdestreetB.woff2') format('woff2');
+      font-weight: bold;
       font-style: normal;
     }
-    .font-black-han {
-      font-family: "Black Han Sans", sans-serif;
-      font-weight: 400;
+    @font-face {
+      font-family: 'jaram';
+      src: url('/static/fonts/jaram.woff2') format('woff2');
+      font-weight: bold;
       font-style: normal;
+    }
+
+    /* Tailwind와 함께 쓸 수 있는 클래스 정의 */
+    .font-ydestreetb {
+      font-family: 'YdestreetB', sans-serif;
+      font-weight: bold;
+    }
+    .font-jaram {
+      font-family: 'Jaram', sans-serif;
+      font-weight: normal;
     }
   </style>
 </head>
 <body class="pt-[75px]">
   {% include '_nav.html' %}
   {% block body %}
-    <table class="calendar-table">
+    <table class="calendar-table font-ydestreetb">
       <thead>
         <tr>
           <th colspan="7" class="month-header">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <a href="?{{ prev_month }}" class="nav-link">←</a>
-              <span class="font-black-han">{{ cal_data.year }}년 {{ cal_data.month }}월</span>
+              <span>{{ cal_data.year }}년 {{ cal_data.month }}월</span>
               <a href="?{{ next_month }}" class="nav-link">→</a>
             </div>
           </th>
@@ -82,6 +95,13 @@
             {% endfor %}
           </tr>
         {% endfor %}
+          <!-- <div class="relative w-full max-w-4xl h-64 bg-white/100 mx-auto overflow-hidden">
+            <div class="absolute inset-0 flex justify-center items-center pointer-events-none z-20">
+              <span class="text-[120px] font-jaram text-black/10 rotate-[-30deg] whitespace-nowrap select-none translate-y-24">
+                최강 한화
+              </span>
+            </div>
+          </div> -->
       </tbody>
     </table>
   {% endblock %}
