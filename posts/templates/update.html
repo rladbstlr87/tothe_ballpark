@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+{% include '_nav.html' %}
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <title>게시글 수정</title>
+</head>
+<body class=" min-h-screen flex items-center justify-center py-12 px-4">
+
+  <div class="bg-white ">
+    
+
+    <form action="" method="POST" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+
+        {{ form.title }}
+        {{ form.content }}
+        {{ form.image }}
+        <div class="text-center mt-6">
+            <button type="submit"
+                class="w-50 py-3 bg-blue-500 text-white text-lg font-semibold rounded-md 
+                        hover:bg-blue-600 transition duration-200">
+                작성 완료
+            </button>
+        </div>
+    </form>
+  </div>
+
+</body>
+</html>

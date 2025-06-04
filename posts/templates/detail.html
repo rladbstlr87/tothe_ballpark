@@ -1,0 +1,68 @@
+
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<div class="border-b pb-4 mb-4">
+    <h1 class="text-2xl font-bold text-gray-800">{{ post.title }}</h1>
+    <div class="flex justify-between items-center text-sm text-gray-500 mt-1">
+      <span>{{ post.user }}</span>
+      <span>{{ post.created_at|date:"Y.m.d H:i" }}</span>
+    </div>
+  </div>
+{% if post.image %}
+    <img src="{{post.image.url}}" class="" alt="...">
+{% endif %}    
+    
+<div class="text-gray-800 whitespace-pre-line mb-8">
+    {{ post.content }}
+</div>
+
+{% if user == post.user %}
+    <div class="flex justify-end gap-2 mb-10">
+        <a href="{% url 'posts:update' post.id %}" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded">수정</a>
+        <form action="{% url 'posts:delete' post.id %}" method="POST" onsubmit="return confirm('삭제할까요?')">
+            {% csrf_token %}
+            <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">삭제</button>
+        </form>
+    </div>
+{% endif %}
+
+<!-- 댓글 작성 -->
+<hr class="my-6">
+<form action="{% url 'posts:comment_create' post.id %}" method="POST" enctype="multipart/form-data"
+      class="bg-gray-50 p-4 rounded space-y-4">
+  {% csrf_token %}
+  {{ form.content }}
+  {{ form.image }}
+  <div class="text-right">
+    <button type="submit"
+      class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+      댓글등록
+    </button>
+  </div>
+</form>
+
+<!-- 댓글 목록 -->
+<ul class="mt-8 space-y-6">
+    {% for comment in post.comment_set.all %}
+        <li class="border-b pb-4">
+            <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
+                <span class="font-semibold">{{ comment.user.username }}</span>
+                <span class="text-xs text-gray-400">{{ comment.created_at|date:"Y.m.d H:i" }}</span>
+            </div>
+            <p class="text-gray-800 whitespace-pre-line mb-2">{{ comment.content }}</p>
+
+            {% if comment.image %}
+                <img src="{{ comment.image.url }}" alt="첨부 이미지"
+                     class="max-w-xs rounded shadow mb-2">
+            {% endif %}
+
+            {% if user == comment.user %}
+                <div class="flex gap-2 text-sm">
+                    <a href="{% url 'posts:comment_update' post.id comment.id %}"
+                       class="text-blue-500 hover:underline">수정</a>
+                    <a href="{% url 'posts:comment_delete' post.id comment.id %}"
+                       class="text-red-500 hover:underline">삭제</a>
+                </div>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

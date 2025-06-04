@@ -26,7 +26,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('cal/', include('cal.urls')),
     path('accounts/', include('accounts.urls')),  # accounts 앱의 URL 포함
+    path('posts/', include('posts.urls')),  
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.BASE_DIR / 'cal' / 'static')
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
