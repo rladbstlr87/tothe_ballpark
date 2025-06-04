@@ -1,0 +1,42 @@
+{% include '_nav.html' %}
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<body class="pt-[90px]">
+    <div class="max-w-5xl mx-auto mt-10 bg-white  ">
+        <div class="relative border-b p-4 text-xl font-bold text-blue-900 text-center ">
+            <span>직돌이 Q&A 게시판</span>
+            <a href="{% url 'posts:create' %}" class="absolute right-4  text-black hover:text-blue-500 text-right">
+                
+                <span class="tracking-widest">문의하기</span>
+            </a>
+            
+        </div> 
+        
+    <!-- 질문 목록 -->
+    <ul>
+        {% for post in posts %}
+            <li class="flex justify-between items-center py-3 border-b border-gray-200">
+                <!-- 왼쪽: 번호 + 제목 -->
+                <div class="flex items-center gap-4">
+                <span class="w-12 text-center text-gray-500 font-mono"> {{ forloop.counter }}</span>
+                <a href="{% url 'posts:detail' post.id %}" class="text-gray-800 hover:underline">
+                    {{ post.title }}
+                </a>
+                </div>
+
+                <!-- 오른쪽: 작성자 + 날짜 -->
+                <div class="flex items-center gap-6 text-sm text-gray-500">
+                <span>{{ post.user }}</span>
+                <span>{{ post.created_at|date:"Y.m.d" }}</span>
+                </div>
+            </li>
+            {% empty %}
+            <li class="text-center py-10 text-gray-400">등록된 질문이 없습니다.</li>
+        
+        {% endfor %}
+    </ul>
+            
+            
+            
+</div>
+</body>
+

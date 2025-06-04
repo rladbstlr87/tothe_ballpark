@@ -59,3 +59,6 @@
 - `games`
 - `lineup`
 - `seats`
+
+
+./ready_develop.sh

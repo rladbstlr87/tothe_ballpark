@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cal',
     'accounts',
+    'posts',
 ]
 
 MIDDLEWARE = [
@@ -108,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
@@ -128,3 +129,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.User'
 
 LOGIN_URL = '/accounts/auth/?mode=login'
+
+# 업로드한 사진을 저장한 위치 (실제 폴더 경로)
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# 미디어 경로를 처리할 URL
+MEDIA_URL = '/media/'
