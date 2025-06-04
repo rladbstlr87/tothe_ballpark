@@ -2,13 +2,13 @@ import csv
 import datetime
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from cal.models import Daily, Game
+from cal.models import Hitter_Daily, Game
 
 class Command(BaseCommand):
-    help = 'records.csv 파일을 Daily 모델에 저장'
+    help = 'records.csv 파일을 Hitter_Daily 모델에 저장'
 
     def handle(self, *args, **kwargs):
-        file_path = settings.BASE_DIR / 'data' / 'records.csv'
+        file_path = settings.BASE_DIR / 'data' / 'hitters_records.csv'
 
         with open(file_path, 'r', encoding='utf-8-sig') as f:
             reader = csv.DictReader(f)
@@ -25,7 +25,7 @@ class Command(BaseCommand):
                     continue
 
                 try:
-                    Daily.objects.create(
+                    Hitter_Daily.objects.create(
                         game_id=game,
                         date=datetime.datetime.strptime(row['date'], '%Y%m%d').date(),
                         player_id=row['player_id'],  # CharField이므로 문자열 그대로 저장

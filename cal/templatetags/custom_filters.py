@@ -21,3 +21,7 @@ def speed_percent(value):
         return round(clamped * 100)
     except (ValueError, TypeError):
         return ''
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(str(key))

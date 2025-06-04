@@ -63,7 +63,7 @@ last_date = None
 max_game_id = 0
 
 try:
-    with open('../records.csv', 'r', encoding='utf-8-sig') as f:
+    with open('../hitters_records.csv', 'r', encoding='utf-8-sig') as f:
         rows = list(csv.DictReader(f))
         if rows:
             last_date = datetime.datetime.strptime(rows[-1]['date'], '%Y%m%d').date()
@@ -103,7 +103,7 @@ for _, row in df_filtered.iterrows():
 driver = webdriver.Chrome()
 
 # 기록 파일 열기 (없으면 헤더 작성)
-with open('../records.csv', 'a', newline='', encoding='utf-8-sig') as rout:
+with open('../hitters_records.csv', 'a', newline='', encoding='utf-8-sig') as rout:
     rw = csv.writer(rout)
     if last_date is None:
         rw.writerow(['AB','R','H','RBI','HR','BB','SO','SB','player_id','team','game_id','date'])
