@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'cs/calendar.css' %}">
-    <title>라인업</title>
+    <title>라인업 | 직돌이</title>
 </head>
 <body class="pt-[90px]">
     {% include '_nav.html' %}
@@ -101,7 +100,6 @@
             </table>
         </div>
     </div>
-    <a href="{% url 'cal:stadium_info' game.stadium %}">구장 상세정보</a>
     {% else %}
         <div class="text-center mt-10 text-red-500 text-xl">
             ⚠️ 라인업이 아직 등록되지 않았습니다.
