@@ -7,13 +7,49 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>라인업 | 직돌이</title>
+    <!-- Google Fonts - Bangers -->
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gamja+Flower&display=swap&family=Jua&display=swap&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+
+    <!-- 스타일 태그로 적용 -->
+    <style>
+        @font-face {
+            font-family: 'ydestreetl';
+            src: url('/static/fonts/YdestreetL.woff2') format('woff2');
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'ydestreetB';
+            src: url('/static/fonts/YdestreetB.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'jaram';
+            src: url('/static/fonts/jaram.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
+        }
+        .font-black-han {
+            font-family: "Black Han Sans", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        .font-ydestreetb {
+            font-family: 'ydestreetB', sans-serif;
+            font-weight: bold;
+        }
+        .font-ydestreetl {
+            font-family: 'ydestreetL', sans-serif;
+        }
+    </style>
 </head>
 <body class="pt-[90px]">
     {% include '_nav.html' %}
     {% block body %}
     {% if has_lineup and game %}
     {% include '_scorebar.html' %}
-        <div class="grid grid-cols-2 max-w-3xl mx-auto">
+        <div class="grid grid-cols-2 max-w-3xl mx-auto font-ydestreetl">
             <!-- 우리 팀 라인업 -->
             <div class="">
                 {% for lineup in user_lineup %}

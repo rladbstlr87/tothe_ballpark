@@ -47,8 +47,10 @@ def hitter_style(row):
         return 1  # 스피드 타입
     elif row['contact'] > 0.65 and row['AVG'] > 0.25:
         return 2  # 컨택 타입
+    elif row['batting_eye'] > 0.65:
+        return 3 # 선구안 타입
     else:
-        return 3 # 노말 타입
+        return 4 # 노말 타입
 
 def pitcher_style(row):
     if row['speed'] >= 148:

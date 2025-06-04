@@ -37,7 +37,7 @@ h['speed'] = (h['SBA']/h['SBA'].max()/2 + 0.5).round(3)
 
 p['stamina'] = p['NP']/p['IP']*0.4 + p['IP']/p['G']*0.4 + p['TBF']/p['IP']*0.2
 p['control'] = p['SO']/p['G']*0.5 + (1 - p['HBP']/p['G']*0.2) + (1 - p['H']/p['G']*0.3)
-p['fireball'] = (p['speed']/p['speed'].max()/2 + 0.5).round(3)
+p['fireball'] = (p['speed']/p['speed'].max()).round(3)
 
 # 정규화된 스탯 적용
 # 안씀 h['power'] = (normalize(game_count(h['power'], h['G'])) / 2 + 0.5).round(3) 안씀

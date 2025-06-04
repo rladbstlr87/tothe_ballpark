@@ -3,13 +3,12 @@ from django.utils.safestring import mark_safe
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
-from django.views.decorators.http import require_POST
-from django.contrib.auth import get_user_model
+from django.http import JsonResponse
 from datetime import datetime, timedelta, date
-from urllib.parse import quote
-import calendar
+from collections import defaultdict
 from .models import *
 from .utils import Calendar
+import calendar
 from collections import defaultdict
 
 # 홈페이지
@@ -155,8 +154,31 @@ def attendance(request, game_id):
 def user_games(request, user_id):
     user = request.user
     games = user.attendance_game.all().order_by('date', 'time')
-    user_team = user.team
+    win_count = games.filter(team1_result='승').count()
+    lose_count = games.filter(team1_result='패').count()
+    raw_stats = defaultdict(lambda: {'wins': 0, 'losses': 0, 'total': 0})
 
+    for game in games:
+        stadium = game.stadium
+        raw_stats[stadium]['total'] += 1
+        if game.team1_result == '승':
+            raw_stats[stadium]['wins'] += 1
+        elif game.team1_result == '패':
+            raw_stats[stadium]['losses'] += 1
+
+    # dict → list 변환
+    stadium_stats = [
+        {
+            'stadium': stadium,
+            'wins': stats['wins'],
+            'losses': stats['losses'],
+            'total': stats['total'],
+            'percent': round((stats['wins'] / stats['total']) * 100, 1) if stats['total'] > 0 else 0.0
+        }
+        for stadium, stats in raw_stats.items()
+    ]
+
+    user_team = user.team
     TEAM_NAME = {
         'LT': '롯데 자이언츠',
         'HT': '기아 타이거즈',
@@ -182,6 +204,9 @@ def user_games(request, user_id):
 
     context = {
         'game_data': zip(games, opponent_team, result),
+        'win_count': win_count,
+        'lose_count': lose_count,
+        'stadium_stats': stadium_stats,
         'user_team_fullname': TEAM_NAME.get(user.team, user.team),
     }
     return render(request, 'user_games.html', context)
