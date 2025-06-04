@@ -9,6 +9,7 @@ from collections import defaultdict
 from .models import *
 from .utils import Calendar
 import calendar
+from collections import defaultdict
 
 # 홈페이지
 def index(request):
@@ -71,6 +72,31 @@ def lineup(request, game_id):
     opponent_lineup = []
     opponent_team = None
 
+    # ✅ 타자: 전체 기록 불러오기
+    all_hitter_qs = Hitter_Daily.objects.all().order_by('-date')
+    latest_daily_stats = {}
+    for record in all_hitter_qs:
+        if record.player_id not in latest_daily_stats:
+            latest_daily_stats[record.player_id] = record
+
+    # ✅ 타자: 오늘 경기 기록 덮어쓰기
+    today_hitter_records = Hitter_Daily.objects.filter(game_id=game).order_by('-date')
+    for record in today_hitter_records:
+        latest_daily_stats[record.player_id] = record
+
+    # ✅ 투수: 전체 기록 불러오기
+    all_pitcher_qs = Pitcher_Daily.objects.all().order_by('-date')
+    latest_pitcher_stats = {}
+    for record in all_pitcher_qs:
+        if record.player_id not in latest_pitcher_stats:
+            latest_pitcher_stats[record.player_id] = record
+
+    # ✅ 투수: 오늘 경기 기록 덮어쓰기
+    today_pitcher_records = Pitcher_Daily.objects.filter(game_id=game).order_by('-date')
+    for record in today_pitcher_records:
+        latest_pitcher_stats[record.player_id] = record
+
+    # ✅ 라인업 분기
     if has_lineup:
         pitcher_indexes = [i for i, l in enumerate(lineups) if l.batting_order == 1]
         if len(pitcher_indexes) >= 2:
@@ -99,6 +125,9 @@ def lineup(request, game_id):
         'user_team': request.user.team,
         'opponent_team': opponent_team,
         'has_lineup': has_lineup,
+        'latest_daily_stats': latest_daily_stats,
+        'latest_pitcher_stats': latest_pitcher_stats,
+        'today': game.date,
     }
 
     return render(request, 'lineup.html', context)

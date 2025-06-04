@@ -34,6 +34,11 @@ TEAM_MAP = {
     "SK": "SSG",
     "SS": "삼성"
 }
+
 @register.filter
 def team_name(code):
     return TEAM_MAP.get(code, code)
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(str(key))

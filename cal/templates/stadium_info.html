@@ -64,15 +64,22 @@
         {% endfor %}
       </div>
     </section>
-
     <!-- 식당 정보 -->
     <section>
       <h2 class="text-2xl font-semibold mb-4">🍽 식당 정보</h2>
       <div class="grid gap-4 md:grid-cols-2">
         {% for restaurant in restaurants %}
           <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
-            <h3 class="text-lg font-medium">{{ restaurant.name }}</h3>
-            <p class="text-sm text-gray-600">{{ restaurant.category }}</p>
+            <h3 class="text-lg font-medium">{{ restaurant.restaurant_name }}</h3>
+            <p class="text-sm text-gray-600">
+              <a 
+                href="https://map.naver.com/v5/search/{{ restaurant.adress|add:' ' }}{{ restaurant.restaurant_name|urlencode }}" 
+                target="_blank" 
+                class="text-blue-600 hover:underline"
+              >
+                {{ restaurant.adress }}
+              </a>
+            </p>
             <p class="text-sm text-gray-600 mt-1">{{ restaurant.note }}</p>
           </div>
         {% empty %}
@@ -80,6 +87,7 @@
         {% endfor %}
       </div>
     </section>
+
   </main>
 
 </body>
