@@ -1,20 +1,47 @@
 {% load static %}
 <section class="highlight-{{ user.team }} w-full max-w-2xl grid grid-cols-1 p-8 rounded-md border-4 gap-4 place-self-center">
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-5 gap-4 items-center">
+        <!-- ✅ 내 팀 이미지 -->
         <div class="h-fit w-fit place-self-center flex justify-center">
             <img src="{% static 'images/team/' %}{{ user.team }}.svg" alt="우리팀 라인업" class="h-16">
         </div>
-        <div class="w-fit place-self-center">
-            <button class="w-fit px-2 py-1 my-1 place-self-center flex flex-col justify-center rounded-md shadow-md bg-slate-600 text-white text-xs font-medium transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
+
+        <!-- ✅ 내 팀 점수 (크게 표시) -->
+         {% if user_score is not None %}
+            <div class="text-4xl font-extrabold text-800 text-center">
+                {{ user_score }}
+            </div>
+        {% else %}
+            <div class="text-4xl font-extrabold text-800 text-center">
+                0
+            </div>
+        {% endif %}
+
+        <!-- ✅ 중앙 정보 -->
+        <div class="w-full text-center col-span-1">
+            {% if not is_after_game %}
+            <button class="block mx-auto px-2 py-1 mb-1 rounded-md shadow-md bg-slate-600 text-white text-xs font-medium transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
                 경기 전<br>예매하기
             </button>
-            <a href="/game/1234" class="font-black-han font-bold flex justify-center">
+            {% endif %}
+            <a href="{% url 'cal:stadium_info' game.stadium %}" class="font-bold block">
                 {{ game.stadium }}
             </a>
-            <div class="w-fit place-self-center">
-                날씨
-            </div>
+            <div class="mt-1 text-sm text-gray-500">{{ today|date:"Y.m.d" }}</div>
         </div>
+
+        <!-- ✅ 상대 팀 점수 (크게 표시) -->
+        {% if opponent_score is not None %}
+            <div class="text-4xl font-extrabold text-800 text-center">
+                {{ opponent_score }}
+            </div>
+        {% else %}
+            <div class="text-4xl font-extrabold text-800 text-center">
+                0
+            </div>
+        {% endif %}
+
+        <!-- ✅ 상대 팀 이미지 -->
         <div class="h-fit w-fit place-self-center flex justify-center">
             <img src="{% static 'images/team/' %}{{ opponent_team }}.svg" alt="상대팀 라인업" class="h-16">
         </div>

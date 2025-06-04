@@ -1,3 +1,5 @@
+from django.contrib.auth import get_user_model
+
 def win_count_total(request):
     if not request.user.is_authenticated:
         return {}  # 비로그인 상태에서는 아무것도 반환하지 않음
@@ -16,9 +18,6 @@ def win_count_total(request):
         winning_percent = (win_count / total_games) * 100
 
     return {'winning_percent': winning_percent}
-
-# yourapp/context_processors.py
-from django.contrib.auth import get_user_model
 
 def all_users_winning_percent(request):
     if not request.user.is_authenticated:

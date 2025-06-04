@@ -2,13 +2,12 @@ import csv
 from django.core.management.base import BaseCommand
 from cal.models import Stadium, Parking
 from django.conf import settings
-from pathlib import Path
 
 class Command(BaseCommand):
     help = 'Import parking information from CSV into Parking model'
 
     def handle(self, *args, **kwargs):
-        csv_path = Path(settings.BASE_DIR) / 'data' / 'parking.csv'
+        csv_path = settings.BASE_DIR / 'data' / 'parking.csv'
 
         if not csv_path.exists():
             self.stdout.write(self.style.ERROR(f"CSV 파일이 존재하지 않습니다: {csv_path}"))

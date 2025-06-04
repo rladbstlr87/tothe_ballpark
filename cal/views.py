@@ -1,24 +1,27 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from datetime import datetime, timedelta, date
 from django.utils.safestring import mark_safe
-import calendar
-from .models import *
-from .utils import Calendar
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
 from django.views.decorators.cache import never_cache
 from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from urllib.parse import quote
+from datetime import datetime, timedelta, date
+from collections import defaultdict
+from .models import *
+from .utils import Calendar
+import calendar
+from collections import defaultdict
 
+# 홈페이지
 def index(request):
     return render(request, 'index.html')
 
+# 캘린더 메인 뷰
 @never_cache
 @login_required
 def calendar_view(request):
     user_team = None
     user_attendance_game_ids = []
+
     if request.user.is_authenticated:
         user_team = request.user.team
         user_attendance_game_ids = list(request.user.attendance_game.values_list('id', flat=True))
@@ -36,40 +39,62 @@ def calendar_view(request):
     }
     return render(request, 'calendar.html', context)
 
+# 날짜 유틸 함수
 def get_date(req_day):
     try:
         if req_day:
             year, month, day = (int(x) for x in req_day.split('-'))
-            return date(year, month, day=1)
+            return date(year, month, 1)
     except (ValueError, TypeError):
         pass
     return datetime.today().date()
 
 def prev_month(d):
     first = d.replace(day=1)
-    prev_month = first - timedelta(days=1)
-    a = 'day=' + str(prev_month.year) + '-' + str(prev_month.month) + '-' + str(prev_month.day)
-    return a
+    prev = first - timedelta(days=1)
+    return f'day={prev.year}-{prev.month}-{prev.day}'
 
 def next_month(d):
     days_in_month = calendar.monthrange(d.year, d.month)[1]
     last = d.replace(day=days_in_month)
-    next_month = last + timedelta(days=1)
-    a = 'day=' + str(next_month.year) + '-' + str(next_month.month) + '-' + str(next_month.day)
-    return a
+    next_ = last + timedelta(days=1)
+    return f'day={next_.year}-{next_.month}-{next_.day}'
 
+# 라인업 뷰
 @never_cache
 @login_required
 def lineup(request, game_id):
     game = get_object_or_404(Game, id=game_id)
     lineups = Lineup.objects.filter(game=game).order_by('id')
-    
     has_lineup = lineups.exists()
 
     user_lineup = []
     opponent_lineup = []
     opponent_team = None
 
+    # 타자 기록
+    all_hitter_qs = Hitter_Daily.objects.all().order_by('-date')
+    latest_daily_stats = {}
+    for record in all_hitter_qs:
+        if record.player_id not in latest_daily_stats:
+            latest_daily_stats[record.player_id] = record
+
+    today_hitter_records = Hitter_Daily.objects.filter(game_id=game).order_by('-date')
+    for record in today_hitter_records:
+        latest_daily_stats[record.player_id] = record
+
+    # 투수 기록
+    all_pitcher_qs = Pitcher_Daily.objects.all().order_by('-date')
+    latest_pitcher_stats = {}
+    for record in all_pitcher_qs:
+        if record.player_id not in latest_pitcher_stats:
+            latest_pitcher_stats[record.player_id] = record
+
+    today_pitcher_records = Pitcher_Daily.objects.filter(game_id=game).order_by('-date')
+    for record in today_pitcher_records:
+        latest_pitcher_stats[record.player_id] = record
+
+    # 라인업 분기
     if has_lineup:
         pitcher_indexes = [i for i, l in enumerate(lineups) if l.batting_order == 1]
         if len(pitcher_indexes) >= 2:
@@ -86,11 +111,140 @@ def lineup(request, game_id):
                 user_lineup = home_lineup
                 opponent_lineup = away_lineup
         else:
-            has_lineup = False  # 선발투수 부족하면 라인업 없는 걸로 처리
+            has_lineup = False
     else:
         user_team = request.user.team
-        opponent_team = game.team2 if request.user.team == game.team1 else game.team1
-    
+        opponent_team = game.team2 if user_team == game.team1 else game.team1
+
+    # 점수 처리
+    if request.user.team == game.team1:
+        user_score = game.team1_score
+        opponent_score = game.team2_score
+    else:
+        user_score = game.team2_score
+        opponent_score = game.team1_score
+
+    # 경기 후 여부
+    is_after_game = (game.team1_score is not None) and (game.team2_score is not None)
+
+    context = {
+        'game': game,
+        'user_lineup': user_lineup,
+        'opponent_lineup': opponent_lineup,
+        'user_team': request.user.team,
+        'opponent_team': opponent_team,
+        'has_lineup': has_lineup,
+        'latest_daily_stats': latest_daily_stats,
+        'latest_pitcher_stats': latest_pitcher_stats,
+        'today': game.date,
+        'user_score': user_score,
+        'opponent_score': opponent_score,
+        'is_after_game': is_after_game,
+    }
+
+    return render(request, 'lineup.html', context)
+
+# 직관 체크
+@never_cache
+@login_required
+def attendance(request, game_id):
+    user = request.user
+    game = get_object_or_404(Game, id=game_id)
+
+    if user in game.attendance_users.all():
+        game.attendance_users.remove(user)
+        attended = False
+    else:
+        game.attendance_users.add(user)
+        attended = True
+
+    return JsonResponse({'success': True, 'attended': attended})
+
+# 사용자 직관한 경기 리스트
+@never_cache
+@login_required
+def user_games(request, user_id):
+    user = request.user
+    user_team = user.team
+    games = user.attendance_game.all().order_by('date', 'time')
+
+    win_count = 0
+    lose_count = 0
+    raw_stats = defaultdict(lambda: {'wins': 0, 'losses': 0, 'total': 0})
+
+    for game in games:
+        stadium = game.stadium
+
+        if game.team1 == user_team:
+            result = game.team1_result
+        elif game.team2 == user_team:
+            result = game.team2_result
+        else:
+            continue  # 예외적인 경우 방지
+
+        raw_stats[stadium]['total'] += 1
+        if result == '승':
+            raw_stats[stadium]['wins'] += 1
+            win_count += 1
+        elif result == '패':
+            raw_stats[stadium]['losses'] += 1
+            lose_count += 1
+
+    stadium_stats = [
+        {
+            'stadium': stadium,
+            'wins': stats['wins'],
+            'losses': stats['losses'],
+            'total': stats['total'],
+            'percent': round((stats['wins'] / stats['total']) * 100, 1) if stats['total'] > 0 else 0.0
+        }
+        for stadium, stats in raw_stats.items()
+    ]
+
+    TEAM_NAME = {
+        'LT': '롯데 자이언츠',
+        'HT': '기아 타이거즈',
+        'LG': 'LG 트윈스',
+        'OB': '두산 베어스',
+        'SK': 'SSG 랜더스',
+        'WO': '키움 히어로즈',
+        'SS': '삼성 라이온즈',
+        'HH': '한화 이글스',
+        'KT': 'KT 위즈',
+        'NC': 'NC 다이노스',
+    }
+
+    opponent_team = []
+    result = []
+
+    for game in games:
+        if user_team == game.team1:
+            opponent_team.append(TEAM_NAME.get(game.team2, game.team2))
+            result.append(game.team1_result)
+        else:
+            opponent_team.append(TEAM_NAME.get(game.team1, game.team1))
+            result.append(game.team2_result)
+
+    context = {
+        'game_data': zip(games, opponent_team, result),
+        'win_count': win_count,
+        'lose_count': lose_count,
+        'stadium_stats': stadium_stats,
+        'user_team_fullname': TEAM_NAME.get(user.team, user.team),
+    }
+    return render(request, 'user_games.html', context)
+
+
+# 경기장 정보(좌석, 주차, 식당)
+def stadium_info(request, stadium):
+    user = request.user
+    stadium_obj = get_object_or_404(Stadium, stadium=stadium)
+
+    seats = Seat.objects.filter(stadium=stadium_obj)
+    parkings = Parking.objects.filter(stadium=stadium_obj)
+    restaurants = Restaurant.objects.filter(stadium=stadium_obj)
+
+    # 경기장 좌표 및 지도 링크 정보
     team_info = {
         '광주': '35.168275,126.888934,광주기아챔피언스필드,19909618',
         '잠실': '37.512898,127.071107,잠실종합운동장잠실야구장,13202577',
@@ -104,68 +258,20 @@ def lineup(request, game_id):
         '울산': '35.532168,129.265575,울산문수야구장,1406092164',
         '포항': '36.0081953,129.3593993,포항야구장,11830535'
     }
-    lat, lng, name, place_id = team_info["울산"].split(',', 3)
 
-    pc_url = f"https://map.naver.com/p/directions/-/{lng},{lat},{quote(name)},{place_id}/PLACE_POI/-/car?c=15.00,0,0,0,dh"
-    m_url = f"nmap://route/public?dlat={lat}&dlng={lng}&dname={quote(name)}"
-    
-    context = {
-        'game': game,
-        'user_lineup': user_lineup,
-        'opponent_lineup': opponent_lineup,
-        'user_team': request.user.team,
-        'opponent_team': opponent_team,
-        'has_lineup': has_lineup,
-        'stadium_lat': lat,
-        'stadium_lng': lng,
-        'stadium_name': name,
-        'stadium_place_id': place_id,
-        'pc_url': pc_url,
-        'm_url': m_url,
-
-    }
-    return render(request, 'lineup.html', context)
-
-@never_cache
-@login_required
-def attendance(request, game_id):
-    user = request.user
-    game = Game.objects.get(id=game_id)
-
-    if user in game.attendance_users.all():
-        game.attendance_users.remove(user)
-        attended = False
-    else:
-        game.attendance_users.add(user)
-        attended = True
-
-    return JsonResponse({'success': True, 'attended': attended})
-
-@never_cache
-@login_required
-def user_games(request, user_id):
-    user = request.user
-    games = user.attendance_game.all().order_by('date', 'time')
-
-    user_team = user.team
-
-    opponent_team = []
-    result = []
-    for game in games:
-        if user_team == game.team1:
-            opponent_team.append(game.team2)
-            result.append(game.team1_result)
-        else:
-            opponent_team.append(game.team1)
-            result.append(game.team2_result)
+    lat, lng, name, place_id = team_info[stadium].split(',', 3)
 
     context = {
-        'game_data': zip(games, opponent_team, result),
+        'user': user,
+        'stadium': stadium_obj,
+        'seats': seats,
+        'parkings': parkings,
+        'restaurants': restaurants,
+        'google_url': f"https://www.google.com/maps/dir/?api=1&destination={lat},{lng}&destination_place_id={place_id}",
     }
-    return render(request, 'user_games.html', context)
 
-def stadium_info(request, stadium):
-    return render(request, 'stadium_info.html')
+    return render(request, 'stadium_info.html', context)
 
+# 소개 페이지
 def about_us(request):
     return render(request, 'about_us.html')

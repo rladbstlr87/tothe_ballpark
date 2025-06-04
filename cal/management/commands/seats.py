@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = 'Import seat data from CSV file into the database'
 
     def handle(self, *args, **kwargs):
-        csv_path = Path(settings.BASE_DIR) / 'data' / 'seats.csv'
+        csv_path = settings.BASE_DIR / 'data' / 'seats.csv'
 
         if not csv_path.exists():
             self.stdout.write(self.style.ERROR(f"CSV 파일이 존재하지 않습니다: {csv_path}"))

@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ stadium.stadium }} | 직돌이</title>
+</head>
+<body class="pt-[90px]">
+  {% include '_nav.html' %}
+  <main class="max-w-5xl mx-auto px-4 py-10 space-y-12">
+    <!-- 경기장 이름 -->
+    <div class="text-center">
+      <h1 class="text-3xl font-bold">{{ stadium.stadium }}</h1>
+    </div>
+    <section class="text-center">
+        <button class="w-fit px-2 py-1 my-1 place-self-center flex flex-col justify-center rounded-md shadow-md bg-slate-600 text-white text-xs font-medium transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
+            예매하기
+        </button>
+    </section>
+    <section class="text-center mt-10">
+      <a href="{{ google_url }}" target="_blank" rel="noopener noreferrer"
+        class="inline-block px-4 py-2 rounded-md bg-blue-600 text-white font-semibold shadow-md transition-transform hover:-translate-y-1 hover:shadow-lg">
+        구장까지 길찾기
+      </a>
+    </section>
+    <!-- 좌석 정보 -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">🔹 좌석 정보</h2>
+
+      <!-- 좌석표 이미지 위쪽에 배치 -->
+      <div class="w-full mb-6">
+        <img src="{% static 'images/stadium/' %}{{ stadium.stadium }}.png"
+             alt="{{ stadium.stadium }} 좌석표"
+             class="w-full h-auto rounded-lg shadow-md">
+      </div>
+
+      <!-- 좌석 설명 카드 -->
+      <div class="grid gap-4 md:grid-cols-2">
+        {% for seat in seats %}
+          <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
+            <h3 class="text-lg font-medium">{{ seat.seat_name }}</h3>
+            <p class="text-sm text-gray-600 mt-1">{{ seat.note }}</p>
+          </div>
+        {% empty %}
+          <p class="text-gray-500">등록된 좌석 정보가 없습니다.</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- 주차장 정보 -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">🅿️ 근처 주차장 정보</h2>
+      <div class="grid gap-4 md:grid-cols-2">
+        {% for parking in parkings %}
+          <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
+            <h3 class="text-lg font-medium">{{ parking.parking_name }}</h3>
+            <p class="text-sm text-gray-600">{{ parking.adress }}</p>
+            <p class="text-sm text-gray-600 mt-1">{{ parking.note }}</p>
+          </div>
+        {% empty %}
+          <p class="text-gray-500">등록된 주차장 정보가 없습니다.</p>
+        {% endfor %}
+      </div>
+    </section>
+    <!-- 식당 정보 -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">🍽 식당 정보</h2>
+      <div class="grid gap-4 md:grid-cols-2">
+        {% for restaurant in restaurants %}
+          <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
+            <h3 class="text-lg font-medium">{{ restaurant.restaurant_name }}</h3>
+            <p class="text-sm text-gray-600">
+              <a 
+                href="https://map.naver.com/v5/search/{{ restaurant.adress|add:' ' }}{{ restaurant.restaurant_name|urlencode }}" 
+                target="_blank" 
+                class="text-blue-600 hover:underline"
+              >
+                {{ restaurant.adress }}
+              </a>
+            </p>
+            <p class="text-sm text-gray-600 mt-1">{{ restaurant.note }}</p>
+          </div>
+        {% empty %}
+          <p class="text-gray-500">등록된 식당 정보가 없습니다.</p>
+        {% endfor %}
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>
