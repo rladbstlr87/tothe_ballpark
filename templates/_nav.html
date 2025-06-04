@@ -20,9 +20,9 @@
 </head>
 
 <body x-data="{ open: false }">
-  <nav class="bg-[url('/static/images/nav/nav-{{ user.team }}.png')] bg-cover bg-center fixed top-0 left-0 w-full bg-white z-30 py-2 shadow-md font-ydestreetl">
+  <nav class="bg-[url('/static/images/nav/nav-{{ user.team }}.png')] bg-cover [background-position:0%_62%] bg-center fixed top-0 left-0 w-full bg-transparent z-30 py-2 font-ydestreetl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16 items-center w-full">
+      <div class="flex justify-between h-full items-center w-full">
         <div class="hidden sm:flex w-full items-center text-shadow">
           <!-- 왼쪽: About Us, Cal -->
           <div class="flex items-center space-x-6 flex-1">

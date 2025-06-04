@@ -39,12 +39,12 @@
   </style>
 </head>
 
-<body class="min-h-screen pt-24 text-gray-800 bg-cover bg-center bg-no-repeat bg-fixed" 
-      style="background-image: url('{% static 'images/user_games/' %}{{ user.team }}.png') ">
+<body class="min-h-screen pt-24 text-gray-800 bg-cover bg-center bg-no-repeat bg-fixed"
+      style="background-image: url('{% static 'images/user_games/' %}{{ user.team }}.png')">
   {% include '_nav.html' %}
   {% block body %}
 
-  <div class="max-w-5xl mx-auto px-6 ">
+  <div class="max-w-5xl mx-auto px-6">
     <!-- 제목 -->
     <h1 class="font-black-han text-5xl text-center drop-shadow-lg highlight-{{user.team}}">⚾ {{user.team|team_name}} 직관 경기</h1>
     
@@ -56,34 +56,50 @@
         <h2 class="text-2xl text-black-500 mb-4 font-ydestreetb">📋 {{user.nickname}}님의 경기 내역</h2>
         <ul class="list-disc pl-6 text-lg space-y-1">
           {% for game, opponent, result in game_data %}
-            <li>{{ game.date }} - {{ opponent }}:
+            <li>{{ game.date|date:"Y년 n월 j일" }} vs {{ opponent }}:
               <span class="{% if result == '승' %}text-blue-500{% else %}text-red-500{% endif %}">{{ result }}</span>
             </li>
           {% endfor %}
         </ul>
       </div>
-    
+
       <!-- 승률 정보 -->
       <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:scale-[1.02] transition">
-        <h2 class="noto-sans-kr-<uniquifier> text-2xl text-black-500 mb-4 font-ydestreetb">🏆 직관 승률</h2>
-        <ol class="list-decimal pl-6 text-lg space-y-1">
-          {% for user in all_users_winning_percent %}
-            <li>
-              {{ user.username }} – {{ user.winning_percent }}% ({{ user.win_count }}승 / {{ user.total_games }}경기)
-            </li>
-          {% endfor %}
-        </ol>
+        <h2 class="text-2xl text-black-500 mb-4 font-ydestreetb">🏆 직관 승률</h2>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-center table-auto border-collapse font-jua-regular text-lg">
+            <thead>
+              <tr class="bg-gray-200">
+                <th class="py-2 px-4 border">순위</th>
+                <th class="py-2 px-4 border">닉네임</th>
+                <th class="py-2 px-4 border">승률</th>
+                <th class="py-2 px-4 border">전적</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user in all_users_winning_percent %}
+                <tr class="hover:bg-gray-100">
+                  <td class="py-2 px-4 border">{{ forloop.counter }}</td>
+                  <td class="py-2 px-4 border">{{ user.username }}</td>
+                  <td class="py-2 px-4 border">{{ user.winning_percent }}%</td>
+                  <td class="py-2 px-4 border">{{ user.win_count }}승 / {{ user.total_games }}경기</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:scale-[1.02] transition">
-        <h2 class="noto-sans-kr-<uniquifier> text-2xl text-black-500 mb-4 font-ydestreetb">🏆 개인 구장별 직관 승률</h2>
+        <h2 class="text-2xl text-black-500 mb-4 font-ydestreetb">🏆 개인 구장별 직관 승률</h2>
         <ul class="list-decimal pl-6 text-lg space-y-1">
 {% for stat in stadium_stats %}
   <p>{{ stat.stadium }} - {{ stat.percent }}% ({{ stat.wins }}승 / {{ stat.total }}경기)</p>
 {% endfor %}
-
         </ul>
       </div>
+
     </div>
   </div>
 
