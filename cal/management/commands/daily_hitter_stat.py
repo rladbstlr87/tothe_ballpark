@@ -35,6 +35,7 @@ class Command(BaseCommand):
                         H=int(row['H']),
                         RBI=int(row['RBI']),
                         HR=int(row['HR']),
+                        BB=int(row['BB']),
                         SO=int(row['SO']),
                         SB=int(row['SB']),
                     )

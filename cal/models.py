@@ -136,6 +136,7 @@ class Hitter_Daily(models.Model):
     H = models.PositiveIntegerField()
     RBI = models.PositiveIntegerField()
     HR = models.PositiveIntegerField()
+    BB = models.PositiveIntegerField()
     SO = models.PositiveIntegerField()
     SB = models.PositiveIntegerField()
 
