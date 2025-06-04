@@ -10,18 +10,17 @@
   <link rel="stylesheet" href="{% static 'cs/fonts.css' %}">
     <style>
       @font-face {
-        font-family: 'jaram';
-        src: url('/static/fonts/incheonedu_jaram.woff2') format('woff2');
+          font-family: 'font-ydestreetL';
+          src: url('/static/fonts/YdestreetL.woff2') format('woff2');
       }
-      body {
-        font-family: "jaram", sans-serif;
-        font-size: 23px;
+      .font-ydestreetl {
+          font-family: 'font-ydestreetL', sans-serif;
       }
     </style>
 </head>
 
 <body x-data="{ open: false }">
-  <nav class="bg-[url('/static/images/nav/nav-{{ user.team }}.png')] bg-cover bg-center fixed top-0 left-0 w-full bg-white z-30 py-2 shadow-md">
+  <nav class="bg-[url('/static/images/nav/nav-{{ user.team }}.png')] bg-cover bg-center fixed top-0 left-0 w-full bg-white z-30 py-2 shadow-md font-ydestreetl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16 items-center w-full">
         <div class="hidden sm:flex w-full items-center text-shadow">

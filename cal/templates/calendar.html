@@ -24,7 +24,6 @@
     /* Tailwind와 함께 쓸 수 있는 클래스 정의 */
     .font-ydestreetb {
       font-family: 'YdestreetB', sans-serif;
-      font-weight: bold;
     }
     .font-jaram {
       font-family: 'Jaram', sans-serif;
@@ -40,9 +39,13 @@
         <tr>
           <th colspan="7" class="month-header">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <a href="?{{ prev_month }}" class="nav-link">←</a>
+              <a href="?{{ prev_month }}" class="nav-link">
+                <img src="{% static 'images/icon/arrow.png' %}" alt="Prev" class="w-16 h-16 rotate-90 inline">
+              </a>
               <span>{{ cal_data.year }}년 {{ cal_data.month }}월</span>
-              <a href="?{{ next_month }}" class="nav-link">→</a>
+              <a href="?{{ next_month }}" class="nav-link">
+                <img src="{% static 'images/icon/arrow.png' %}" alt="Next" class="w-16 h-16 -rotate-90 inline">
+              </a>
             </div>
           </th>
         </tr>

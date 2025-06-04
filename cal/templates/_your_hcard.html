@@ -3,28 +3,28 @@
 <div id="your_hstat_bar">
     <div class="flex items-center">
         <span class="w-4.5 mr-3">{{ lineup.hitter.power|percent }}</span>
-        <div class="ml-1 bg-gray/100 h-5 flex min-w-32 justify-end">
-            <div class="bar-style h-full rounded justify-end mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.hitter.power|percent }}%;"></div>
+        <div class="ml-1 bg-gray/100 h-5 flex flex-grow max-w-32 justify-end">
+            <div class="bar-style h-full rounded mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.hitter.power|percent }}%;"></div>
         </div>
         <span class="ml-2 w-13 text-[clamp(0.6rem,2vw,1.0rem)]">파워</span>
     </div>
     <div class="flex items-center">
         <span class="w-4.5 mr-3">{{ lineup.hitter.contact|percent }}</span>
-        <div class="ml-1 bg-gray/100 h-5 flex  min-w-32 justify-end">
+        <div class="ml-1 bg-gray/100 h-5 flex flex-grow min-w-32 justify-end">
             <div class="bar-style h-full rounded mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.hitter.contact|percent }}%;"></div>
         </div>
         <span class="ml-2 w-13 text-[clamp(0.6rem,2vw,1.0rem)]">컨택</span>
     </div>
     <div class="flex items-center">
         <span class="w-4.5 mr-3">{{ lineup.hitter.speed|percent }}</span>
-        <div class="ml-1 bg-gray/100 h-5 flex  min-w-32 justify-end">
+        <div class="ml-1 bg-gray/100 h-5 flex flex-grow min-w-32 justify-end">
             <div class="bar-style h-full rounded mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.hitter.speed|percent }}%;"></div>
         </div>
         <span class="ml-2 w-13 text-[clamp(0.6rem,2vw,1.0rem)]">스피드</span>
     </div>
     <div class="flex items-center">
         <span class="w-4.5 mr-3">{{ lineup.hitter.batting_eye|percent }}</span>
-        <div class="ml-1 bg-gray/100 h-5 flex  min-w-32 justify-end">
+        <div class="ml-1 bg-gray/100 h-5 flex flex-grow min-w-32 justify-end">
             <div class="bar-style h-full rounded mask-linear-50 mask-linear-from-20% mask-linear-to-100%" style="width: {{ lineup.hitter.batting_eye|percent }}%;"></div>
         </div>
         <span class="ml-2 w-13 text-[clamp(0.6rem,2vw,1.0rem)]">선구안</span>
@@ -52,9 +52,9 @@
         <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ lineup.hitter.player_id }}.png?type=w150"
             alt="{{ lineup.hitter.player_name }}"
             class="mx-2 w-[clamp(4rem,6vw,6rem)] transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
-        <div class="flex items-center mt-1 space-x-1">
-            <img id="style-icon" src="{% static 'images/icon/hitter_icon/' %}{{ lineup.hitter.style }}.png" class="w-6 h-6">
-            <p class="text-[clamp(0.6rem,2vw,1.0rem)]">{{ lineup.hitter.player_name }}</p>
+        <div class="flex items-center mt-1 space-x-1 relative">
+            <p class="text-left w-[clamp(4rem,6vw,6rem)]">{{ lineup.hitter.player_name }}</p>
+            <img id="style-icon" src="{% static 'images/icon/hitter_icon/' %}{{ lineup.hitter.style }}.png" class="w-8 h-8 -mt-10 -right-2 absolute z-10 rounded-bl-2xl">
         </div>
     </div>
 </div>

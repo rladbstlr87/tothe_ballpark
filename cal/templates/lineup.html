@@ -14,16 +14,33 @@
     <!-- 스타일 태그로 적용 -->
     <style>
         @font-face {
-            font-family: 'font-ydestreetl';
+            font-family: 'ydestreetl';
             src: url('/static/fonts/YdestreetL.woff2') format('woff2');
+            font-style: normal;
         }
-        body {
-            font-family: "jua", sans-serif;
+        @font-face {
+            font-family: 'ydestreetB';
+            src: url('/static/fonts/YdestreetB.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'jaram';
+            src: url('/static/fonts/jaram.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
         }
         .font-black-han {
             font-family: "Black Han Sans", sans-serif;
             font-weight: 400;
             font-style: normal;
+        }
+        .font-ydestreetb {
+            font-family: 'ydestreetB', sans-serif;
+            font-weight: bold;
+        }
+        .font-ydestreetl {
+            font-family: 'ydestreetL', sans-serif;
         }
     </style>
 </head>
@@ -32,7 +49,7 @@
     {% block body %}
     {% if has_lineup and game %}
     {% include '_scorebar.html' %}
-        <div class="grid grid-cols-2 max-w-3xl mx-auto">
+        <div class="grid grid-cols-2 max-w-3xl mx-auto font-ydestreetl">
             <!-- 우리 팀 라인업 -->
                 <div class="">
                     {% for lineup in user_lineup %}
