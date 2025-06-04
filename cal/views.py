@@ -1,14 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from datetime import datetime, timedelta, date
 from django.utils.safestring import mark_safe
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from django.contrib.auth import get_user_model
 from datetime import datetime, timedelta, date
-from urllib.parse import quote
 from collections import defaultdict
 from .models import *
 from .utils import Calendar
