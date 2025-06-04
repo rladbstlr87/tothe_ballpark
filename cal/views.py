@@ -72,31 +72,29 @@ def lineup(request, game_id):
     opponent_lineup = []
     opponent_team = None
 
-    # ✅ 타자: 전체 기록 불러오기
+    # 타자 기록
     all_hitter_qs = Hitter_Daily.objects.all().order_by('-date')
     latest_daily_stats = {}
     for record in all_hitter_qs:
         if record.player_id not in latest_daily_stats:
             latest_daily_stats[record.player_id] = record
 
-    # ✅ 타자: 오늘 경기 기록 덮어쓰기
     today_hitter_records = Hitter_Daily.objects.filter(game_id=game).order_by('-date')
     for record in today_hitter_records:
         latest_daily_stats[record.player_id] = record
 
-    # ✅ 투수: 전체 기록 불러오기
+    # 투수 기록
     all_pitcher_qs = Pitcher_Daily.objects.all().order_by('-date')
     latest_pitcher_stats = {}
     for record in all_pitcher_qs:
         if record.player_id not in latest_pitcher_stats:
             latest_pitcher_stats[record.player_id] = record
 
-    # ✅ 투수: 오늘 경기 기록 덮어쓰기
     today_pitcher_records = Pitcher_Daily.objects.filter(game_id=game).order_by('-date')
     for record in today_pitcher_records:
         latest_pitcher_stats[record.player_id] = record
 
-    # ✅ 라인업 분기
+    # 라인업 분기
     if has_lineup:
         pitcher_indexes = [i for i, l in enumerate(lineups) if l.batting_order == 1]
         if len(pitcher_indexes) >= 2:
@@ -118,6 +116,17 @@ def lineup(request, game_id):
         user_team = request.user.team
         opponent_team = game.team2 if user_team == game.team1 else game.team1
 
+    # 점수 처리
+    if request.user.team == game.team1:
+        user_score = game.team1_score
+        opponent_score = game.team2_score
+    else:
+        user_score = game.team2_score
+        opponent_score = game.team1_score
+
+    # 경기 후 여부
+    is_after_game = (game.team1_score is not None) and (game.team2_score is not None)
+
     context = {
         'game': game,
         'user_lineup': user_lineup,
@@ -128,6 +137,9 @@ def lineup(request, game_id):
         'latest_daily_stats': latest_daily_stats,
         'latest_pitcher_stats': latest_pitcher_stats,
         'today': game.date,
+        'user_score': user_score,
+        'opponent_score': opponent_score,
+        'is_after_game': is_after_game,
     }
 
     return render(request, 'lineup.html', context)
