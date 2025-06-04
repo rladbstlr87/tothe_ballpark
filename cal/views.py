@@ -153,20 +153,31 @@ def attendance(request, game_id):
 @login_required
 def user_games(request, user_id):
     user = request.user
+    user_team = user.team
     games = user.attendance_game.all().order_by('date', 'time')
-    win_count = games.filter(team1_result='승').count()
-    lose_count = games.filter(team1_result='패').count()
+
+    win_count = 0
+    lose_count = 0
     raw_stats = defaultdict(lambda: {'wins': 0, 'losses': 0, 'total': 0})
 
     for game in games:
         stadium = game.stadium
-        raw_stats[stadium]['total'] += 1
-        if game.team1_result == '승':
-            raw_stats[stadium]['wins'] += 1
-        elif game.team1_result == '패':
-            raw_stats[stadium]['losses'] += 1
 
-    # dict → list 변환
+        if game.team1 == user_team:
+            result = game.team1_result
+        elif game.team2 == user_team:
+            result = game.team2_result
+        else:
+            continue  # 예외적인 경우 방지
+
+        raw_stats[stadium]['total'] += 1
+        if result == '승':
+            raw_stats[stadium]['wins'] += 1
+            win_count += 1
+        elif result == '패':
+            raw_stats[stadium]['losses'] += 1
+            lose_count += 1
+
     stadium_stats = [
         {
             'stadium': stadium,
@@ -178,7 +189,6 @@ def user_games(request, user_id):
         for stadium, stats in raw_stats.items()
     ]
 
-    user_team = user.team
     TEAM_NAME = {
         'LT': '롯데 자이언츠',
         'HT': '기아 타이거즈',
@@ -194,6 +204,7 @@ def user_games(request, user_id):
 
     opponent_team = []
     result = []
+
     for game in games:
         if user_team == game.team1:
             opponent_team.append(TEAM_NAME.get(game.team2, game.team2))

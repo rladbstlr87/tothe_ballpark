@@ -5,32 +5,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="{% static 'cs/user_games.css' %}">
-  <title> 직관 경기</title>
+  <title>직관 경기</title>
+
+  <!-- TailwindCSS & Custom CSS -->
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="{% static 'cs/user_games.css' %}">
 
-  <!-- Google Fonts - Bangers -->
-  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gamja+Flower&display=swap&family=Jua&display=swap&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gamja+Flower&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
 
-  <!-- 스타일 태그로 적용 -->
+  <!-- 사용자 정의 폰트 정의 -->
   <style>
     @font-face {
       font-family: 'YdestreetB';
       src: url('/static/fonts/YdestreetB.woff2') format('woff2');
-      font-style: normal;
     }
     @font-face {
       font-family: 'YdestreetL';
       src: url('/static/fonts/YdestreetL.woff2') format('woff2');
-      font-style: normal;
     }
     body {
       font-family: 'YdestreetL', sans-serif;
     }
     .font-black-han {
       font-family: "Black Han Sans", sans-serif;
-      font-weight: 400;
-      font-style: normal;
     }
     .font-ydestreetb {
       font-family: 'YdestreetB', sans-serif;
@@ -41,32 +39,53 @@
 
 <body class="min-h-screen pt-24 text-gray-800 bg-cover bg-center bg-no-repeat bg-fixed"
       style="background-image: url('{% static 'images/user_games/' %}{{ user.team }}.png')">
+
   {% include '_nav.html' %}
+
   {% block body %}
-
-  <div class="max-w-5xl mx-auto px-6">
-    <!-- 제목 -->
-    <h1 class="font-black-han text-5xl text-center drop-shadow-lg highlight-{{user.team}}">⚾ {{user.team|team_name}} 직관 경기</h1>
+  <div class="max-w-6xl mx-auto px-6">
     
+    <!-- 제목 -->
+    <h1 class="font-black-han text-5xl text-center drop-shadow-lg highlight-{{user.team}}">
+      ⚾ {{ user.team|team_name }} 직관 경기
+    </h1>
 
-    <!-- 내용 카드 -->
+    <!-- 2단 균등 레이아웃 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
-      <!-- 경기 정보 -->
-      <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:scale-[1.02] transition">
-        <h2 class="text-2xl text-black-500 mb-4 font-ydestreetb">📋 {{user.nickname}}님의 경기 내역</h2>
-        <ul class="list-disc pl-6 text-lg space-y-1">
-          {% for game, opponent, result in game_data %}
-            <li>{{ game.date|date:"Y년 n월 j일" }} vs {{ opponent }}:
-              <span class="{% if result == '승' %}text-blue-500{% else %}text-red-500{% endif %}">{{ result }}</span>
-            </li>
-          {% endfor %}
-        </ul>
+
+      <!-- 왼쪽 50%: 경기 내역 + 구장별 승률 -->
+      <div class="flex flex-col gap-8">
+        <!-- 📋 경기 내역 -->
+        <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:scale-[1.02] transition">
+          <h2 class="text-2xl text-black-500 mb-4 font-ydestreetb">
+            📋 {{ user.nickname }}님의 경기 내역
+          </h2>
+          <ul class="list-disc pl-6 text-lg space-y-1">
+            {% for game, opponent, result in game_data %}
+              <li>
+                {{ game.date|date:"Y년 n월 j일" }} vs {{ opponent }}:
+                <span class="{% if result == '승' %}text-blue-500{% else %}text-red-500{% endif %}">
+                  {{ result }}
+                </span>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <!-- 🏟️ 구장별 승률 -->
+        <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:scale-[1.02] transition">
+          <h2 class="text-2xl text-black-500 mb-4 font-ydestreetb">🏟️ 개인 구장별 직관 승률</h2>
+          <ul class="list-decimal pl-6 text-lg space-y-1">
+            {% for stat in stadium_stats %}
+              <li>{{ stat.stadium }} - {{ stat.percent }}% ({{ stat.wins }}승 / {{ stat.total }}경기)</li>
+            {% endfor %}
+          </ul>
+        </div>
       </div>
 
-      <!-- 승률 정보 -->
+      <!-- 오른쪽 50%: 유저 전체 승률 -->
       <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:scale-[1.02] transition">
         <h2 class="text-2xl text-black-500 mb-4 font-ydestreetb">🏆 직관 승률</h2>
-
         <div class="overflow-x-auto">
           <table class="w-full text-center table-auto border-collapse font-jua-regular text-lg">
             <thead>
@@ -91,18 +110,9 @@
         </div>
       </div>
 
-      <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:scale-[1.02] transition">
-        <h2 class="text-2xl text-black-500 mb-4 font-ydestreetb">🏆 개인 구장별 직관 승률</h2>
-        <ul class="list-decimal pl-6 text-lg space-y-1">
-{% for stat in stadium_stats %}
-  <p>{{ stat.stadium }} - {{ stat.percent }}% ({{ stat.wins }}승 / {{ stat.total }}경기)</p>
-{% endfor %}
-        </ul>
-      </div>
-
     </div>
   </div>
-
   {% endblock %}
+
 </body>
 </html>
