@@ -1,20 +1,6 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>About Us | 직돌이</title>
-  <link rel="stylesheet" href="{% static 'cs/about.css' %}">
-  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gamja+Flower&display=swap&family=Jua&display=swap&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
-
-  <!-- 스타일 태그로 적용 -->
-  <style>
-    body {
-      font-family: 'YdestreetL', sans-serif;
-    }
-  </style>
-</head>
-<body class="pt-[90px]">
+{% block body %}
   {% include '_nav.html' %}
   <div class="container">
     <h1>About Us</h1>
@@ -54,5 +40,4 @@
       &copy; 2025 스포츠 캘린더. All rights reserved.
     </footer>
   </div>
-</body>
-</html>
+{% endblock %}

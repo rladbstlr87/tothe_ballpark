@@ -1,0 +1,96 @@
+{% load static %}
+<nav class="bg-[url('/static/images/nav/nav-{{ user.team }}.png')] bg-cover [background-position:0%_60%] bg-center fixed top-0 left-0 w-full bg-transparent z-30 py-2 font-ydestreetl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-full items-center w-full">
+      <div class="hidden sm:flex w-full items-center text-shadow">
+        <!-- 왼쪽: About Us, Cal -->
+        <div class="flex items-center space-x-6 flex-1">
+          <a href="{% url 'cal:about_us' %}" class="flex items-center space-x-2 text-black hover:text-blue-500">
+            <span class="w-3 h-3 rounded-full bg-yellow-400 shadow-md"></span>
+            <span class="tracking-widest">About Us</span>
+          </a>
+          <a href="{% url 'cal:calendar' %}" class="flex items-center space-x-2 text-black hover:text-blue-500">
+            <span class="w-3 h-3 rounded-full bg-green-300 shadow-md"></span>
+            <span class="tracking-widest">Cal</span>
+          </a>
+        </div>
+        <!-- 가운데: 홈버튼 -->
+        <div class="flex justify-center w-fit">
+          {% if user.is_authenticated %}
+            <a href="{% url 'index' %}" class="flex items-center">
+              <img src="{% static 'images/mascots/' %}{{ user.team }}.png" alt="{{ user.team }} Mascot" class="h-16">
+            </a>
+          {% else %}
+            <a href="{% url 'index' %}" class="flex items-center">
+              <img src="{% static 'images/logo.png' %}" alt="Baseball" class="h-24">
+            </a>
+          {% endif %}
+        </div>
+        <!-- 오른쪽: 회원/로그인/로그아웃/승리요정 -->
+        <div class="flex items-center space-x-6 justify-end flex-1">
+          {% if user.is_authenticated %}
+            <span class="text-gray-700 tracking-widest">{{ user.nickname }}</span>
+            <a href="{% url 'accounts:logout' %}" class="flex items-center space-x-2 text-black hover:text-blue-500">
+              <span class="w-3 h-3 rounded-full bg-red-400 shadow-md"></span>
+              <span class="tracking-widest">Log Out</span>
+            </a>
+            <a href="{% url 'cal:user_games' user.id  %}">
+              <h1>{{ winning_percent }}</h1>
+            </a>
+          {% else %}
+            <a href="{% url 'accounts:auth' %}?mode=signup" class="flex items-center space-x-2 text-black hover:text-blue-500">
+              <span class="w-3 h-3 rounded-full bg-green-300 shadow-md"></span>
+              <span class="tracking-widest">Sign Up</span>
+            </a>
+            <a href="{% url 'accounts:auth' %}" class="flex items-center space-x-2 text-black hover:text-blue-600">
+              <span class="w-3 h-3 rounded-full bg-blue-400 shadow-md"></span>
+              <span class="tracking-widest flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                  <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                </svg>
+                Log In
+              </span>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+          <!-- 모바일 메뉴 버튼 -->
+          <div class="sm:hidden">
+            <button @click="open = true" class="p-2 text-gray-700 right-0">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 모바일 전체 화면 오버레이 메뉴 -->
+      <!-- <div
+        class="fixed inset-0 bg-white z-40 flex flex-col items-start px-8 py-6 space-y-10 font-bold text-3xl sm:hidden"
+        x-show="open"
+        x-transition
+        @click.away="open = false"
+      >
+
+        <button @click="open = false" class="absolute top-4 right-4">
+          <svg class="w-10 h-10 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 8l8 8M16 8l-8 8"/>
+          </svg>
+        </button>
+
+    {% if user.is_authenticated %}
+      <a href="#" class="hover:text-yellow-300">ABOUT</a>
+      <a href="{% url 'cal:calendar' %}" class="hover:text-yellow-300">CAL</a>
+      <a href="{% url 'accounts:logout' %}" class="hover:text-yellow-300">LOGOUT</a>
+    {% else %}
+      <a href="#" class="hover:text-yellow-300">ABOUT</a>
+      <a href="{% url 'accounts:auth' %}?mode=signup" class="hover:text-yellow-300">SIGN UP</a>
+      <a href="{% url 'accounts:auth' %}" class="hover:text-yellow-300">LOG IN</a>
+    {% endif %}
+  </div> -->
+</nav>

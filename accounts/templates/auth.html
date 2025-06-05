@@ -1,119 +1,102 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>
-    {% if mode == 'signup' %}
-      회원가입 | 직돌이
-    {% else %}
-      로그인 | 직돌이
-    {% endif %}
-  </title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="{% static 'accounts/css/auth.css' %}">
-</head>
+{% block styles %}
+<link rel="stylesheet" href="{% static 'auth/css/auth.css' %}">
+{% endblock %}
 
-<body class="h-screen w-screen bg-white overflow-hidden relative">
+{% block body %}
+<!-- 야구공 배경 -->
+<div id="bg-circle"
+    class="absolute top-1/2 -translate-y-1/2 w-[400px] h-[400px] z-0 transition-slide flex items-center justify-center pr-20 pb-20"
+    style="background-image: url('{% static 'auth/images/logo.png' %}'); left: {% if mode == 'signup' %}100vw{% else %}-200px{% endif %};">
+  <h2 class="absolute text-black text-5xl font-extrabold left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 drop-shadow-lg">
+    {% if mode == 'signup' %}Join with us{% else %}Welcome{% endif %}
+  </h2>
+</div>
 
-  {% include '_nav.html' %}
+<!-- 폼 카드 -->
+<div id="form-card"
+    class="absolute transition-slide top-1/2 -translate-y-1/2 z-20 w-[400px] {% if mode == 'signup' %}left-[150px]{% else %}right-[150px]{% endif %}">
+  {% if mode == 'login' %}
+  <form method="POST" class="bg-white w-full p-10 shadow-xl rounded-2xl">
+    {% csrf_token %}
+    <h2 class="text-2xl font-bold mb-6 text-center">Log In</h2>
+    {% for field in login_form %}
+    <div class="mb-4">
+      {{ field.label_tag }}
+      {{ field }}
+      {% if field.errors %}
+      <p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+    <button type="submit" name="action" value="login" class="w-full bg-[#75A58D] text-white py-2 rounded">Log In</button>
+    <p class="text-sm mt-4 text-center">
+      Don't have an account?
+      <a href="#" onclick="triggerSwitch('signup'); return false;" class="text-[#75A58D] font-semibold">Sign Up here</a>
+    </p>
+  </form>
+  {% endif %}
 
-  <!-- 야구공 배경 -->
-  <div id="bg-circle"
-       class="absolute top-1/2 -translate-y-1/2 w-[400px] h-[400px] z-0 transition-slide flex items-center justify-center pr-20 pb-20"
-       style="background-image: url('{% static 'accounts/images/logo.png' %}'); left: {% if mode == 'signup' %}100vw{% else %}-200px{% endif %};">
-    <h2 class="absolute text-black text-5xl font-extrabold left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 drop-shadow-lg">
-      {% if mode == 'signup' %}Join with us{% else %}Welcome{% endif %}
-    </h2>
-  </div>
+  {% if mode == 'signup' %}
+  <form method="POST" class="bg-white w-full p-10 shadow-xl rounded-2xl">
+    {% csrf_token %}
+    <h2 class="text-2xl font-bold mb-6 text-center">Sign Up</h2>
+    {% for field in signup_form %}
+    <div class="mb-4">
+      {{ field.label_tag }}
+      {{ field }}
+      {% if field.errors %}
+      <p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+    <button type="submit" name="action" value="signup" class="w-full bg-[#75A58D] text-white py-2 rounded hover:bg-sky-700">Sign Up</button>
+    <p class="text-sm mt-4 text-center">
+      Already have an account?
+      <a href="#" onclick="triggerSwitch('login'); return false;" class="text-[#75A58D] font-semibold">Log In here</a>
+    </p>
+  </form>
+  {% endif %}
+</div>
 
-  <!-- 폼 카드 -->
-  <div id="form-card"
-       class="absolute transition-slide top-1/2 -translate-y-1/2 z-20 w-[400px] {% if mode == 'signup' %}left-[150px]{% else %}right-[150px]{% endif %}">
+<script>
+  const bg = document.getElementById('bg-circle');
+  const card = document.getElementById('form-card');
+  const currentMode = '{{ mode }}';
 
-    {% if mode == 'login' %}
-    <form method="POST" class="bg-white w-full p-10 shadow-xl rounded-2xl">
-      {% csrf_token %}
-      <h2 class="text-2xl font-bold mb-6 text-center">Log In</h2>
-      {% for field in login_form %}
-      <div class="mb-4">
-        {{ field.label_tag }}
-        {{ field }}
-        {% if field.errors %}
-        <p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>
-        {% endif %}
-      </div>
-      {% endfor %}
-      <button type="submit" name="action" value="login" class="w-full bg-[#75A58D] text-white py-2 rounded">Log In</button>
-      <p class="text-sm mt-4 text-center">
-        Don't have an account?
-        <a href="#" onclick="triggerSwitch('signup'); return false;" class="text-[#75A58D] font-semibold">Sign Up here</a>
-      </p>
-    </form>
-    {% endif %}
+  setTimeout(() => {
+    bg.style.left = 'calc(50% - 500px)';
+    if (currentMode === 'signup') {
+      card.classList.add('left-20');
+    } else {
+      card.classList.add('right-20');
+    }
+  }, 50);
 
-    {% if mode == 'signup' %}
-    <form method="POST" class="bg-white w-full p-10 shadow-xl rounded-2xl">
-      {% csrf_token %}
-      <h2 class="text-2xl font-bold mb-6 text-center">Sign Up</h2>
-      {% for field in signup_form %}
-      <div class="mb-4">
-        {{ field.label_tag }}
-        {{ field }}
-        {% if field.errors %}
-        <p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>
-        {% endif %}
-      </div>
-      {% endfor %}
-      <button type="submit" name="action" value="signup" class="w-full bg-[#75A58D] text-white py-2 rounded hover:bg-sky-700">Sign Up</button>
-      <p class="text-sm mt-4 text-center">
-        Already have an account?
-        <a href="#" onclick="triggerSwitch('login'); return false;" class="text-[#75A58D] font-semibold">Log In here</a>
-      </p>
-    </form>
-    {% endif %}
-  </div>
+  function triggerSwitch(targetMode) {
+    bg.style.left = '';
+    bg.style.right = '';
+    card.classList.remove('left-20', 'right-20');
 
-  <script>
-    const bg = document.getElementById('bg-circle');
-    const card = document.getElementById('form-card');
-    const currentMode = '{{ mode }}';
+    if (targetMode === 'signup') {
+      bg.style.left = '100vw';
+    } else {
+      bg.style.left = '-500px';
+    }
 
     setTimeout(() => {
       bg.style.left = 'calc(50% - 500px)';
-      if (currentMode === 'signup') {
+      if (targetMode === 'signup') {
         card.classList.add('left-20');
       } else {
         card.classList.add('right-20');
       }
     }, 50);
 
-    function triggerSwitch(targetMode) {
-      bg.style.left = '';
-      bg.style.right = '';
-      card.classList.remove('left-20', 'right-20');
-
-      if (targetMode === 'signup') {
-        bg.style.left = '100vw';
-      } else {
-        bg.style.left = '-500px';
-      }
-
-      setTimeout(() => {
-        bg.style.left = 'calc(50% - 500px)';
-        if (targetMode === 'signup') {
-          card.classList.add('left-20');
-        } else {
-          card.classList.add('right-20');
-        }
-      }, 50);
-
-      setTimeout(() => {
-        window.location.href = `?mode=${targetMode}`;
-      }, 550);
-    }
-  </script>
-
-</body>
-</html>
+    setTimeout(() => {
+      window.location.href = `?mode=${targetMode}`;
+    }, 550);
+  }
+</script>
+{% endblock %}

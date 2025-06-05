@@ -43,7 +43,7 @@ class Calendar(HTMLCalendar):
 
             games_by_day[day].append({
                 'opponent': self.get_opponent(game),
-                'img_url': static(f'images/team/{self.get_opponent(game)}.svg'),
+                'img_url': static(f'cal/images/team/{self.get_opponent(game)}.svg'),
                 'time': game.time.strftime("%H:%M") if game.time else "",
                 'result': result,
                 'id': id,

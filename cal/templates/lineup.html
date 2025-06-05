@@ -1,49 +1,5 @@
 {% load static %}
 {% load custom_filters %}
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>라인업 | 직돌이</title>
-    <!-- Google Fonts - Bangers -->
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gamja+Flower&display=swap&family=Jua&display=swap&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet"> -->
-    <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
-
-    <!-- 스타일 태그로 적용 -->
-    <style>
-        @font-face {
-            font-family: 'ydestreetl';
-            src: url('/static/fonts/YdestreetL.woff2') format('woff2');
-            font-style: normal;
-        }
-        @font-face {
-            font-family: 'ydestreetB';
-            src: url('/static/fonts/YdestreetB.woff2') format('woff2');
-            font-weight: bold;
-            font-style: normal;
-        }
-        @font-face {
-            font-family: 'jaram';
-            src: url('/static/fonts/jaram.woff2') format('woff2');
-            font-weight: bold;
-            font-style: normal;
-        }
-        .font-black-han {
-            font-family: "Black Han Sans", sans-serif;
-            font-weight: 400;
-            font-style: normal;
-        }
-        .font-ydestreetb {
-            font-family: 'ydestreetB', sans-serif;
-            font-weight: bold;
-        }
-        .font-ydestreetl {
-            font-family: 'ydestreetL', sans-serif;
-        }
-    </style>
-</head>
 <body class="pt-[90px]">
     {% include '_nav.html' %}
     {% block body %}
@@ -153,9 +109,9 @@
         <div class="fixed top-[100px] right-10 z-50">
             <button id="attendance-btn" type="button" style="background: none; border: none; padding: 0;">
                 {% if request.user in game.attendance_users.all %}
-                    <img id="attendance-icon" src="{% static 'images/icon/watch.png' %}" alt="간 경기" class="w-10 h-10">
+                    <img id="attendance-icon" src="{% static 'cal/images/icon/watch.png' %}" alt="간 경기" class="w-10 h-10">
                 {% else %}
-                    <img id="attendance-icon" src="{% static 'images/icon/notwatch.png' %}" alt="안간 경기" class="w-10 h-10">
+                    <img id="attendance-icon" src="{% static 'cal/images/icon/notwatch.png' %}" alt="안간 경기" class="w-10 h-10">
                 {% endif %}
             </button>
         </div>
@@ -276,10 +232,10 @@
         .then(data => {
             const icon = document.getElementById('attendance-icon');
             if (data.attended) {
-                icon.src = "{% static 'images/icon/watch.png' %}";
+                icon.src = "{% static 'cal/images/icon/watch.png' %}";
                 icon.alt = "간 경기";
             } else {
-                icon.src = "{% static 'images/icon/notwatch.png' %}";
+                icon.src = "{% static 'cal/images/icon/notwatch.png' %}";
                 icon.alt = "안간 경기";
             }
         })
@@ -290,4 +246,3 @@
     });
     </script>
 </body>
-</html>

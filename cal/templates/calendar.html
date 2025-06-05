@@ -1,50 +1,22 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <title>캘린더 | 직돌이</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="{% static 'cs/calendar.css' %}">
-  <link rel="stylesheet" href="{% static 'cs/fonts.css' %}">
-  <style>
-    @font-face {
-      font-family: 'YdestreetB';
-      src: url('/static/fonts/YdestreetB.woff2') format('woff2');
-      font-weight: bold;
-      font-style: normal;
-    }
-    @font-face {
-      font-family: 'jaram';
-      src: url('/static/fonts/jaram.woff2') format('woff2');
-      font-weight: bold;
-      font-style: normal;
-    }
-
-    /* Tailwind와 함께 쓸 수 있는 클래스 정의 */
-    .font-ydestreetb {
-      font-family: 'YdestreetB', sans-serif;
-    }
-    .font-jaram {
-      font-family: 'Jaram', sans-serif;
-      font-weight: normal;
-    }
-  </style>
-</head>
-<body class="pt-[90px]">
+{% block styles %}
+<link rel="stylesheet" href="{% static 'cal/css/calendar.css' %}">
+{% endblock %}
+{% block body %}
   {% include '_nav.html' %}
-  {% block body %}
+  <div class="w-full flex justify-center">
     <table class="calendar-table font-ydestreetb">
       <thead>
         <tr>
           <th colspan="7" class="month-header">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <a href="?{{ prev_month }}" class="nav-link">
-                <img src="{% static 'images/icon/arrow.png' %}" alt="Prev" class="w-16 h-16 rotate-90 inline">
+                <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Prev" class="w-16 h-16 rotate-90 inline">
               </a>
               <span>{{ cal_data.year }}년 {{ cal_data.month }}월</span>
               <a href="?{{ next_month }}" class="nav-link">
-                <img src="{% static 'images/icon/arrow.png' %}" alt="Next" class="w-16 h-16 -rotate-90 inline">
+                <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Next" class="w-16 h-16 -rotate-90 inline">
               </a>
             </div>
           </th>
@@ -107,6 +79,5 @@
           </div> -->
       </tbody>
     </table>
-  {% endblock %}
-</body>
-</html>
+  </div>
+{% endblock %}
