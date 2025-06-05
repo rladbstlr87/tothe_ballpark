@@ -3,6 +3,9 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import PostForm, CommentForm
 
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+
 # 게시글 리스트
 def post_index(request):
     posts = Post.objects.all().order_by('-created_at')
@@ -27,11 +30,9 @@ def create(request):
             return redirect('posts:detail', id=post.id)
     else:
         form = PostForm()
-
     return render(request, 'create.html', {'form': form})
 
 # 게시글 상세
-@login_required
 def detail(request, id):
     post = get_object_or_404(Post, id=id)
     comments = post.comment_set.all().order_by('-created_at')
@@ -114,12 +115,63 @@ def comment_delete(request, post_id, comment_id):
         comment.delete()
     return redirect('posts:detail', id=post_id)
 
-# 게시글 좋아요
+# 게시글 좋아요 기능
 @login_required
 def post_like(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     if request.user in post.like_users.all():
         post.like_users.remove(request.user)
     else:
-        post.like_users.add(request.user)
+        post.like_users.add(user)
     return redirect('posts:detail', id=post_id)
+
+# 댓글 좋아요 기능
+@login_required
+def comment_like(request, comment_id):
+    user = request.user
+    comment = Comment.objects.get(id=comment_id)
+    
+    if user in comment.like_users.all():
+        comment.like_users.remove(user)
+    else:
+        comment.like_users.add(user)
+    return redirect('posts:detail', id=comment.post.id)
+
+
+# 게시물 좋아요 js 기능
+@login_required
+def like_async(request, id):
+    user = request.user
+    post = Post.objects.get(id=id)
+
+    if user in post.like_users.all():
+        post.like_users.remove(user)
+        status = False
+    else:
+        post.like_users.add(user)
+        status = True
+
+    context = {
+        'post_id': id,
+        'status': status,
+        'count': len(post.like_users.all())
+    }
+    return JsonResponse(context)
+
+# 댓글 좋아요 js 기능
+@login_required
+def comment_like_async(request, comment_id):
+    comment = Comment.objects.get(id=comment_id)
+    user = request.user
+
+    if user in comment.like_users.all():
+        comment.like_users.remove(user)
+        status = False
+    else:
+        comment.like_users.add(user)
+        status = True
+
+    return JsonResponse({
+        'status': status,
+        'count': comment.like_users.count(),
+    })
