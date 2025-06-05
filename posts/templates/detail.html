@@ -1,146 +1,132 @@
-
 {% include '_nav.html' %}
 <body class="pt-[90px]">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <div class="border-b pb-4 mb-4">
-        <h1 class="text-2xl font-bold text-gray-800">{{ post.title }}</h1>
-        <div class="flex justify-between items-center text-sm text-gray-500 mt-1">
-        <span>{{ post.user.nickname }}</span>
-        <span>{{ post.created_at|date:"Y.m.d H:i" }}</span>
-        </div>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+<!-- 게시글 제목 및 메타 정보 -->
+<div class="border-b pb-4 mb-4">
+  <h1 class="text-2xl font-bold text-gray-800">{{ post.title }}</h1>
+  <div class="flex justify-between items-center text-sm text-gray-500 mt-1">
+    <span>{{ post.user.nickname }}</span>
+    <div class="flex items-center gap-4 ml-auto">
+      <span class="px-2 py-0.5 bg-gray-200 text-gray-700 rounded-full text-xs">
+        {{ post.get_category_display }}
+      </span>
+      <span>{{ post.created_at|date:"Y.m.d H:i" }}</span>
     </div>
-    {% if post.image %}
-        <img src="{{post.image.url}}" class="" alt="...">
-    {% endif %}    
-        
-    <div class="text-gray-800 whitespace-pre-line mb-8">
-        {{ post.content }}
-    </div>
-
-    {% if user == post.user %}
-        <div class="flex justify-end gap-2 mb-10">
-            <a href="{% url 'posts:update' post.id %}" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded">수정</a>
-            <form action="{% url 'posts:delete' post.id %}" method="POST" onsubmit="return confirm('삭제할까요?')">
-                {% csrf_token %}
-                <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">삭제</button>
-            </form>
-        </div>
-    {% endif %}
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-thumbs-up-icon lucide-thumbs-up"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>
-
-    <div class="inline-flex items-center gap-1 px-2 py-1 rounded border 
-    {% if user in post.like_users.all %}
-        border-red-400 text-red-500
-    {% else %}
-        border-gray-300 text-gray-500
-    {% endif %}">
-    
-    <!-- SVG 따봉 아이콘 -->
-    <svg xmlns="http://www.w3.org/2000/svg"
-         width="20" height="20"
-         fill="none" viewBox="0 0 24 24"
-         stroke="currentColor"
-         stroke-width="2"
-         stroke-linecap="round"
-         stroke-linejoin="round"
-         class="lucide lucide-thumbs-up-icon">
-        <path d="M7 10v12"/>
-        <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/>
-    </svg>
-
-    <!-- 좋아요 수 -->
-    <span class="font-semibold text-sm">
-      {{ post.like_users.count }}
-    </span>
+  </div>
 </div>
 
+<!-- 게시글 이미지 -->
+{% if post.image %}
+  <img src="{{ post.image.url }}" alt="첨부 이미지" class="mb-4 max-w-full rounded">
+{% endif %}
 
-    <!-- 댓글 작성 -->
-    <hr class="my-6">
-    <form action="{% url 'posts:comment_create' post.id %}" method="POST" enctype="multipart/form-data"
-        class="bg-gray-50 p-4 rounded space-y-4">
-    {% csrf_token %}
-    {{ form.content }}
-    {{ form.image }}
-    <div class="text-right">
-        <button type="submit"
-        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-        댓글등록
-        </button>
-    </div>
+<!-- 게시글 내용 -->
+<div class="text-gray-800 whitespace-pre-line mb-8">
+  {{ post.content }}
+</div>
+
+<!-- 수정/삭제 버튼 -->
+{% if user == post.user %}
+  <div class="flex justify-end gap-2 mb-10">
+    <a href="{% url 'posts:update' post.id %}" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded">수정</a>
+    <form action="{% url 'posts:delete' post.id %}" method="POST" onsubmit="return confirm('삭제할까요?')">
+      {% csrf_token %}
+      <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">삭제</button>
     </form>
+  </div>
+{% endif %}
 
-    <!-- 댓글 목록 -->
-    <ul class="mt-8 space-y-6">
-        {% for comment in comments %}
-            <li id ="comment-{{comment.id}}" class="border-b pb-4">
-                <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
-                    <span class="font-semibold">{{ comment.user.nickname }}</span>
-                    <span class="text-xs text-gray-400">{{ comment.created_at|date:"Y.m.d H:i" }}</span>
-                </div>
-                <p class="text-gray-800 whitespace-pre-line mb-2">{{ comment.content }}</p>
-                {% if comment.image %}
-                    <img src="{{ comment.image.url }}" alt="첨부 이미지"
-                        class="max-w-xs rounded shadow mb-2">
-                {% endif %}
+<!-- 좋아요 -->
+<div class="inline-flex items-center gap-1 px-2 py-1 rounded border 
+  {% if user in post.like_users.all %}
+    border-red-400 text-red-500
+  {% else %}
+    border-gray-300 text-gray-500
+  {% endif %}">
+  
+  <!-- 따봉 아이콘 -->
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24"
+       stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+       class="lucide lucide-thumbs-up-icon">
+    <path d="M7 10v12"/>
+    <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/>
+  </svg>
+  <span class="font-semibold text-sm">{{ post.like_users.count }}</span>
+</div>
 
+<!-- 댓글 작성 -->
+<hr class="my-6">
+<form action="{% url 'posts:comment_create' post.id %}" method="POST" enctype="multipart/form-data"
+      class="bg-gray-50 p-4 rounded space-y-4">
+  {% csrf_token %}
+  {{ form.content }}
+  {{ form.image }}
+  <div class="text-right">
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+      댓글등록
+    </button>
+  </div>
+</form>
 
-                <!--댓글 수정 -->
-                {% if edit_comment_id == comment.id %}
-                    <form action="{% url 'posts:comment_update' post.id comment.id %}" method="POST" enctype="multipart/form-data"
-                            id="edit-comment-{{ comment.id }}" class="space-y-4">
-                        {% csrf_token %}
-                        
-                        <!--  텍스트 영역 -->
-                        <textarea name="content" class="w-full p-2 border rounded">{{ comment.content }}</textarea>
+<!-- 댓글 목록 -->
+<ul class="mt-8 space-y-6">
+  {% for comment in comments %}
+    <li id="comment-{{ comment.id }}" class="border-b pb-4">
+      <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
+        <span class="font-semibold">{{ comment.user.nickname }}</span>
+        <span class="text-xs text-gray-400">{{ comment.created_at|date:"Y.m.d H:i" }}</span>
+      </div>
+      <p class="text-gray-800 whitespace-pre-line mb-2">{{ comment.content }}</p>
+      
+      {% if comment.image %}
+        <img src="{{ comment.image.url }}" alt="첨부 이미지" class="max-w-xs rounded shadow mb-2">
+      {% endif %}
 
-                        <!-- 기존 이미지 + 삭제 체크박스 -->
-                        {% if comment.image %}
-                        <p class="text-sm text-gray-500">현재 이미지: 
-                            <a href="{{ comment.image.url }}" class="underline text-blue-600" target="_blank">
-                            {{ comment.image.name }}
-                            </a>
-                        </p>
-                        <label class="inline-flex items-center space-x-2 text-sm text-red-600">
-                            <input type="checkbox" name="image-clear">
-                            <span>이미지 삭제</span>
-                        </label>
-                        {% endif %}
+      {% if edit_comment_id == comment.id %}
+        <!-- 댓글 수정 폼 -->
+        <form action="{% url 'posts:comment_update' post.id comment.id %}" method="POST" enctype="multipart/form-data"
+              id="edit-comment-{{ comment.id }}" class="space-y-4">
+          {% csrf_token %}
+          <textarea name="content" class="w-full p-2 border rounded">{{ comment.content }}</textarea>
 
-                        <!--  이미지 업로드 -->
-                        <input type="file" name="image" class="block w-full text-sm">
+          {% if comment.image %}
+            <p class="text-sm text-gray-500">
+              현재 이미지: <a href="{{ comment.image.url }}" class="underline text-blue-600" target="_blank">{{ comment.image.name }}</a>
+            </p>
+            <label class="inline-flex items-center space-x-2 text-sm text-red-600">
+              <input type="checkbox" name="image-clear">
+              <span>이미지 삭제</span>
+            </label>
+          {% endif %}
 
-                        <!--  버튼 -->
-                        <div class="flex justify-end gap-2">
-                        <button type="submit" class="px-3 py-1 bg-blue-500 text-white rounded text-sm">저장</button>
-                        <a href="{% url 'posts:detail' post.id %}#comment-{{ comment.id }}"
-                            class="px-3 py-1 bg-gray-200 rounded text-sm">취소</a>
-                        </div>
-                    </form>
-                    <script>
-                        document.addEventListener('DOMContentLoaded', () => {
-                            setTimeout(() => {
-                            const textarea = document.querySelector('#edit-comment-{{ comment.id }} textarea');
-                            if (textarea) {
-                            textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            textarea.focus();
-                            }
-                        }, 100);
-                        });
-                    </script>
-                {% else %}
+          <input type="file" name="image" class="block w-full text-sm">
 
-                    {% if user == comment.user %}
-                        <div class="flex gap-2 text-sm">
-                            <a href="{% url 'posts:comment_update' post.id comment.id %}#comment-{{comment.id}}"
-                            class="text-blue-500 hover:underline">수정</a>
-                            
-                            <a href="{% url 'posts:comment_delete' post.id comment.id %}"
-                            class="text-red-500 hover:underline">삭제</a>
-                        </div>
-                    {% endif %}
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
+          <div class="flex justify-end gap-2">
+            <button type="submit" class="px-3 py-1 bg-blue-500 text-white rounded text-sm">저장</button>
+            <a href="{% url 'posts:detail' post.id %}#comment-{{ comment.id }}" class="px-3 py-1 bg-gray-200 rounded text-sm">취소</a>
+          </div>
+        </form>
+        <script>
+          document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+              const textarea = document.querySelector('#edit-comment-{{ comment.id }} textarea');
+              if (textarea) {
+                textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                textarea.focus();
+              }
+            }, 100);
+          });
+        </script>
+      {% else %}
+        {% if user == comment.user %}
+          <div class="flex gap-2 text-sm">
+            <a href="{% url 'posts:comment_update' post.id comment.id %}#comment-{{ comment.id }}" class="text-blue-500 hover:underline">수정</a>
+            <a href="{% url 'posts:comment_delete' post.id comment.id %}" class="text-red-500 hover:underline">삭제</a>
+          </div>
+        {% endif %}
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>
 </body>
