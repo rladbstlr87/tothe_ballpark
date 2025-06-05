@@ -20,11 +20,13 @@
         <!-- ✅ 중앙 정보 -->
         <div class="w-full text-center col-span-1">
             {% if not is_after_game %}
-            <button class="block mx-auto px-2 py-1 mb-1 rounded-md shadow-md bg-slate-600 text-white text-xs font-medium transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
-                경기 전<br>예매하기
-            </button>
+                <a href="{{ ticket_url }}" target="_blank">
+                    <button class="block mx-auto px-2 py-1 mb-1 rounded-md shadow-md bg-slate-600 text-white text-xs font-medium transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
+                        경기 전<br>예매하기
+                    </button>
+                </a>
             {% endif %}
-            <a href="{% url 'cal:stadium_info' game.stadium %}" class="font-bold block">
+            <a href="{% url 'cal:stadium_info' game.stadium %}?ticket_url={{ ticket_url|urlencode }}" class="font-bold block">
                 {{ game.stadium }}
             </a>
             <div class="mt-1 text-sm text-gray-500">{{ today|date:"Y.m.d" }}</div>

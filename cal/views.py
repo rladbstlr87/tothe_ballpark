@@ -127,6 +127,29 @@ def lineup(request, game_id):
     # 경기 후 여부
     is_after_game = (game.team1_score is not None) and (game.team2_score is not None)
 
+    stadium_ticket = game.stadium
+
+    if game.team2 == 'LG' and game.stadium == '잠실':
+        stadium_ticket = '잠실LG'
+
+    if game.team2 == 'OB' and game.stadium == '잠실':
+        stadium_ticket = '잠실OB'
+
+    ticket = {
+        "대전(신)": "https://www.ticketlink.co.kr/sports/137/63",
+        "수원": "https://www.ticketlink.co.kr/sports/137/62",
+        "광주": "https://www.ticketlink.co.kr/sports/137/58",
+        "대구": "https://www.ticketlink.co.kr/sports/137/57",
+        '포항': "https://www.ticketlink.co.kr/sports/137/57",
+        "잠실LG": "https://www.ticketlink.co.kr/sports/137/59",
+        "문학": "https://www.ticketlink.co.kr/sports/137/476",
+        "고척": "https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB003",
+        "잠실OB": "https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB004",
+        "사직": "https://ticket.giantsclub.com/loginForm.do",
+        "창원": "https://ticket.ncdinos.com/games",
+        '울산': "https://ticket.ncdinos.com/games",
+    }
+
     context = {
         'game': game,
         'user_lineup': user_lineup,
@@ -140,6 +163,7 @@ def lineup(request, game_id):
         'user_score': user_score,
         'opponent_score': opponent_score,
         'is_after_game': is_after_game,
+        'ticket_url': ticket[stadium_ticket],
     }
 
     return render(request, 'lineup.html', context)
@@ -237,6 +261,7 @@ def user_games(request, user_id):
 
 # 경기장 정보(좌석, 주차, 식당)
 def stadium_info(request, stadium):
+    ticket_url = request.GET.get('ticket_url', None)
     user = request.user
     stadium_obj = get_object_or_404(Stadium, stadium=stadium)
 
@@ -268,6 +293,7 @@ def stadium_info(request, stadium):
         'parkings': parkings,
         'restaurants': restaurants,
         'google_url': f"https://www.google.com/maps/dir/?api=1&destination={lat},{lng}&destination_place_id={place_id}",
+        'ticket_url': ticket_url,
     }
 
     return render(request, 'stadium_info.html', context)

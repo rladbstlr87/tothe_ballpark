@@ -40,17 +40,41 @@ def preprocessing(df, cols):
 # h_num_cols = [col for col in h_cols if col not in h_str_cols]
 # p_num_cols = [col for col in p_cols if col not in p_str_cols]
 
+# def hitter_style(row):
+#     if row['power'] > 0.65:
+#         return 0  # 홈런 타입
+#     elif row['speed'] > 0.65:
+#         return 1  # 스피드 타입
+#     elif row['contact'] > 0.65 and row['AVG'] > 0.25:
+#         return 2  # 컨택 타입
+#     elif row['batting_eye'] > 0.65:
+#         return 3 # 선구안 타입
+#     else:
+#         return 4 # 노말 타입
+    
 def hitter_style(row):
-    if row['power'] > 0.65:
-        return 0  # 홈런 타입
-    elif row['speed'] > 0.65:
-        return 1  # 스피드 타입
-    elif row['contact'] > 0.65 and row['AVG'] > 0.25:
-        return 2  # 컨택 타입
-    elif row['batting_eye'] > 0.65:
-        return 3 # 선구안 타입
-    else:
+    avg_stat = (row['power'] + row['speed'] + row['contact'] + row['batting_eye']) / 4
+    max_stat = max(row['power'], row['speed'], row['contact'], row['batting_eye'])
+    
+    if avg_stat < 0.6:
         return 4 # 노말 타입
+    elif max_stat == row['contact']:
+        if row['AVG'] > 0.245:
+            return 2  # 컨택 타입
+        else:
+            secondary_stat = max(row['power'], row['speed'], row['batting_eye'])
+            if row['power'] > 0.6:
+                return 0  # 홈런 타입
+            elif row['speed'] > 0.6:
+                return 1 # 스피드 타입
+            else:
+                return 3  # 선구안 타입
+    elif row['power'] > 0.6:
+        return 0  # 홈런 타입
+    elif row['speed'] > 0.6:
+        return 1 # 스피드 타입
+    else:
+        return 3 # 선구안 타입
 
 def pitcher_style(row):
     if row['speed'] >= 148:
