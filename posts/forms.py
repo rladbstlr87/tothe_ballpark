@@ -5,7 +5,7 @@ from django import forms
 class PostForm(ModelForm):
     class Meta():
         model = Post
-        fields = ('title', 'content', 'image')
+        fields = ('title', 'content', 'image','category')
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400'
@@ -20,6 +20,9 @@ class PostForm(ModelForm):
                 'class': 'w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 '
                          'file:border file:rounded-md file:border-gray-300 file:bg-gray-100 '
                          'hover:file:bg-gray-200'
+            }),
+            'category': forms.Select(attrs={
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white'
             })
         }
 

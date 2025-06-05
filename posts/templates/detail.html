@@ -1,21 +1,6 @@
-
 {% include '_nav.html' %}
 <body class="pt-[90px]">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <div class="border-b pb-4 mb-4">
-        <h1 class="text-2xl font-bold text-gray-800">{{ post.title }}</h1>
-        <div class="flex justify-between items-center text-sm text-gray-500 mt-1">
-        <span>{{ post.user.nickname }}</span>
-        <span>{{ post.created_at|date:"Y.m.d H:i" }}</span>
-        </div>
-    </div>
-    {% if post.image %}
-        <img src="{{post.image.url}}" class="" alt="...">
-    {% endif %}    
-        
-    <div class="text-gray-800 whitespace-pre-line mb-8">
-        {{ post.content }}
-    </div>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     {% if user == post.user %}
         <div class="flex justify-end gap-2 mb-10">
@@ -52,21 +37,16 @@
   </div>
 </div>
 
-
-    <!-- 댓글 작성 -->
-    <hr class="my-6">
-    <form action="{% url 'posts:comment_create' post.id %}" method="POST" enctype="multipart/form-data"
-        class="bg-gray-50 p-4 rounded space-y-4">
-    {% csrf_token %}
-    {{ form.content }}
-    {{ form.image }}
-    <div class="text-right">
-        <button type="submit"
-        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-        댓글등록
-        </button>
-    </div>
+<!-- 수정/삭제 버튼 -->
+{% if user == post.user %}
+  <div class="flex justify-end gap-2 mb-10">
+    <a href="{% url 'posts:update' post.id %}" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded">수정</a>
+    <form action="{% url 'posts:delete' post.id %}" method="POST" onsubmit="return confirm('삭제할까요?')">
+      {% csrf_token %}
+      <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">삭제</button>
     </form>
+  </div>
+{% endif %}
 
     <!-- 댓글 목록 -->
     <ul class="mt-8 space-y-6">
@@ -102,52 +82,52 @@
                     </div>
                 </div>
 
+<!-- 댓글 작성 -->
+<hr class="my-6">
+<form action="{% url 'posts:comment_create' post.id %}" method="POST" enctype="multipart/form-data"
+      class="bg-gray-50 p-4 rounded space-y-4">
+  {% csrf_token %}
+  {{ form.content }}
+  {{ form.image }}
+  <div class="text-right">
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+      댓글등록
+    </button>
+  </div>
+</form>
 
-                <!--댓글 수정 -->
-                {% if edit_comment_id == comment.id %}
-                    <form action="{% url 'posts:comment_update' post.id comment.id %}" method="POST" enctype="multipart/form-data"
-                            id="edit-comment-{{ comment.id }}" class="space-y-4">
-                        {% csrf_token %}
-                        
-                        <!--  텍스트 영역 -->
-                        <textarea name="content" class="w-full p-2 border rounded">{{ comment.content }}</textarea>
+<!-- 댓글 목록 -->
+<ul class="mt-8 space-y-6">
+  {% for comment in comments %}
+    <li id="comment-{{ comment.id }}" class="border-b pb-4">
+      <div class="flex items-center justify-between text-sm text-gray-600 mb-2">
+        <span class="font-semibold">{{ comment.user.nickname }}</span>
+        <span class="text-xs text-gray-400">{{ comment.created_at|date:"Y.m.d H:i" }}</span>
+      </div>
+      <p class="text-gray-800 whitespace-pre-line mb-2">{{ comment.content }}</p>
+      
+      {% if comment.image %}
+        <img src="{{ comment.image.url }}" alt="첨부 이미지" class="max-w-xs rounded shadow mb-2">
+      {% endif %}
 
-                        <!-- 기존 이미지 + 삭제 체크박스 -->
-                        {% if comment.image %}
-                        <p class="text-sm text-gray-500">현재 이미지: 
-                            <a href="{{ comment.image.url }}" class="underline text-blue-600" target="_blank">
-                            {{ comment.image.name }}
-                            </a>
-                        </p>
-                        <label class="inline-flex items-center space-x-2 text-sm text-red-600">
-                            <input type="checkbox" name="image-clear">
-                            <span>이미지 삭제</span>
-                        </label>
-                        {% endif %}
+      {% if edit_comment_id == comment.id %}
+        <!-- 댓글 수정 폼 -->
+        <form action="{% url 'posts:comment_update' post.id comment.id %}" method="POST" enctype="multipart/form-data"
+              id="edit-comment-{{ comment.id }}" class="space-y-4">
+          {% csrf_token %}
+          <textarea name="content" class="w-full p-2 border rounded">{{ comment.content }}</textarea>
 
-                        <!--  이미지 업로드 -->
-                        <input type="file" name="image" class="block w-full text-sm">
+          {% if comment.image %}
+            <p class="text-sm text-gray-500">
+              현재 이미지: <a href="{{ comment.image.url }}" class="underline text-blue-600" target="_blank">{{ comment.image.name }}</a>
+            </p>
+            <label class="inline-flex items-center space-x-2 text-sm text-red-600">
+              <input type="checkbox" name="image-clear">
+              <span>이미지 삭제</span>
+            </label>
+          {% endif %}
 
-                        <!--  버튼 -->
-                        <div class="flex justify-end gap-2">
-                        <button type="submit" class="px-3 py-1 bg-blue-500 text-white rounded text-sm">저장</button>
-                        <a href="{% url 'posts:detail' post.id %}#comment-{{ comment.id }}"
-                            class="px-3 py-1 bg-gray-200 rounded text-sm">취소</a>
-                        </div>
-                    </form>
-                    <script>
-                        document.addEventListener('DOMContentLoaded', () => {
-                            setTimeout(() => {
-                            const textarea = document.querySelector('#edit-comment-{{ comment.id }} textarea');
-                            if (textarea) {
-                            textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                            textarea.focus();
-                            }
-                        }, 100);
-                        });
-                    </script>
-                {% else %}
-
+          <input type="file" name="image" class="block w-full text-sm">
                     {% if user == comment.user %}
                         <div class="flex gap-2 text-sm">
                             <a href="{% url 'posts:comment_update' post.id comment.id %}#comment-{{comment.id}}"
@@ -216,4 +196,3 @@
       }
     });
   });
-</script>
