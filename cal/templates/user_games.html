@@ -1,58 +1,18 @@
+{% extends 'base.html' %}
 {% load static %}
 {% load custom_filters %}
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="{% static 'cal/css/user_games.css' %}">
-  <title> 직관 경기</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-
-  <!-- Google Fonts - Bangers -->
-  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gamja+Flower&display=swap&family=Jua&display=swap&family=Jua&family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
-
-  <!-- 스타일 태그로 적용 -->
-  <style>
-    @font-face {
-      font-family: 'YdestreetB';
-      src: url('/static/fonts/YdestreetB.woff2') format('woff2');
-      font-style: normal;
-    }
-    @font-face {
-      font-family: 'YdestreetL';
-      src: url('/static/fonts/YdestreetL.woff2') format('woff2');
-      font-style: normal;
-    }
-    body {
-      font-family: 'YdestreetL', sans-serif;
-    }
-    .font-black-han {
-      font-family: "Black Han Sans", sans-serif;
-      font-weight: 400;
-      font-style: normal;
-    }
-    .font-ydestreetb {
-      font-family: 'YdestreetB', sans-serif;
-      font-weight: bold;
-    }
-  </style>
-</head>
-
 {% block styles %}
 <link rel="stylesheet" href="{% static 'cal/css/user_games.css' %}">
 {% endblock %}
 
 <body class="min-h-screen pt-24 text-gray-800 bg-cover bg-center bg-no-repeat bg-fixed"
       style="background-image: url('{% static 'images/user_games/' %}{{ user.team }}.png')">
-  {% include '_nav.html' %}
   {% block body %}
 
   <div class="max-w-5xl mx-auto px-6">
     <!-- 제목 -->
     <h1 class="font-black-han text-5xl text-center drop-shadow-lg highlight-{{user.team}}">⚾ {{user.team|team_name}} 직관 경기</h1>
     
-
     <!-- 내용 카드 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
       <!-- 경기 정보 -->
@@ -108,5 +68,3 @@
   </div>
 
   {% endblock %}
-</body>
-</html>

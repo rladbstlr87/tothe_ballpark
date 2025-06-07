@@ -1,15 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils.safestring import mark_safe
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
-from django.http import JsonResponse
 from datetime import datetime, timedelta, date
 from collections import defaultdict
 from .models import *
+from accounts.models import User
 from .utils import Calendar
 import calendar
-from collections import defaultdict
 
 # 홈페이지
 def index(request):
@@ -152,7 +150,9 @@ def attendance(request, game_id):
 @never_cache
 @login_required
 def user_games(request, user_id):
-    user = request.user
+    user = get_object_or_404(User, id=user_id)
+    if user != request.user:
+        return redirect('cal:calendar')
     games = user.attendance_game.all().order_by('date', 'time')
     win_count = games.filter(team1_result='승').count()
     lose_count = games.filter(team1_result='패').count()
@@ -203,6 +203,7 @@ def user_games(request, user_id):
             result.append(game.team2_result)
 
     context = {
+        'user': user,
         'game_data': zip(games, opponent_team, result),
         'win_count': win_count,
         'lose_count': lose_count,

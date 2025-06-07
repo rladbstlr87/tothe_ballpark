@@ -1,8 +1,7 @@
+{% extends 'base.html' %}
 {% load static %}
 {% load custom_filters %}
-<body class="pt-[90px]">
-    {% include '_nav.html' %}
-    {% block body %}
+{% block body %}
     {% if has_lineup and game %}
     {% include '_scorebar.html' %}
         <div class="grid grid-cols-2 max-w-3xl mx-auto font-ydestreetl">
@@ -165,84 +164,82 @@
             ⚠️ 라인업이 아직 등록되지 않았습니다.
         </div>
     {% endif %}
-    {% endblock %}
 
-    <!-- JS -->
-    <script>
-    // 모달 열기 이벤트
-    document.querySelectorAll('[data-modal-target]').forEach(el => {
-        el.addEventListener('click', () => {
-            const playerName = el.getAttribute('data-player-name');
-            const playerId = el.getAttribute('data-player-id');
-            const type = el.getAttribute('data-type');
+<script>
+// 모달 열기 이벤트
+document.querySelectorAll('[data-modal-target]').forEach(el => {
+    el.addEventListener('click', () => {
+        const playerName = el.getAttribute('data-player-name');
+        const playerId = el.getAttribute('data-player-id');
+        const type = el.getAttribute('data-type');
 
-            document.getElementById('modal-player-name').textContent = playerName;
-            document.getElementById('modal-player-img').src = `https://sports-phinf.pstatic.net/player/kbo/default/${playerId}.png?type=w150`;
+        document.getElementById('modal-player-name').textContent = playerName;
+        document.getElementById('modal-player-img').src = `https://sports-phinf.pstatic.net/player/kbo/default/${playerId}.png?type=w150`;
 
-            if (type === 'pitcher') {
-                document.getElementById('modal-batter-stats').classList.add('hidden');
-                document.getElementById('modal-pitcher-stats').classList.remove('hidden');
+        if (type === 'pitcher') {
+            document.getElementById('modal-batter-stats').classList.add('hidden');
+            document.getElementById('modal-pitcher-stats').classList.remove('hidden');
 
-                const fields = ['era', 'g', 'w', 'l', 'sv', 'hld', 'wpct', 'ip', 'h', 'hr', 'bb', 'hbp', 'so', 'r', 'er', 'whip', 'cg', 'sho', 'qs', 'bsv', 'tbf', 'np', 'avg', 'sac', 'sf', 'ibb', 'wp', 'bk'];
-                fields.forEach(field => {
-                    const elModal = document.getElementById(`modal-pitcher-${field}`);
-                    if(elModal) elModal.textContent = el.getAttribute(`data-${field}`) || '-';
-                });
-            } else {
-                document.getElementById('modal-pitcher-stats').classList.add('hidden');
-                document.getElementById('modal-batter-stats').classList.remove('hidden');
+            const fields = ['era', 'g', 'w', 'l', 'sv', 'hld', 'wpct', 'ip', 'h', 'hr', 'bb', 'hbp', 'so', 'r', 'er', 'whip', 'cg', 'sho', 'qs', 'bsv', 'tbf', 'np', 'avg', 'sac', 'sf', 'ibb', 'wp', 'bk'];
+            fields.forEach(field => {
+                const elModal = document.getElementById(`modal-pitcher-${field}`);
+                if(elModal) elModal.textContent = el.getAttribute(`data-${field}`) || '-';
+            });
+        } else {
+            document.getElementById('modal-pitcher-stats').classList.add('hidden');
+            document.getElementById('modal-batter-stats').classList.remove('hidden');
 
-                const fields = ['avg', 'g', 'pa', 'ab', 'r', 'h', 'hr', 'rbi', 'bb', 'so', 'obp', 'slg', 'ops', 'sb', 'cs'];
-                fields.forEach(field => {
-                    const elModal = document.getElementById(`modal-player-${field}`);
-                    if(elModal) elModal.textContent = el.getAttribute(`data-${field}`) || '-';
-                });
-            }
+            const fields = ['avg', 'g', 'pa', 'ab', 'r', 'h', 'hr', 'rbi', 'bb', 'so', 'obp', 'slg', 'ops', 'sb', 'cs'];
+            fields.forEach(field => {
+                const elModal = document.getElementById(`modal-player-${field}`);
+                if(elModal) elModal.textContent = el.getAttribute(`data-${field}`) || '-';
+            });
+        }
 
-            document.getElementById('modal-face').classList.remove('hidden');
-        });
+        document.getElementById('modal-face').classList.remove('hidden');
     });
+});
 
 
-    // 모달 닫기
-    document.getElementById('modal-close').addEventListener('click', () => {
-        document.getElementById('modal-face').classList.add('hidden');
+// 모달 닫기
+document.getElementById('modal-close').addEventListener('click', () => {
+    document.getElementById('modal-face').classList.add('hidden');
+});
+
+// 출석 버튼 AJAX 처리
+document.getElementById('attendance-btn').addEventListener('click', () => {
+    const url = "{% url 'cal:attendance' game.id %}";
+
+    // CSRF 토큰 가져오기 (템플릿 내 csrf 토큰을 직접 변수에 넣는 방법)
+    const csrfToken = '{{ csrf_token }}';
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({})
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('네트워크 응답 오류');
+        return response.json();
+    })
+    .then(data => {
+        const icon = document.getElementById('attendance-icon');
+        if (data.attended) {
+            icon.src = "{% static 'cal/images/icon/watch.png' %}";
+            icon.alt = "간 경기";
+        } else {
+            icon.src = "{% static 'cal/images/icon/notwatch.png' %}";
+            icon.alt = "안간 경기";
+        }
+    })
+    .catch(error => {
+        console.error('출석 등록 실패:', error);
+        alert('출석 등록 중 문제가 발생했습니다.');
     });
-
-    // 출석 버튼 AJAX 처리
-    document.getElementById('attendance-btn').addEventListener('click', () => {
-        const url = "{% url 'cal:attendance' game.id %}";
-
-        // CSRF 토큰 가져오기 (템플릿 내 csrf 토큰을 직접 변수에 넣는 방법)
-        const csrfToken = '{{ csrf_token }}';
-
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrfToken,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({})
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('네트워크 응답 오류');
-            return response.json();
-        })
-        .then(data => {
-            const icon = document.getElementById('attendance-icon');
-            if (data.attended) {
-                icon.src = "{% static 'cal/images/icon/watch.png' %}";
-                icon.alt = "간 경기";
-            } else {
-                icon.src = "{% static 'cal/images/icon/notwatch.png' %}";
-                icon.alt = "안간 경기";
-            }
-        })
-        .catch(error => {
-            console.error('출석 등록 실패:', error);
-            alert('출석 등록 중 문제가 발생했습니다.');
-        });
-    });
-    </script>
-</body>
+});
+</script>
+{% endblock %}
