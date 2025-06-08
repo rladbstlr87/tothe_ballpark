@@ -1,5 +1,5 @@
 {% load static %}
-<nav class="bg-cover [background-position:0%_60%] bg-center fixed top-0 left-0 w-full bg-transparent z-30 py-2 font-ydestreetl"
+<nav class="bg-cover [background-position:0%_60%] bg-center fixed top-0 left-0 w-full bg-transparent z-30 py-2"
     style="background-image: url('{% static 'nav/nav-' %}{{ user.team }}.png');">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="relative flex h-16 items-center justify-between">
@@ -12,10 +12,7 @@
                     aria-controls="mobile-menu">
                 <span class="absolute -inset-0.5"></span>
                 <span class="sr-only">Open main menu</span>
-                <!--
-                    Icon when menu is closed.
-                    Menu open: "hidden", Menu closed: "block"
-                -->
+                <!-- 메뉴 닫힌 상태 -->
                 <svg :class="{ 'hidden': mobileMenuOpen, 'block': !mobileMenuOpen }" 
                         class="size-6" 
                         fill="none" 
@@ -26,10 +23,7 @@
                         data-slot="icon">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
-                <!--
-                    Icon when menu is open.
-                    Menu open: "block", Menu closed: "hidden"
-                -->
+                <!-- 메뉴 열린 상태 -->
                 <svg :class="{ 'block': mobileMenuOpen, 'hidden': !mobileMenuOpen }" 
                         class="size-6" 
                         fill="none" 
@@ -38,7 +32,7 @@
                         stroke="currentColor" 
                         aria-hidden="true" 
                         data-slot="icon">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
             </button>
             </div>
@@ -100,14 +94,14 @@
         </div>
     </div>
     <!-- Mobile menu, show/hide based on menu state. -->
-    <div class="sm:hidden" id="mobile-menu">
+    <div class="hidden" id="mobile-menu">
         <div class="space-y-1 px-2 pt-2 pb-3">
         <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
         <a href="{% url 'index' %}" class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white" aria-current="page">홈</a>
-        <a href="{% url 'cal:calendar' %}" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white">월별 경기 일정</a>
+        <a href="{% url 'cal:calendar' %}" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white">캘린더</a>
         {% if user.is_authenticated %}
-        <a href="{% url 'cal:user_games' user.id %}" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white">나의 직관 승률</a>
-        <a href="{% url 'accounts:logout' %}" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white">로그아웃</a>
+            <a href="{% url 'cal:user_games' user.id %}" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white">나의 직관 승률</a>
+            <a href="{% url 'accounts:logout' %}" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white">로그아웃</a>
         {% endif %}
         </div>
     </div>

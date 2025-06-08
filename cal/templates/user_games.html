@@ -5,9 +5,9 @@
 <link rel="stylesheet" href="{% static 'cal/css/user_games.css' %}">
 {% endblock %}
 
-<body class="min-h-screen pt-24 text-gray-800 bg-cover bg-center bg-no-repeat bg-fixed"
-      style="background-image: url('{% static 'images/user_games/' %}{{ user.team }}.png')">
-  {% block body %}
+{% block body %}
+<div class="min-h-screen pt-8 text-gray-800 bg-cover bg-center bg-no-repeat bg-fixed"
+      style="background-image: url('{% static 'cal/images/user_games/' %}{{ user.team }}.png')">
 
   <div class="max-w-5xl mx-auto px-6">
     <!-- 제목 -->
@@ -16,8 +16,8 @@
     <!-- 내용 카드 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
       <!-- 경기 정보 -->
-      <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:scale-[1.02] transition">
-        <h2 class="text-2xl text-black-500 mb-4 font-ydestreetb">📋 {{user.nickname}}님의 경기 내역</h2>
+      <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl hover:scale-[1.02] transition">
+        <h2 class="text-2xl text-black-500 mb-4">📋 {{user.nickname}}님의 경기 내역</h2>
         <ul class="list-disc pl-6 text-lg space-y-1">
           {% for game, opponent, result in game_data %}
             <li>{{ game.date|date:"Y년 n월 j일" }} vs {{ opponent }}:
@@ -28,8 +28,8 @@
       </div>
 
       <!-- 승률 정보 -->
-      <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:scale-[1.02] transition">
-        <h2 class="text-2xl text-black-500 mb-4 font-ydestreetb">🏆 직관 승률</h2>
+      <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl hover:scale-[1.02] transition">
+        <h2 class="text-2xl text-black-500 mb-4">🏆 직관 승률</h2>
 
         <div class="overflow-x-auto">
           <table class="w-full text-center table-auto border-collapse font-jua-regular text-lg">
@@ -55,8 +55,8 @@
         </div>
       </div>
 
-      <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:scale-[1.02] transition">
-        <h2 class="text-2xl text-black-500 mb-4 font-ydestreetb">🏆 개인 구장별 직관 승률</h2>
+      <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl hover:scale-[1.02] transition">
+        <h2 class="text-2xl text-black-500 mb-4">🏆 개인 구장별 직관 승률</h2>
         <ul class="list-decimal pl-6 text-lg space-y-1">
 {% for stat in stadium_stats %}
   <p>{{ stat.stadium }} - {{ stat.percent }}% ({{ stat.wins }}승 / {{ stat.total }}경기)</p>
@@ -66,5 +66,5 @@
 
     </div>
   </div>
-
-  {% endblock %}
+  </div>
+{% endblock %}

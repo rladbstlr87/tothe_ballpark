@@ -43,3 +43,9 @@
     font-family: 'YdestreetB', sans-serif;
     font-weight: bold;
 }
+
+.font-black-han {
+    font-family: "Black Han Sans", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
