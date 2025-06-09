@@ -18,11 +18,14 @@
       <!-- 경기 정보 -->
       <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl hover:scale-[1.02] transition">
         <h2 class="text-2xl text-black-500 mb-4">📋 {{user.nickname}}님의 경기 내역</h2>
-        <ul class="list-disc pl-6 text-lg space-y-1">
+        <ul class="pl-6 text-lg space-y-1">
+
           {% for game, opponent, result in game_data %}
-            <li>{{ game.date|date:"Y년 n월 j일" }} vs {{ opponent }}:
-              <span class="{% if result == '승' %}text-blue-500{% else %}text-red-500{% endif %}">{{ result }}</span>
-            </li>
+            <a href="{% url 'cal:lineup' game.id %}">
+              <li>{{ game.date|date:"Y년 n월 j일" }} vs {{ opponent }}:
+                <span class="{% if result == '승' %}text-blue-500{% else %}text-red-500{% endif %}">{{ result }}</span>
+              </li>
+            </a>
           {% endfor %}
         </ul>
       </div>
@@ -57,11 +60,28 @@
 
       <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl hover:scale-[1.02] transition">
         <h2 class="text-2xl text-black-500 mb-4">🏆 개인 구장별 직관 승률</h2>
-        <ul class="list-decimal pl-6 text-lg space-y-1">
-{% for stat in stadium_stats %}
-  <p>{{ stat.stadium }} - {{ stat.percent }}% ({{ stat.wins }}승 / {{ stat.total }}경기)</p>
-{% endfor %}
-        </ul>
+        <div class="overflow-x-auto">
+          <table class="w-full text-center table-auto border-collapse font-jua-regular text-lg">
+            <thead>
+              <tr class="bg-gray-200">
+                <th class="py-2 px-4 border">순위</th>
+                <th class="py-2 px-4 border">구장</th>
+                <th class="py-2 px-4 border">승률</th>
+                <th class="py-2 px-4 border">전적</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for stat in stadium_stats %}
+                <tr class="hover:bg-gray-100">
+                  <td class="py-2 px-4 border">{{ forloop.counter }}</td>
+                  <td class="py-2 px-4 border">{{ stat.stadium }}</td>
+                  <td class="py-2 px-4 border">{{ stat.percent }}%</td>
+                  <td class="py-2 px-4 border">{{ stat.wins }}승 / {{ stat.total }}경기</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </div>
