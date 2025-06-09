@@ -8,14 +8,14 @@
   <!-- 로그인 -->
   <div class="signin-wrapper form {% if mode == 'login' %}active{% endif %}">
     <div class="form-wrapper">
-      <h5>Welcome Back 👊</h5>
+      <h5>로그인</h5>
       <form method="post" action="?mode=login">
         {% csrf_token %}
         {{ login_form.non_field_errors }}
         {{ login_form.username }}
         {{ login_form.password }}
-        <button type="submit" class="button primary">Sign In</button>
-        <button type="button" class="button secondary" id="click-signup">Sign Up</button>
+        <button type="submit" class="button primary">로그인</button>
+        <button type="button" class="button secondary" id="click-signup">회원가입</button>
       </form>
     </div>
   </div>
@@ -23,7 +23,7 @@
   <!-- 회원가입 -->
   <div class="signup-wrapper form {% if mode == 'signup' %}active{% endif %}">
     <div class="form-wrapper">
-      <h5>👋 Hello</h5>
+      <h5>회원가입</h5>
       <form method="post" action="?mode=signup">
         {% csrf_token %}
         {{ signup_form.non_field_errors }}
@@ -32,8 +32,8 @@
         {{ signup_form.team }}
         {{ signup_form.password1 }}
         {{ signup_form.password2 }}
-        <button type="submit" class="button primary">Sign Up</button>
-        <button type="button" class="button secondary" id="click-signin">Sign In</button>
+        <button type="submit" class="button primary">회원가입</button>
+        <button type="button" class="button secondary" id="click-signin">로그인</button>
       </form>
     </div>
   </div>
