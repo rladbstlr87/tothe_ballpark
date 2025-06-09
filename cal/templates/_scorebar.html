@@ -1,9 +1,13 @@
 {% load static %}
-<section class="highlight-{{ user.team }} w-full max-w-2xl grid grid-cols-1 p-8 rounded-md border-4 gap-4 place-self-center">
-    <div class="grid grid-cols-5 gap-4 items-center">
-        <!-- ✅ 내 팀 이미지 -->
+<section class="w-full max-w-2xl grid grid-cols-1 p-12 gap-4 place-self-center"
+        style="background-image: url({% static 'cal/images/team/' %}{{ user.team }}-box.svg);
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            ">
+    <div class="grid grid-cols-3 gap-4">
         <div class="h-fit w-fit place-self-center flex justify-center">
-            <img src="{% static 'images/team/' %}{{ user.team }}.svg" alt="우리팀 라인업" class="h-16">
+            <img src="{% static 'cal/images/team/' %}{{ user.team }}.svg" alt="우리팀 라인업" class="h-16">
         </div>
 
         <!-- ✅ 내 팀 점수 (크게 표시) -->
@@ -45,7 +49,7 @@
 
         <!-- ✅ 상대 팀 이미지 -->
         <div class="h-fit w-fit place-self-center flex justify-center">
-            <img src="{% static 'images/team/' %}{{ opponent_team }}.svg" alt="상대팀 라인업" class="h-16">
+            <img src="{% static 'cal/images/team/' %}{{ opponent_team }}.svg" alt="상대팀 라인업" class="h-16">
         </div>
     </div>
 </section>

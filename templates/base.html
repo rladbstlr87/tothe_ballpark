@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>직관가는 직돌이</title>
+        {% load static %}
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+        <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap">
+        {% block styles %}
+        {% endblock %}
+</head>
+<body x-data="{ mobileMenuOpen: false }" class="min-h-screen w-screen bg-white relative font-ydestreetl" style="padding-top: 90px;">
+    {% include '_nav.html' %}
+    <div class="">
+        {% block body %}
+        {% endblock %}
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleBtn = document.querySelector('button[aria-controls="mobile-menu"]');
+        const openIcon = toggleBtn.querySelectorAll('svg')[0];
+        const closeIcon = toggleBtn.querySelectorAll('svg')[1];
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        toggleBtn.addEventListener('click', () => {
+        const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+
+        toggleBtn.setAttribute('aria-expanded', !isExpanded);
+        openIcon.classList.toggle('hidden', !isExpanded);
+        closeIcon.classList.toggle('hidden', isExpanded);
+        mobileMenu.classList.toggle('hidden');
+        });
+    });
+    </script>
+</body>
+</html>
