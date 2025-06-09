@@ -11,7 +11,7 @@
 /* 모든 th, td 기본 스타일 */
 .calendar-table th,
 .calendar-table td {
-  border: 1px solid #d1d5db; /* 연한 회색 테두리 */
+  border: 1px solid #d1d5db;
   padding: 0.5rem;
   text-align: center;
   vertical-align: top;
@@ -63,20 +63,28 @@
 
 /* 날짜 셀: 항상 같은 크기의 직사각형 */
 .calendar-table .day-cell {
-  aspect-ratio: 6 / 5;      /* 가로:세로 비율 고정 */
+  aspect-ratio: 6 / 5;
   width: 100%;
-  min-width: 110px;         /* 최소 너비(원하는 크기로 조정) */
-  max-width: 110px;         /* 최대 너비 */
-  min-height: 90px;         /* 최소 높이 */
-  max-height: 90px;         /* 최대 높이 */
-  height: 90px;             /* 고정 높이 */
+  min-width: 110px;
+  max-width: 110px;
+  min-height: 90px;
+  max-height: 90px;
+  height: 90px;
   padding: 0.25rem;
   font-size: 0.875rem;
   background: #fff;
-  border: 1px solid #000;
+  border: 2px dashed #555;
   box-sizing: border-box;
   vertical-align: top;
-  overflow: auto;           /* 내용이 넘치면 스크롤 */
+  overflow: auto;
+  box-shadow: 2px 2px 0 #ccc;
+  transition: transform 0.2s ease, background-color 0.2s ease; /* ✅ 호버 효과 부드럽게 */
+}
+
+/* ✅ 날짜 셀 호버 시 효과 */
+.calendar-table .day-cell:hover {
+  transform: scale(1.03);
+  background-color: #f3f4f6;
 }
 
 /* 빈 날짜(글씨 없는 칸)는 테두리 제거 */
@@ -100,9 +108,9 @@
 
 /* 팀 로고 크기 */
 .calendar-table .game-info img {
-  width: 30px;   /* 원하는 너비(px, rem 등 단위 가능) */
-  height: 30px;  /* 원하는 높이 */
-  object-fit: contain; /* 비율 유지하며 맞춤 */
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
   display: inline-block;
 }
 
@@ -215,7 +223,6 @@
   border-radius: 15px;
 }
 
-
 /* 반응형: 화면이 600px 이하일 때도 같은 크기의 직사각형 유지 */
 @media (max-width: 600px) {
   .calendar-table .day-cell {
@@ -246,4 +253,3 @@
     padding: 0.5rem 0;
   }
 }
-

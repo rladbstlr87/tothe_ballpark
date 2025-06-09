@@ -35,11 +35,26 @@ def create(request):
 # 게시글 상세
 def detail(request, id):
     post = get_object_or_404(Post, id=id)
+    posts = Post.objects.all().order_by('-created_at')
+    total = posts.count()
+    posts_with_number = [(total - idx, post) for idx, post in enumerate(posts)]
+
     comments = post.comment_set.all().order_by('-created_at')
+
+    # 게시글 수정 여부
+    is_post_updated = post.updated_at.replace(microsecond=0) != post.created_at.replace(microsecond=0)
+
+    # 댓글 객체에 is_updated 속성 직접 추가
+    for comment in comments:
+        comment.is_updated = comment.updated_at.replace(microsecond=0) != comment.created_at.replace(microsecond=0)
+
     context = {
         'post': post,
+        'posts': posts,
+        'posts_with_number': posts_with_number,
         'comments': comments,
         'form': CommentForm(),
+        'is_post_updated': is_post_updated,
     }
     return render(request, 'detail.html', context)
 

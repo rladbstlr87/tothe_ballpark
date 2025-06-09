@@ -1,3 +1,24 @@
+/* 사용자 정의 폰트 */
+@font-face {
+  font-family: 'YdestreetB';
+  src: url('/static/fonts/YdestreetB.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'YdestreetL';
+  src: url('/static/fonts/YdestreetL.woff2') format('woff2');
+}
+
+/* 기본 바디 폰트 설정 */
+body {
+  font-family: 'YdestreetL', sans-serif;
+}
+
+/* 사용자 지정 폰트 클래스 */
+.font-ydestreetb {
+  font-family: 'YdestreetB', sans-serif;
+  font-weight: bold;
+}
+
 /* Google Font 클래스 정의 */
 .font-black-han {
   font-family: "Black Han Sans", sans-serif;
@@ -23,52 +44,49 @@
   font-style: normal;
 }
 
-/* LG 트윈스 */
+/* 팀별 색상 하이라이트 */
 .highlight-LG {
   color: #C60C30;
 }
-
-/* 한화 이글스 */
 .highlight-HH {
-  color:  #FA6A00;
+  color: #FA6A00;
 }
-
-/* 롯데 자이언츠 */
 .highlight-LT {
   color: #002955;
 }
-
-/* 삼성 라이온즈 */
 .highlight-SS {
   color: #005BAC;
 }
-
-/* SSG 랜더스 */
 .highlight-SK {
   color: #c8102e;
 }
-
-/* NC 다이노스 */
 .highlight-NC {
-  color:  #1F3C88;
+  color: #1F3C88;
 }
-
-/* 두산 베어스 */
 .highlight-OB {
-  color:  #0E2344;
+  color: #0E2344;
 }
-
-/* KIA 타이거즈 */
 .highlight-HT {
   color: #C6011F;
 }
-
-/* KT 위즈 */
 .highlight-KT {
   color: #000000;
 }
-
-/* 키움 히어로즈 */
 .highlight-WO {
   color: #6F263D;
+}
+
+.handwritten {
+  font-family: 'Gamja Flower', 'Jua', cursive;
+}
+
+.sketch-box {
+  border-radius: 1rem;
+  backdrop-filter: blur(4px);
+  background: #fff;
+  box-sizing: border-box;
+  vertical-align: top;
+  overflow: auto;
+  box-shadow: 2px 2px 0 #ccc;
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }

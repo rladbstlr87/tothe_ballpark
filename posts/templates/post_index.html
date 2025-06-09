@@ -1,43 +1,57 @@
 {% include '_nav.html' %}
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-<body class="pt-[90px]">
-  <div class="max-w-5xl mx-auto mt-10 bg-white">
+<body class="pt-[90px] bg-neutral-100 font-handdrawn">
+  <div class="mx-auto bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl">
+
     <!-- 제목 영역 -->
-    <div class="relative border-b p-4 text-xl font-bold text-blue-900 text-center">
+    <div class="relative border-b-[3px] p-6 text-2xl font-black text-gray-900 text-center tracking-wider">
       <span>직돌이 Q&A 게시판</span>
-      <a href="{% url 'posts:create' %}" class="absolute right-4 text-black hover:text-blue-500 text-right">
-        <span class="tracking-widest">문의하기</span>
+      <a href="{% url 'posts:create' %}" class="absolute right-6 top-6 text-gray-700 hover:text-black text-sm underline decoration-wavy">
+        문의하기
       </a>
     </div>
 
     <!-- 헤더 -->
-    <div class="grid grid-cols-12 py-3 px-2 border-b border-gray-400 text-sm font-semibold text-gray-600 bg-gray-100 text-center">
-      <div class="col-span-1 border-r border-gray-300">번호</div>
-      <div class="col-span-7 border-r border-gray-300 text-left pl-4">제목</div>
-      <div class="col-span-1 border-r border-gray-300">카테고리</div>
-      <div class="col-span-2 border-r border-gray-300">닉네임</div>
+    <div class="grid grid-cols-12 py-4 px-3 text-sm font-bold text-gray-700 bg-neutral-200 text-center">
+      <div class="col-span-1 border-r border-gray-400">번호</div>
+      <div class="col-span-7 border-r border-gray-400 text-left pl-4">제목</div>
+      <div class="col-span-1 border-r border-gray-400">카테고리</div>
+      <div class="col-span-2 border-r border-gray-400">닉네임</div>
       <div class="col-span-1">작성일</div>
     </div>
 
     <!-- 질문 목록 -->
     <ul>
       {% for number, post in posts_with_number %}
-        <li class="grid grid-cols-12 py-3 px-2 border-b border-gray-200 text-sm items-center text-center">
-          <div class="col-span-1 border-r border-gray-200 text-gray-500 font-mono">
+        <li class="grid grid-cols-12 py-3 px-3 border-b border-gray-300 text-sm items-center text-center hover:bg-neutral-100 transition">
+          <div class="col-span-1 border-r border-gray-300 text-gray-600 font-mono">
             {{ number }}
           </div>
-          <div class="col-span-7 border-r border-gray-200 text-left pl-4">
-            <a href="{% url 'posts:detail' post.id %}" class="text-gray-800 hover:underline">
+          <div class="col-span-7 border-r border-gray-300 text-left pl-4">
+            <a href="{% url 'posts:detail' post.id %}" class="text-black font-semibold hover:underline underline-offset-4 decoration-wavy">
               {{ post.title }}
             </a>
           </div>
-          <div class="col-span-1 border-r border-gray-200">{{ post.get_category_display }}</div>
-          <div class="col-span-2 border-r border-gray-200 text-gray-500">{{ post.user.nickname }}</div>
+          <div class="col-span-1 border-r border-gray-300">{{ post.get_category_display }}</div>
+          <div class="col-span-2 border-r border-gray-300 text-gray-600">{{ post.user.nickname }}</div>
           <div class="col-span-1 text-gray-500 text-xs">{{ post.created_at|date:"Y.m.d" }}</div>
         </li>
       {% empty %}
-        <li class="text-center py-10 text-gray-400">등록된 질문이 없습니다.</li>
+        <li class="text-center py-10 text-gray-400">등록된 질문이 없습니다 🥲</li>
       {% endfor %}
     </ul>
   </div>
+
+  <style>
+    @font-face {
+      font-family: 'YdestreetB';
+      src: url('/static/fonts/YdestreetB.woff2') format('woff2');
+      font-weight: bold;
+      font-style: normal;
+    }
+
+    .font-handdrawn {
+      font-family: 'YdestreetB', sans-serif;
+    }
+  </style>
 </body>
