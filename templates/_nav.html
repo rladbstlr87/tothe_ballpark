@@ -1,5 +1,5 @@
 {% load static %}
-<nav class="bg-cover [background-position:0%_60%] bg-center fixed top-0 left-0 w-full bg-transparent z-30 py-2 font-jaram"
+<nav class="border bg-cover [background-position:0%_100%] bg-center fixed top-0 left-0 w-full bg-transparent z-30 py-2 font-jaram"
     style="background-image: url('{% static 'nav/nav-' %}{{ user.team }}.png');">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="relative flex h-16">
@@ -93,11 +93,11 @@
             </div>
             {% if user.is_authenticated %}
             <div class="flex justify-end mt-30">
-                <a id="fairy" href="{% url 'cal:user_games' user.id  %}" class="flex items-end rotate-7">
+                <a id="fairy" href="{% url 'cal:user_games' user.id %}" class="absolute -top-4 -right-6 flex items-end rotate-7">
                     {% if winning_percent >= 50 %}
-                        <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-winning.svg" alt="승리요정" class="w-full max-w-[12px] sm:max-w-[120px]">
+                        <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-winning.svg" alt="승리요정" class="w-full max-w-[100px] sm:min-w-[144px]">
                     {% else %}
-                        <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-losing.svg" alt="승리요정"  class="w-full max-w-[144px] min-w-[24px]">
+                        <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-losing.svg" alt="승리요정"  class="w-full max-w-[100px] sm:min-w-[144px]">
                     {% endif %}
                 </a>
             </div>
@@ -108,11 +108,12 @@
     <div class="hidden" id="mobile-menu">
         <div class="space-y-1 px-2 pt-2 pb-3">
         <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-        <a href="{% url 'index' %}" class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white" aria-current="page">홈</a>
-        <a href="{% url 'cal:calendar' %}" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white">캘린더</a>
+        <!-- 여기 밑줄형식으로 바꿔야함!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+        <a href="{% url 'index' %}" class="block rounded-md bg-gray-900/50 px-3 py-2 text-white" aria-current="page">홈</a>
+        <a href="{% url 'cal:calendar' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">캘린더</a>
         {% if user.is_authenticated %}
-            <a href="{% url 'cal:user_games' user.id %}" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white">나의 직관 승률</a>
-            <a href="{% url 'accounts:logout' %}" class="block rounded-md px-3 py-2 text-base font-medium text-white hover:bg-gray-700 hover:text-white">로그아웃</a>
+            <a href="{% url 'cal:user_games' user.id %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">나의 직관 승률</a>
+            <a href="{% url 'accounts:logout' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">로그아웃</a>
         {% endif %}
         </div>
     </div>
