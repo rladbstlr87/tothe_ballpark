@@ -1,12 +1,11 @@
-{% include '_nav.html' %}
-<head>
-  <meta charset="UTF-8">
-  <title>게시글 상세</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
   <style>
     @font-face {
       font-family: 'YdestreetB';
-      src: url('/static/fonts/YdestreetB.woff2') format('woff2');
+      src: url("{% static 'fonts/YdestreetB.woff2' %}") format('woff2');
       font-weight: bold;
       font-style: normal;
     }
@@ -14,8 +13,10 @@
       font-family: 'YdestreetB', sans-serif;
     }
   </style>
-</head>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+{% endblock %}
 
+{% block body %}
 <body class="pt-[90px] bg-neutral-100 font-handdrawn">
   <div class="mx-auto bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl">
 
@@ -208,12 +209,10 @@
       </div>
     </div>
 
-
   </div>
 
   <!-- 좋아요 관련 스크립트 -->
   <script>
-    // 게시글 좋아요
     document.querySelectorAll('.like-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         const postId = btn.dataset.postId;
@@ -228,7 +227,6 @@
       });
     });
 
-    // 댓글 좋아요
     document.querySelectorAll('.comment-like-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         const commentId = btn.dataset.commentId;
@@ -244,3 +242,4 @@
     });
   </script>
 </body>
+{% endblock %}

@@ -1,5 +1,23 @@
-{% include '_nav.html' %}
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+  <style>
+    @font-face {
+      font-family: 'YdestreetB';
+      src: url("{% static 'fonts/YdestreetB.woff2' %}") format('woff2');
+      font-weight: bold;
+      font-style: normal;
+    }
+
+    .font-handdrawn {
+      font-family: 'YdestreetB', sans-serif;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+{% endblock %}
+
+{% block body %}
 <body class="pt-[90px] bg-neutral-100 font-handdrawn">
   <div class="mx-auto bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl">
 
@@ -41,17 +59,17 @@
       {% endfor %}
     </ul>
   </div>
-
-  <style>
-    @font-face {
-      font-family: 'YdestreetB';
-      src: url('/static/fonts/YdestreetB.woff2') format('woff2');
-      font-weight: bold;
-      font-style: normal;
-    }
-
-    .font-handdrawn {
-      font-family: 'YdestreetB', sans-serif;
-    }
-  </style>
+  
+  <div class="pagination mt-6 mb-12 flex justify-center gap-2 text-sm text-gray-700">
+    {% if page_obj.has_previous %}
+      <a href="?page=1" class="px-3 py-1 border rounded">처음</a>
+      <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1 border rounded">이전</a>
+    {% endif %}
+    <span class="px-3 py-1 font-semibold">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1 border rounded">다음</a>
+      <a href="?page={{ page_obj.paginator.num_pages }}" class="px-3 py-1 border rounded">마지막</a>
+    {% endif %}
+  </div>
 </body>
+{% endblock %}

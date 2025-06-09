@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-{% include '_nav.html' %}
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <title>게시글 수정</title>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
   <style>
     @font-face {
       font-family: 'YdestreetB';
-      src: url('/static/fonts/YdestreetB.woff2') format('woff2');
+      src: url("{% static 'fonts/YdestreetB.woff2' %}") format('woff2');
       font-weight: bold;
       font-style: normal;
     }
@@ -16,37 +13,37 @@
       font-family: 'YdestreetB', sans-serif;
     }
   </style>
-</head>
-<body class="min-h-screen bg-neutral-100 flex items-center justify-center py-12 px-4 font-handdrawn">
+{% endblock %}
 
-  <div class="bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl">
-    <h1 class="text-3xl font-extrabold text-center text-black mb-10 tracking-wider">게시글 수정</h1>
+{% block body %}
+  <div class="min-h-screen bg-neutral-100 flex items-center justify-center py-12 px-4 font-handdrawn">
+    <div class="bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl">
+      <h1 class="text-3xl font-extrabold text-center text-black mb-10 tracking-wider">게시글 수정</h1>
 
-    <form action="" method="POST" enctype="multipart/form-data" class="space-y-6 text-gray-800">
-        {% csrf_token %}
-        
-        <div>
-          {{ form.category }}
-        </div>
-        <div>
-          {{ form.title }}
-        </div>
-        <div>
-          {{ form.content }}
-        </div>
-        <div>
-          {{ form.image }}
-        </div>
+      <form action="" method="POST" enctype="multipart/form-data" class="space-y-6 text-gray-800">
+          {% csrf_token %}
+          
+          <div>
+            {{ form.category }}
+          </div>
+          <div>
+            {{ form.title }}
+          </div>
+          <div>
+            {{ form.content }}
+          </div>
+          <div>
+            {{ form.image }}
+          </div>
 
-        <div class="text-center mt-8">
-          <button type="submit"
-              class="px-8 py-3 bg-black text-white text-lg font-semibold rounded-lg 
-                     hover:bg-gray-900 transition duration-200 shadow-md">
-              수정 완료
-          </button>
-        </div>
-    </form>
+          <div class="text-center mt-8">
+            <button type="submit"
+                class="px-8 py-3 bg-black text-white text-lg font-semibold rounded-lg 
+                       hover:bg-gray-900 transition duration-200 shadow-md">
+                수정 완료
+            </button>
+          </div>
+      </form>
+    </div>
   </div>
-
-</body>
-</html>
+{% endblock %}

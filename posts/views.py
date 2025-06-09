@@ -2,19 +2,24 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import PostForm, CommentForm
-
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
 # 게시글 리스트
 def post_index(request):
     posts = Post.objects.all().order_by('-created_at')
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     total = posts.count()
-    posts_with_number = [(total - idx, post) for idx, post in enumerate(posts)]
+    start_index = page_obj.start_index()  # 1부터 시작
+    posts_with_number = [(total - idx, post) for idx, post in enumerate(page_obj)]
     context = {
         'posts': posts,
         'posts_with_number': posts_with_number,
         'form': CommentForm(),
+        'page_obj': page_obj,
     }
     return render(request, 'post_index.html', context)
 
