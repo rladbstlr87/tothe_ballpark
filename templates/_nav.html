@@ -1,120 +1,124 @@
 {% load static %}
-<nav class="border bg-cover [background-position:0%_100%] bg-center fixed top-0 left-0 w-full bg-transparent z-30 py-2 font-jaram"
+<nav class="bg-cover bg-center fixed top-0 left-0 w-full
+            {% if user.is_authenticated %}bg-transparent{% else %}bg-white{% endif %} z-30 py-2 font-jaram [background-position:0%_100%]"
     style="background-image: url('{% static 'nav/nav-' %}{{ user.team }}.png');">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="relative flex h-16">
-            <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                <!-- Mobile menu button-->
-                <button type="button" 
+            <!-- Mobile menu button -->
+            <div class="absolute inset-y-0 left-0 flex sm:hidden">
+                <button type="button"
                         @click="mobileMenuOpen = !mobileMenuOpen"
                         :aria-expanded="mobileMenuOpen"
-                        class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset" 
+                        class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset"
                         aria-controls="mobile-menu">
                     <span class="absolute -inset-0.5"></span>
                     <span class="sr-only">Open main menu</span>
                     <!-- 메뉴 닫힌 상태 -->
-                    <svg :class="{ 'hidden': mobileMenuOpen, 'block': !mobileMenuOpen }" 
-                            class="size-6" 
-                            fill="none" 
-                            viewBox="0 0 24 24" 
-                            stroke-width="1.5" 
-                            stroke="currentColor" 
-                            aria-hidden="true" 
-                            data-slot="icon">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                    </svg>
-                    <!-- 메뉴 열린 상태 -->
-                    <svg :class="{ 'block': mobileMenuOpen, 'hidden': !mobileMenuOpen }" 
-                            class="size-6" 
-                            fill="none" 
-                            viewBox="0 0 24 24" 
-                            stroke-width="1.5" 
-                            stroke="currentColor" 
-                            aria-hidden="true" 
-                            data-slot="icon">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    <svg :class="{ 'hidden': mobileMenuOpen, 'block': !mobileMenuOpen }"
+                        class="size-6"
+                        fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+                <!-- 메뉴 열린 상태 -->
+                <svg :class="{ 'block': mobileMenuOpen, 'hidden': !mobileMenuOpen }"
+                        class="size-6"
+                        fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
                 </button>
             </div>
-            <div class="flex flex-1 items-center justify-center">
-                <div class="hidden sm:flex items-center text-shadows">
-                    <!-- 왼쪽: About Us, Cal, Q&A -->
-                    <div class="flex items-center flex-1">
-                        <!-- <a href="{% url 'cal:about_us' %}" class="p-3 flex items-center space-x-2 text-black hover:text-blue-500">
-                            <span class="w-3 h-3 rounded-full bg-yellow-400 shadow-md"></span>
-                            <span class="">뭐넣을까</span>
-                        </a> -->
+
+            <div class="flex flex-1 justify-center">
+                <div id="menu" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 sm:flex justify-between w-full items-center text-shadows">
+                    <!-- 왼쪽 메뉴 -->
+                    <div class="flex items-center">
+                        <!-- 일부러 둔 빈div박스 -->
+                        <span class="p-3 w-32 text-center text-gray-700"></span>
+                    </div>
+                    <div class="flex flex-1 items-center">
                         <a href="{% url 'cal:calendar' %}" class="p-3 flex items-center space-x-2 text-black hover:text-blue-500">
                             <span class="w-3 h-3 rounded-full bg-green-300 shadow-md"></span>
-                            <span class="">야구 언제해?</span>
+                            <span>야구 언제해?</span>
                         </a>
                         <a href="{% url 'posts:post_index' %}" class="p-3 flex items-center space-x-2 text-black hover:text-blue-500">
                             <span class="w-3 h-3 rounded-full bg-orange-300 shadow-md"></span>
-                            <span class="">알려줘 꿀팁!</span>
+                            <span>알려줘 꿀팁!</span>
                         </a>
                     </div>
-                    <!-- 가운데: 홈버튼 -->
-                    <div class="flex justify-center w-fit">
-                    {% if user.is_authenticated %}
+
+                    <!-- 가운데 홈버튼 -->
+                    <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                        {% if user.is_authenticated %}
                         <a href="{% url 'index' %}" class="flex items-center -rotate-8">
                             <img src="{% static 'cal/images/mascots/' %}{{ user.team }}line.svg" alt="{{ user.team }} Mascot" class="h-20">
                         </a>
-                    {% else %}
+                        {% else %}
                         <a href="{% url 'index' %}" class="flex items-center">
                             <img src="{% static 'cal/images/logo.png' %}" alt="Baseball" class="h-24">
                         </a>
-                    {% endif %}
+                        {% endif %}
                     </div>
+
+                    <!-- 오른쪽 사용자 메뉴 -->
                     <div class="flex items-center">
-                    {% if user.is_authenticated %}
-                        <span class="p-3 w-16 text-gray-700 text-center">{{ user.nickname }}</span>
+                        {% if user.is_authenticated %}
+                        <span class="p-3 w-16 text-center text-gray-700">{{ user.nickname }}</span>
                         <a href="{% url 'accounts:logout' %}" class="p-3 flex items-center space-x-2 text-black hover:text-blue-500">
                             <span class="w-3 h-3 rounded-full bg-red-400 shadow-md"></span>
-                            <span class="">로그아웃</span>
+                            <span>로그아웃</span>
                         </a>
-                    {% else %}
-                        <a href="{% url 'accounts:auth' %}?mode=signup" class="flex items-center space-x-2 text-black hover:text-blue-500">
+                        {% else %}
+                        <a href="{% url 'accounts:auth' %}?mode=signup" class="p-3 flex items-center space-x-2 text-black hover:text-blue-500">
                             <span class="w-3 h-3 rounded-full bg-green-300 shadow-md"></span>
-                            <span class="">회원<br>가입</span>
+                            <span>회원가입</span>
                         </a>
-                        <a href="{% url 'accounts:auth' %}" class="flex items-center space-x-2 text-black hover:text-blue-600">
+                        <a href="{% url 'accounts:auth' %}" class="p-3 flex items-center space-x-2 text-black hover:text-blue-600">
                             <span class="w-3 h-3 rounded-full bg-blue-400 shadow-md"></span>
-                            <span class=" flex items-center">
+                            <span class="flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
                                 </svg>
                                 로그인
                             </span>
                         </a>
-                    {% endif %}
+                        {% endif %}
+                    </div>
+                    <div class="flex items-center">
+                        <!-- 일부러 둔 빈div박스 -->
+                        <span class="p-3 w-32 text-center text-gray-700"></span>
                     </div>
                 </div>
             </div>
+
+            <!-- 승리요정 -->
             {% if user.is_authenticated %}
-            <div class="flex justify-end mt-30">
-                <a id="fairy" href="{% url 'cal:user_games' user.id %}" class="absolute -top-4 -right-6 flex items-end rotate-7">
+            <div class="flex justify-end w-[144px] h-[120px]">
+                <a id="fairy" href="{% url 'cal:user_games' user.id %}" class="flex rotate-7">
                     {% if winning_percent >= 50 %}
-                        <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-winning.svg" alt="승리요정" class="w-full max-w-[100px] sm:min-w-[144px]">
+                        <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-winning.svg" alt="승리요정"
+                            class="w-[20vw] max-w-[144px] min-w-[120px] h-auto">
                     {% else %}
-                        <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-losing.svg" alt="승리요정"  class="w-full max-w-[100px] sm:min-w-[144px]">
+                        <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-losing.svg" alt="패배요정"
+                            class="w-[20vw] max-w-[144px] min-w-[120px] h-auto">
                     {% endif %}
                 </a>
             </div>
             {% endif %}
         </div>
     </div>
-    <!-- Mobile menu, show/hide based on menu state. -->
+
+    <!-- Mobile 메뉴 -->
     <div class="hidden" id="mobile-menu">
         <div class="space-y-1 px-2 pt-2 pb-3">
-        <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-        <!-- 여기 밑줄형식으로 바꿔야함!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-        <a href="{% url 'index' %}" class="block rounded-md bg-gray-900/50 px-3 py-2 text-white" aria-current="page">홈</a>
-        <a href="{% url 'cal:calendar' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">캘린더</a>
-        {% if user.is_authenticated %}
+            <a href="{% url 'index' %}" class="block rounded-md bg-gray-900/50 px-3 py-2 text-white">홈</a>
+            <a href="{% url 'cal:calendar' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">캘린더</a>
+            {% if user.is_authenticated %}
             <a href="{% url 'cal:user_games' user.id %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">나의 직관 승률</a>
             <a href="{% url 'accounts:logout' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">로그아웃</a>
-        {% endif %}
+            {% endif %}
         </div>
     </div>
 </nav>
