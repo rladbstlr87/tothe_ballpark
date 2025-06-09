@@ -95,7 +95,7 @@
             <div class="flex justify-end mt-30">
                 <a id="fairy" href="{% url 'cal:user_games' user.id  %}" class="flex items-end rotate-7">
                     {% if winning_percent >= 50 %}
-                        <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-winning.svg" alt="승리요정" class="w-full max-w-[120px] sm:max-w-[12px]">
+                        <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-winning.svg" alt="승리요정" class="w-full max-w-[12px] sm:max-w-[120px]">
                     {% else %}
                         <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-losing.svg" alt="승리요정"  class="w-full max-w-[144px] min-w-[24px]">
                     {% endif %}
