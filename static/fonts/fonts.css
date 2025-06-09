@@ -31,8 +31,10 @@
     font-family: 'Thesignature', cursive;
 }
 
-.font-incheonjaram {
+.font-jaram {
     font-family: 'IncheonJaram', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
 }
 
 .font-ydestreetl {

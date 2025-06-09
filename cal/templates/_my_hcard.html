@@ -23,7 +23,7 @@
             alt="{{ lineup.hitter.player_name }}"
             class="mx-2 w-[clamp(4rem,6vw,6rem)] transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
         <div class="flex items-center mt-1 space-x-1 relative">
-            <img id="style-icon" src="{% static 'cal/images/icon/hitter_icon/' %}{{ lineup.hitter.style }}.png" class="w-8 h-8 -mt-10 -left-2 absolute z-10 rounded-br-2xl">
+            <img id="style-icon" src="{% static 'cal/images/icon/hitter_icon/' %}{{ lineup.hitter.style }}.svg" class="w-8 h-8 -mt-10 -left-2 absolute z-10 rounded-br-2xl">
             <p class="text-right w-[clamp(4rem,6vw,6rem)]">{{ lineup.hitter.player_name }}</p>
         </div>
     </div>
