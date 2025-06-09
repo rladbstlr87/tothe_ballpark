@@ -1,102 +1,60 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block styles %}
-<link rel="stylesheet" href="{% static 'auth/css/auth.css' %}">
+    <link rel="stylesheet" href="{% static 'auth/css/auth.css' %}">
 {% endblock %}
-
 {% block body %}
-<!-- 야구공 배경 -->
-<div id="bg-circle"
-    class="absolute top-1/2 -translate-y-1/2 w-[400px] h-[400px] z-0 transition-slide flex items-center justify-center pr-20 pb-20"
-    style="background-image: url('{% static 'auth/images/logo.png' %}'); left: {% if mode == 'signup' %}100vw{% else %}-200px{% endif %};">
-  <h2 class="absolute text-black text-5xl font-extrabold left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 drop-shadow-lg">
-    {% if mode == 'signup' %}Join with us{% else %}Welcome{% endif %}
-  </h2>
-</div>
-
-<!-- 폼 카드 -->
-<div id="form-card"
-    class="absolute transition-slide top-1/2 -translate-y-1/2 z-20 w-[400px] {% if mode == 'signup' %}left-[150px]{% else %}right-[150px]{% endif %}">
-  {% if mode == 'login' %}
-  <form method="POST" class="bg-white w-full p-10 shadow-xl rounded-2xl">
-    {% csrf_token %}
-    <h2 class="text-2xl font-bold mb-6 text-center">Log In</h2>
-    {% for field in login_form %}
-    <div class="mb-4">
-      {{ field.label_tag }}
-      {{ field }}
-      {% if field.errors %}
-      <p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>
-      {% endif %}
+<div class="root">
+  <!-- 로그인 -->
+  <div class="signin-wrapper form {% if mode == 'login' %}active{% endif %}">
+    <div class="form-wrapper">
+      <h5>Welcome Back 👊</h5>
+      <form method="post" action="?mode=login">
+        {% csrf_token %}
+        {{ login_form.non_field_errors }}
+        {{ login_form.username }}
+        {{ login_form.password }}
+        <button type="submit" class="button primary">Sign In</button>
+        <button type="button" class="button secondary" id="click-signup">Sign Up</button>
+      </form>
     </div>
-    {% endfor %}
-    <button type="submit" name="action" value="login" class="w-full bg-[#75A58D] text-white py-2 rounded">Log In</button>
-    <p class="text-sm mt-4 text-center">
-      Don't have an account?
-      <a href="#" onclick="triggerSwitch('signup'); return false;" class="text-[#75A58D] font-semibold">Sign Up here</a>
-    </p>
-  </form>
-  {% endif %}
+  </div>
 
-  {% if mode == 'signup' %}
-  <form method="POST" class="bg-white w-full p-10 shadow-xl rounded-2xl">
-    {% csrf_token %}
-    <h2 class="text-2xl font-bold mb-6 text-center">Sign Up</h2>
-    {% for field in signup_form %}
-    <div class="mb-4">
-      {{ field.label_tag }}
-      {{ field }}
-      {% if field.errors %}
-      <p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>
-      {% endif %}
+  <!-- 회원가입 -->
+  <div class="signup-wrapper form {% if mode == 'signup' %}active{% endif %}">
+    <div class="form-wrapper">
+      <h5>👋 Hello</h5>
+      <form method="post" action="?mode=signup">
+        {% csrf_token %}
+        {{ signup_form.non_field_errors }}
+        {{ signup_form.username }}
+        {{ signup_form.nickname }}
+        {{ signup_form.team }}
+        {{ signup_form.password1 }}
+        {{ signup_form.password2 }}
+        <button type="submit" class="button primary">Sign Up</button>
+        <button type="button" class="button secondary" id="click-signin">Sign In</button>
+      </form>
     </div>
-    {% endfor %}
-    <button type="submit" name="action" value="signup" class="w-full bg-[#75A58D] text-white py-2 rounded hover:bg-sky-700">Sign Up</button>
-    <p class="text-sm mt-4 text-center">
-      Already have an account?
-      <a href="#" onclick="triggerSwitch('login'); return false;" class="text-[#75A58D] font-semibold">Log In here</a>
-    </p>
-  </form>
-  {% endif %}
+  </div>
 </div>
 
 <script>
-  const bg = document.getElementById('bg-circle');
-  const card = document.getElementById('form-card');
-  const currentMode = '{{ mode }}';
+  const signinWrapper = document.querySelector('.signin-wrapper');
+  const signupWrapper = document.querySelector('.signup-wrapper');
+  const clickSignupBtn = document.getElementById('click-signup');
+  const clickSigninBtn = document.getElementById('click-signin');
 
-  setTimeout(() => {
-    bg.style.left = 'calc(50% - 500px)';
-    if (currentMode === 'signup') {
-      card.classList.add('left-20');
-    } else {
-      card.classList.add('right-20');
-    }
-  }, 50);
+  if (clickSignupBtn) {
+    clickSignupBtn.addEventListener('click', () => {
+      window.location.href = "?mode=signup";
+    });
+  }
 
-  function triggerSwitch(targetMode) {
-    bg.style.left = '';
-    bg.style.right = '';
-    card.classList.remove('left-20', 'right-20');
-
-    if (targetMode === 'signup') {
-      bg.style.left = '100vw';
-    } else {
-      bg.style.left = '-500px';
-    }
-
-    setTimeout(() => {
-      bg.style.left = 'calc(50% - 500px)';
-      if (targetMode === 'signup') {
-        card.classList.add('left-20');
-      } else {
-        card.classList.add('right-20');
-      }
-    }, 50);
-
-    setTimeout(() => {
-      window.location.href = `?mode=${targetMode}`;
-    }, 550);
+  if (clickSigninBtn) {
+    clickSigninBtn.addEventListener('click', () => {
+      window.location.href = "?mode=login";
+    });
   }
 </script>
 {% endblock %}

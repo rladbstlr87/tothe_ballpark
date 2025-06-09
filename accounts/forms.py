@@ -6,46 +6,44 @@ from .models import User
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('username', 'nickname', 'team', 'password1', 'password2')  # 입력 받을 필드
+        fields = ('username', 'nickname', 'team', 'password1', 'password2')
 
-        # HTML input 요소에 TailwindCSS 스타일 적용
         widgets = {
             'username': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-2 border rounded-lg',
+                'class': 'form-field',
                 'placeholder': 'Username'
             }),
             'nickname': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-2 border rounded-lg',
+                'class': 'form-field',
                 'placeholder': 'Nickname'
             }),
             'team': forms.Select(attrs={
-                'class': 'w-full px-4 py-2 border rounded-lg'
+                'class': 'form-field'
             }),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # 기본 password 필드들의 위젯 스타일 수동 커스터마이징
+
         self.fields['password1'].widget.attrs.update({
-            'class': 'w-full px-4 py-2 border rounded-lg',
+            'class': 'form-field',
             'placeholder': 'Password'
         })
         self.fields['password2'].widget.attrs.update({
-            'class': 'w-full px-4 py-2 border rounded-lg',
+            'class': 'form-field',
             'placeholder': 'Confirm Password'
         })
 
 # 사용자 정의 로그인 폼
 class CustomAuthenticationForm(AuthenticationForm):
     def __init__(self, request=None, *args, **kwargs):
-        super(CustomAuthenticationForm, self).__init__(request, *args, **kwargs)
+        super().__init__(request, *args, **kwargs)
 
-        # username과 password 필드에 TailwindCSS 스타일 적용
         self.fields['username'].widget.attrs.update({
-            'class': 'w-full px-4 py-2 border rounded-lg',
+            'class': 'form-field',
             'placeholder': 'Username'
         })
         self.fields['password'].widget.attrs.update({
-            'class': 'w-full px-4 py-2 border rounded-lg',
+            'class': 'form-field',
             'placeholder': 'Password'
         })
