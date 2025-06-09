@@ -194,7 +194,7 @@ def user_games(request, user_id):
     win_count = 0
     lose_count = 0
     raw_stats = defaultdict(lambda: {'wins': 0, 'losses': 0, 'total': 0})
-
+    user_team = request.user.team
     for game in games:
         stadium = game.stadium
 
