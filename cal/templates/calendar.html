@@ -2,10 +2,11 @@
 {% load static %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'cal/css/calendar.css' %}">
+<link rel="stylesheet" href="{% static 'cal/css/background.css' %}">
 {% endblock %}
 {% block body %}
-  <div class="w-full flex justify-center">
-    <table class="calendar-table">
+  <div class="w-full flex justify-center bg-team" style='--team-bg: url("{% static "cal/images/bg/" %}{{ user.team }}.jpg");' >
+    <table class="calendar-table bg-paper">
       <thead>
         <tr>
           <th colspan="7" class="month-header">
@@ -13,7 +14,7 @@
               <a href="?{{ prev_month }}" class="nav-link">
                 <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Prev" class="w-16 h-16 rotate-90 inline">
               </a>
-              <span>{{ cal_data.year }}년 {{ cal_data.month }}월</span>
+              <span class="cal-title">{{ cal_data.year }}년 {{ cal_data.month }}월</span>
               <a href="?{{ next_month }}" class="nav-link">
                 <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Next" class="w-16 h-16 -rotate-90 inline">
               </a>

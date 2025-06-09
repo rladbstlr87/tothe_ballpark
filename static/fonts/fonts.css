@@ -51,3 +51,9 @@
     font-weight: 400;
     font-style: normal;
 }
+
+.cal-title {
+    font-family: 'IncheonJaram', sans-serif;
+    font-size: 65px;
+    font-weight: 600;
+}
