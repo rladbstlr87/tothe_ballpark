@@ -10,4 +10,5 @@ urlpatterns = [
     path('reset_password/', views.reset_password_view, name='reset_password'),
     path('confirm_verification_code/', views.confirm_verification_code, name='confirm_verification_code'),
     path('set_new_password/', views.set_new_password, name='set_new_password'),
+    path('check-duplicate/', views.check_duplicate, name='check_duplicate'),
 ]

@@ -1,48 +1,54 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from .forms import CustomUserCreationForm, CustomAuthenticationForm
-from .models import User
-from cal import views
-import json
-import string
-import random
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from django.contrib.auth import get_user_model
+from .forms import CustomUserCreationForm, CustomAuthenticationForm
+from .models import User
+from cal import views
 
+import json
+import string
+import random
+
+# ✅ 아이디 찾기
 @csrf_exempt
 def find_id_view(request):
     if request.method == "POST":
         data = json.loads(request.body)
         email = data.get("email")
 
-        # 해당 이메일로 등록된 모든 사용자 찾기
+        # 이메일로 등록된 모든 사용자 검색
         users = User.objects.filter(email=email)
 
         if users.exists():
+            # 해당 이메일로 등록된 모든 username 목록 전송
             usernames = [user.username for user in users]
             username_list = "\n".join(usernames)
 
             send_mail(
                 subject="아이디 찾기 결과입니다",
                 message=f"해당 이메일로 등록된 아이디 목록입니다:\n\n{username_list}",
-                from_email=None,  # EMAIL_HOST_USER 설정되어 있으면 None 가능
+                from_email=None,  # settings.EMAIL_HOST_USER 사용됨
                 recipient_list=[email],
             )
             return JsonResponse({"success": True, "message": "아이디 목록이 이메일로 전송되었습니다."})
         else:
             return JsonResponse({"success": False, "message": "해당 이메일로 등록된 계정을 찾을 수 없습니다."})
 
-# 임시 저장소
-VERIFICATION_CODES = {}
-VERIFIED_USERS = set()
 
+# ✅ 인증번호 저장용 변수
+VERIFICATION_CODES = {}   # username: code
+VERIFIED_USERS = set()    # 인증 완료된 username 저장
+
+# ✅ 인증번호 생성 함수
 def generate_code(length=6):
     return ''.join(random.choices(string.digits, k=length))
 
 
+# ✅ 비밀번호 재설정: 인증번호 요청
 @csrf_exempt
 def reset_password_view(request):
     if request.method == "POST":
@@ -51,10 +57,14 @@ def reset_password_view(request):
         username = data.get("username")
 
         try:
+            # username + email 조합으로 사용자 조회
             user = User.objects.get(username=username, email=email)
+            
+            # 인증번호 생성 및 저장
             code = generate_code(6)
             VERIFICATION_CODES[username] = code
 
+            # 이메일 발송
             send_mail(
                 subject="비밀번호 재설정 인증번호",
                 message=f"비밀번호 재설정을 위한 인증번호는 {code} 입니다.",
@@ -67,6 +77,7 @@ def reset_password_view(request):
             return JsonResponse({"success": False, "message": "아이디 또는 이메일이 올바르지 않습니다."})
 
 
+# ✅ 인증번호 확인
 @csrf_exempt
 def confirm_verification_code(request):
     if request.method == "POST":
@@ -75,6 +86,7 @@ def confirm_verification_code(request):
         code = data.get("code")
 
         saved_code = VERIFICATION_CODES.get(username)
+
         if saved_code == code:
             VERIFIED_USERS.add(username)
             return JsonResponse({"success": True, "message": "인증에 성공했습니다."})
@@ -82,6 +94,7 @@ def confirm_verification_code(request):
             return JsonResponse({"success": False, "message": "인증번호가 일치하지 않습니다."})
 
 
+# ✅ 새 비밀번호 설정
 @csrf_exempt
 def set_new_password(request):
     if request.method == "POST":
@@ -89,6 +102,7 @@ def set_new_password(request):
         username = data.get("username")
         new_password = data.get("new_password")
 
+        # 인증된 사용자만 비밀번호 재설정 가능
         if username not in VERIFIED_USERS:
             return JsonResponse({"success": False, "message": "인증되지 않은 사용자입니다."})
 
@@ -96,25 +110,31 @@ def set_new_password(request):
             user = User.objects.get(username=username)
             user.set_password(new_password)
             user.save()
+
+            # 인증 데이터 정리
             VERIFIED_USERS.discard(username)
             VERIFICATION_CODES.pop(username, None)
+
             return JsonResponse({"success": True, "message": "비밀번호가 성공적으로 변경되었습니다."})
         except User.DoesNotExist:
             return JsonResponse({"success": False, "message": "사용자를 찾을 수 없습니다."})
-        
-# 로그아웃 뷰 - 로그인된 사용자만 로그아웃 가능
+
+
+# ✅ 로그아웃 처리
 @login_required
 def logout(request):
-    auth_logout(request)  # 세션에서 사용자 로그아웃
-    return redirect('/')  # 로그아웃 후 홈으로 이동
+    auth_logout(request)  # 세션에서 로그아웃
+    return redirect('/')  # 홈으로 리디렉션
 
-# 메인 페이지 접근 시 리다이렉트
+
+# ✅ 홈 접근 시 달력으로 리디렉션
 def home(request):
     return redirect('/')
 
-# 🔁 회원가입/로그인 통합 처리 뷰
+
+# ✅ 회원가입 / 로그인 처리
 def auth_view(request):
-    mode = request.GET.get('mode', 'login')
+    mode = request.GET.get('mode', 'login')  # 기본값: login
 
     if request.method == 'POST':
         if mode == 'signup':
@@ -122,19 +142,41 @@ def auth_view(request):
             if form.is_valid():
                 user = form.save()
                 auth_login(request, user)
-                return redirect('cal:calendar')
-        else:  # mode == 'login'
+                return redirect('cal:calendar')  # 회원가입 성공 시 달력으로 이동
+        else:  # mode == login
             form = CustomAuthenticationForm(request, data=request.POST)
             if form.is_valid():
                 user = form.get_user()
                 auth_login(request, user)
-                return redirect('cal:calendar')
+                return redirect('cal:calendar')  # 로그인 성공 시 달력으로 이동
     else:
+        # GET 요청일 경우 폼 초기화
         form = CustomUserCreationForm() if mode == 'signup' else CustomAuthenticationForm()
 
+    # 템플릿에 전달할 폼 객체들
     context = {
         'mode': mode,
         'signup_form': CustomUserCreationForm(),
         'login_form': CustomAuthenticationForm(request),
     }
     return render(request, 'auth.html', context)
+
+
+# ✅ 사용자명/닉네임 중복 확인
+@csrf_exempt
+def check_duplicate(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        field = data.get("field")  # username 또는 nickname
+        value = data.get("value")
+
+        if field not in ["username", "nickname"]:
+            return JsonResponse({"success": False, "message": "유효하지 않은 필드입니다."})
+
+        # 중복 여부 확인
+        exists = User.objects.filter(**{field: value}).exists()
+
+        if exists:
+            return JsonResponse({"success": False, "message": f"{field}이(가) 이미 사용 중입니다."})
+        else:
+            return JsonResponse({"success": True, "message": f"{field}은(는) 사용 가능합니다."})

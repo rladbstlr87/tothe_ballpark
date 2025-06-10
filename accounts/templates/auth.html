@@ -2,12 +2,14 @@
 {% load static %}
 
 {% block styles %}
+<!-- 회원가입/로그인 페이지에 적용될 CSS 불러오기 -->
 <link rel="stylesheet" href="{% static 'auth/css/auth.css' %}">
 {% endblock %}
 
 {% block body %}
 <div class="root">
-    <!-- 마스코트 이미지들 -->
+
+    <!-- 10개 구단 마스코트 이미지 배치 (스타일로 위치 제어 예정) -->
     <div class="hanhwa-mascot-container">
         <img src="{% static 'auth/images/한화1.png' %}" alt="한화 마스코트">
     </div>
@@ -50,6 +52,8 @@
                 {{ login_form.password }}
                 <button type="submit" class="button primary">로그인</button>
             </form>
+
+            <!-- 하단 네비게이션: 아이디/비밀번호 찾기, 회원가입 링크 -->
             <div class="mt-4 text-sm text-center text-gray-600 space-x-4">
                 <a href="#" id="find-id-link" class="hover:underline">아이디 찾기</a>
                 <span>|</span>
@@ -66,15 +70,39 @@
             <h5>회원가입</h5>
             <form method="post" action="?mode=signup">
                 {% csrf_token %}
-                {{ signup_form.non_field_errors }}
-                {{ signup_form.username }}
-                {{ signup_form.nickname }}
-                {{ signup_form.email}}
+
+                <!-- 사용자명 입력 및 중복확인 -->
+                <div class="w-full flex gap-2 items-center">
+                <div class="flex-1">
+                    {{ signup_form.username }}
+                </div>
+                <button type="button"
+                        class="text-sm px-2 py-1 h-8 hover:text-blue-500"
+                        onclick="checkDuplicate('username')">중복확인</button>
+                </div>
+                <p id="username-check-result" class="text-sm mt-1"></p>
+
+                <!-- 닉네임 입력 및 중복확인 -->
+                <div class="w-full flex gap-2 items-center mt-2">
+                <div class="flex-1">
+                    {{ signup_form.nickname }}
+                </div>
+                <button type="button"
+                        class="text-sm px-2 py-1 h-8 hover:text-blue-500"
+                        onclick="checkDuplicate('nickname')">중복확인</button>
+                </div>
+                <p id="nickname-check-result" class="text-sm mt-1"></p>
+
+                <!-- 이메일, 팀 선택, 비밀번호 입력 -->
+                {{ signup_form.email }}
                 {{ signup_form.team }}
                 {{ signup_form.password1 }}
                 {{ signup_form.password2 }}
+
                 <button type="submit" class="button primary">회원가입</button>
             </form>
+
+            <!-- 로그인으로 돌아가기 -->
             <div class="text-sm text-center text-gray-600 space-x-4">
                 <a href="?mode=login" class="hover:underline">로그인</a>
             </div>
@@ -91,16 +119,19 @@
                 <button type="submit" class="button primary">이메일로 아이디 받기</button>
             </form>
             <div id="id-code-result" class="mt-2 text-center text-sm text-green-600"></div>
+
             <div class="text-sm text-center text-gray-600 space-x-4 mt-4">
                 <a href="?mode=login" class="hover:underline">로그인</a>
             </div>
         </div>
     </div>
 
-    <!-- 비밀번호 찾기 폼 -->
+    <!-- 비밀번호 찾기 폼: 3단계로 구성 -->
     <div class="find-password-wrapper form">
         <div class="form-wrapper">
             <h5>비밀번호 찾기</h5>
+
+            <!-- 1단계: 아이디, 이메일 입력 -->
             <form method="post" id="find-password-form">
                 {% csrf_token %}
                 <input type="text" name="username" placeholder="아이디를 입력하세요" class="form-field" required>
@@ -108,14 +139,14 @@
                 <button type="submit" class="button primary">이메일로 인증번호 받기</button>
             </form>
 
-            <!-- 인증번호 입력 -->
+            <!-- 2단계: 인증번호 입력 -->
             <form method="post" id="verify-code-form" class="mt-4 hidden">
                 {% csrf_token %}
                 <input type="text" name="code" placeholder="인증번호 입력" class="form-field" required>
                 <button type="submit" class="button primary">인증번호 확인</button>
             </form>
 
-            <!-- 새 비밀번호 설정 -->
+            <!-- 3단계: 새 비밀번호 설정 -->
             <form method="post" id="reset-password-form" class="mt-4 hidden">
                 {% csrf_token %}
                 <input type="password" name="new_password" placeholder="새 비밀번호" class="form-field" required>
@@ -134,11 +165,13 @@
 </div>
 
 <script>
+    // 각 폼 요소 DOM 참조
     const signinWrapper = document.querySelector('.signin-wrapper');
     const signupWrapper = document.querySelector('.signup-wrapper');
     const findIdWrapper = document.querySelector('.find-id-wrapper');
     const findPasswordWrapper = document.querySelector('.find-password-wrapper');
 
+    // 로그인 폼에서 "아이디 찾기" 클릭 시 전환
     document.getElementById('find-id-link').addEventListener('click', e => {
         e.preventDefault();
         signinWrapper.classList.remove('active');
@@ -147,6 +180,7 @@
         findIdWrapper.classList.add('active');
     });
 
+    // 로그인 폼에서 "비밀번호 찾기" 클릭 시 전환
     document.getElementById('find-password-link').addEventListener('click', e => {
         e.preventDefault();
         signinWrapper.classList.remove('active');
@@ -155,7 +189,7 @@
         findPasswordWrapper.classList.add('active');
     });
 
-    // 아이디 찾기
+    // 아이디 찾기: 이메일 전송 후 결과 출력
     document.getElementById('find-id-form').addEventListener('submit', function (e) {
         e.preventDefault();
         const email = this.email.value;
@@ -176,26 +210,21 @@
         });
     });
 
-    // 도우미 함수: 부드러운 fade 전환
+    // fade 애니메이션 함수
     function fadeSwitch(fromEl, toEl) {
         fromEl.classList.add('fade-out');
         setTimeout(() => {
             fromEl.classList.add('hidden');
             fromEl.classList.remove('fade-out');
-
             toEl.classList.remove('hidden');
             toEl.classList.add('fade-in');
-
-            setTimeout(() => {
-                toEl.classList.remove('fade-in');
-            }, 300);
+            setTimeout(() => toEl.classList.remove('fade-in'), 300);
         }, 300);
     }
 
-    // 인증 관련 변수
-    let tempUsername = "";
+    let tempUsername = "";  // 인증된 사용자 아이디 저장용
 
-    // 1. 인증번호 요청 (step 1)
+    // step 1: 인증번호 요청
     document.getElementById('find-password-form').addEventListener('submit', function (e) {
         e.preventDefault();
         const email = this.email.value;
@@ -227,7 +256,7 @@
         });
     });
 
-    // 2. 인증번호 확인 (step 2)
+    // step 2: 인증번호 확인
     document.getElementById('verify-code-form').addEventListener('submit', function (e) {
         e.preventDefault();
         const code = this.code.value;
@@ -257,7 +286,7 @@
         });
     });
 
-    // 3. 비밀번호 재설정 (step 3)
+    // step 3: 비밀번호 재설정
     document.getElementById('reset-password-form').addEventListener('submit', function (e) {
         e.preventDefault();
         const new_password = this.new_password.value;
@@ -285,6 +314,7 @@
         })
         .then(res => res.json())
         .then(data => {
+            resultEl.textContent = data.message;
             if (data.success) {
                 resultEl.classList.remove('text-red-600');
                 resultEl.classList.add('text-green-600');
@@ -292,9 +322,37 @@
                 resultEl.classList.remove('text-green-600');
                 resultEl.classList.add('text-red-600');
             }
-            resultEl.textContent = data.message;
         });
     });
 
+    // 회원가입 중복확인 (username / nickname)
+    function checkDuplicate(field) {
+        const signupForm = document.querySelector('.signup-wrapper.form');
+        if (!signupForm.classList.contains('active')) return;
+
+        const input = signupForm.querySelector(`[name=${field}]`);
+        const resultBox = document.getElementById(`${field}-check-result`);
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        if (!input || !input.value.trim()) {
+            resultBox.textContent = `${field}을(를) 입력하세요.`;
+            resultBox.className = 'text-sm text-red-600 mt-1';
+            return;
+        }
+
+        fetch("/accounts/check-duplicate/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify({ field, value: input.value.trim() })
+        })
+        .then(res => res.json())
+        .then(data => {
+            resultBox.textContent = data.message;
+            resultBox.className = 'text-sm mt-1 ' + (data.success ? 'text-green-600' : 'text-red-600');
+        });
+    }
 </script>
 {% endblock %}
