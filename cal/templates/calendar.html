@@ -2,11 +2,10 @@
 {% load static %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'cal/css/calendar.css' %}">
-<link rel="stylesheet" href="{% static 'cal/css/background.css' %}">
 {% endblock %}
 {% block body %}
   <div class="w-full flex justify-center">
-    <table class="calendar-table bg-paper">
+    <table class="calendar-table">
       <thead>
         <tr>
           <th colspan="7" class="month-header">
@@ -33,6 +32,7 @@
                 <div class="absolute top-1/2 left-1/2 -translate-x-6/7 -translate-y-1/2 z-0 pointer-events-none w-[300px] h-[300px]">
                   <img src="/static/cal/images/bg/circle3a.svg" alt="동그라미"
                       class="w-full h-full">
+                  <img src="{% static 'cal/images/team/' %}{{ user.team }}-yeah.png" alt="동그라미" class="mt-70 w-[220px] h-[80px] -rotate-15 z-0" />
                 </div>
               {% endif %}
               <span class="relative z-10">{{ day_name }}</span>
@@ -42,14 +42,14 @@
       </thead>
       <tbody>
         {% for week in cal_data.weeks %}
-          <tr>
+          <tr class="">
             {% for day in week %}
               {% if day.day == 0 %}
                 <td>
                 </td>
               {% else %}
-                <td class="day-cell rounded-t-md">
-                    <span class="day-number">{{ day.day }}</span>
+          <td class="day-cell rounded-t-md">
+            <span class="day-number relative z-10">{{ day.day }}</span>
                     {% for game in day.games %}
                       {% if game.result == '취소'%}
                         <div class="game-info{% if game.id in user_attendance_game_ids %} highlight-{{user.team}}{% endif %}">

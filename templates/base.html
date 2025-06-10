@@ -11,14 +11,15 @@
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
         <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+        <link rel="stylesheet" href="{% static 'cal/css/calendar.css' %}">
         <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap">
         {% block styles %}
         {% endblock %}
 </head>
-<body x-data="{ mobileMenuOpen: false }" class="min-h-screen w-screen bg-white relative font-ydestreetl" style="padding-top: 75px;">
+<body x-data="{ mobileMenuOpen: false }" class="min-h-screen w-screen bg-white relative font-ydestreetl bg-paper" style="padding-top: 63px;">
     {% include '_nav.html' %}
-    <div class="pt-4">
+    <div class="">
         {% block body %}
         {% endblock %}
     </div>
