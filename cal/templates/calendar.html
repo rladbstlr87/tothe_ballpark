@@ -2,28 +2,40 @@
 {% load static %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'cal/css/calendar.css' %}">
+<link rel="stylesheet" href="{% static 'cal/css/background.css' %}">
 {% endblock %}
 {% block body %}
   <div class="w-full flex justify-center">
-    <table class="calendar-table">
+    <table class="calendar-table bg-paper">
       <thead>
         <tr>
           <th colspan="7" class="month-header">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <a href="?{{ prev_month }}" class="nav-link">
-                <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Prev" class="w-16 h-16 rotate-90 inline">
-              </a>
-              <span>{{ cal_data.year }}년 {{ cal_data.month }}월</span>
-              <a href="?{{ next_month }}" class="nav-link">
-                <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Next" class="w-16 h-16 -rotate-90 inline">
-              </a>
+              <div class="grid grid-cols-1">
+                <!-- <img src="/static/cal/images/bg/mon_alert.svg" alt="근데 공휴일은 야구해요"> -->
+                <a href="?{{ prev_month }}" class="nav-link">
+                  <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Prev" class="w-16 h-16 rotate-90 inline">
+                </a>
+              </div>
+              <span class="cal-title">{{ cal_data.year }}년 {{ cal_data.month }}월</span>
+              <div class="">
+                <a href="?{{ next_month }}" class="nav-link">
+                  <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Next" class="w-16 h-16 -rotate-90 inline">
+                </a>
+              </div>
             </div>
           </th>
         </tr>
         <tr>
           {% for day_name in cal_data.week_header %}
-            <th class="{% if forloop.counter0 == 0 %}mon{% endif %}">
-              {{ day_name }}
+            <th class="{% if forloop.counter0 == 0 %}relative mon overflow-visible{% endif %} text-center w-12 h-12 align-middle">
+              {% if forloop.counter0 == 0 %}
+                <div class="absolute top-1/2 left-1/2 -translate-x-6/7 -translate-y-1/2 z-0 pointer-events-none w-[300px] h-[300px]">
+                  <img src="/static/cal/images/bg/circle3a.svg" alt="동그라미"
+                      class="w-full h-full">
+                </div>
+              {% endif %}
+              <span class="relative z-10">{{ day_name }}</span>
             </th>
           {% endfor %}
         </tr>
@@ -33,7 +45,8 @@
           <tr>
             {% for day in week %}
               {% if day.day == 0 %}
-                <td></td>
+                <td>
+                </td>
               {% else %}
                 <td class="day-cell rounded-t-md">
                     <span class="day-number">{{ day.day }}</span>
