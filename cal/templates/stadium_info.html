@@ -1,14 +1,7 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ stadium.stadium }} | 직돌이</title>
-</head>
-<body class="pt-[90px]">
-  {% include '_nav.html' %}
+{% block title %}{{ stadium.stadium }} | 직돌이{% endblock %}
+{% block body %}
   <main class="max-w-5xl mx-auto px-4 py-10 space-y-12">
     <!-- 경기장 이름 -->
     <div class="text-center">
@@ -33,9 +26,9 @@
 
       <!-- 좌석표 이미지 위쪽에 배치 -->
       <div class="w-full mb-6">
-        <img src="{% static 'images/stadium/' %}{{ stadium.stadium }}.png"
-             alt="{{ stadium.stadium }} 좌석표"
-             class="w-full h-auto rounded-lg shadow-md">
+        <img src="{% static 'cal/images/stadium/' %}{{ stadium.stadium }}.png"
+            alt="{{ stadium.stadium }} 좌석표"
+            class="w-full h-auto rounded-lg shadow-md">
       </div>
 
       <!-- 좌석 설명 카드 -->
@@ -91,6 +84,4 @@
     </section>
 
   </main>
-
-</body>
-</html>
+{% endblock %}

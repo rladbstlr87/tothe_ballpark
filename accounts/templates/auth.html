@@ -1,102 +1,358 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block styles %}
+<!-- 회원가입/로그인 페이지에 적용될 CSS 불러오기 -->
 <link rel="stylesheet" href="{% static 'auth/css/auth.css' %}">
 {% endblock %}
 
 {% block body %}
-<!-- 야구공 배경 -->
-<div id="bg-circle"
-    class="absolute top-1/2 -translate-y-1/2 w-[400px] h-[400px] z-0 transition-slide flex items-center justify-center pr-20 pb-20"
-    style="background-image: url('{% static 'auth/images/logo.png' %}'); left: {% if mode == 'signup' %}100vw{% else %}-200px{% endif %};">
-  <h2 class="absolute text-black text-5xl font-extrabold left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 drop-shadow-lg">
-    {% if mode == 'signup' %}Join with us{% else %}Welcome{% endif %}
-  </h2>
-</div>
+<div class="root">
 
-<!-- 폼 카드 -->
-<div id="form-card"
-    class="absolute transition-slide top-1/2 -translate-y-1/2 z-20 w-[400px] {% if mode == 'signup' %}left-[150px]{% else %}right-[150px]{% endif %}">
-  {% if mode == 'login' %}
-  <form method="POST" class="bg-white w-full p-10 shadow-xl rounded-2xl">
-    {% csrf_token %}
-    <h2 class="text-2xl font-bold mb-6 text-center">Log In</h2>
-    {% for field in login_form %}
-    <div class="mb-4">
-      {{ field.label_tag }}
-      {{ field }}
-      {% if field.errors %}
-      <p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>
-      {% endif %}
+    <!-- 10개 구단 마스코트 이미지 배치 (스타일로 위치 제어 예정) -->
+    <div class="hanhwa-mascot-container">
+        <img src="{% static 'auth/images/한화1.png' %}" alt="한화 마스코트">
     </div>
-    {% endfor %}
-    <button type="submit" name="action" value="login" class="w-full bg-[#75A58D] text-white py-2 rounded">Log In</button>
-    <p class="text-sm mt-4 text-center">
-      Don't have an account?
-      <a href="#" onclick="triggerSwitch('signup'); return false;" class="text-[#75A58D] font-semibold">Sign Up here</a>
-    </p>
-  </form>
-  {% endif %}
+    <div class="dusan-mascot-container">
+        <img src="{% static 'auth/images/두산1.png' %}" alt="두산 마스코트">
+    </div>
+    <div class="samsung-mascot-container">
+        <img src="{% static 'auth/images/삼성1.png' %}" alt="삼성 마스코트">
+    </div>
+    <div class="kt-mascot-container">
+        <img src="{% static 'auth/images/케이티1.png' %}" alt="케이티 마스코트">
+    </div>
+    <div class="lotte-mascot-container">
+        <img src="{% static 'auth/images/롯데1.png' %}" alt="롯데 마스코트">
+    </div>
+    <div class="kiwom-mascot-container">
+        <img src="{% static 'auth/images/키움1.png' %}" alt="키움 마스코트">
+    </div>
+    <div class="kia-mascot-container">
+        <img src="{% static 'auth/images/기아1.png' %}" alt="기아 마스코트">
+    </div>
+    <div class="lg-mascot-container">
+        <img src="{% static 'auth/images/엘지1.png' %}" alt="엘지 마스코트">
+    </div>
+    <div class="sk-mascot-container">
+        <img src="{% static 'auth/images/에스케이1.png' %}" alt="에스케이 마스코트">
+    </div>
+    <div class="nc-mascot-container">
+        <img src="{% static 'auth/images/엔씨1.png' %}" alt="엔씨 마스코트">
+    </div>
 
-  {% if mode == 'signup' %}
-  <form method="POST" class="bg-white w-full p-10 shadow-xl rounded-2xl">
-    {% csrf_token %}
-    <h2 class="text-2xl font-bold mb-6 text-center">Sign Up</h2>
-    {% for field in signup_form %}
-    <div class="mb-4">
-      {{ field.label_tag }}
-      {{ field }}
-      {% if field.errors %}
-      <p class="text-red-500 text-sm">{{ field.errors|striptags }}</p>
-      {% endif %}
+    <!-- 로그인 폼 -->
+    <div class="signin-wrapper form {% if mode == 'login' %}active{% endif %}">
+        <div class="form-wrapper">
+            <h5>로그인</h5>
+            <form method="post" action="?mode=login">
+                {% csrf_token %}
+                {{ login_form.non_field_errors }}
+                {{ login_form.username }}
+                {{ login_form.password }}
+                <button type="submit" class="button primary">로그인</button>
+            </form>
+
+            <!-- 하단 네비게이션: 아이디/비밀번호 찾기, 회원가입 링크 -->
+            <div class="mt-4 text-sm text-center text-gray-600 space-x-4">
+                <a href="#" id="find-id-link" class="hover:underline">아이디 찾기</a>
+                <span>|</span>
+                <a href="#" id="find-password-link" class="hover:underline">비밀번호 찾기</a>
+                <span>|</span>
+                <a href="?mode=signup" class="hover:underline">회원가입</a>
+            </div>
+        </div>
     </div>
-    {% endfor %}
-    <button type="submit" name="action" value="signup" class="w-full bg-[#75A58D] text-white py-2 rounded hover:bg-sky-700">Sign Up</button>
-    <p class="text-sm mt-4 text-center">
-      Already have an account?
-      <a href="#" onclick="triggerSwitch('login'); return false;" class="text-[#75A58D] font-semibold">Log In here</a>
-    </p>
-  </form>
-  {% endif %}
+
+    <!-- 회원가입 폼 -->
+    <div class="signup-wrapper form {% if mode == 'signup' %}active{% endif %}">
+        <div class="form-wrapper">
+            <h5>회원가입</h5>
+            <form method="post" action="?mode=signup">
+                {% csrf_token %}
+
+                <!-- 사용자명 입력 및 중복확인 -->
+                <div class="w-full flex gap-2 items-center">
+                <div class="flex-1">
+                    {{ signup_form.username }}
+                </div>
+                <button type="button"
+                        class="text-sm px-2 py-1 h-8 hover:text-blue-500"
+                        onclick="checkDuplicate('username')">중복확인</button>
+                </div>
+                <p id="username-check-result" class="text-sm mt-1"></p>
+
+                <!-- 닉네임 입력 및 중복확인 -->
+                <div class="w-full flex gap-2 items-center mt-2">
+                <div class="flex-1">
+                    {{ signup_form.nickname }}
+                </div>
+                <button type="button"
+                        class="text-sm px-2 py-1 h-8 hover:text-blue-500"
+                        onclick="checkDuplicate('nickname')">중복확인</button>
+                </div>
+                <p id="nickname-check-result" class="text-sm mt-1"></p>
+
+                <!-- 이메일, 팀 선택, 비밀번호 입력 -->
+                {{ signup_form.email }}
+                {{ signup_form.team }}
+                {{ signup_form.password1 }}
+                {{ signup_form.password2 }}
+
+                <button type="submit" class="button primary">회원가입</button>
+            </form>
+
+            <!-- 로그인으로 돌아가기 -->
+            <div class="text-sm text-center text-gray-600 space-x-4">
+                <a href="?mode=login" class="hover:underline">로그인</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 아이디 찾기 폼 -->
+    <div class="find-id-wrapper form">
+        <div class="form-wrapper">
+            <h5>아이디 찾기</h5>
+            <form method="post" id="find-id-form">
+                {% csrf_token %}
+                <input type="email" name="email" placeholder="이메일을 입력하세요" class="form-field" required>
+                <button type="submit" class="button primary">이메일로 아이디 받기</button>
+            </form>
+            <div id="id-code-result" class="mt-2 text-center text-sm text-green-600"></div>
+
+            <div class="text-sm text-center text-gray-600 space-x-4 mt-4">
+                <a href="?mode=login" class="hover:underline">로그인</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 비밀번호 찾기 폼: 3단계로 구성 -->
+    <div class="find-password-wrapper form">
+        <div class="form-wrapper">
+            <h5>비밀번호 찾기</h5>
+
+            <!-- 1단계: 아이디, 이메일 입력 -->
+            <form method="post" id="find-password-form">
+                {% csrf_token %}
+                <input type="text" name="username" placeholder="아이디를 입력하세요" class="form-field" required>
+                <input type="email" name="email" placeholder="이메일을 입력하세요" class="form-field" required>
+                <button type="submit" class="button primary">이메일로 인증번호 받기</button>
+            </form>
+
+            <!-- 2단계: 인증번호 입력 -->
+            <form method="post" id="verify-code-form" class="mt-4 hidden">
+                {% csrf_token %}
+                <input type="text" name="code" placeholder="인증번호 입력" class="form-field" required>
+                <button type="submit" class="button primary">인증번호 확인</button>
+            </form>
+
+            <!-- 3단계: 새 비밀번호 설정 -->
+            <form method="post" id="reset-password-form" class="mt-4 hidden">
+                {% csrf_token %}
+                <input type="password" name="new_password" placeholder="새 비밀번호" class="form-field" required>
+                <input type="password" name="confirm_password" placeholder="새 비밀번호 확인" class="form-field" required>
+                <button type="submit" class="button primary">비밀번호 재설정</button>
+            </form>
+
+            <div id="pw-code-result" class="mt-2 text-center text-sm text-green-600"></div>
+
+            <div class="text-sm text-center text-gray-600 space-x-4 mt-4">
+                <a href="?mode=login" class="hover:underline">로그인</a>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
-  const bg = document.getElementById('bg-circle');
-  const card = document.getElementById('form-card');
-  const currentMode = '{{ mode }}';
+    // 각 폼 요소 DOM 참조
+    const signinWrapper = document.querySelector('.signin-wrapper');
+    const signupWrapper = document.querySelector('.signup-wrapper');
+    const findIdWrapper = document.querySelector('.find-id-wrapper');
+    const findPasswordWrapper = document.querySelector('.find-password-wrapper');
 
-  setTimeout(() => {
-    bg.style.left = 'calc(50% - 500px)';
-    if (currentMode === 'signup') {
-      card.classList.add('left-20');
-    } else {
-      card.classList.add('right-20');
+    // 로그인 폼에서 "아이디 찾기" 클릭 시 전환
+    document.getElementById('find-id-link').addEventListener('click', e => {
+        e.preventDefault();
+        signinWrapper.classList.remove('active');
+        signupWrapper.classList.remove('active');
+        findPasswordWrapper.classList.remove('active');
+        findIdWrapper.classList.add('active');
+    });
+
+    // 로그인 폼에서 "비밀번호 찾기" 클릭 시 전환
+    document.getElementById('find-password-link').addEventListener('click', e => {
+        e.preventDefault();
+        signinWrapper.classList.remove('active');
+        signupWrapper.classList.remove('active');
+        findIdWrapper.classList.remove('active');
+        findPasswordWrapper.classList.add('active');
+    });
+
+    // 아이디 찾기: 이메일 전송 후 결과 출력
+    document.getElementById('find-id-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const email = this.email.value;
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        fetch('/accounts/find_id/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({ email })
+        })
+        .then(res => res.json())
+        .then(data => {
+            const resultBox = document.getElementById('id-code-result');
+            resultBox.textContent = data.message;
+        });
+    });
+
+    // fade 애니메이션 함수
+    function fadeSwitch(fromEl, toEl) {
+        fromEl.classList.add('fade-out');
+        setTimeout(() => {
+            fromEl.classList.add('hidden');
+            fromEl.classList.remove('fade-out');
+            toEl.classList.remove('hidden');
+            toEl.classList.add('fade-in');
+            setTimeout(() => toEl.classList.remove('fade-in'), 300);
+        }, 300);
     }
-  }, 50);
 
-  function triggerSwitch(targetMode) {
-    bg.style.left = '';
-    bg.style.right = '';
-    card.classList.remove('left-20', 'right-20');
+    let tempUsername = "";  // 인증된 사용자 아이디 저장용
 
-    if (targetMode === 'signup') {
-      bg.style.left = '100vw';
-    } else {
-      bg.style.left = '-500px';
+    // step 1: 인증번호 요청
+    document.getElementById('find-password-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const email = this.email.value;
+        const username = this.username.value;
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const resultEl = document.getElementById('pw-code-result');
+
+        fetch('/accounts/reset_password/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({ email, username })
+        })
+        .then(res => res.json())
+        .then(data => {
+            resultEl.classList.remove('text-red-600');
+            resultEl.classList.add('text-green-600');
+            resultEl.textContent = data.message;
+
+            if (data.success) {
+                tempUsername = username;
+                fadeSwitch(this, document.getElementById('verify-code-form'));
+            } else {
+                resultEl.classList.remove('text-green-600');
+                resultEl.classList.add('text-red-600');
+            }
+        });
+    });
+
+    // step 2: 인증번호 확인
+    document.getElementById('verify-code-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const code = this.code.value;
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const resultEl = document.getElementById('pw-code-result');
+
+        fetch('/accounts/confirm_verification_code/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({ username: tempUsername, code })
+        })
+        .then(res => res.json())
+        .then(data => {
+            resultEl.textContent = data.message;
+
+            if (data.success) {
+                resultEl.classList.remove('text-red-600');
+                resultEl.classList.add('text-green-600');
+                fadeSwitch(this, document.getElementById('reset-password-form'));
+            } else {
+                resultEl.classList.remove('text-green-600');
+                resultEl.classList.add('text-red-600');
+            }
+        });
+    });
+
+    // step 3: 비밀번호 재설정
+    document.getElementById('reset-password-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const new_password = this.new_password.value;
+        const confirm_password = this.confirm_password.value;
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const resultEl = document.getElementById('pw-code-result');
+
+        if (new_password !== confirm_password) {
+            resultEl.classList.remove('text-green-600');
+            resultEl.classList.add('text-red-600');
+            resultEl.textContent = "비밀번호가 일치하지 않습니다.";
+            return;
+        }
+
+        fetch('/accounts/set_new_password/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({
+                username: tempUsername,
+                new_password
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            resultEl.textContent = data.message;
+            if (data.success) {
+                resultEl.classList.remove('text-red-600');
+                resultEl.classList.add('text-green-600');
+            } else {
+                resultEl.classList.remove('text-green-600');
+                resultEl.classList.add('text-red-600');
+            }
+        });
+    });
+
+    // 회원가입 중복확인 (username / nickname)
+    function checkDuplicate(field) {
+        const signupForm = document.querySelector('.signup-wrapper.form');
+        if (!signupForm.classList.contains('active')) return;
+
+        const input = signupForm.querySelector(`[name=${field}]`);
+        const resultBox = document.getElementById(`${field}-check-result`);
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        if (!input || !input.value.trim()) {
+            resultBox.textContent = `${field}을(를) 입력하세요.`;
+            resultBox.className = 'text-sm text-red-600 mt-1';
+            return;
+        }
+
+        fetch("/accounts/check-duplicate/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify({ field, value: input.value.trim() })
+        })
+        .then(res => res.json())
+        .then(data => {
+            resultBox.textContent = data.message;
+            resultBox.className = 'text-sm mt-1 ' + (data.success ? 'text-green-600' : 'text-red-600');
+        });
     }
-
-    setTimeout(() => {
-      bg.style.left = 'calc(50% - 500px)';
-      if (targetMode === 'signup') {
-        card.classList.add('left-20');
-      } else {
-        card.classList.add('right-20');
-      }
-    }, 50);
-
-    setTimeout(() => {
-      window.location.href = `?mode=${targetMode}`;
-    }, 550);
-  }
 </script>
 {% endblock %}

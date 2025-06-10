@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     KBO_TEAMS = [
+        ('', '응원하시는 팀을 선택해주세요'),
         ('SK', 'SSG 랜더스'),
         ('LG', 'LG 트윈스'),
         ('KT', 'KT 위즈'),
@@ -23,3 +24,5 @@ class User(AbstractUser):
         verbose_name='My Team',
     )
     nickname = models.CharField(max_length=20, unique=True)
+
+    email = models.EmailField(max_length=254, unique=False, blank=True, null=True)

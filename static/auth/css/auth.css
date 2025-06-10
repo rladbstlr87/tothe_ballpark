@@ -1,258 +1,281 @@
-:root {
-  --primary-color: #4EA685;
-  --secondary-color: #57B894;
-  --white: #ffffff;
-  --gray: #efefef;
-  --gray-2: #757575;
-  --facebook-color: #4267B2;
-  --google-color: #DB4437;
-  --twitter-color: #1DA1F2;
-  --insta-color: #E1306C;
-}
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap');
-
-* {
-  font-family: 'Poppins', sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100vh;
-  overflow: hidden;
-  background-color: var(--white);
-}
-
-.container {
+/* ----------------------------- */
+/* ✅ 전체 레이아웃 및 배경 스타일 */
+/* ----------------------------- */
+.root {
   position: relative;
-  min-height: 100vh;
-  overflow: hidden;
-}
-
-.row {
   display: flex;
-  flex-wrap: wrap;
-  height: 100vh;
-}
-
-.col {
-  width: 50%;
-}
-
-.align-items-center {
-  display: flex;
-  align-items: center;
   justify-content: center;
-  text-align: center;
+  align-items: flex-start;
+  height: 100vh;
+  overflow: hidden;
+
+  background-image: url('/static/auth/images/cal-paper.jpg');
+  background-color: rgba(255, 255, 255, 0.500); /* 밝은 반투명 오버레이 */
+  background-blend-mode: lighten;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
-.flex-col {
-  flex-direction: column;
-}
 
-.form-wrapper {
-  width: 100%;
-  max-width: 28rem;
-}
-
+/* ----------------------------- */
+/* ✅ 로그인/회원가입/아이디찾기 폼 기본 상태 */
+/* ----------------------------- */
 .form {
-  padding: 1rem;
-  background-color: var(--white);
-  border-radius: 1.5rem;
-  width: 100%;
-  box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 12px;
-  transform: scale(0);
-  transition: 0.5s ease-in-out;
-  transition-delay: 1s;
-}
-
-.container.sign-in .form.sign-in,
-.container.sign-up .form.sign-up {
-  transform: scale(1);
-}
-
-.input-group {
-  position: relative;
-  width: 100%;
-  margin: 1rem 0;
-}
-
-.input-group i {
-  position: absolute;
-  top: 50%;
-  left: 1rem;
-  transform: translateY(-50%);
-  font-size: 1.4rem;
-  color: var(--gray-2);
-}
-
-.input-group input {
-  width: 100%;
-  padding: 1rem 3rem;
-  font-size: 1rem;
-  background-color: var(--gray);
-  border-radius: 0.5rem;
-  border: 2px solid var(--white);
-  outline: none;
-}
-
-.input-group input:focus {
-  border: 2px solid var(--primary-color);
-}
-
-.form button {
-  cursor: pointer;
-  width: 100%;
-  padding: 0.6rem 0;
-  border-radius: 0.5rem;
-  border: none;
-  background-color: var(--primary-color);
-  color: var(--white);
-  font-size: 1.2rem;
-  outline: none;
-  transition: background-color 0.3s;
-}
-
-.form button:hover {
-  background-color: var(--secondary-color);
-}
-
-.form p {
-  margin: 1rem 0;
-  font-size: 0.8rem;
-}
-
-.pointer {
-  cursor: pointer;
-}
-
-.text {
-  margin: 4rem;
-  color: var(--white);
-}
-
-.text h2 {
-  font-size: 3rem;
-  font-weight: 800;
-  margin: 2rem 0;
-  transition: 1s ease-in-out;
-}
-
-.text p {
-  font-weight: 600;
-  transition: 1s ease-in-out;
-  transition-delay: 0.2s;
-}
-
-.img img {
-  width: 30vw;
-  transition: 1s ease-in-out;
-  transition-delay: 0.4s;
-}
-
-.text.sign-in h2,
-.text.sign-in p,
-.img.sign-in img {
-  transform: translateX(-250%);
-}
-
-.text.sign-up h2,
-.text.sign-up p,
-.img.sign-up img {
-  transform: translateX(250%);
-}
-
-.container.sign-in .text.sign-in h2,
-.container.sign-in .text.sign-in p,
-.container.sign-in .img.sign-in img,
-.container.sign-up .text.sign-up h2,
-.container.sign-up .text.sign-up p,
-.container.sign-up .img.sign-up img {
-  transform: translateX(0);
-}
-
-#bg-circle {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1000px;
-  height: 1000px;
-  background-color: var(--primary-color);
-  border-radius: 50%;
-  z-index: 0;
-  transition: all 0.6s ease-in-out;
-  pointer-events: none;
-}
-
-.container.sign-up #bg-circle {
-  left: auto;
-  right: -300px;
-}
-
-.container.sign-in #bg-circle {
-  right: auto;
-  left: -300px;
-}
-
-.content-row {
   position: absolute;
   top: 0;
   left: 0;
-  pointer-events: none;
-  z-index: 1;
   width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* 처음에는 비활성화 상태 */
+  opacity: 0;
+  transform: scale(0.95) rotate(-1.5deg);
+  pointer-events: none;
+
+  transition: all 0.6s ease;
+  z-index: 1;
 }
 
-.transition-slide {
-  transition: all 0.6s ease-in-out;
+/* 활성화된 상태의 폼 */
+.form.active {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+  pointer-events: all;
+  z-index: 10;
 }
 
-#bg-circle {
-  background-size: cover;
-  background-position: center;
-  border-radius: 50%;
+
+/* ----------------------------- */
+/* ✅ 폼 카드 스타일 (로그인/회원가입 박스) */
+/* ----------------------------- */
+.form-wrapper {
+  background-color: #fdfcf7;
+  width: 480px;
+  height: 750px;
+
+  padding: 40px 32px;
+  border-radius: 16px;
+  box-shadow: 6px 6px 0 #bfb89b;
+  border: 1px solid #d6d1b1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  animation: fadeInUp 0.5s ease;
 }
 
-@media only screen and (max-width: 425px) {
-  .col {
-    width: 100%;
-    position: absolute;
-    padding: 2rem;
-    background-color: var(--white);
-    border-top-left-radius: 2rem;
-    border-top-right-radius: 2rem;
-    transform: translateY(100%);
-    transition: 1s ease-in-out;
-  }
 
-  .row {
-    align-items: flex-end;
-    justify-content: flex-end;
-  }
+/* ----------------------------- */
+/* ✅ 제목 텍스트 스타일 (로그인, 회원가입 등) */
+/* ----------------------------- */
+h5 {
+  font-size: 28px;
+  color: #3e3426;
+  margin-bottom: 35px;
+  font-weight: 600;
+}
 
-  .form,
-  .social-list {
-    box-shadow: none;
-    margin: 0;
-    padding: 0;
-  }
 
-  .text {
-    margin: 0;
-  }
+/* ----------------------------- */
+/* ✅ 모든 input/select 공통 스타일 */
+/* ----------------------------- */
+.form-field {
+  width: 100%;
+  height: 45px;
+  margin-bottom: 22px;
 
-  .text p {
-    display: none;
-  }
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid #d9d2b4;
+  background: #fffef9;
 
-  .text h2 {
-    margin: 0.5rem;
-    font-size: 2rem;
-  }
+  font-size: 16px;
+  color: #3e3e3e;
 
-  #bg-circle {
-    display: none;
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+
+/* ----------------------------- */
+/* ✅ 버튼 기본 스타일 */
+/* ----------------------------- */
+.button {
+  width: 100%;
+  height: 50px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+
+  margin-bottom: 18px;
+  transition: all 0.3s ease;
+}
+
+/* 주요 버튼 (로그인, 회원가입 등) */
+.primary {
+  background-color: #826d47;
+  color: #fffbea;
+  border: none;
+}
+.primary:hover {
+  background-color: #6b5739;
+}
+
+/* 보조 버튼 (중복확인, 이메일 인증 등) */
+.secondary {
+  background-color: transparent;
+  color: #826d47;
+  border: 1px solid #826d47;
+}
+.secondary:hover {
+  background-color: #f9f6ee;
+}
+
+
+/* ----------------------------- */
+/* ✅ 링크 및 안내 텍스트 스타일 */
+/* ----------------------------- */
+p {
+  font-size: 14px;
+  color: #555;
+}
+
+p a {
+  color: #826d47;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+p a:hover {
+  color: #b08b56;
+}
+
+
+/* ----------------------------- */
+/* ✅ 페이드 전환 애니메이션 */
+/* ----------------------------- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
   }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+.fade-out {
+  opacity: 1;
+  animation: fadeOut 0.3s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+@keyframes fadeOut {
+  to { opacity: 0; }
+}
+
+
+/* ----------------------------- */
+/* ✅ 팀별 마스코트 위치 조정 */
+/* 각 컨테이너는 .root 기준으로 위치 고정됨 */
+/* ----------------------------- */
+
+.dusan-mascot-container {
+  position: absolute;
+  z-index: 15;
+  pointer-events: none;
+  width: 125px;
+}
+
+.hanhwa-mascot-container {
+  position: absolute;
+  transform: translate(175px, -130px);
+  z-index: 15;
+  pointer-events: none;
+  width: 400px;
+}
+
+.samsung-mascot-container {
+  position: absolute;
+  transform: translate(-175px);
+  z-index: 15;
+  pointer-events: none;
+  width: 125px;
+}
+
+.kt-mascot-container {
+  position: absolute;
+  top: 5%;
+  transform: translate(280px);
+  z-index: 15;
+  pointer-events: none;
+  width: 250px;
+}
+
+.lotte-mascot-container {
+  position: absolute;
+  top: 35%;
+  transform: translate(290px);
+  z-index: 15;
+  pointer-events: none;
+  width: 200px;
+}
+
+.kiwom-mascot-container {
+  position: absolute;
+  top: 70%;
+  transform: translate(300px);
+  z-index: 15;
+  pointer-events: none;
+  width: 150px;
+}
+
+.kia-mascot-container {
+  position: absolute;
+  top: 10%;
+  transform: translate(-275px);
+  z-index: 15;
+  pointer-events: none;
+  width: 150px;
+}
+
+.lg-mascot-container {
+  position: absolute;
+  top: 30%;
+  transform: translate(-275px);
+  z-index: 15;
+  pointer-events: none;
+  width: 150px;
+}
+
+.sk-mascot-container {
+  position: absolute;
+  top: 50%;
+  transform: translate(-275px);
+  z-index: 15;
+  pointer-events: none;
+  width: 150px;
+}
+
+.nc-mascot-container {
+  position: absolute;
+  top: 73%;
+  transform: translate(-275px);
+  z-index: 15;
+  pointer-events: none;
+  width: 150px;
 }
