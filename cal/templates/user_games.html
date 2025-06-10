@@ -38,21 +38,21 @@
           <table class="w-full text-center table-auto border-separate border-spacing-0 font-jua-regular text-lg">
             <thead>
               <tr class="bg-gray-200">
-                <th class="py-2 px-4 border border-gray-300 rounded-tl-2xl">순위</th>
-                <th class="py-2 px-4 border border-gray-300">닉네임</th>
-                <th class="py-2 px-4 border border-gray-300">승률</th>
-                <th class="py-2 px-4 border border-gray-300 rounded-tr-2xl">전적</th>
+                <th class="py-2 px-4 border border-white rounded-tl-2xl" style="background-color: #FFDCDC;">순위</th>
+                <th class="py-2 px-4 border border-white" style="background-color: #FFDCDC;">닉네임</th>
+                <th class="py-2 px-4 border border-white" style="background-color: #FFDCDC;">승률</th>
+                <th class="py-2 px-4 border border-white rounded-tr-2xl" style="background-color: #FFDCDC;">전적</th>
               </tr>
             </thead>
             <tbody id="ranking-body">
               {% for user in all_users_winning_percent %}
                 <tr class="hover:bg-gray-100 {% if forloop.counter > 5 %}hidden{% endif %}">
-                  <td class="py-2 px-4 border border-gray-300 {% if forloop.last %}rounded-bl-2xl{% endif %}">
+                  <td class="py-2 px-4 border border-white {% if forloop.last %}rounded-bl-2xl{% endif %}" style="background-color: #FFF2EB;">
                     {{ forloop.counter }}
                   </td>
-                  <td class="py-2 px-4 border border-gray-300">{{ user.username }}</td>
-                  <td class="py-2 px-4 border border-gray-300">{{ user.winning_percent }}%</td>
-                  <td class="py-2 px-4 border border-gray-300 {% if forloop.last %}rounded-br-2xl{% endif %}">
+                  <td class="py-2 px-4 border border-white" style="background-color: #FFF2EB;">{{ user.username }}</td>
+                  <td class="py-2 px-4 border border-white" style="background-color: #FFF2EB;">{{ user.winning_percent }}%</td>
+                  <td class="py-2 px-4 border border-white {% if forloop.last %}rounded-br-2xl{% endif %}" style="background-color: #FFF2EB;">
                     {{ user.win_count }}승 / {{ user.total_games }}경기
                   </td>
                 </tr>
@@ -95,23 +95,23 @@
       
       <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl hover:scale-[1.02] transition">
         <h2 class="text-2xl text-black-500 mb-4">🏆 개인 구장별 직관 승률</h2>
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto rounded-2xl overflow-hidden shadow-xl">
           <table class="w-full text-center table-auto border-collapse font-jua-regular text-lg">
             <thead>
               <tr class="bg-gray-200">
-                <th class="py-2 px-4 border">순위</th>
-                <th class="py-2 px-4 border">구장</th>
-                <th class="py-2 px-4 border">승률</th>
-                <th class="py-2 px-4 border">전적</th>
+                <th class="py-2 px-4 border border-white rounded-tl-2xl" style="background-color: #D2E0FB;">순위</th>
+                <th class="py-2 px-4 border border-white" style="background-color: #D2E0FB;">구장</th>
+                <th class="py-2 px-4 border border-white" style="background-color: #D2E0FB;">승률</th>
+                <th class="py-2 px-4 border border-white" style="background-color: #D2E0FB;">전적</th>
               </tr>
             </thead>
             <tbody>
               {% for stat in stadium_stats %}
                 <tr class="hover:bg-gray-100">
-                  <td class="py-2 px-4 border">{{ forloop.counter }}</td>
-                  <td class="py-2 px-4 border">{{ stat.stadium }}</td>
-                  <td class="py-2 px-4 border">{{ stat.percent }}%</td>
-                  <td class="py-2 px-4 border">{{ stat.wins }}승 / {{ stat.total }}경기</td>
+                  <td class="py-2 px-4 border border-white {% if forloop.last %}rounded-bl-2xl{% endif %}" style="background-color: #FEF9D9;">{{ forloop.counter }}</td>
+                  <td class="py-2 px-4 border border-white" style="background-color: #FEF9D9;">{{ stat.stadium }}</td>
+                  <td class="py-2 px-4 border border-white" style="background-color: #FEF9D9;">{{ stat.percent }}%</td>
+                  <td class="py-2 px-4 border border-white {% if forloop.last %}rounded-br-2xl{% endif %}" style="background-color: #FEF9D9;">{{ stat.wins }}승 / {{ stat.total }}경기</td>
                 </tr>
               {% endfor %}
             </tbody>
