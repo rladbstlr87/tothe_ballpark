@@ -22,15 +22,20 @@
                 <a href="?{{ next_month }}" class="nav-link">
                   <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Next" class="w-16 h-16 -rotate-90 inline">
                 </a>
-                <!-- <img src="/static/cal/images/bg/attended_alert.svg" alt="dd" class="rotate-15"> -->
               </div>
             </div>
           </th>
         </tr>
         <tr>
           {% for day_name in cal_data.week_header %}
-            <th class="{% if forloop.counter0 == 0 %}mon{% endif %}">
-              {{ day_name }}
+            <th class="{% if forloop.counter0 == 0 %}relative mon overflow-visible{% endif %} text-center w-12 h-12 align-middle">
+              {% if forloop.counter0 == 0 %}
+                <div class="absolute top-1/2 left-1/2 -translate-x-6/7 -translate-y-1/2 z-0 pointer-events-none w-[300px] h-[300px]">
+                  <img src="/static/cal/images/bg/circle3a.svg" alt="동그라미"
+                      class="w-full h-full">
+                </div>
+              {% endif %}
+              <span class="relative z-10">{{ day_name }}</span>
             </th>
           {% endfor %}
         </tr>
