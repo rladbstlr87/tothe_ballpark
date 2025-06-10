@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import PostForm, CommentForm
 from django.core.paginator import Paginator
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
 # 게시글 리스트
@@ -13,8 +12,8 @@ def post_index(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     total = posts.count()
-    start_index = page_obj.start_index()  # 1부터 시작
-    posts_with_number = [(total - idx, post) for idx, post in enumerate(page_obj)]
+    start_index = total - ((page_obj.number-1) * paginator.per_page)  # 시작 인덱스 계산  (역순으로 1번 글이 가장 마지막 번호)
+    posts_with_number = [(start_index - idx, post) for idx, post in enumerate(page_obj)]
     context = {
         'posts': posts,
         'posts_with_number': posts_with_number,

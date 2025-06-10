@@ -34,30 +34,65 @@
       <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl hover:scale-[1.02] transition">
         <h2 class="text-2xl text-black-500 mb-4">🏆 직관 승률</h2>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-center table-auto border-collapse font-jua-regular text-lg">
+        <div class="overflow-x-auto rounded-2xl overflow-hidden shadow-xl">
+          <table class="w-full text-center table-auto border-separate border-spacing-0 font-jua-regular text-lg">
             <thead>
               <tr class="bg-gray-200">
-                <th class="py-2 px-4 border">순위</th>
-                <th class="py-2 px-4 border">닉네임</th>
-                <th class="py-2 px-4 border">승률</th>
-                <th class="py-2 px-4 border">전적</th>
+                <th class="py-2 px-4 border border-gray-300 rounded-tl-2xl">순위</th>
+                <th class="py-2 px-4 border border-gray-300">닉네임</th>
+                <th class="py-2 px-4 border border-gray-300">승률</th>
+                <th class="py-2 px-4 border border-gray-300 rounded-tr-2xl">전적</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="ranking-body">
               {% for user in all_users_winning_percent %}
-                <tr class="hover:bg-gray-100">
-                  <td class="py-2 px-4 border">{{ forloop.counter }}</td>
-                  <td class="py-2 px-4 border">{{ user.username }}</td>
-                  <td class="py-2 px-4 border">{{ user.winning_percent }}%</td>
-                  <td class="py-2 px-4 border">{{ user.win_count }}승 / {{ user.total_games }}경기</td>
+                <tr class="hover:bg-gray-100 {% if forloop.counter > 5 %}hidden{% endif %}">
+                  <td class="py-2 px-4 border border-gray-300 {% if forloop.last %}rounded-bl-2xl{% endif %}">
+                    {{ forloop.counter }}
+                  </td>
+                  <td class="py-2 px-4 border border-gray-300">{{ user.username }}</td>
+                  <td class="py-2 px-4 border border-gray-300">{{ user.winning_percent }}%</td>
+                  <td class="py-2 px-4 border border-gray-300 {% if forloop.last %}rounded-br-2xl{% endif %}">
+                    {{ user.win_count }}승 / {{ user.total_games }}경기
+                  </td>
                 </tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
-      </div>
+        <!-- 더보기 버튼 -->
+        <div class="text-center mt-4 flex justify-center gap-4">
+          <!-- 펼치기 아이콘 -->
+          <div id="expandBtn" class="cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6 text-gray-500 hover:scale-105 text-blue-700 transition duration-200">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m4.5 5.25 7.5 7.5 7.5-7.5m-15 6 7.5 7.5 7.5-7.5" />
+            </svg>
+          </div>
 
+          <!-- 접기 아이콘 -->
+          <div id="collapseBtn" class="cursor-pointer hidden">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6 text-gray-500 hover:scale-105 text-blue-700 transition duration-200">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m4.5 18.75 7.5-7.5 7.5 7.5" />
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m4.5 12.75 7.5-7.5 7.5 7.5" />
+            </svg>
+          </div>
+        </div>
+
+      </div>
+      
       <div class="bg-white/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl hover:scale-[1.02] transition">
         <h2 class="text-2xl text-black-500 mb-4">🏆 개인 구장별 직관 승률</h2>
         <div class="overflow-x-auto">
@@ -86,4 +121,60 @@
     </div>
   </div>
   </div>
+ <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const rows = document.querySelectorAll("#ranking-body tr");
+    const expandBtn = document.getElementById("expandBtn");
+    const collapseBtn = document.getElementById("collapseBtn");
+
+    let visibleCount = 5;
+
+    // 초기: 5개만 보임
+    rows.forEach((row, index) => {
+      if (index >= visibleCount) row.classList.add("hidden");
+    });
+
+    collapseBtn.classList.add("hidden");
+
+    // 펼치기
+    expandBtn.addEventListener("click", function () {
+      const nextCount = visibleCount + 5;
+
+      for (let i = visibleCount; i < nextCount && i < rows.length; i++) {
+        rows[i].classList.remove("hidden");
+      }
+
+      visibleCount = nextCount;
+
+      if (visibleCount > 5) {
+        collapseBtn.classList.remove("hidden");
+      }
+
+      // 다 보이면 펼치기 숨김
+      if (visibleCount >= rows.length) {
+        expandBtn.classList.add("hidden");
+      }
+    });
+
+    // 접기
+    collapseBtn.addEventListener("click", function () {
+      const newVisibleCount = Math.max(5, visibleCount - 5);
+
+      for (let i = newVisibleCount; i < rows.length; i++) {
+        rows[i].classList.add("hidden");
+      }
+
+      visibleCount = newVisibleCount;
+
+      if (visibleCount <= 5) {
+        collapseBtn.classList.add("hidden");
+      }
+
+      //  펼치기 버튼 다시 보여주기
+      expandBtn.classList.remove("hidden");
+    });
+  });
+</script>
+
+
 {% endblock %}
