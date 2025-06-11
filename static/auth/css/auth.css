@@ -10,7 +10,7 @@
   overflow: hidden;
 
   background-image: url('/static/auth/images/cal-paper.jpg');
-  background-color: rgba(255, 255, 255, 0.500); /* 밝은 반투명 오버레이 */
+  background-color: rgba(255, 255, 255, 0.500);
   background-blend-mode: lighten;
   background-size: cover;
   background-repeat: no-repeat;
