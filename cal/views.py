@@ -8,10 +8,23 @@ from .models import *
 from accounts.models import User
 from .utils import Calendar
 import calendar
+import random
 
 # 홈페이지
 def index(request):
-    return render(request, 'index.html')
+    backgrounds = [
+        'cal/images/bg/home0.png',
+        'cal/images/bg/home1.png',
+        'cal/images/bg/home2.png',
+    ]
+        
+    chosen_background = random.choice(backgrounds)
+
+    context = {
+        'random_bg': chosen_background,
+    }
+
+    return render(request, 'index.html', context)
 
 # 캘린더 메인 뷰
 @never_cache
