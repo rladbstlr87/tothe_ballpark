@@ -134,30 +134,38 @@ def home(request):
 
 # ✅ 회원가입 / 로그인 처리
 def auth_view(request):
-    mode = request.GET.get('mode', 'login')  # 기본값: login
+    mode = request.GET.get('mode', 'login')
 
+    # POST 요청 처리
     if request.method == 'POST':
         if mode == 'signup':
-            form = CustomUserCreationForm(request.POST)
-            if form.is_valid():
-                user = form.save()
-                auth_login(request, user)
-                return redirect('cal:calendar')  # 회원가입 성공 시 달력으로 이동
-        else:  # mode == login
-            form = CustomAuthenticationForm(request, data=request.POST)
-            if form.is_valid():
-                user = form.get_user()
-                auth_login(request, user)
-                return redirect('cal:calendar')  # 로그인 성공 시 달력으로 이동
-    else:
-        # GET 요청일 경우 폼 초기화
-        form = CustomUserCreationForm() if mode == 'signup' else CustomAuthenticationForm()
+            signup_form = CustomUserCreationForm(request.POST)
+            login_form = CustomAuthenticationForm(request)  # 비워진 로그인 폼
 
-    # 템플릿에 전달할 폼 객체들
+            if signup_form.is_valid():
+                user = signup_form.save()
+                auth_login(request, user)
+                return redirect('cal:calendar')
+
+        else:  # mode == 'login'
+            login_form = CustomAuthenticationForm(request, data=request.POST)
+            signup_form = CustomUserCreationForm()  # 비워진 회원가입 폼
+
+            if login_form.is_valid():
+                user = login_form.get_user()
+                auth_login(request, user)
+                return redirect('cal:calendar')
+
+    else:
+        # GET 요청일 경우
+        signup_form = CustomUserCreationForm()
+        login_form = CustomAuthenticationForm(request)
+
+    # context에 올바른 폼 전달
     context = {
         'mode': mode,
-        'signup_form': CustomUserCreationForm(),
-        'login_form': CustomAuthenticationForm(request),
+        'signup_form': signup_form,
+        'login_form': login_form,
     }
     return render(request, 'auth.html', context)
 
