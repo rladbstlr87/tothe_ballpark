@@ -41,7 +41,10 @@ def detail(request, id):
     post = get_object_or_404(Post, id=id)
     posts = Post.objects.all().order_by('-created_at')
     total = posts.count()
-    posts_with_number = [(total - idx, post) for idx, post in enumerate(posts)]
+    posts_with_number = [(total - idx, p) for idx, p in enumerate(posts)]
+    paginator = Paginator(posts_with_number, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     comments = post.comment_set.all().order_by('-created_at')
 
@@ -59,6 +62,7 @@ def detail(request, id):
         'comments': comments,
         'form': CommentForm(),
         'is_post_updated': is_post_updated,
+        'page_obj': page_obj,
     }
     return render(request, 'detail.html', context)
 

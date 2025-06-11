@@ -34,7 +34,7 @@ class CommentForm(ModelForm):
             'content': forms.Textarea(attrs={
                 'rows': 3,
                 'class': 'w-full border border-gray-300 p-3 rounded resize-none '
-                         'focus:outline-none focus:ring-2 focus:ring-blue-400'
+                         'focus:outline-none focus:ring-2 focus:ring-sky-200'
             }),
             'image': forms.ClearableFileInput(attrs={
                 'class': 'mt-2 text-sm text-gray-700'
