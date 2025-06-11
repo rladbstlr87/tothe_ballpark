@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block body %}
-  <div class="h-screen bg-fixed bg-center bg-cover"
-    style="background-image: url({% static 'cal/images/baseball.png' %});">
-  </div>
+<div class="h-screen bg-[url('{% static "cal/images/baseball.png" %}')] bg-contain bg-no-repeat bg-center">
+</div>
 {% endblock %}

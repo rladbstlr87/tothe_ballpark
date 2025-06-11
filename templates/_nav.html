@@ -1,6 +1,5 @@
 {% load static %}
-<nav class="bg-cover fixed top-0 left-0 w-full
-            {% if user.is_authenticated %}bg-transparent{% else %}bg-white{% endif %} z-30 py-3 font-jaram [background-position:0%_100%]"
+<nav class="bg-cover fixed top-0 left-0 w-full bg-transparent z-30 py-3 font-jaram [background-position:0%_100%]"
     style="{% if user.team == none %}background-image: url('{% static 'nav/nav-' %}nothing.png');{% else %}background-image: url('{% static 'nav/nav-' %}{{ user.team }}.png');{% endif %}">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="relative flex h-16">

@@ -6,14 +6,14 @@
     <!-- 스코어바와 참석 아이콘을 한 줄에 정렬 -->
     {% if game %}
     <div class="flex items-center max-w-3xl mx-auto mt-4 mb-2">
-        <div class="flex-grow pl-15">
+        <div class="flex-grow pl-28">
             {% include '_scorebar.html' %}
         </div>
          <button id="attendance-btn" type="button" style="background: none; border: none; padding: 0;">
             {% if request.user in game.attendance_users.all %}
-                <img id="attendance-icon" src="{% static 'cal/images/icon/watch.png' %}" alt="간 경기" class="w-12 h-12 transition-transform hover:scale-110">
+                <img id="attendance-icon" src="{% static 'cal/images/icon/watch.png' %}" alt="간 경기" class="w-30 h-30 transition-transform hover:scale-110">
             {% else %}
-                <img id="attendance-icon" src="{% static 'cal/images/icon/notwatch.png' %}" alt="안간 경기" class="w-12 h-12 transition-transform hover:scale-110">
+                <img id="attendance-icon" src="{% static 'cal/images/icon/notwatch.png' %}" alt="안간 경기" class="w-30 h-30 transition-transform hover:scale-110">
             {% endif %}
         </button>
     </div>
