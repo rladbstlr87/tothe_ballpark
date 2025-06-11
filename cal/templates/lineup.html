@@ -9,7 +9,7 @@
         <div class="flex-grow pl-28">
             {% include '_scorebar.html' %}
         </div>
-         <button id="attendance-btn" type="button" style="background: none; border: none; padding: 0;">
+        <button id="attendance-btn" type="button" style="background: none; border: none; padding: 0;">
             {% if request.user in game.attendance_users.all %}
                 <img id="attendance-icon" src="{% static 'cal/images/icon/watch.png' %}" alt="간 경기" class="w-30 h-30 transition-transform hover:scale-110">
             {% else %}
@@ -18,9 +18,9 @@
         </button>
     </div>
     {% endif %}
-        <div class="grid grid-cols-2 max-w-3xl mx-auto bg-paper">
+        <div class="grid grid-cols-2 max-w-3xl mx-auto bg-white">
             <!-- 우리 팀 라인업 -->
-            <div class="">
+            <div class="pr-2">
                 {% for lineup in user_lineup %}
                     {% with record=latest_daily_stats|get_item:lineup.hitter.player_id %}
                         {% if lineup.batting_order == 1 %}
@@ -76,7 +76,7 @@
             </div>
 
             <!-- 상대 팀 라인업 -->
-            <div class="">
+            <div class="pl-2">
                 {% for lineup in opponent_lineup %}
                     {% with record=latest_daily_stats|get_item:lineup.hitter.player_id %}
                         {% if lineup.batting_order == 1 %}
