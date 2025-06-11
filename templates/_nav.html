@@ -100,7 +100,7 @@
             <!-- 승리요정 -->
             {% if user.is_authenticated %}
             <div class="grid grid-cols-1 flex justify-end w-[160px] h-[120px]">
-                <a id="fairy" href="{% url 'cal:user_games' user.id %}" class="flex rotate-7 translate-x-2">
+                <a id="fairy" href="{% url 'cal:user_games' user.id %}" class="flex rotate-7 translate-x-2 md:flex hidden">
                     {% if winning_percent >= 50 %}
                         <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-winning.svg" alt="승리요정"
                             class="w-[20vw] h-auto">
