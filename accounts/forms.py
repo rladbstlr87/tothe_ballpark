@@ -25,21 +25,17 @@ class CustomUserCreationForm(UserCreationForm):
             }),
             'team': forms.Select(attrs={
                 'class': 'form-field'
-            }),
+            })
         }
 
     # ✅ 초기화 시 패스워드 필드에 스타일, placeholder 추가
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        self.fields['password1'].widget.attrs.update({
-            'class': 'form-field',
-            'placeholder': '비밀번호'
-        })
-        self.fields['password2'].widget.attrs.update({
-            'class': 'form-field',
-            'placeholder': '비밀번호 확인'
-        })
+        for name, field in self.fields.items():
+            field.widget.attrs.update({
+                'class': 'w-full px-3 py-2 mb-4 rounded-md ',
+                'style': 'border: 1px solid #d9d2b4; border-radius: 6px;',
+            })
 
         # 팀 선택 필드에 '팀 선정'이라는 기본 옵션 추가
         self.fields['team'].empty_label = '팀 선정'

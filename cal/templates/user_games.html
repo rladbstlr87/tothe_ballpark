@@ -2,16 +2,16 @@
 {% load static %}
 {% load custom_filters %}
 {% block styles %}
-<link rel="stylesheet" href="{% static 'cal/css/user_games.css' %}">
 {% endblock %}
 
 {% block body %}
+<link rel="stylesheet" href="{% static 'cal/css/user_games.css' %}">
 <div class="min-h-screen pt-8 text-gray-800 bg-cover bg-center bg-no-repeat bg-fixed"
       style="background-image: url('{% static 'cal/images/user_games/' %}{{ user.team }}.png')">
 
   <div class="max-w-5xl mx-auto px-6">
     <!-- 제목 -->
-    <h1 class="font-black-han text-5xl text-center drop-shadow-lg highlight-{{user.team}}">⚾ {{user.team|team_name}} 직관 경기</h1>
+    <h1 class="font-black-han text-5xl text-center drop-shadow-lg high-{{user.team}}">⚾ {{user.team|team_name}} 직관 경기</h1>
     
     <!-- 내용 카드 -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
@@ -99,19 +99,19 @@
           <table class="w-full text-center table-auto border-collapse font-jua-regular text-lg">
             <thead>
               <tr class="bg-gray-200">
-                <th class="py-2 px-4 border border-white rounded-tl-2xl" style="background-color: #D2E0FB;">순위</th>
-                <th class="py-2 px-4 border border-white" style="background-color: #D2E0FB;">구장</th>
-                <th class="py-2 px-4 border border-white" style="background-color: #D2E0FB;">승률</th>
-                <th class="py-2 px-4 border border-white" style="background-color: #D2E0FB;">전적</th>
+                <th class="py-2 px-4 border border-white rounded-tl-2xl" style="background-color: #FFDCDC;">순위</th>
+                <th class="py-2 px-4 border border-white" style="background-color: #FFDCDC;">구장</th>
+                <th class="py-2 px-4 border border-white" style="background-color: #FFDCDC;">승률</th>
+                <th class="py-2 px-4 border border-white" style="background-color: #FFDCDC;">전적</th>
               </tr>
             </thead>
             <tbody>
               {% for stat in stadium_stats %}
                 <tr class="hover:bg-gray-100">
-                  <td class="py-2 px-4 border border-white {% if forloop.last %}rounded-bl-2xl{% endif %}" style="background-color: #FEF9D9;">{{ forloop.counter }}</td>
-                  <td class="py-2 px-4 border border-white" style="background-color: #FEF9D9;">{{ stat.stadium }}</td>
-                  <td class="py-2 px-4 border border-white" style="background-color: #FEF9D9;">{{ stat.percent }}%</td>
-                  <td class="py-2 px-4 border border-white {% if forloop.last %}rounded-br-2xl{% endif %}" style="background-color: #FEF9D9;">{{ stat.wins }}승 / {{ stat.total }}경기</td>
+                  <td class="py-2 px-4 border border-white {% if forloop.last %}rounded-bl-2xl{% endif %}" style="background-color: #FFF2EB;">{{ forloop.counter }}</td>
+                  <td class="py-2 px-4 border border-white" style="background-color: #FFF2EB;">{{ stat.stadium }}</td>
+                  <td class="py-2 px-4 border border-white" style="background-color: #FFF2EB;">{{ stat.percent }}%</td>
+                  <td class="py-2 px-4 border border-white {% if forloop.last %}rounded-br-2xl{% endif %}" style="background-color: #FFF2EB;">{{ stat.wins }}승 / {{ stat.total }}경기</td>
                 </tr>
               {% endfor %}
             </tbody>

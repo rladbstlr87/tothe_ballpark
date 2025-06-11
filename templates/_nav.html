@@ -1,4 +1,6 @@
 {% load static %}
+
+
 <nav class="bg-cover fixed top-0 left-0 w-full bg-transparent z-30 py-3 font-jaram [background-position:0%_100%]"
     style="{% if user.team == none %}background-image: url('{% static 'nav/nav-' %}nothing.png');{% else %}background-image: url('{% static 'nav/nav-' %}{{ user.team }}.png');{% endif %}">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -37,17 +39,18 @@
                         <span class="p-3 w-15 text-center text-gray-700"></span>
                     </div>
                     <div class="flex flex-1 items-center">
-                        <a href="{% url 'cal:calendar' %}" class="p-3 flex items-center space-x-2 text-black hover:text-blue-500">
+                        <a href="{% url 'cal:calendar' %}" class="p-3 text-black hover:text-blue-500">
                             {% comment %} <span class="w-3 h-3 rounded-full bg-green-300 shadow-md"></span> {% endcomment %}
-                            <span class="relative tracking-widest">
-                            <span class="absolute inset-x-0 bottom-0 h-2 bg-green-200 rounded-sm -z-10"></span>
-                            야구언제해?
-                            </span>
-                            </a>
-                        <a href="{% url 'posts:post_index' %}" class="p-3 flex items-center space-x-2 text-black hover:text-blue-500">
+                            <span class="relative tracking-widest">                            
+                                <span class="absolute inset-x-0 bottom-0 h-2 bg-green-400  -z-10"></span>
+                            <span>야구언제해?</span>
+                        </a>
+                                
+                        <a href="{% url 'posts:post_index' %}" class="p-3 text-black hover:text-blue-500">
                             {% comment %} <span class="w-3 h-3 rounded-full bg-orange-300 shadow-md"></span> {% endcomment %}
                             <span class="relative tracking-widest">
-                            <span class="absolute inset-x-0 bottom-0 h-2 bg-yellow-200 rounded-sm -z-10"></span>
+                                
+                                <span class="absolute inset-x-0 bottom-0 h-2 bg-yellow-400  -z-10"></span>
                             <span>알려줘 꿀팁!</span>
                         </a>
                     </div>
@@ -68,21 +71,21 @@
                     <!-- 오른쪽 사용자 메뉴 -->
                     <div class="flex items-center">
                         {% if user.is_authenticated %}
-                        <span class="p-3 w-16 text-center text-gray-700 -rotate-7">{{ user.nickname }}</span>
-                        <a href="{% url 'accounts:logout' %}" class="p-3 flex items-center space-x-2 text-black hover:text-blue-500">
+                        <span class="p-3 w-30 text-center text-gray-700 -rotate-7">{{ user.nickname }}</span>
+                        <a href="{% url 'accounts:logout' %}" class="p-3 text-black hover:text-blue-500">
                             {% comment %} <span class="w-3 h-3 rounded-full bg-red-400 shadow-md"></span> {% endcomment %}
                             <span class="relative tracking-widest">
                                 
-                                <span class="absolute inset-x-0 bottom-0 h-2 bg-red-200 rounded-sm -z-10"></span>
+                                <span class="absolute inset-x-0 bottom-0 h-2 bg-red-400  -z-10"></span>
                             <span>로그아웃</span>
                         </a>
                         {% else %}
                         
-                        <a href="{% url 'accounts:auth' %}" class="p-3 flex items-center space-x-2 text-black hover:text-blue-600">
+                        <a href="{% url 'accounts:auth' %}" class="p-3 text-black hover:text-blue-600">
                             {% comment %} <span class="w-3 h-3 rounded-full bg-blue-400 shadow-md"></span> {% endcomment %}
                             <span class="relative tracking-widest">
                                 
-                                <span class="absolute inset-x-0 bottom-0 h-2 bg-red-200 rounded-sm -z-10"></span>
+                                <span class="absolute inset-x-0 bottom-0 h-2 bg-red-400  -z-10"></span>
                             <span>로그인</span>
                         </a>
                         {% endif %}
@@ -119,6 +122,7 @@
         <div class="space-y-1 px-2 pt-2 pb-3">
             <a href="{% url 'index' %}" class="block rounded-md bg-gray-900/50 px-3 py-2 text-white">홈</a>
             <a href="{% url 'cal:calendar' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">캘린더</a>
+            <a href="{% url 'posts:post_index' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">직돌이 Q&A</a>
             {% if user.is_authenticated %}
             <a href="{% url 'cal:user_games' user.id %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">나의 직관 승률</a>
             <a href="{% url 'accounts:logout' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">로그아웃</a>

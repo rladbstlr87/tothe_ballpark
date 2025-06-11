@@ -8,11 +8,11 @@ class PostForm(ModelForm):
         fields = ('title', 'content', 'image','category')
         widgets = {
             'title': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400'
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400'
             }),
             'content': forms.Textarea(attrs={
                 'class': 'w-full px-4 py-3 border border-gray-300 rounded-md '
-                         'focus:outline-none focus:ring-2 focus:ring-blue-400 '
+                         'focus:outline-none focus:ring-2 focus:ring-sky-400 '
                          'placeholder-gray-400 text-base resize-y'
             }),
             
@@ -22,7 +22,7 @@ class PostForm(ModelForm):
                          'hover:file:bg-gray-200'
             }),
             'category': forms.Select(attrs={
-                'class': 'w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white'
+                'class': 'w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white'
             })
         }
 
