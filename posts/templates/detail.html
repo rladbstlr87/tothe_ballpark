@@ -19,8 +19,19 @@
   {% block body %}
 <link rel="stylesheet" href="{% static 'posts/css/detail.css' %}">
 <body class="pt-[90px] bg-neutral-100 font-handdrawn">
-  <img src="{% static 'posts/images/detail/pinkhitter.png' %}" alt="야구공" class="w-36 absolute top-4 left-4 z-0">
-  <div class="mx-auto bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl">
+  <!-- 위에 배경 스티커 -->
+  <img src="{% static 'posts/images/detail/pinkhitter.png' %}" alt="스티커" class="w-36 absolute top-4 left-4 z-0 mt-50">
+  <img src="{% static 'posts/images/detail/bluehitter.png' %}" alt="스티커" class="w-36 absolute top-4 right-4 z-0  mt-90">
+  <!-- 밑에 배경 스티커 -->
+   <img id="scrollSticker"
+     src="{% static 'posts/images/detail/yellowhitter.png' %}"
+     alt="스크롤 스티커"
+     class="fixed right-4 top-1/2 w-30 opacity-0 scale-90 z-10 pointer-events-none transition-all duration-500 transform -translate-y-1/2" />
+   <img id="scrollStickerLeft"
+    src="{% static 'posts/images/detail/fan.png' %}"
+    alt="왼쪽 스크롤 스티커"
+    class="fixed left-4 top-1/3 w-36 opacity-0 scale-90 z-10 pointer-events-none transition-all duration-500 transform -translate-y-1/2" />
+  <div class="mx-auto bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl z-10 relative">
     <!-- 게시글 제목 및 메타 -->
     <div class="border-b pb-4 mb-4">
       <h1 class="text-2xl font-bold text-gray-800 text-center">{{ post.title }}</h1>
@@ -43,7 +54,7 @@
       <img src="{{ post.image.url }}" class="mb-4 rounded shadow" alt="게시글 이미지">
     {% endif %}
 
-    <div class="text-gray-800 whitespace-pre-line mb-8">{{ post.content }}</div>
+    <div class="text-gray-800 whitespace-pre-line mb-35">{{ post.content }}</div>
 
     {% if user == post.user %}
       <div class="flex justify-end gap-2 mb-10">
@@ -77,16 +88,17 @@
     <!-- 댓글 작성 -->
     <hr class="my-6">
     <form action="{% url 'posts:comment_create' post.id %}" method="POST" enctype="multipart/form-data"
-          class="bg-gray-50 p-4 rounded space-y-4">
+          class="bg-gray-50 p-4 rounded space-y-4 ">
       {% csrf_token %}
       {{ form.content }}
       {{ form.image }}
       <div class="text-right">
-        <button type="submit"
-              class="px-5 py-3 bg-black text-white text-lg font-semibold rounded-lg 
-                     hover:bg-gray-900 transition duration-200 shadow-md">
+         <button type="submit"
+              class="px-5 py-3 bg-[#BCCCDC] text-white text-lg font-semibold rounded-lg 
+                     hover:bg-[#9AA6B2] transition duration-200 shadow-md">
           댓글등록
-        </button>
+        </button> 
+        
       </div>
     </form>
 
@@ -196,7 +208,7 @@
 
         <!-- 질문 목록 -->
         <ul>
-          {% for number, post in posts_with_number|slice:"5" %}
+          {% for number, post in page_obj %}
             <li class="grid grid-cols-12 py-3 px-4 text-sm items-center text-center border-b bg-white border-sky-200 hover:bg-sky-100 transition">
               <div class="col-span-1 text-gray-600 font-mono">{{ number }}</div>
               <div class="col-span-7 text-left pl-4">
@@ -214,6 +226,39 @@
         </ul>
       </div>
     </div>
+    <div class="flex items-center justify-center space-x-2 my-8 text-sm text-gray-600">
+  
+      <!-- 이전 버튼 -->
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}"
+          class="px-2 py-1 rounded hover:bg-gray-100">&lt;</a>
+      {% else %}
+        <span class="px-2 py-1 text-gray-300">&lt;</span>
+      {% endif %}
+
+      <!-- 페이지 숫자 목록 -->
+      {% for num in page_obj.paginator.page_range %}
+        {% if num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+          {% if num == page_obj.number %}
+            <span class="px-3 py-1 bg-sky-300 text-white rounded font-semibold">{{ num }}</span>
+          {% else %}
+            <a href="?page={{ num }}" class="px-3 py-1 rounded hover:bg-gray-100">{{ num }}</a>
+          {% endif %}
+        {% elif num == 1 or num == page_obj.paginator.num_pages %}
+          <a href="?page={{ num }}" class="px-3 py-1 rounded hover:bg-gray-100">{{ num }}</a>
+        {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+          <span class="px-2 py-1">...</span>
+        {% endif %}
+      {% endfor %}
+
+      <!-- 다음 버튼 -->
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}"
+          class="px-2 py-1 rounded hover:bg-gray-100">&gt;</a>
+      {% else %}
+        <span class="px-2 py-1 text-gray-300">&gt;</span>
+      {% endif %}
+  </div>
 
   </div>
 
@@ -249,4 +294,34 @@
   </script>
   
 </body>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const stickerRight = document.getElementById("scrollSticker");
+    const stickerLeft = document.getElementById("scrollStickerLeft");
+
+    window.addEventListener("scroll", function () {
+      const scrollY = window.scrollY;
+
+      // 오른쪽 스티커: 스크롤 200px 이상이면 등장
+      if (scrollY > 420) {
+        stickerRight.classList.remove("opacity-0", "scale-90");
+        stickerRight.classList.add("opacity-100", "scale-100");
+      } else {
+        stickerRight.classList.remove("transition-all", "duration-500");
+        stickerRight.classList.add("opacity-0", "scale-90");
+        stickerRight.classList.remove("opacity-100", "scale-100");
+      }
+
+      // 왼쪽 스티커: 스크롤 400px 이상이면 등장
+      if (scrollY > 350) {
+        stickerLeft.classList.remove("opacity-0", "scale-90");
+        stickerLeft.classList.add("opacity-100", "scale-100");
+      } else {
+        stickerLeft.classList.remove("transition-all", "duration-500");
+        stickerLeft.classList.add("opacity-0", "scale-90");
+        stickerLeft.classList.remove("opacity-100", "scale-100");
+      }
+    });
+  });
+</script>
 {% endblock %}
