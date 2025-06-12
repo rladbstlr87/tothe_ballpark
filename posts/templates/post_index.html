@@ -22,51 +22,46 @@
   
   <body class="pt-[90px] bg-neutral-100 font-handdrawn">
     
-      <div class="mx-auto bg-white rounded-2xl px-12 pt-0 pb-5 shadow-xl w-full max-w-6xl">
+      <div class="mx-auto bg-white rounded-2xl px-12 pt-0 pb-5 shadow-xl w-full max-w-6xl max-sm:px-4 w-full max-sm:max-w-sm">
         
         <!-- 제목 영역 -->
         <div class="relative border-b-[3px] pb-4 text-gray-900 text-center tracking-wider">
 
           <!-- 이미지 + 텍스트 세로 정렬 -->
-          <div class="flex justify-between items-end px-8">
+          <div class="flex justify-between items-end gap-4 px-4 py-4 md:px-8 ">
             <!-- 왼쪽: 야구공 -->
-            <img src="{% static 'posts/images/index/baseball.png' %}" alt="야구공" class="w-36 mt-10 ml-[100px]">
+            <img src="{% static 'posts/images/index/baseball.png' %}" alt="야구공" class="w-36 mt-10 ml-[100px] max-sm:w-16 max-sm:ml-0" >
 
             <!-- 가운데: 게시판 제목 -->
-            <h1 class="text-2xl font-black">직돌이 Q&A 게시판</h1>
+            <h1 class="text-2xl max-sm:text-base whitespace-nowrap   font-black">직돌이 Q&A 게시판</h1>
 
             <!-- 오른쪽: 문의 링크 + 이미지 -->
             <a href="{% url 'posts:create' %}">
-              <img src="{% static 'posts/images/index/miffy.png' %}" alt="질문하기" class="w-36 mt-10 mr-20 hover:scale-105 transition">
+              <img src="{% static 'posts/images/index/miffy.png' %}" alt="질문하기" class="w-36 mt-10 mr-20 max-sm:w-16 hover:scale-105 transition ">
             </a>
           </div>
 
         </div>
-          
-            
-
-          
-            
         
         <!-- 헤더 -->
-        <div class="post-header">
-          <div class="col">번호</div>
+        <div class="post-header whitespace-nowrap ">
+          <div class="col ">번호</div>
           <div class="col">제목</div>
-          <div class="col">카테고리</div>
-          <div class="col">닉네임</div>
-          <div class="col">작성일</div>
+          <div class="col max-sm:px-2 ">카테고리</div>
+          <div class="col max-sm:px-2">닉네임</div>
+          <div class="col max-sm:px-2 ">작성일</div>
         </div>
         
         <!-- 질문 목록 -->
-        <div class="post-list-wrapper">
+        <div class="post-list-wrapper max-sm:w-full">
           {% for number, post in posts_with_number %}
             <div class="post-card">
               <div class="post-number">{{ number }}</div>
-              <div class="post-title">
+              <div class="post-title max-sm:px-2 truncate">
                 <a href="{% url 'posts:detail' post.id %}">{{ post.title }}</a>
               </div>
-              <div class="post-category">{{ post.get_category_display }}</div>
-              <div class="post-nickname">{{ post.user.nickname }}</div>
+              <div class="post-category max-sm:px-4 whitespace-nowrap" >{{ post.get_category_display }}</div>
+              <div class="post-nickname whitespace-nowrap">{{ post.user.nickname }}</div>
               <div class="post-date">{{ post.created_at|date:"Y.m.d" }}</div>
             </div>
           {% empty %}
