@@ -273,6 +273,9 @@ p a:hover {
 /* ✅ 모바일 대응 (세로 좁은 화면용) */
 /* ----------------------------- */
 @media (max-width: 768px) {
+  .root {
+    height: 100vh;
+  }
   /* 마스코트 크기 축소 및 재배치 */
   .dusan-mascot-container,
   .samsung-mascot-container,
