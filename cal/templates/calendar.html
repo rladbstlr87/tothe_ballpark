@@ -29,8 +29,8 @@
           {% for day_name in cal_data.week_header %}
             <th class="{% if forloop.counter0 == 0 %}relative mon overflow-visible{% endif %} text-center w-12 h-12 align-middle">
               {% if forloop.counter0 == 0 %}
-                <div class="absolute top-1/2 left-1/2 -translate-x-6/7 -translate-y-1/2 z-0 pointer-events-none w-[300px] h-[300px]">
-                  <img src="/static/cal/images/bg/circle3a.svg" alt="동그라미"
+                <div class="absolute top-1/2 left-1/2 -translate-x-6/7 -translate-y-3/7 z-0 pointer-events-none w-[300px] h-[300px]">
+                  <img src="/static/cal/images/bg/mon_alert.svg" alt="동그라미"
                       class="w-full h-full">
                   <img src="{% static 'cal/images/team/' %}{{ user.team }}-yeah.png" alt="동그라미" class="mt-70 w-[220px] h-[80px] -rotate-15 z-0" />
                 </div>
