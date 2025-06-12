@@ -35,10 +35,10 @@
     <!-- 게시글 제목 및 메타 -->
     <div class="border-b pb-4 mb-4">
       <h1 class="text-2xl font-bold text-gray-800 text-center">{{ post.title }}</h1>
-      <div class="flex justify-between items-center text-sm text-gray-500 mt-1">
+      <div class="flex justify-between items-center text-sm text-gray-500 mt-1 whitespace-nowrap">
         <img src="{% static 'posts/images/detail/' %}{{ post.user.team }}.png" alt="프로필 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
         <span>{{ post.user.nickname }}</span>
-        <div class="flex items-center gap-4 ml-auto">
+        <div class="flex items-center gap-4 ml-auto max-sm:px-2">
           <span class="team-tag tag-{{post.category}}">{{ post.get_category_display }}</span>
           <span>
             {{ post.updated_at|date:"Y.m.d H:i" }}
@@ -200,17 +200,17 @@
     </ul>
 
     <!-- 다른 질문 목록 -->
-    <hr class="my-12 border-t-2 border-dashed border-gray-300">
+    <hr class="my-12 border-t-2 border-dashed border-gray-300 ">
 
     <div class="mt-4">
       <h2 class="text-xl font-bold text-gray-700 mb-4 px-2">다른 Q&A 보기</h2>
 
       <div class="bg-neutral-50 rounded-xl shadow-sm overflow-hidden">
         <!-- 헤더 -->
-        <div class="grid grid-cols-12 py-3 px-4 text-sm font-bold text-gray-600 bg-white text-center border-b border-sky-300">
+        <div class="grid grid-cols-12 py-3 px-4 text-sm font-bold text-gray-600 bg-white text-center border-b border-sky-300 whitespace-nowrap">
           <div class="col-span-1">번호</div>
           <div class="col-span-7 text-left pl-4">제목</div>
-          <div class="col-span-1">카테고리</div>
+          <div class="col-span-1 max-sm:px-1 text-left">카테고리</div>
           <div class="col-span-2">닉네임</div>
           <div class="col-span-1">작성일</div>
         </div>
@@ -220,12 +220,12 @@
           {% for number, post in page_obj %}
             <li class="grid grid-cols-12 py-3 px-4 text-sm items-center text-center border-b bg-white border-sky-200 hover:bg-sky-100 transition">
               <div class="col-span-1 text-gray-600 font-mono">{{ number }}</div>
-              <div class="col-span-7 text-left pl-4">
-                <a href="{% url 'posts:detail' post.id %}" class="text-black font-semibold hover:underline underline-offset-4 decoration-wavy">
+              <div class="col-span-7 text-left pl-4 ">
+                <a href="{% url 'posts:detail' post.id %}" class=" truncate text-black font-semibold hover:underline underline-offset-4 decoration-wavy  ">
                   {{ post.title }}
                 </a>
               </div>
-              <div class="col-span-1">{{ post.get_category_display }}</div>
+              <div class="col-span-1 ">{{ post.get_category_display }}</div>
               <div class="col-span-2 text-gray-600">{{ post.user.nickname }}</div>
               <div class="col-span-1 text-gray-500 text-xs">{{ post.created_at|date:"Y.m.d" }}</div>
             </li>
