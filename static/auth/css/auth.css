@@ -56,7 +56,7 @@
 .form-wrapper {
   background-color: #fdfcf7;
   width: 480px;
-  height: 750px;
+  height: 650px;
 
   padding: 40px 32px;
   border-radius: 16px;
@@ -196,6 +196,7 @@ p a:hover {
 
 .dusan-mascot-container {
   position: absolute;
+  transform: translateY(40px);
   z-index: 15;
   pointer-events: none;
   width: 125px;
@@ -203,7 +204,7 @@ p a:hover {
 
 .hanhwa-mascot-container {
   position: absolute;
-  transform: translate(175px, -130px);
+  transform: translate(175px, -100px);
   z-index: 15;
   pointer-events: none;
   width: 400px;
@@ -211,7 +212,7 @@ p a:hover {
 
 .samsung-mascot-container {
   position: absolute;
-  transform: translate(-175px);
+  transform: translate(-175px, 40px);
   z-index: 15;
   pointer-events: none;
   width: 125px;
@@ -219,7 +220,7 @@ p a:hover {
 
 .kt-mascot-container {
   position: absolute;
-  top: 5%;
+  top: 10%;
   transform: translate(280px);
   z-index: 15;
   pointer-events: none;
@@ -228,7 +229,7 @@ p a:hover {
 
 .lotte-mascot-container {
   position: absolute;
-  top: 35%;
+  top: 40%;
   transform: translate(290px);
   z-index: 15;
   pointer-events: none;
@@ -246,7 +247,7 @@ p a:hover {
 
 .kia-mascot-container {
   position: absolute;
-  top: 10%;
+  top: 13%;
   transform: translate(-275px);
   z-index: 15;
   pointer-events: none;
@@ -273,7 +274,7 @@ p a:hover {
 
 .nc-mascot-container {
   position: absolute;
-  top: 73%;
+  top: 70%;
   transform: translate(-275px);
   z-index: 15;
   pointer-events: none;
