@@ -99,7 +99,11 @@
                                 class="w-[20vw] h-auto">
                         {% endif %}
                     </a>
+                    {% if request.resolver_match.url_name == 'calendar' %}
+                        <img src="/static/cal/images/bg/attended_alert.svg" alt="dd" class="py-4 w-28 ml-20 -rotate-15 max-sm:hidden"> 
+                    {% endif %}
                     {% endwith %}
+
                 </div>
             {% endif %}
         </div>
