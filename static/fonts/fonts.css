@@ -53,7 +53,7 @@
 }
 
 .cal-title {
-    font-family: 'IncheonJaram', sans-serif;
-    font-size: 65px;
+    font-family: 'YdestreetB', sans-serif;
+    font-size: clamp(40px, 20vw, 65px);
     font-weight: 600;
 }
