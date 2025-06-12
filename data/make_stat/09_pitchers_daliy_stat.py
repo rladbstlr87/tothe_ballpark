@@ -25,6 +25,12 @@ def convert_ip_to_float(ip_str):
     if not ip_str:
         return 0.0
     ip_str = ip_str.strip()
+    
+    fraction_map = {'⅓': 1/3, '⅔': 2/3}
+    
+    if ip_str in fraction_map:
+        return round(fraction_map[ip_str], 3)
+    
     parts = ip_str.split()
     if len(parts) == 1:
         try:
@@ -32,10 +38,12 @@ def convert_ip_to_float(ip_str):
         except ValueError:
             return 0.0
     elif len(parts) == 2:
-        whole = float(parts[0])
-        fraction_map = {'⅓': 1/3, '⅔': 2/3}
-        fraction = fraction_map.get(parts[1], 0)
-        return round(whole + fraction, 3)
+        try:
+            whole = float(parts[0])
+            fraction = fraction_map.get(parts[1], 0)
+            return round(whole + fraction, 3)
+        except ValueError:
+            return 0.0
     return 0.0
 
 # 투수 기록 크롤링
@@ -44,27 +52,33 @@ def get_pitcher_record(date, team1_code, team2_code, game_id, driver):
     driver.get(url)
     time.sleep(1)
 
-    data = {'away': None, 'home': None}
+    data = {'away': [], 'home': []}
     columns = ['IP', 'H', 'R', 'ER', 'BB', 'SO', 'HR', 'BF', 'AB', 'NP']
 
     try:
-        away_th = driver.find_element(By.CSS_SELECTOR,
-            '#content > div > div.Home_main_section__y9jR4 > section.Home_game_panel__97L_8 > div.Home_game_contents__35IMT > div > div.PlayerRecord_comp_player_record__1tI5G.type_kbo > div:nth-child(7) > table > tbody > tr:nth-child(1) > th')
-        away_td = driver.find_elements(By.CSS_SELECTOR,
-            '#content > div > div.Home_main_section__y9jR4 > section.Home_game_panel__97L_8 > div.Home_game_contents__35IMT > div > div.PlayerRecord_comp_player_record__1tI5G.type_kbo > div:nth-child(7) > table > tbody > tr:nth-child(1) > td')
-        data['away'] = {'player_id': extract_pid(away_th)}
-        for key, td in zip(columns, away_td):
-            data['away'][key] = td.text.strip()
+        # 어웨이팀 기록
+        away_rows = driver.find_elements(By.CSS_SELECTOR, '#content div.PlayerRecord_comp_player_record__1tI5G.type_kbo > div:nth-child(3) > div > div:nth-child(2) tbody tr')
+        for row in away_rows:
+            try:
+                pid = extract_pid(row.find_element(By.TAG_NAME, 'th'))
+                vals = [td.text.strip() for td in row.find_elements(By.TAG_NAME, 'td')]
+                if len(vals) >= len(columns):
+                    data['away'].append(dict(zip(columns, vals[:len(columns)]), player_id=pid))
+            except:
+                continue
 
-        home_th = driver.find_element(By.CSS_SELECTOR,
-            '#content > div > div.Home_main_section__y9jR4 > section.Home_game_panel__97L_8 > div.Home_game_contents__35IMT > div > div.PlayerRecord_comp_player_record__1tI5G.type_kbo > div:nth-child(8) > table > tbody > tr:nth-child(1) > th')
-        home_td = driver.find_elements(By.CSS_SELECTOR,
-            '#content > div > div.Home_main_section__y9jR4 > section.Home_game_panel__97L_8 > div.Home_game_contents__35IMT > div > div.PlayerRecord_comp_player_record__1tI5G.type_kbo > div:nth-child(8) > table > tbody > tr:nth-child(1) > td')
-        data['home'] = {'player_id': extract_pid(home_th)}
-        for key, td in zip(columns, home_td):
-            data['home'][key] = td.text.strip()
-    except Exception as e:
-        print("⚠️ 투수 기록 추출 실패:", e)
+        # 홈팀 기록
+        home_rows = driver.find_elements(By.CSS_SELECTOR, '#content div.PlayerRecord_comp_player_record__1tI5G.type_kbo > div:nth-child(2) > div > div:nth-child(2) tbody tr')
+        for row in home_rows:
+            try:
+                pid = extract_pid(row.find_element(By.TAG_NAME, 'th'))
+                vals = [td.text.strip() for td in row.find_elements(By.TAG_NAME, 'td')]
+                if len(vals) >= len(columns):
+                    data['home'].append(dict(zip(columns, vals[:len(columns)]), player_id=pid))
+            except:
+                continue
+    except:
+        pass
 
     return data
 
@@ -146,13 +160,12 @@ with open('../pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as p
                 continue
 
             for team in ['away', 'home']:
-                if rec[team]:
-                    r = rec[team]
+                for r in rec[team]:
                     pw.writerow([
                         convert_ip_to_float(r.get('IP', '')),
                         r.get('H', ''), r.get('R', ''), r.get('ER', ''), r.get('BB', ''),
                         r.get('SO', ''), r.get('HR', ''), r.get('BF', ''), r.get('AB', ''),
-                        r.get('NP', ''), r['player_id'], team, gid, d
+                        r.get('NP', ''), r.get('player_id', ''), team, gid, d
                     ])
 
             print(f"✅ 저장 완료: {d} {t1} vs {t2} ({gcode}) → game_id={gid}")

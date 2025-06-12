@@ -32,7 +32,7 @@ def get_record(date, team1_code, team2_code, game_id, driver):
 
     try:
         # 어웨이팀 기록
-        away_rows = driver.find_elements(By.CSS_SELECTOR, '#content div.PlayerRecord_comp_player_record__1tI5G.type_kbo > div:nth-child(3) tbody tr')
+        away_rows = driver.find_elements(By.CSS_SELECTOR, '#content div.PlayerRecord_comp_player_record__1tI5G.type_kbo > div:nth-child(3) > div > div:nth-child(1) tbody tr')
         for row in away_rows:
             try:
                 pid = extract_pid(row.find_element(By.TAG_NAME, 'th'))
@@ -43,7 +43,7 @@ def get_record(date, team1_code, team2_code, game_id, driver):
                 continue
 
         # 홈팀 기록
-        home_rows = driver.find_elements(By.CSS_SELECTOR, '#content div.PlayerRecord_comp_player_record__1tI5G.type_kbo > div:nth-child(4) tbody tr')
+        home_rows = driver.find_elements(By.CSS_SELECTOR, '#content div.PlayerRecord_comp_player_record__1tI5G.type_kbo > div:nth-child(2) > div > div:nth-child(1) tbody tr')
         for row in home_rows:
             try:
                 pid = extract_pid(row.find_element(By.TAG_NAME, 'th'))
