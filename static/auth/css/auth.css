@@ -157,20 +157,9 @@ p a:hover {
   color: #b08b56;
 }
 
-
 /* ----------------------------- */
 /* ✅ 페이드 전환 애니메이션 */
 /* ----------------------------- */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 40px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
 
 .fade-in {
   opacity: 0;
@@ -187,7 +176,6 @@ p a:hover {
 @keyframes fadeOut {
   to { opacity: 0; }
 }
-
 
 /* ----------------------------- */
 /* ✅ 팀별 마스코트 위치 조정 */
@@ -279,4 +267,23 @@ p a:hover {
   z-index: 15;
   pointer-events: none;
   width: 150px;
+}
+
+/* ----------------------------- */
+/* ✅ 모바일 대응 (세로 좁은 화면용) */
+/* ----------------------------- */
+@media (max-width: 768px) {
+  /* 마스코트 크기 축소 및 재배치 */
+  .dusan-mascot-container,
+  .samsung-mascot-container,
+  .kt-mascot-container,
+  .lotte-mascot-container,
+  .kiwom-mascot-container,
+  .kia-mascot-container,
+  .lg-mascot-container,
+  .sk-mascot-container,
+  .nc-mascot-container,
+  .hanhwa-mascot-container {
+    display: none;
+  }
 }
