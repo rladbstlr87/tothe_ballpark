@@ -17,11 +17,17 @@ def index(request):
         'cal/images/bg/home1.png',
         'cal/images/bg/home2.png',
     ]
+    mobile_backgrounds = [
+        'cal/images/bg/mobile0.png',
+        'cal/images/bg/mobile1.png',
+        'cal/images/bg/mobile2.png',
+    ]
         
     chosen_background = random.choice(backgrounds)
-
+    chosen_mobile_background = random.choice(mobile_backgrounds)
     context = {
         'random_bg': chosen_background,
+        'random_mobile_bg': chosen_mobile_background,
     }
 
     return render(request, 'index.html', context)
@@ -310,7 +316,3 @@ def stadium_info(request, stadium):
     }
 
     return render(request, 'stadium_info.html', context)
-
-# 소개 페이지
-def about_us(request):
-    return render(request, 'about_us.html')

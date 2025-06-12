@@ -70,7 +70,7 @@
                 <span>|</span>
                 <a href="#" id="find-password-link" class="hover:underline">비밀번호 찾기</a>
                 <span>|</span>
-                <a href="?mode=signup" class="hover:underline">회원가입</a>
+                 <a href="#" id="signup-link" class="hover:underline">회원가입</a>
             </div>
         </div>
     </div>
@@ -160,7 +160,7 @@
 
             <!-- 로그인으로 돌아가기 -->
             <div class="text-sm text-center text-gray-600 space-x-4 mt-4">
-            <a href="?mode=login" class="hover:underline">로그인</a>
+            <a href="#" id="signin-link-from-signup" class="hover:underline">로그인</a>
             </div>
         </div>
     </div>
@@ -179,7 +179,7 @@
             <div id="id-code-result" class="mt-2 text-center text-sm text-green-600"></div>
 
             <div class="text-sm text-center text-gray-600 space-x-4 mt-4">
-                <a href="?mode=login" class="hover:underline">로그인</a>
+                <a href="#" id="signin-link-from-others" class="hover:underline">로그인</a>
             </div>
         </div>
     </div>
@@ -215,7 +215,7 @@
             <div id="pw-code-result" class="mt-2 text-center text-sm text-green-600"></div>
 
             <div class="text-sm text-center text-gray-600 space-x-4 mt-4">
-                <a href="?mode=login" class="hover:underline">로그인</a>
+                <a href="#" id="signin-link-from-password" class="hover:underline">로그인</a>
             </div>
         </div>
     </div>
@@ -223,194 +223,217 @@
 </div>
 
 <script>
-    // 각 폼 요소 DOM 참조
-    const signinWrapper = document.querySelector('.signin-wrapper');
-    const signupWrapper = document.querySelector('.signup-wrapper');
-    const findIdWrapper = document.querySelector('.find-id-wrapper');
-    const findPasswordWrapper = document.querySelector('.find-password-wrapper');
+	// 🔹 각 폼 요소 DOM 참조
+	const signinWrapper = document.querySelector('.signin-wrapper');
+	const signupWrapper = document.querySelector('.signup-wrapper');
+	const findIdWrapper = document.querySelector('.find-id-wrapper');
+	const findPasswordWrapper = document.querySelector('.find-password-wrapper');
 
-    // 로그인 폼에서 "아이디 찾기" 클릭 시 전환
-    document.getElementById('find-id-link').addEventListener('click', e => {
-        e.preventDefault();
-        signinWrapper.classList.remove('active');
-        signupWrapper.classList.remove('active');
-        findPasswordWrapper.classList.remove('active');
-        findIdWrapper.classList.add('active');
-    });
+	// 🔹 폼 전환 함수
+	const switchForm = (targetWrapper) => {
+		[signinWrapper, signupWrapper, findIdWrapper, findPasswordWrapper].forEach(wrapper => {
+			wrapper.classList.remove('active');
+		});
+		targetWrapper.classList.add('active');
+	};
 
-    // 로그인 폼에서 "비밀번호 찾기" 클릭 시 전환
-    document.getElementById('find-password-link').addEventListener('click', e => {
-        e.preventDefault();
-        signinWrapper.classList.remove('active');
-        signupWrapper.classList.remove('active');
-        findIdWrapper.classList.remove('active');
-        findPasswordWrapper.classList.add('active');
-    });
+	// 🔹 로그인 폼 → 아이디/비번/회원가입
+	document.getElementById('find-id-link').addEventListener('click', e => {
+		e.preventDefault();
+		switchForm(findIdWrapper);
+	});
 
-    // 아이디 찾기: 이메일 전송 후 결과 출력
-    document.getElementById('find-id-form').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const email = this.email.value;
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+	document.getElementById('find-password-link').addEventListener('click', e => {
+		e.preventDefault();
+		switchForm(findPasswordWrapper);
+	});
 
-        fetch('/accounts/find_id/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({ email })
-        })
-        .then(res => res.json())
-        .then(data => {
-            const resultBox = document.getElementById('id-code-result');
-            resultBox.textContent = data.message;
-        });
-    });
+	document.getElementById('signup-link').addEventListener('click', e => {
+		e.preventDefault();
+		switchForm(signupWrapper);
+	});
 
-    // fade 애니메이션 함수
-    function fadeSwitch(fromEl, toEl) {
-        fromEl.classList.add('fade-out');
-        setTimeout(() => {
-            fromEl.classList.add('hidden');
-            fromEl.classList.remove('fade-out');
-            toEl.classList.remove('hidden');
-            toEl.classList.add('fade-in');
-            setTimeout(() => toEl.classList.remove('fade-in'), 300);
-        }, 300);
-    }
+	// 🔹 기타 폼 → 로그인 복귀
+	document.getElementById('signin-link-from-signup').addEventListener('click', e => {
+		e.preventDefault();
+		switchForm(signinWrapper);
+	});
 
-    let tempUsername = "";  // 인증된 사용자 아이디 저장용
+	document.getElementById('signin-link-from-others').addEventListener('click', e => {
+		e.preventDefault();
+		switchForm(signinWrapper);
+	});
 
-    // step 1: 인증번호 요청
-    document.getElementById('find-password-form').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const email = this.email.value;
-        const username = this.username.value;
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        const resultEl = document.getElementById('pw-code-result');
+	document.getElementById('signin-link-from-password').addEventListener('click', e => {
+		e.preventDefault();
+		switchForm(signinWrapper);
+	});
 
-        fetch('/accounts/reset_password/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({ email, username })
-        })
-        .then(res => res.json())
-        .then(data => {
-            resultEl.classList.remove('text-red-600');
-            resultEl.classList.add('text-green-600');
-            resultEl.textContent = data.message;
+	// 🔹 아이디 찾기 - 이메일 전송
+	document.getElementById('find-id-form').addEventListener('submit', function (e) {
+		e.preventDefault();
 
-            if (data.success) {
-                tempUsername = username;
-                fadeSwitch(this, document.getElementById('verify-code-form'));
-            } else {
-                resultEl.classList.remove('text-green-600');
-                resultEl.classList.add('text-red-600');
-            }
-        });
-    });
+		const email = this.email.value;
+		const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-    // step 2: 인증번호 확인
-    document.getElementById('verify-code-form').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const code = this.code.value;
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        const resultEl = document.getElementById('pw-code-result');
+		fetch('/accounts/find_id/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': csrfToken
+			},
+			body: JSON.stringify({ email })
+		})
+			.then(res => res.json())
+			.then(data => {
+				const resultBox = document.getElementById('id-code-result');
+				resultBox.textContent = data.message;
+			});
+	});
 
-        fetch('/accounts/confirm_verification_code/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({ username: tempUsername, code })
-        })
-        .then(res => res.json())
-        .then(data => {
-            resultEl.textContent = data.message;
+	// 🔹 fade 전환 애니메이션
+	function fadeSwitch(fromEl, toEl) {
+		fromEl.classList.add('fade-out');
+		setTimeout(() => {
+			fromEl.classList.add('hidden');
+			fromEl.classList.remove('fade-out');
+			toEl.classList.remove('hidden');
+			toEl.classList.add('fade-in');
+			setTimeout(() => toEl.classList.remove('fade-in'), 300);
+		}, 300);
+	}
 
-            if (data.success) {
-                resultEl.classList.remove('text-red-600');
-                resultEl.classList.add('text-green-600');
-                fadeSwitch(this, document.getElementById('reset-password-form'));
-            } else {
-                resultEl.classList.remove('text-green-600');
-                resultEl.classList.add('text-red-600');
-            }
-        });
-    });
+	// 🔹 비밀번호 찾기: 3단계 전역 변수
+	let tempUsername = "";
 
-    // step 3: 비밀번호 재설정
-    document.getElementById('reset-password-form').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const new_password = this.new_password.value;
-        const confirm_password = this.confirm_password.value;
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        const resultEl = document.getElementById('pw-code-result');
+	// 🔹 step 1: 인증 요청
+	document.getElementById('find-password-form').addEventListener('submit', function (e) {
+		e.preventDefault();
 
-        if (new_password !== confirm_password) {
-            resultEl.classList.remove('text-green-600');
-            resultEl.classList.add('text-red-600');
-            resultEl.textContent = "비밀번호가 일치하지 않습니다.";
-            return;
-        }
+		const email = this.email.value;
+		const username = this.username.value;
+		const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+		const resultEl = document.getElementById('pw-code-result');
 
-        fetch('/accounts/set_new_password/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({
-                username: tempUsername,
-                new_password
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            resultEl.textContent = data.message;
-            if (data.success) {
-                resultEl.classList.remove('text-red-600');
-                resultEl.classList.add('text-green-600');
-            } else {
-                resultEl.classList.remove('text-green-600');
-                resultEl.classList.add('text-red-600');
-            }
-        });
-    });
+		fetch('/accounts/reset_password/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': csrfToken
+			},
+			body: JSON.stringify({ email, username })
+		})
+			.then(res => res.json())
+			.then(data => {
+				resultEl.textContent = data.message;
+				if (data.success) {
+					resultEl.classList.remove('text-red-600');
+					resultEl.classList.add('text-green-600');
+					tempUsername = username;
+					fadeSwitch(this, document.getElementById('verify-code-form'));
+				} else {
+					resultEl.classList.remove('text-green-600');
+					resultEl.classList.add('text-red-600');
+				}
+			});
+	});
 
-    // 회원가입 중복확인 (username / nickname)
-    function checkDuplicate(field) {
-        const signupForm = document.querySelector('.signup-wrapper.form');
-        if (!signupForm.classList.contains('active')) return;
+	// 🔹 step 2: 인증번호 확인
+	document.getElementById('verify-code-form').addEventListener('submit', function (e) {
+		e.preventDefault();
 
-        const input = signupForm.querySelector(`[name=${field}]`);
-        const resultBox = document.getElementById(`${field}-check-result`);
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+		const code = this.code.value;
+		const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+		const resultEl = document.getElementById('pw-code-result');
 
-        if (!input || !input.value.trim()) {
-            resultBox.textContent = `${field}을(를) 입력하세요.`;
-            resultBox.className = 'text-sm text-red-600 mt-1';
-            return;
-        }
+		fetch('/accounts/confirm_verification_code/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': csrfToken
+			},
+			body: JSON.stringify({ username: tempUsername, code })
+		})
+			.then(res => res.json())
+			.then(data => {
+				resultEl.textContent = data.message;
+				if (data.success) {
+					resultEl.classList.remove('text-red-600');
+					resultEl.classList.add('text-green-600');
+					fadeSwitch(this, document.getElementById('reset-password-form'));
+				} else {
+					resultEl.classList.remove('text-green-600');
+					resultEl.classList.add('text-red-600');
+				}
+			});
+	});
 
-        fetch("/accounts/check-duplicate/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": csrfToken
-            },
-            body: JSON.stringify({ field, value: input.value.trim() })
-        })
-        .then(res => res.json())
-        .then(data => {
-            resultBox.textContent = data.message;
-            resultBox.className = 'text-sm mt-1 ' + (data.success ? 'text-green-600' : 'text-red-600');
-        });
-    }
+	// 🔹 step 3: 비밀번호 재설정
+	document.getElementById('reset-password-form').addEventListener('submit', function (e) {
+		e.preventDefault();
+
+		const new_password = this.new_password.value;
+		const confirm_password = this.confirm_password.value;
+		const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+		const resultEl = document.getElementById('pw-code-result');
+
+		if (new_password !== confirm_password) {
+			resultEl.textContent = "비밀번호가 일치하지 않습니다.";
+			resultEl.classList.remove('text-green-600');
+			resultEl.classList.add('text-red-600');
+			return;
+		}
+
+		fetch('/accounts/set_new_password/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': csrfToken
+			},
+			body: JSON.stringify({ username: tempUsername, new_password })
+		})
+			.then(res => res.json())
+			.then(data => {
+				resultEl.textContent = data.message;
+				if (data.success) {
+					resultEl.classList.remove('text-red-600');
+					resultEl.classList.add('text-green-600');
+				} else {
+					resultEl.classList.remove('text-green-600');
+					resultEl.classList.add('text-red-600');
+				}
+			});
+	});
+
+	// 🔹 회원가입 중복확인 (username, nickname)
+	function checkDuplicate(field) {
+		const signupForm = document.querySelector('.signup-wrapper.form');
+		if (!signupForm.classList.contains('active')) return;
+
+		const input = signupForm.querySelector(`[name=${field}]`);
+		const resultBox = document.getElementById(`${field}-check-result`);
+		const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+		if (!input || !input.value.trim()) {
+			resultBox.textContent = `${field}을(를) 입력하세요.`;
+			resultBox.className = 'text-sm text-red-600 mt-1';
+			return;
+		}
+
+		fetch("/accounts/check-duplicate/", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRFToken": csrfToken
+			},
+			body: JSON.stringify({ field, value: input.value.trim() })
+		})
+			.then(res => res.json())
+			.then(data => {
+				resultBox.textContent = data.message;
+				resultBox.className = 'text-sm mt-1 ' + (data.success ? 'text-green-600' : 'text-red-600');
+			});
+	}
 </script>
+
 {% endblock %}

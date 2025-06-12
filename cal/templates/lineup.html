@@ -2,29 +2,25 @@
 {% load static %}
 {% load custom_filters %}
 {% block body %}
-    {% if has_lineup and game %}
-    <!-- 스코어바와 참석 아이콘을 한 줄에 정렬 -->
-    {% if game %}
-    <div class="flex justify-center">
-        <div class="bg-[url('/static/cal/images/bg/peeledpaper1.png')] bg-repeat-y bg-contain w-[50px] translate-x-8 min-h-full rotate-180"></div>
-        <div class="flex flex-col items-center w-full max-w-3xl px-8 bg-white">
-            <div id="top" class="w-full py-4 flex items-center justify-between">
-            <!-- <div id="scorebar" class="flex items-center max-w-3xl mx-auto py-4 bg-white"> -->
-                <div id="scorebar" class="flex-grow pl-20">
+    <div class="flex justify-center flex-col lg:flex-row">
+        {% if has_lineup and game %}
+        {% if game %}
+        <div class="bg-[url('/static/cal/images/bg/peeledpaper1.png')] bg-repeat-y bg-contain w-[30px] lg:w-[50px] translate-x-0 lg:translate-x-8 min-h-full rotate-180"></div>
+        <div class="flex flex-col items-center w-full max-w-7xl px-4 sm:px-6 lg:px-8 bg-white">
+            <div id="top" class="w-full py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div id="scorebar" class="w-full sm:flex-grow sm:pl-20">
                     {% include '_scorebar.html' %}
                 </div>
                 <button id="attendance-btn" type="button" style="background: none; border: none; padding: 0;">
                     {% if request.user in game.attendance_users.all %}
-                        <img id="attendance-icon" src="{% static 'cal/images/icon/watch.png' %}" alt="간 경기" class="w-20 h-20 transition-transform hover:scale-110">
+                        <img id="attendance-icon" src="{% static 'cal/images/icon/watch.png' %}" alt="간 경기" class="w-16 h-16 sm:w-20 sm:h-20 transition-transform hover:scale-110">
                     {% else %}
-                        <img id="attendance-icon" src="{% static 'cal/images/icon/notwatch.png' %}" alt="안간 경기" class="w-20 h-20 transition-transform hover:scale-110">
+                        <img id="attendance-icon" src="{% static 'cal/images/icon/notwatch.png' %}" alt="안간 경기" class="w-16 h-16 sm:w-20 sm:h-20 transition-transform hover:scale-110">
                     {% endif %}
                 </button>
             </div>
 
-            <!-- <div id="lineups" class="grid col-span-2 grid-cols-2 max-w-3xl mx-auto bg-white"> -->
-            <div id="lineups" class="w-full grid grid-cols-2">
-                <!-- 우리 팀 라인업 -->
+            <div id="lineups" class="w-full grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div class="pr-2">
                     {% for lineup in user_lineup %}
                         {% with record=latest_daily_stats|get_item:lineup.hitter.player_id %}
@@ -34,44 +30,22 @@
                                     {% with p_record=latest_pitcher_stats|get_item:lineup.pitcher.player_id %}
                                         {% if p_record %}
                                             <div class="text-xs text-gray-700 mt-1 text-center">
-                                                {% if p_record.date == today %}
-                                                    <span class="text-green-600">오늘 기록</span>:
-                                                {% else %}
-                                                    <span class="text-gray-500">지난 기록</span>:
-                                                {% endif %}
-                                                {{ p_record.IP }}이닝 /
-                                                {{ p_record.H }}피안타 /
-                                                {{ p_record.R }}실점 /
-                                                {{ p_record.ER }}자책 /
-                                                {{ p_record.BB }}볼넷 /
-                                                {{ p_record.SO }}삼진 /
-                                                {{ p_record.HR }}피홈런 /
-                                                {{ p_record.NP }}투구수
+                                                {% if p_record.date == today %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
+                                                {{ p_record.IP }}이닝 / {{ p_record.H }}피안타 / {{ p_record.R }}실점 / {{ p_record.ER }}자책 / {{ p_record.BB }}볼넷 / {{ p_record.SO }}삼진 / {{ p_record.HR }}피홈런 / {{ p_record.NP }}투구수
                                             </div>
                                         {% endif %}
                                     {% endwith %}
                                 </div>
                             {% else %}
-                                <div class="flex flex-col items-start min-w-64">
-                                    <div class="flex items-center justify-center grid-cols-2">
-                                        <span class="relative -top-[11px] text-sm mr-1">{{ lineup.batting_order|add:"-1" }}</span>
+                                <div class="flex flex-col items-start min-w-full">
+                                    <div class="flex items-center">
+                                        <span class="text-sm mr-1">{{ lineup.batting_order|add:"-1" }}</span>
                                         {% include '_my_hcard.html' %}
                                     </div>
                                     {% if record %}
                                         <div class="text-xs text-gray-700 ml-6">
-                                            {% if record.date == today %}
-                                                <span class="text-green-600">오늘 기록</span>:
-                                            {% else %}
-                                                <span class="text-gray-500">지난 기록</span>:
-                                            {% endif %}
-                                            {{record.AB}}타수 / 
-                                            {{record.R}}득점 / 
-                                            {{ record.H }}안타 / 
-                                            {{ record.RBI }}타점 / 
-                                            {{ record.HR }}홈런 / 
-                                            {{ record.BB }}볼넷 / 
-                                            {{ record.SO }}삼진 / 
-                                            {{ record.SB }}도루                        
+                                            {% if record.date == today %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
+                                            {{record.AB}}타수 / {{record.R}}득점 / {{ record.H }}안타 / {{ record.RBI }}타점 / {{ record.HR }}홈런 / {{ record.BB }}볼넷 / {{ record.SO }}삼진 / {{ record.SB }}도루
                                         </div>
                                     {% endif %}
                                 </div>
@@ -79,8 +53,6 @@
                         {% endwith %}
                     {% endfor %}
                 </div>
-        
-                <!-- 상대 팀 라인업 -->
                 <div class="pl-2">
                     {% for lineup in opponent_lineup %}
                         {% with record=latest_daily_stats|get_item:lineup.hitter.player_id %}
@@ -90,44 +62,22 @@
                                     {% with p_record=latest_pitcher_stats|get_item:lineup.pitcher.player_id %}
                                         {% if p_record %}
                                             <div class="text-xs text-gray-700 mt-1 text-center">
-                                                {% if p_record.date == today %}
-                                                    <span class="text-green-600">오늘 기록</span>:
-                                                {% else %}
-                                                    <span class="text-gray-500">지난 기록</span>:
-                                                {% endif %}
-                                                {{ p_record.IP }}이닝 /
-                                                {{ p_record.H }}피안타 /
-                                                {{ p_record.R }}실점 /
-                                                {{ p_record.ER }}자책 /
-                                                {{ p_record.BB }}볼넷 /
-                                                {{ p_record.SO }}삼진 /
-                                                {{ p_record.HR }}피홈런 /
-                                                {{ p_record.NP }}투구수
+                                                {% if p_record.date == today %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
+                                                {{ p_record.IP }}이닝 / {{ p_record.H }}피안타 / {{ p_record.R }}실점 / {{ p_record.ER }}자책 / {{ p_record.BB }}볼넷 / {{ p_record.SO }}삼진 / {{ p_record.HR }}피홈런 / {{ p_record.NP }}투구수
                                             </div>
                                         {% endif %}
                                     {% endwith %}
                                 </div>
                             {% else %}
-                                <div class="flex flex-col items-end min-w-64">
-                                    <div class="flex items-center justify-center grid-cols-2">
+                                <div class="flex flex-col items-end min-w-full">
+                                    <div class="flex items-center justify-end">
                                         {% include '_your_hcard.html' %}
-                                        <span class="relative -top-[11px] text-sm ml-1">{{ lineup.batting_order|add:"-1" }}</span>
+                                        <span class="text-sm ml-1">{{ lineup.batting_order|add:"-1" }}</span>
                                     </div>
                                     {% if record %}
                                         <div class="text-xs text-gray-700 mr-6 text-right">
-                                            {% if record.date == today %}
-                                                <span class="text-green-600">오늘 기록</span>:
-                                            {% else %}
-                                                <span class="text-gray-500">지난 기록</span>:
-                                            {% endif %}
-                                            {{record.AB}}타수 / 
-                                            {{record.R}}득점 / 
-                                            {{ record.H }}안타 / 
-                                            {{ record.RBI }}타점 / 
-                                            {{ record.HR }}홈런 / 
-                                            {{ record.BB }}볼넷 / 
-                                            {{ record.SO }}삼진 / 
-                                            {{ record.SB }}도루
+                                            {% if record.date == today %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
+                                            {{record.AB}}타수 / {{record.R}}득점 / {{ record.H }}안타 / {{ record.RBI }}타점 / {{ record.HR }}홈런 / {{ record.BB }}볼넷 / {{ record.SO }}삼진 / {{ record.SB }}도루
                                         </div>
                                     {% endif %}
                                 </div>
@@ -135,137 +85,116 @@
                         {% endwith %}
                     {% endfor %}
                 </div>
-        
-                <!-- 모달 -->
-                <div id="modal-face" class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center">
-                    <div class="bg-white rounded-lg p-6 w-[320px] shadow-lg relative">
-                        <button id="modal-close" class="absolute top-2 right-2 text-gray-500 hover:text-black text-xl">&times;</button>
-                        <h2 class="text-xl font-bold mb-4 text-center" id="modal-player-name">선수 이름</h2>
-                        <img id="modal-player-img" src="" alt="선수 이미지" class="w-32 mx-auto mb-4">
-            
-                        <table id="modal-batter-stats" class="w-full text-sm text-left text-gray-700">
-                            <tbody>
-                                <tr><th class="pr-2 py-1">타율</th><td id="modal-player-avg"></td></tr>
-                                <tr><th class="pr-2 py-1">경기수</th><td id="modal-player-g"></td></tr>
-                                <tr><th class="pr-2 py-1">타석</th><td id="modal-player-pa"></td></tr>
-                                <tr><th class="pr-2 py-1">타수</th><td id="modal-player-ab"></td></tr>
-                                <tr><th class="pr-2 py-1">득점</th><td id="modal-player-r"></td></tr>
-                                <tr><th class="pr-2 py-1">안타</th><td id="modal-player-h"></td></tr>
-                                <tr><th class="pr-2 py-1">홈런</th><td id="modal-player-hr"></td></tr>
-                                <tr><th class="pr-2 py-1">타점</th><td id="modal-player-rbi"></td></tr>
-                                <tr><th class="pr-2 py-1">볼넷</th><td id="modal-player-bb"></td></tr>
-                                <tr><th class="pr-2 py-1">삼진</th><td id="modal-player-so"></td></tr>
-                                <tr><th class="pr-2 py-1">출루율</th><td id="modal-player-obp"></td></tr>
-                                <tr><th class="pr-2 py-1">장타율</th><td id="modal-player-slg"></td></tr>
-                                <tr><th class="pr-2 py-1">OPS</th><td id="modal-player-ops"></td></tr>
-                                <tr><th class="pr-2 py-1">도루</th><td id="modal-player-sb"></td></tr>
-                                <tr><th class="pr-2 py-1">도실</th><td id="modal-player-cs"></td></tr>
-                            </tbody>
-                        </table>
-                        <table id="modal-pitcher-stats" class="w-full text-sm text-left text-gray-700 hidden">
-                            <tbody>
-                                <tr><th class="pr-2 py-1">ERA</th><td id="modal-pitcher-era"></td></tr>
-                                <tr><th class="pr-2 py-1">경기수</th><td id="modal-pitcher-g"></td></tr>
-                                <tr><th class="pr-2 py-1">승-패</th><td><span id="modal-pitcher-w"></span>-<span id="modal-pitcher-l"></span></td></tr>
-                                <tr><th class="pr-2 py-1">세이브/홀드</th><td><span id="modal-pitcher-sv"></span>/<span id="modal-pitcher-hld"></span></td></tr>
-                                <tr><th class="pr-2 py-1">WHIP</th><td id="modal-pitcher-whip"></td></tr>
-                                <tr><th class="pr-2 py-1">이닝</th><td id="modal-pitcher-ip"></td></tr>
-                                <tr><th class="pr-2 py-1">탈삼진</th><td id="modal-pitcher-so"></td></tr>
-                                <tr><th class="pr-2 py-1">볼넷</th><td id="modal-pitcher-bb"></td></tr>
-                                <tr><th class="pr-2 py-1">실점</th><td id="modal-pitcher-r"></td></tr>
-                                <tr><th class="pr-2 py-1">자책점</th><td id="modal-pitcher-er"></td></tr>
-                                <tr><th class="pr-2 py-1">피안타율</th><td id="modal-pitcher-avg"></td></tr>
-                            </tbody>
-                        </table>
-                    </div>
+            </div>
+            <div id="modal-face" class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center">
+                <div class="bg-white rounded-lg p-6 w-[320px] shadow-lg relative">
+                    <button id="modal-close" class="absolute top-2 right-2 text-gray-500 hover:text-black text-xl">&times;</button>
+                    <h2 class="text-xl font-bold mb-4 text-center" id="modal-player-name">선수 이름</h2>
+                    <img id="modal-player-img" src="" alt="선수 이미지" class="w-32 mx-auto mb-4">
+                    <table id="modal-batter-stats" class="w-full text-sm text-left text-gray-700">
+                        <tbody>
+                            <tr><th class="pr-2 py-1">타율</th><td id="modal-player-avg"></td></tr>
+                            <tr><th class="pr-2 py-1">경기수</th><td id="modal-player-g"></td></tr>
+                            <tr><th class="pr-2 py-1">타석</th><td id="modal-player-pa"></td></tr>
+                            <tr><th class="pr-2 py-1">타수</th><td id="modal-player-ab"></td></tr>
+                            <tr><th class="pr-2 py-1">득점</th><td id="modal-player-r"></td></tr>
+                            <tr><th class="pr-2 py-1">안타</th><td id="modal-player-h"></td></tr>
+                            <tr><th class="pr-2 py-1">홈런</th><td id="modal-player-hr"></td></tr>
+                            <tr><th class="pr-2 py-1">타점</th><td id="modal-player-rbi"></td></tr>
+                            <tr><th class="pr-2 py-1">볼넷</th><td id="modal-player-bb"></td></tr>
+                            <tr><th class="pr-2 py-1">삼진</th><td id="modal-player-so"></td></tr>
+                            <tr><th class="pr-2 py-1">출루율</th><td id="modal-player-obp"></td></tr>
+                            <tr><th class="pr-2 py-1">장타율</th><td id="modal-player-slg"></td></tr>
+                            <tr><th class="pr-2 py-1">OPS</th><td id="modal-player-ops"></td></tr>
+                            <tr><th class="pr-2 py-1">도루</th><td id="modal-player-sb"></td></tr>
+                            <tr><th class="pr-2 py-1">도실</th><td id="modal-player-cs"></td></tr>
+                        </tbody>
+                    </table>
+                    <table id="modal-pitcher-stats" class="w-full text-sm text-left text-gray-700 hidden">
+                        <tbody>
+                            <tr><th class="pr-2 py-1">ERA</th><td id="modal-pitcher-era"></td></tr>
+                            <tr><th class="pr-2 py-1">경기수</th><td id="modal-pitcher-g"></td></tr>
+                            <tr><th class="pr-2 py-1">승-패</th><td><span id="modal-pitcher-w"></span>-<span id="modal-pitcher-l"></span></td></tr>
+                            <tr><th class="pr-2 py-1">세이브/홀드</th><td><span id="modal-pitcher-sv"></span>/<span id="modal-pitcher-hld"></span></td></tr>
+                            <tr><th class="pr-2 py-1">WHIP</th><td id="modal-pitcher-whip"></td></tr>
+                            <tr><th class="pr-2 py-1">이닝</th><td id="modal-pitcher-ip"></td></tr>
+                            <tr><th class="pr-2 py-1">탈삼진</th><td id="modal-pitcher-so"></td></tr>
+                            <tr><th class="pr-2 py-1">볼넷</th><td id="modal-pitcher-bb"></td></tr>
+                            <tr><th class="pr-2 py-1">실점</th><td id="modal-pitcher-r"></td></tr>
+                            <tr><th class="pr-2 py-1">자책점</th><td id="modal-pitcher-er"></td></tr>
+                            <tr><th class="pr-2 py-1">피안타율</th><td id="modal-pitcher-avg"></td></tr>
+                        </tbody>
+                    </table>
                 </div>
-        </div>
-    {% endif %}
-        {% else %}
-        {% include '_scorebar.html' %}
-        <div class="text-center mt-10 text-red-500 text-xl">
-            ⚠️ 라인업이 아직 등록되지 않았습니다.
+            </div>
         </div>
         {% endif %}
-        </div>  
-        <div class="bg-[url('/static/cal/images/bg/peeledpaper1.png')] bg-repeat-y bg-contain -translate-x-8 w-[50px] min-h-full"></div>
+        {% else %}
+            {% include '_scorebar.html' %}
+            <div class="text-center mt-10 text-red-500 text-lg sm:text-xl">
+                ⚠️ 라인업이 아직 등록되지 않았습니다.
+            </div>
+        {% endif %}
+        <div class="bg-[url('/static/cal/images/bg/peeledpaper1.png')] bg-repeat-y bg-contain w-[30px] lg:w-[50px] -translate-x-0 lg:-translate-x-8 min-h-full"></div>
     </div>
-
 <script>
 // 모달 열기 이벤트
-document.querySelectorAll('[data-modal-target]').forEach(el => {
-    el.addEventListener('click', () => {
-        const playerName = el.getAttribute('data-player-name');
-        const playerId = el.getAttribute('data-player-id');
-        const type = el.getAttribute('data-type');
+  document.querySelectorAll('[data-modal-target]').forEach(el => {
+      el.addEventListener('click', () => {
+          const playerName = el.getAttribute('data-player-name');
+          const playerId = el.getAttribute('data-player-id');
+          const type = el.getAttribute('data-type');
 
-        document.getElementById('modal-player-name').textContent = playerName;
-        document.getElementById('modal-player-img').src = `https://sports-phinf.pstatic.net/player/kbo/default/${playerId}.png?type=w150`;
+          document.getElementById('modal-player-name').textContent = playerName;
+          document.getElementById('modal-player-img').src = `https://sports-phinf.pstatic.net/player/kbo/default/${playerId}.png?type=w150`;
 
-        if (type === 'pitcher') {
-            document.getElementById('modal-batter-stats').classList.add('hidden');
-            document.getElementById('modal-pitcher-stats').classList.remove('hidden');
+          if (type === 'pitcher') {
+              document.getElementById('modal-batter-stats').classList.add('hidden');
+              document.getElementById('modal-pitcher-stats').classList.remove('hidden');
+              const fields = ['era', 'g', 'w', 'l', 'sv', 'hld', 'whip', 'ip', 'so', 'bb', 'r', 'er', 'avg'];
+              fields.forEach(f => {
+                const val = el.getAttribute(`data-${f}`) || '-';
+                const td = document.getElementById(`modal-pitcher-${f}`);
+                if (td) td.textContent = val;
+              });
+          } else {
+              document.getElementById('modal-pitcher-stats').classList.add('hidden');
+              document.getElementById('modal-batter-stats').classList.remove('hidden');
+              const fields = ['avg', 'g', 'pa', 'ab', 'r', 'h', 'hr', 'rbi', 'bb', 'so', 'obp', 'slg', 'ops', 'sb', 'cs'];
+              fields.forEach(f => {
+                const val = el.getAttribute(`data-${f}`) || '-';
+                const td = document.getElementById(`modal-player-${f}`);
+                if (td) td.textContent = val;
+              });
+          }
+          document.getElementById('modal-face').classList.remove('hidden');
+      });
+  });
 
-            const fields = ['era', 'g', 'w', 'l', 'sv', 'hld', 'wpct', 'ip', 'h', 'hr', 'bb', 'hbp', 'so', 'r', 'er', 'whip', 'cg', 'sho', 'qs', 'bsv', 'tbf', 'np', 'avg', 'sac', 'sf', 'ibb', 'wp', 'bk'];
-            fields.forEach(field => {
-                const elModal = document.getElementById(`modal-pitcher-${field}`);
-                if(elModal) elModal.textContent = el.getAttribute(`data-${field}`) || '-';
-            });
-        } else {
-            document.getElementById('modal-pitcher-stats').classList.add('hidden');
-            document.getElementById('modal-batter-stats').classList.remove('hidden');
+  document.getElementById('modal-close').addEventListener('click', () => {
+      document.getElementById('modal-face').classList.add('hidden');
+  });
 
-            const fields = ['avg', 'g', 'pa', 'ab', 'r', 'h', 'hr', 'rbi', 'bb', 'so', 'obp', 'slg', 'ops', 'sb', 'cs'];
-            fields.forEach(field => {
-                const elModal = document.getElementById(`modal-player-${field}`);
-                if(elModal) elModal.textContent = el.getAttribute(`data-${field}`) || '-';
-            });
-        }
-
-        document.getElementById('modal-face').classList.remove('hidden');
-    });
-});
-
-
-// 모달 닫기
-document.getElementById('modal-close').addEventListener('click', () => {
-    document.getElementById('modal-face').classList.add('hidden');
-});
-
-// 출석 버튼 AJAX 처리
-document.getElementById('attendance-btn').addEventListener('click', () => {
-    const url = "{% url 'cal:attendance' game.id %}";
-
-    // CSRF 토큰 가져오기 (템플릿 내 csrf 토큰을 직접 변수에 넣는 방법)
-    const csrfToken = '{{ csrf_token }}';
-
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': csrfToken,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({})
-    })
-    .then(response => {
-        if (!response.ok) throw new Error('네트워크 응답 오류');
-        return response.json();
-    })
-    .then(data => {
-        const icon = document.getElementById('attendance-icon');
-        if (data.attended) {
-            icon.src = "{% static 'cal/images/icon/watch.png' %}";
-            icon.alt = "간 경기";
-        } else {
-            icon.src = "{% static 'cal/images/icon/notwatch.png' %}";
-            icon.alt = "안간 경기";
-        }
-    })
-    .catch(error => {
-        console.error('출석 등록 실패:', error);
-        alert('출석 등록 중 문제가 발생했습니다.');
-    });
-});
+  document.getElementById('attendance-btn').addEventListener('click', () => {
+      fetch("{% url 'cal:attendance' game.id %}", {
+          method: 'POST',
+          headers: {
+              'X-CSRFToken': '{{ csrf_token }}',
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+          },
+          body: JSON.stringify({})
+      })
+      .then(res => res.json())
+      .then(data => {
+          const icon = document.getElementById('attendance-icon');
+          icon.src = data.attended ? "{% static 'cal/images/icon/watch.png' %}" : "{% static 'cal/images/icon/notwatch.png' %}";
+          icon.alt = data.attended ? "간 경기" : "안간 경기";
+      })
+      .catch(err => {
+          console.error('출석 등록 실패:', err);
+          alert('출석 등록 중 문제가 발생했습니다.');
+      });
+  });
 </script>
 {% endblock %}
