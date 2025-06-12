@@ -2,7 +2,14 @@
 {% load static %}
 
 {% block body %}
-  <div class="w-full aspect-[16/9] bg-center bg-cover bg-no-repeat -mb-12 -translate-y-12"
+  <div class="w-full aspect-[16/9] bg-center bg-cover bg-no-repeat -mb-12 -translate-y-12 hidden sm:block"
       style="background-image: url({% static random_bg %});">
+
   </div>
+
+  <div class="w-full aspect-[9/16] bg-center bg-cover bg-no-repeat -mb-12 -translate-y-12 block sm:hidden"
+     style="background-image: url({% static random_mobile_bg %});">
+  </div>
+
+  
 {% endblock %}

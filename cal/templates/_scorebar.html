@@ -1,18 +1,20 @@
 {% load static %}
-<section class="w-full max-w-xl grid grid-cols-1 p-12 gap-4 place-self-center"
-        style="background-image: url({% static 'cal/images/team/' %}{{ user.team }}-box.svg);
-            background-size: 100% 100%;
-            background-position: center;
-            background-repeat: no-repeat;
-            ">
-    <div class="p-4 grid grid-cols-7 gap-4 item-center">
-        <div class="col-span-1 flex justify-end items-center w-full">
-            <img src="{% static 'cal/images/team/' %}{{ user.team }}.svg" alt="우리팀 라인업" class="h-16">
+
+    <section class="w-full max-w-xl   grid grid-cols-1 p-12 gap-4 mx-auto "
+            style="background-image: url({% static 'cal/images/team/' %}{{ user.team }}-box.svg);
+                background-size: 100% 100%;
+                background-position: center;
+                background-repeat: no-repeat;
+                ">
+              
+    <div class="p-4 grid grid-cols-7 gap-4 item-center  ">
+        <div class="col-span-1 flex justify-end items-center w-full ">
+            <img src="{% static 'cal/images/team/' %}{{ user.team }}.svg" alt="우리팀 라인업" class="h-16 ">
         </div>
 
         <!-- ✅ 내 팀 점수 (크게 표시) -->
         {% if user_score is not None %}
-            <div class="col-span-1 w-fit text-4xl font-extrabold text-800 text-white place-self-center">
+            <div class="col-span-1  w-fit text-4xl font-extrabold text-800 text-white place-self-center  ">
                 {{ user_score }}
             </div>
         {% else %}
