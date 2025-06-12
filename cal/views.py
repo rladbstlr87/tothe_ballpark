@@ -316,7 +316,3 @@ def stadium_info(request, stadium):
     }
 
     return render(request, 'stadium_info.html', context)
-
-# 소개 페이지
-def about_us(request):
-    return render(request, 'about_us.html')

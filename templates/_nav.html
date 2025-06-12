@@ -11,7 +11,6 @@
                         class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset"
                         aria-controls="mobile-menu">
                     <span class="absolute -inset-0.5"></span>
-                    <span class="sr-only">Open main menu</span>
                     <!-- 메뉴 닫힌 상태 -->
                     <svg :class="{ 'hidden': mobileMenuOpen, 'block': !mobileMenuOpen }"
                         class="size-6"
@@ -111,6 +110,7 @@
             <a href="{% url 'index' %}" class="block rounded-md bg-gray-900/50 px-3 py-2 text-white">홈</a>
             <a href="{% url 'cal:calendar' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">캘린더</a>
             <a href="{% url 'posts:post_index' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">직돌이 Q&A</a>
+            <a href="{% url 'accounts:auth' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">로그인</a>
             {% if user.is_authenticated %}
             <a href="{% url 'cal:user_games' user.id %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">나의 직관 승률</a>
             <a href="{% url 'accounts:logout' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">로그아웃</a>
