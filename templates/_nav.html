@@ -40,13 +40,13 @@
                             {% comment %} <span class="w-3 h-3 rounded-full bg-green-300 shadow-md"></span> {% endcomment %}
                             <span class="relative tracking-widest">
                                 <span class="absolute inset-x-0 bottom-0 h-2 bg-green-400  -z-10"></span>
-                            <span>야구언제해?</span>
+                            <span>직돌이네 캘린더</span>
                         </a>
                         <a href="{% url 'posts:post_index' %}" class="p-3 text-black hover:text-blue-500">
                             {% comment %} <span class="w-3 h-3 rounded-full bg-orange-300 shadow-md"></span> {% endcomment %}
                             <span class="relative tracking-widest">
                                 <span class="absolute inset-x-0 bottom-0 h-2 bg-yellow-400  -z-10"></span>
-                            <span>알려줘 꿀팁!</span>
+                            <span>직돌이네 응원석</span>
                         </a>
                     </div>
                     <!-- 가운데 홈버튼 -->
@@ -111,11 +111,11 @@
     <!-- Mobile 메뉴 -->
     <div class="hidden" id="mobile-menu">
         <div class="space-y-1 px-2 pt-2 pb-3">
-            <a href="{% url 'index' %}" class="block rounded-md bg-gray-900/50 px-3 py-2 text-white">홈</a>
-            <a href="{% url 'cal:calendar' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">캘린더</a>
-            <a href="{% url 'posts:post_index' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">직돌이 Q&A</a>
+            <a href="{% url 'index' %}" class="block rounded-md bg-gray-900/50 px-3 py-2 text-white">ㄴ홈</a>
+            <a href="{% url 'cal:calendar' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">직돌이네 일정</a>
+            <a href="{% url 'posts:post_index' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">직돌이네 응원석</a>
             {% if user.is_authenticated %}
-            <a href="{% url 'cal:user_games' user.id %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">나의 직관 승률</a>
+            <a href="{% url 'cal:user_games' user.id %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">직돌이의 직관 승률</a>
             <a href="{% url 'accounts:logout' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">로그아웃</a>
             {% else %}
             <a href="{% url 'accounts:auth' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">로그인</a>
