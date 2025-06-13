@@ -2,6 +2,8 @@ from django.db import models
 from django_resized import ResizedImageField
 from django.conf import settings
 
+
+
 # Create your models here.
 
 class Post(models.Model):
@@ -23,15 +25,15 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-    image = ResizedImageField(
-        size=[400, 400],
-        crop=['middle', 'center'],
-        upload_to='posts/images/',
-        quality=90,
-        blank=True,
-        null=True,
-        verbose_name='Post Image'
-    )
+    # image = ResizedImageField(
+    #     size=[400, 400],
+    #     crop=['middle', 'center'],
+    #     upload_to='posts/images/',
+    #     quality=90,
+    #     blank=True,
+    #     null=True,
+    #     verbose_name='Post Image'
+    # )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -83,3 +85,9 @@ class Comment(models.Model):
         related_name='like_comments',
         blank=True
     )
+    
+class PostImage(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='posts/images/') # gif도 올릴수있게
+
+        
