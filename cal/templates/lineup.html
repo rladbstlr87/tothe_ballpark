@@ -3,9 +3,9 @@
 {% load custom_filters %}
 {% block body %}
     <div class="flex justify-center flex-col lg:flex-row">
+    <div class="bg-[url('/static/cal/images/bg/peeledpaper1.png')] bg-repeat-y bg-contain w-[30px] lg:w-[50px] translate-x-0 lg:translate-x-8 min-h-full rotate-180"></div>
         {% if has_lineup and game %}
         {% if game %}
-        <div class="bg-[url('/static/cal/images/bg/peeledpaper1.png')] bg-repeat-y bg-contain w-[30px] lg:w-[50px] translate-x-0 lg:translate-x-8 min-h-full rotate-180"></div>
         <div class="flex flex-col items-center w-full max-w-7xl px-4 sm:px-6 lg:px-8 bg-white">
             <div id="top" class="w-full py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div id="scorebar" class="w-full sm:flex-grow sm:pl-20">
@@ -20,9 +20,79 @@
                 </button>
             </div>
 
+            <div class="w-full flex justify-center mb-6">
+                <div class="border border-yellow-400 rounded-lg px-6 py-4 shadow text-center">
+                    <p class="text-lg font-bold">✨ 오늘의 수훈선수 ✨</p>
+                    <p class="text-xl text-gray-900 mt-2">
+                        <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ best_player.player_id }}.png?type=w150" class="mx-auto mb-2">
+                        <span class="text-sm text-gray-600">{{best_player_name}}</span>
+                    </p>
+                </div>
+            </div>
+            <button id="toggle-legend-btn"
+                class="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-800 transition duration-200">
+                <svg id="legend-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+                <span id="legend-text">스탯 보기</span>
+            </button>
+            <!-- 범례 (처음엔 숨김) -->
+            <div id="legend-box" class="hidden w-full border border-gray-300 rounded-lg p-4 mb-6 bg-gray-50 text-sm text-gray-700">
+                <!-- 타자 유형 -->
+                <div class="mb-6">
+                    <h3 class="font-bold text-base mb-3">타자 유형</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-4">
+                            <img src="{% static 'cal/images/icon/hitter_icon/0.svg' %}" alt="파워형" class="w-10 h-10">
+                            <span><strong>파워형</strong>: 홈런을 잘치는 선수</span>
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <img src="{% static 'cal/images/icon/hitter_icon/1.svg' %}" alt="스피드형" class="w-10 h-10">
+                            <span><strong>스피드형</strong>: 달리기가 빨라 도루를 잘하는 선수</span>
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <img src="{% static 'cal/images/icon/hitter_icon/2.svg' %}" alt="타격형" class="w-10 h-10">
+                            <span><strong>타격형</strong>: 공을 잘 맞히는 선수</span>
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <img src="{% static 'cal/images/icon/hitter_icon/3.svg' %}" alt="선구안형" class="w-10 h-10">
+                            <span><strong>선구안형</strong>: 공을 잘 보는 선수</span>
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <img src="{% static 'cal/images/icon/hitter_icon/4.svg' %}" alt="노멀형" class="w-10 h-10">
+                            <span><strong>노멀형</strong>: 기록이 평범한 선수</span>
+                        </li>
+                    </ul>
+                </div>
+                <!-- 투수 유형 -->
+                <div>
+                    <h3 class="font-bold text-base mb-3">투수 유형</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-4">
+                            <img src="{% static 'cal/images/icon/pitcher_icon/0.svg' %}" alt="구속형" class="w-10 h-10">
+                            <span><strong>구속형</strong>: 구속이 빠른 선수</span>
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <img src="{% static 'cal/images/icon/pitcher_icon/1.svg' %}" alt="제구형" class="w-10 h-10">
+                            <span><strong>제구형</strong>: 공을 정확하게 제어하는 선수</span>
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <img src="{% static 'cal/images/icon/pitcher_icon/2.svg' %}" alt="체력형" class="w-10 h-10">
+                            <span><strong>체력형</strong>: 긴 이닝을 책임지는 선수</span>
+                        </li>
+                        <li class="flex items-center gap-4">
+                            <img src="{% static 'cal/images/icon/pitcher_icon/3.svg' %}" alt="노멀형" class="w-10 h-10">
+                            <span><strong>노멀형</strong>: 기록이 평범한 선수</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+
+
             <div id="lineups" class="w-full grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div class="pr-2">
-                    <h1 class="text-red-700">수훈선수 : {{ best_player.player_id }}</h1>
                     {% for lineup in user_lineup %}
                         {% with record=latest_daily_stats|get_item:lineup.hitter.player_id %}
                             {% if lineup.batting_order == 1 %}
@@ -131,9 +201,14 @@
         </div>
         {% endif %}
         {% else %}
-            {% include '_scorebar.html' %}
-            <div class="text-center mt-10 text-red-500 text-lg sm:text-xl">
-                ⚠️ 라인업이 아직 등록되지 않았습니다.
+            <div class="flex flex-col items-center w-full max-w-7xl px-4 sm:px-6 lg:px-8 bg-white min-h-screen">
+
+                <div id="scorebar" class="w-full py-4">
+                    {% include '_scorebar.html' %}
+                </div>
+                <div class="text-center mt-10 text-red-500 text-lg sm:text-xl">
+                    ⚠️ 라인업이 아직 등록되지 않았습니다.
+                </div>
             </div>
         {% endif %}
         <div class="bg-[url('/static/cal/images/bg/peeledpaper1.png')] bg-repeat-y bg-contain w-[30px] lg:w-[50px] -translate-x-0 lg:-translate-x-8 min-h-full"></div>
@@ -197,5 +272,23 @@
           alert('출석 등록 중 문제가 발생했습니다.');
       });
   });
+    // ✅ 범례 토글 기능
+    const legendBtn = document.getElementById('toggle-legend-btn');
+    const legendBox = document.getElementById('legend-box');
+    const legendText = document.getElementById('legend-text');
+    const legendIcon = document.getElementById('legend-icon');
+
+    legendBtn.addEventListener('click', () => {
+        const isHidden = legendBox.classList.toggle('hidden');
+
+        // 텍스트 변경
+        legendText.textContent = isHidden ? '스탯 보기' : '스탯 닫기';
+
+        // 아이콘 아래/위 방향 토글
+        legendIcon.innerHTML = isHidden
+            ? `<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />` // ▼
+            : `<path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />`; // ▲
+    });
+
 </script>
 {% endblock %}

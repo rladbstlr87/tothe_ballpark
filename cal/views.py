@@ -200,14 +200,28 @@ def lineup(request, game_id):
     hitter_score = calculate_hitter_score(best_hitter) if best_hitter else -999
     pitcher_score = calculate_pitcher_score(best_pitcher) if best_pitcher else -999
 
-    if hitter_score >= pitcher_score:
+    if hitter_score >= pitcher_score and best_hitter:
         best_player = best_hitter
         player_type = "타자"
         score = hitter_score
-    else:
+        try:
+            best_player_name = Hitter.objects.get(player_id=best_player.player_id).player_name
+        except Hitter.DoesNotExist:
+            best_player_name = "-"
+    elif best_pitcher:
         best_player = best_pitcher
         player_type = "투수"
         score = pitcher_score
+        try:
+            best_player_name = Pitcher.objects.get(player_id=best_player.player_id).player_name
+        except Pitcher.DoesNotExist:
+            best_player_name = "-"
+    else:
+        # 둘 다 없을 경우 예외 처리
+        best_player = None
+        best_player_name = "-"
+        player_type = "-"
+        score = 0
 
     context = {
         'game': game,
@@ -224,6 +238,7 @@ def lineup(request, game_id):
         'is_after_game': is_after_game,
         'ticket_url': ticket[stadium_ticket],
         'best_player': best_player,
+        'best_player_name': best_player_name,
         'player_type': player_type,
         'score': round(score, 2),
     }
