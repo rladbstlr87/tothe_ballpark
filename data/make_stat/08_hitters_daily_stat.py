@@ -141,11 +141,13 @@ with open('../hitters_records.csv', 'a', newline='', encoding='utf-8-sig') as ro
             if not rec['away'] and not rec['home']:
                 print(f"⚠️ 기록 없음: {d} {t1} vs {t2} ({gcode})")
                 continue
-
             # 기록 저장
             for team in ['away', 'home']:
                 for r in rec[team]:
+                    if not r['player_id'].strip():  # player_id가 공백이면 건너뜀
+                        continue
                     rw.writerow([r.get(k, '') for k in ['AB','R','H','RBI','HR','BB','SO','SB']] + [r['player_id'], team, gid, d])
+
 
             print(f"✅ 저장 완료: {d} {t1} vs {t2} ({gcode}) → game_id={gid}, 선수 수: {len(rec['away']) + len(rec['home'])}")
             time.sleep(1.5)
