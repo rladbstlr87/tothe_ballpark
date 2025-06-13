@@ -90,7 +90,7 @@
             {% if user.is_authenticated %}
                 <div class="grid grid-cols-1 flex justify-end w-[160px] h-[120px]" x-show="!mobileMenuOpen" x-transition.opacity>
                     {% comment %} <img src="/static/cal/images/bg/attended_alert.svg" alt="dd" class="py-4 w-28 ml-20 -rotate-15"> {% endcomment %}
-                    {% with winning_percent=user.winning_percent %}
+                    {% with winning_percent=winning_percent %}
                     <a id="fairy" href="{% url 'cal:user_games' user.id %}" class="flex rotate-7 translate-x-2">
                         {% if winning_percent >= 50 %}
                             <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-winning.svg" alt="승리요정"
@@ -104,7 +104,6 @@
                         <img src="/static/cal/images/bg/attended_alert.svg" alt="dd" class="py-4 w-28 ml-20 -rotate-15 max-sm:hidden"> 
                     {% endif %}
                     {% endwith %}
-
                 </div>
             {% endif %}
         </div>

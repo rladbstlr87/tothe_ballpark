@@ -4,7 +4,8 @@
 {% block body %}
     <div class="flex justify-center flex-col lg:flex-row">
     <div class="bg-[url('/static/cal/images/bg/peeledpaper1.png')] bg-repeat-y bg-contain w-[30px] lg:w-[50px] translate-x-0 lg:translate-x-8 min-h-full rotate-180"></div>
-        {% if has_lineup and game %}
+        {% if has_lineup and game and user_lineup|length >= 3 and opponent_lineup|length >= 3 %}
+
         {% if game %}
         <div class="flex flex-col items-center w-full max-w-7xl px-4 sm:px-6 lg:px-8 bg-white">
             <div id="top" class="w-full py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -19,16 +20,24 @@
                     {% endif %}
                 </button>
             </div>
-
-            <div class="w-full flex justify-center mb-6">
-                <div class="border border-yellow-400 rounded-lg px-6 py-4 shadow text-center">
-                    <p class="text-lg font-bold">✨ 오늘의 수훈선수 ✨</p>
-                    <p class="text-xl text-gray-900 mt-2">
-                        <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ best_player.player_id }}.png?type=w150" class="mx-auto mb-2">
-                        <span class="text-sm text-gray-600">{{best_player_name}}</span>
-                    </p>
+            {% if show_best_player %}
+                <div class="w-full flex justify-center mb-6">
+                    <div class="border border-yellow-400 rounded-lg px-6 py-4 shadow text-center">
+                        <p class="text-lg font-bold">
+                            {% if is_today_best %}
+                                ✨ 오늘의 수훈선수 ✨
+                            {% else %}
+                                ✨ 오늘의 키플레이어 ✨
+                            {% endif %}
+                        </p>
+                        <p class="text-xl text-gray-900 mt-2">
+                            <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ best_player.player_id }}.png?type=w150" class="mx-auto mb-2">
+                            <p>{{best_player.player_id}}</p>
+                            <span class="text-lg text-black">{{ best_player_name }}</span>
+                        </p>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
             <button id="toggle-legend-btn"
                 class="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-800 transition duration-200">
                 <svg id="legend-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -79,7 +88,7 @@
                         </li>
                         <li class="flex items-center gap-4">
                             <img src="{% static 'cal/images/icon/pitcher_icon/2.svg' %}" alt="체력형" class="w-10 h-10">
-                            <span><strong>체력형</strong>: 긴 이닝을 책임지는 선수</span>
+                            <span><strong>체력형</strong>: 긴 시간 동안 던지는 선수</span>
                         </li>
                         <li class="flex items-center gap-4">
                             <img src="{% static 'cal/images/icon/pitcher_icon/3.svg' %}" alt="노멀형" class="w-10 h-10">

@@ -134,6 +134,47 @@ def lineup(request, game_id):
     for record in today_pitcher_records:
         latest_pitcher_stats[record.player_id] = record
 
+    # 수훈선수 선정
+    today_hitters = list(today_hitter_records)
+    today_pitchers = list(today_pitcher_records)
+
+    best_hitter = max(today_hitters, key=calculate_hitter_score, default=None)
+    best_pitcher = max(today_pitchers, key=calculate_pitcher_score, default=None)
+
+    # 오늘 기록 없을 경우 전체 최신 기록에서 대체
+    if not best_hitter and latest_daily_stats:
+        best_hitter = max(latest_daily_stats.values(), key=calculate_hitter_score, default=None)
+
+    if not best_pitcher and latest_pitcher_stats:
+        best_pitcher = max(latest_pitcher_stats.values(), key=calculate_pitcher_score, default=None)
+
+    hitter_score = calculate_hitter_score(best_hitter) if best_hitter else -999
+    pitcher_score = calculate_pitcher_score(best_pitcher) if best_pitcher else -999
+
+    if hitter_score >= pitcher_score and best_hitter:
+        best_player = best_hitter
+        player_type = "타자"
+        score = hitter_score
+        try:
+            best_player_name = Hitter.objects.get(player_id=best_player.player_id).player_name
+        except Hitter.DoesNotExist:
+            best_player_name = "-"
+    elif best_pitcher:
+        best_player = best_pitcher
+        player_type = "투수"
+        score = pitcher_score
+        try:
+            best_player_name = Pitcher.objects.get(player_id=best_player.player_id).player_name
+        except Pitcher.DoesNotExist:
+            best_player_name = "-"
+    else:
+        best_player = None
+        best_player_name = "-"
+        player_type = "-"
+        score = 0
+    
+    is_today_best = best_player and best_player.date == game.date
+
     # 라인업 분기
     if has_lineup:
         pitcher_indexes = [i for i, l in enumerate(lineups) if l.batting_order == 1]
@@ -164,14 +205,14 @@ def lineup(request, game_id):
         user_score = game.team2_score
         opponent_score = game.team1_score
 
-    # 경기 후 여부
+    # 경기 종료 여부
     is_after_game = (game.team1_score is not None) and (game.team2_score is not None)
+    show_best_player = is_after_game and (user_score > opponent_score)
 
+    # 티켓링크 처리
     stadium_ticket = game.stadium
-
     if game.team2 == 'LG' and game.stadium == '잠실':
         stadium_ticket = '잠실LG'
-
     if game.team2 == 'OB' and game.stadium == '잠실':
         stadium_ticket = '잠실OB'
 
@@ -190,39 +231,6 @@ def lineup(request, game_id):
         '울산': "https://ticket.ncdinos.com/games",
     }
 
-    # 수훈선수
-    hitters = Hitter_Daily.objects.filter(game_id=game)
-    pitchers = Pitcher_Daily.objects.filter(game_id=game)
-
-    best_hitter = max(hitters, key=calculate_hitter_score, default=None)
-    best_pitcher = max(pitchers, key=calculate_pitcher_score, default=None)
-    
-    hitter_score = calculate_hitter_score(best_hitter) if best_hitter else -999
-    pitcher_score = calculate_pitcher_score(best_pitcher) if best_pitcher else -999
-
-    if hitter_score >= pitcher_score and best_hitter:
-        best_player = best_hitter
-        player_type = "타자"
-        score = hitter_score
-        try:
-            best_player_name = Hitter.objects.get(player_id=best_player.player_id).player_name
-        except Hitter.DoesNotExist:
-            best_player_name = "-"
-    elif best_pitcher:
-        best_player = best_pitcher
-        player_type = "투수"
-        score = pitcher_score
-        try:
-            best_player_name = Pitcher.objects.get(player_id=best_player.player_id).player_name
-        except Pitcher.DoesNotExist:
-            best_player_name = "-"
-    else:
-        # 둘 다 없을 경우 예외 처리
-        best_player = None
-        best_player_name = "-"
-        player_type = "-"
-        score = 0
-
     context = {
         'game': game,
         'user_lineup': user_lineup,
@@ -236,14 +244,17 @@ def lineup(request, game_id):
         'user_score': user_score,
         'opponent_score': opponent_score,
         'is_after_game': is_after_game,
-        'ticket_url': ticket[stadium_ticket],
+        'ticket_url': ticket.get(stadium_ticket, "#"),
         'best_player': best_player,
         'best_player_name': best_player_name,
         'player_type': player_type,
         'score': round(score, 2),
+        'is_today_best': is_today_best,
+        'show_best_player': show_best_player,
     }
 
     return render(request, 'lineup.html', context)
+
 
 # 직관 체크
 @never_cache
