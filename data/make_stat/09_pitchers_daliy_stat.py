@@ -161,11 +161,14 @@ with open('../pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as p
 
             for team in ['away', 'home']:
                 for r in rec[team]:
+                    pid = r.get('player_id', '').strip()
+                    if not pid:  # 공백이거나 None이면 저장하지 않음
+                        continue
                     pw.writerow([
                         convert_ip_to_float(r.get('IP', '')),
                         r.get('H', ''), r.get('R', ''), r.get('ER', ''), r.get('BB', ''),
                         r.get('SO', ''), r.get('HR', ''), r.get('BF', ''), r.get('AB', ''),
-                        r.get('NP', ''), r.get('player_id', ''), team, gid, d
+                        r.get('NP', ''), pid, team, gid, d
                     ])
 
             print(f"✅ 저장 완료: {d} {t1} vs {t2} ({gcode}) → game_id={gid}")
