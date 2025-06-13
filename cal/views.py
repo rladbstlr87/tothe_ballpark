@@ -77,6 +77,29 @@ def next_month(d):
     next_ = last + timedelta(days=1)
     return f'day={next_.year}-{next_.month}-{next_.day}'
 
+# 키플레이어 함수
+def calculate_hitter_score(h):
+    return (
+        h.RBI * 3 +
+        h.R * 1.5 +
+        h.HR * 3.5 +
+        h.H * 1.2 +
+        h.BB * 0.7 +
+        h.SB * 1.0 -
+        h.SO * 1.0
+    )
+
+def calculate_pitcher_score(p):
+    return (
+        p.IP * 3 -
+        p.ER * 2.5 -
+        p.H * 0.5 -
+        p.BB * 0.7 -
+        p.HR * 2.0 -
+        p.R * 1.0 +
+        p.SO * 1.0
+    )
+
 # 라인업 뷰
 @never_cache
 @login_required
@@ -167,6 +190,25 @@ def lineup(request, game_id):
         '울산': "https://ticket.ncdinos.com/games",
     }
 
+    # 수훈선수
+    hitters = Hitter_Daily.objects.filter(game_id=game)
+    pitchers = Pitcher_Daily.objects.filter(game_id=game)
+
+    best_hitter = max(hitters, key=calculate_hitter_score, default=None)
+    best_pitcher = max(pitchers, key=calculate_pitcher_score, default=None)
+    
+    hitter_score = calculate_hitter_score(best_hitter) if best_hitter else -999
+    pitcher_score = calculate_pitcher_score(best_pitcher) if best_pitcher else -999
+
+    if hitter_score >= pitcher_score:
+        best_player = best_hitter
+        player_type = "타자"
+        score = hitter_score
+    else:
+        best_player = best_pitcher
+        player_type = "투수"
+        score = pitcher_score
+
     context = {
         'game': game,
         'user_lineup': user_lineup,
@@ -181,6 +223,9 @@ def lineup(request, game_id):
         'opponent_score': opponent_score,
         'is_after_game': is_after_game,
         'ticket_url': ticket[stadium_ticket],
+        'best_player': best_player,
+        'player_type': player_type,
+        'score': round(score, 2),
     }
 
     return render(request, 'lineup.html', context)

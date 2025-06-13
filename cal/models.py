@@ -129,7 +129,7 @@ class Lineup(models.Model):
 class Hitter_Daily(models.Model):
     game_id = models.ForeignKey(Game, on_delete=models.CASCADE)
     date = models.DateField(max_length = 100)
-    player_id = models.CharField(max_length=100)
+    player_id = models.ForeignKey(Hitter, on_delete=models.CASCADE)
     team = models.CharField(max_length=50)
     AB = models.PositiveIntegerField()
     R = models.PositiveIntegerField()
@@ -143,7 +143,7 @@ class Hitter_Daily(models.Model):
 class Pitcher_Daily(models.Model):
     game_id = models.ForeignKey(Game, on_delete=models.CASCADE)
     date = models.DateField(max_length = 100)
-    player_id = models.CharField(max_length=100)
+    player_id = models.ForeignKey(Pitcher, on_delete=models.CASCADE)
     team = models.CharField(max_length=50)
     IP = models.FloatField()
     H = models.PositiveIntegerField()

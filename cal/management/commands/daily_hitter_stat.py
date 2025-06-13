@@ -2,7 +2,7 @@ import csv
 import datetime
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from cal.models import Hitter_Daily, Game
+from cal.models import Hitter_Daily, Game, Hitter
 
 class Command(BaseCommand):
     help = 'records.csv 파일을 Hitter_Daily 모델에 저장'
@@ -19,16 +19,18 @@ class Command(BaseCommand):
 
                 try:
                     game = Game.objects.get(id=int(row['game_id']))
+                    player_id = Hitter.objects.get(player_id=row['player_id'])
                 except Game.DoesNotExist:
                     self.stdout.write(self.style.WARNING(f"❗ Game ID {row['game_id']} 없음 → 건너뜀"))
                     failed += 1
                     continue
 
+
                 try:
                     Hitter_Daily.objects.create(
                         game_id=game,
                         date=datetime.datetime.strptime(row['date'], '%Y%m%d').date(),
-                        player_id=row['player_id'],  # CharField이므로 문자열 그대로 저장
+                        player_id=player_id,
                         team=row['team'],
                         AB=int(row['AB']),
                         R=int(row['R']),

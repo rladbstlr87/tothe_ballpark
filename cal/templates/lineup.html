@@ -22,6 +22,7 @@
 
             <div id="lineups" class="w-full grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div class="pr-2">
+                    <h1 class="text-red-700">수훈선수 : {{ best_player.player_id }}</h1>
                     {% for lineup in user_lineup %}
                         {% with record=latest_daily_stats|get_item:lineup.hitter.player_id %}
                             {% if lineup.batting_order == 1 %}
