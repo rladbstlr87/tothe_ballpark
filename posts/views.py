@@ -4,6 +4,47 @@ from .models import *
 from .forms import PostForm, CommentForm
 from django.core.paginator import Paginator
 from django.http import JsonResponse
+from PIL import Image
+from io import BytesIO
+from django.core.files.base import ContentFile
+import os
+
+# 이미지 gif는 그대로, 이미지는 크기 조절
+def handle_uploaded_image(file):
+    ext = os.path.splitext(file.name)[-1].lower()
+
+    # GIF는 원본 그대로 저장
+    if ext == '.gif':
+        return file
+
+    try:
+        file.seek(0)  # ✅ 파일 커서 초기화
+        img = Image.open(file)
+
+        
+
+        # 최대 크기 제한 (비율 유지)
+        img.thumbnail((400, 400))
+
+        buffer = BytesIO()
+
+        # 확장자 → Pillow 포맷 매핑
+        format_map = {
+            '.jpg': 'JPEG',
+            '.jpeg': 'JPEG',
+            '.png': 'PNG',
+            '.webp': 'WEBP',
+        }
+        save_format = format_map.get(ext, 'PNG')
+
+        img.save(buffer, format=save_format)
+
+        return ContentFile(buffer.getvalue(), name=file.name)
+
+    except Exception as e:
+        print(f"❌ 이미지 처리 에러: {file.name} - {e}")
+        return None  # 처리 실패한 건 건너뜀
+
 
 # 게시글 리스트
 def post_index(request):
@@ -28,10 +69,25 @@ def create(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
+            
             post = form.save(commit=False)
             post.user = request.user
             post.save()
+            
+            
+            # 이미지 여러 장 저장 
+            images = request.FILES.getlist('images')
+            for image in images:
+                
+                processed = handle_uploaded_image(image)
+                if processed:
+                    PostImage.objects.create(post=post, image=processed)
+                    
+                
             return redirect('posts:detail', id=post.id)
+        else:
+            
+            print(form.errors)
     else:
         form = PostForm()
     return render(request, 'create.html', {'form': form})
@@ -78,11 +134,25 @@ def update(request, id):
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             form.save()
+            
+             # ✅ 사용자가 체크한 이미지만 삭제
+            delete_ids = request.POST.getlist('delete_images')
+            PostImage.objects.filter(id__in=delete_ids, post=post).delete()
+
+            # ✅ 새 이미지 추가
+            images = request.FILES.getlist('images')
+           
+            for image in images:
+                processed = handle_uploaded_image(image)
+                PostImage.objects.create(post=post, image=processed)
+
             return redirect('posts:detail', id=id)
     else:
         form = PostForm(instance=post)
 
-    return render(request, 'update.html', {'form': form})
+    return render(request, 'update.html', {'form': form, 'post': post,
+        'existing_images': post.images.all()
+    })
 
 # 게시글 삭제
 @login_required
