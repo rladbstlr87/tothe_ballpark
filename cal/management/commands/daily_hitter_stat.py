@@ -20,6 +20,7 @@ class Command(BaseCommand):
                 try:
                     game = Game.objects.get(id=int(row['game_id']))
                     player_id = Hitter.objects.get(player_id=row['player_id'])
+
                 except Game.DoesNotExist:
                     self.stdout.write(self.style.WARNING(f"❗ Game ID {row['game_id']} 없음 → 건너뜀"))
                     failed += 1
@@ -30,7 +31,7 @@ class Command(BaseCommand):
                     Hitter_Daily.objects.create(
                         game_id=game,
                         date=datetime.datetime.strptime(row['date'], '%Y%m%d').date(),
-                        player_id=player_id,
+                        player=player_id,
                         team=row['team'],
                         AB=int(row['AB']),
                         R=int(row['R']),

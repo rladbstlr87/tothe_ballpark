@@ -2,7 +2,7 @@ import csv
 import datetime
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from cal.models import Pitcher_Daily, Game
+from cal.models import Pitcher_Daily, Game, Pitcher
 
 class Command(BaseCommand):
     help = 'pitchers_records.csv 파일을 Pitcher_Daily 모델에 저장'
@@ -19,6 +19,7 @@ class Command(BaseCommand):
 
                 try:
                     game = Game.objects.get(id=int(row['game_id']))
+                    player_id = Pitcher.objects.get(player_id=row['player_id'])
                 except Game.DoesNotExist:
                     self.stdout.write(self.style.WARNING(f"❗ Game ID {row['game_id']} 없음 → 건너뜀"))
                     failed += 1
@@ -28,7 +29,7 @@ class Command(BaseCommand):
                     Pitcher_Daily.objects.create(
                         game_id=game,
                         date=datetime.datetime.strptime(row['date'], '%Y%m%d').date(),
-                        player_id=row['player_id'],
+                        player=player_id,
                         team=row['team'],
                         IP=float(row['IP']),
                         H=int(row['H']),
