@@ -196,7 +196,7 @@ def lineup(request, game_id):
 
     best_hitter = max(hitters, key=calculate_hitter_score, default=None)
     best_pitcher = max(pitchers, key=calculate_pitcher_score, default=None)
-
+    
     hitter_score = calculate_hitter_score(best_hitter) if best_hitter else -999
     pitcher_score = calculate_pitcher_score(best_pitcher) if best_pitcher else -999
 
