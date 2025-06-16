@@ -30,7 +30,10 @@
             {% if forloop.counter0 == 0 %}
               <!-- ⚾ 월요일 특별 배경 -->
               <div class="absolute top-1/2 left-1/2 -translate-x-6/7 -translate-y-3/7 z-0 pointer-events-none w-[300px] h-[300px] max-sm:hidden">
-                <img src="/static/cal/images/bg/mon_alert.svg" alt="동그라미" class="w-full h-full">
+                <img src="/static/cal/images/bg/mon_alert.svg" alt="동그라미" class="w-full h-full pointer-events-none">
+                <img src="/static/cal/images/icon/ticket.png" alt="티켓 메모" id="ticketBtn"
+                    class="hidden sm:block w-[200px] h-[200px] z-0 transform -translate-x-10 cusor-pointer hover:scale-105 transition">
+                 
                 <img src="{% static 'cal/images/team/' %}{{ user.team }}-yeah.png" alt="동그라미" class="mt-70 w-[220px] h-[80px] -rotate-15 z-0" />
               </div>
             {% endif %}
