@@ -8,11 +8,9 @@ html, body {
   position: relative;
   z-index: 0;
   overflow: auto;
-
   width: 100%;
   min-height: 100vh;
 
-  /* 👉 배경을 .bg-paper 자체에 줌 */
   background-image: url('/static/cal/images/bg/cal-paper.jpg');
   background-size: cover;
   background-position: center;
@@ -25,7 +23,6 @@ html, body {
 .bg-paper::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
   z-index: -1;
 
   /* 필요하면 여기에 추가적인 효과 (예: 텍스처 오버레이) 가능 */

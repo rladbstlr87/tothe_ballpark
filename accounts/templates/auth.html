@@ -11,8 +11,9 @@
 
 {% block body %}
 <div class="root">
+    <img src="{% static 'auth/images/auth_mascots.png' %}" alt="Overlay Image" class="overlay-img">
 
-    <!-- 10개 구단 마스코트 이미지 배치 (스타일로 위치 제어 예정) -->
+    <!-- 10개 구단 마스코트 이미지 배치 (스타일로 위치 제어 예정)
     <div class="hanhwa-mascot-container">
         <img src="{% static 'auth/images/한화1.png' %}" alt="한화 마스코트">
     </div>
@@ -42,11 +43,10 @@
     </div>
     <div class="nc-mascot-container">
         <img src="{% static 'auth/images/엔씨1.png' %}" alt="엔씨 마스코트">
-    </div>
+    </div> -->
 
     <!-- 로그인 폼 -->
-    <!-- <div class="signin-wrapper form {% if mode == 'login' %}active{% endif %}"> -->
-    <div class="signin-wrapper form active">
+    <div class="signin-wrapper form {% if mode == 'login' %}active{% endif %}">
         <div class="form-wrapper">
             <h5>로그인</h5>
             <form method="post" action="?mode=login">
