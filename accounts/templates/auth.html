@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load custom_filters1 %}
+{% block title %}
+    로그인/회원가입
+{% endblock %}
 {% block styles %}
 <!-- 회원가입/로그인 페이지에 적용될 CSS 불러오기 -->
 <link rel="stylesheet" href="{% static 'auth/css/auth.css' %}">
@@ -8,8 +11,9 @@
 
 {% block body %}
 <div class="root">
+    <img src="{% static 'auth/images/auth_mascots.png' %}" alt="Overlay Image" class="overlay-img hidden md:block">
 
-    <!-- 10개 구단 마스코트 이미지 배치 (스타일로 위치 제어 예정) -->
+    <!-- 10개 구단 마스코트 이미지 배치 (스타일로 위치 제어 예정)
     <div class="hanhwa-mascot-container">
         <img src="{% static 'auth/images/한화1.png' %}" alt="한화 마스코트">
     </div>
@@ -39,7 +43,7 @@
     </div>
     <div class="nc-mascot-container">
         <img src="{% static 'auth/images/엔씨1.png' %}" alt="엔씨 마스코트">
-    </div>
+    </div> -->
 
     <!-- 로그인 폼 -->
     <div class="signin-wrapper form {% if mode == 'login' %}active{% endif %}">
@@ -70,7 +74,7 @@
                 <span>|</span>
                 <a href="#" id="find-password-link" class="hover:underline">비밀번호 찾기</a>
                 <span>|</span>
-                 <a href="#" id="signup-link" class="hover:underline">회원가입</a>
+                <a href="#" id="signup-link" class="hover:underline">회원가입</a>
             </div>
         </div>
     </div>

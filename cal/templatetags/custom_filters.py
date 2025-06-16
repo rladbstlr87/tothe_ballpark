@@ -42,3 +42,26 @@ def team_name(code):
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(str(key))
+
+@register.filter
+def style_description(obj):
+    style_value = str(getattr(obj, 'style', ''))
+    is_pitcher = hasattr(obj, 'ERA') or hasattr(obj, 'IP')  # 투수만 가질 만한 필드
+
+    if is_pitcher:
+        pitcher_styles = {
+            '0': '구속형',
+            '1': '제구형',
+            '2': '체력형',
+            '3': '노멀형',
+        }
+        return pitcher_styles.get(style_value, '알 수 없는 유형')
+    else:
+        hitter_styles = {
+            '0': '파워형',
+            '1': '스피드형',
+            '2': '타격형',
+            '3': '선구안형',
+            '4': '노멀형',
+        }
+        return hitter_styles.get(style_value, '알 수 없는 유형')
