@@ -9,8 +9,8 @@ from accounts.models import User
 from .utils import Calendar
 import calendar
 import random
-
 from collections import defaultdict
+
 def calculate_team_standings():
     HOME_STADIUMS = {
         'HT': ['광주'],
@@ -161,6 +161,23 @@ def index(request):
 
     return render(request, 'index.html', context)
 
+@never_cache
+@login_required
+def standings(request):
+    standing = calculate_team_standings()
+    if request.user.is_authenticated:
+        user_team = request.user.team
+
+    hitter_stats = Hitter.objects.filter(team_name=user_team)
+    pitcher_stats = Pitcher.objects.filter(team_name=user_team)
+    context = {
+        'standing': standing,
+        'hitter_stats': hitter_stats,
+        'pitcher_stats': pitcher_stats,
+
+    }
+    return render(request, 'standings.html', context)
+
 # 캘린더 메인 뷰
 @never_cache
 @login_required
@@ -176,15 +193,12 @@ def calendar_view(request):
     cal = Calendar(d.year, d.month, team=user_team)
     cal_data = cal.get_month_data()
 
-    standings = calculate_team_standings()
-
     context = {
         'cal_data': cal_data,
         'prev_month': prev_month(d),
         'next_month': next_month(d),
         'user_team': user_team,
         'user_attendance_game_ids': user_attendance_game_ids,
-        'standings': standings,
     }
     return render(request, 'calendar.html', context)
 

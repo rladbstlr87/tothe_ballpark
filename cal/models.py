@@ -28,8 +28,8 @@ class Hitter(models.Model):
     AB = models.PositiveIntegerField()  # 타수
     R = models.PositiveIntegerField()  # 득점
     H = models.PositiveIntegerField()  # 안타
-    _2B = models.PositiveIntegerField()  # 2루타
-    _3B = models.PositiveIntegerField()  # 3루타
+    H_2B = models.PositiveIntegerField()  # 2루타
+    H_3B = models.PositiveIntegerField()  # 3루타
     HR = models.PositiveIntegerField()  # 홈런
     TB = models.PositiveIntegerField()  # 루타
     RBI = models.PositiveIntegerField()  # 타점
@@ -82,8 +82,8 @@ class Pitcher(models.Model):
     TBF = models.PositiveIntegerField()  # 상대 타자 수
     NP = models.PositiveIntegerField()  # 투구 수
     AVG = models.FloatField()  # 피안타율
-    _2B = models.PositiveIntegerField()  # 피 2루타
-    _3B = models.PositiveIntegerField()  # 피 3루타
+    H_2B = models.PositiveIntegerField()  # 피 2루타
+    H_3B = models.PositiveIntegerField()  # 피 3루타
     SAC = models.PositiveIntegerField()  # 희생번트 허용
     SF = models.PositiveIntegerField()  # 희생플라이 허용
     IBB = models.PositiveIntegerField()  # 고의4구

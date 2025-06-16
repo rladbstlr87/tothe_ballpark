@@ -1,0 +1,388 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block body %}
+
+<!-- ✅ 탭 버튼 영역 -->
+<div class="w-full max-w-6xl mx-auto mt-10 mb-4 px-4">
+    <div class="flex justify-center gap-4 mb-6">
+    <button onclick="showTab('ranking')" class="tab-btn active px-4 py-2 rounded-2xl border-2 border-gray-500 bg-gray-100 shadow-[2px_2px_0_rgba(0,0,0,0.5)] hover:bg-gray-200 transition duration-200">
+        KBO 순위
+    </button>
+    <button onclick="showTab('hitters')" class="tab-btn px-4 py-2 rounded-2xl border-2 border-gray-500 bg-gray-100 shadow-[2px_2px_0_rgba(0,0,0,0.5)] hover:bg-gray-200 transition duration-200">
+        우리 팀 타자 순위
+    </button>
+    <button onclick="showTab('pitchers')" class="tab-btn px-4 py-2 rounded-2xl border-2 border-gray-500 bg-gray-100 shadow-[2px_2px_0_rgba(0,0,0,0.5)] hover:bg-gray-200 transition duration-200">
+        우리 팀 투수 순위
+    </button>
+    </div>
+
+  <!-- ✅ KBO 순위 -->
+<div id="ranking" class="tab-content block">
+  <div class="bg-white rounded-lg shadow p-6 mb-8">
+    <h2 class="text-xl font-bold mb-4 text-center">KBO 순위표</h2>
+    <div class="relative w-full">
+      <div class="flex justify-end mb-2">
+        <button onclick="scrollRankingLeft()" class="text-sm bg-gray-200 px-3 py-1 rounded shadow hover:bg-gray-300 transition">⬅</button>
+        <button onclick="scrollRankingRight()" class="text-sm bg-gray-200 px-3 py-1 rounded shadow hover:bg-gray-300 transition ml-2">➡</button>
+      </div>
+      <div class="flex w-full relative">
+        <!-- 고정 열 -->
+        <div class="sticky left-0 z-20">
+          <table class="border-collapse text-sm bg-white border-r border-gray-300">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="px-2 py-1 w-[40px]"></th>
+                <th class="px-2 py-1 w-[100px]">팀</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for team in standing %}
+              <tr class="border-b {% if team.team == user.team %}bg-yellow-100 font-bold text-black{% endif %}">
+                <td class="px-2 py-1">{{ forloop.counter }}</td>
+                <td class="px-2 py-1 flex items-center justify-start gap-1">
+                  <img src="/static/cal/images/team/{{team.team}}.svg" class="w-5 h-5">
+                  {{ team.team|team_name }}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 스크롤 열 -->
+        <div id="ranking-scroll-wrapper" class="overflow-x-auto scroll-smooth w-full hide-scrollbar">
+          <table id="ranking-table" class="border-collapse text-sm w-full min-w-[1000px]">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="px-2 py-1">G</th>
+                <th class="px-2 py-1">승</th>
+                <th class="px-2 py-1">패</th>
+                <th class="px-2 py-1">무</th>
+                <th class="px-2 py-1">승률</th>
+                <th class="px-2 py-1">게임차</th>
+                <th class="px-2 py-1">연속</th>
+                <th class="px-2 py-1">홈</th>
+                <th class="px-2 py-1">원정</th>
+                <th class="px-2 py-1">이번주</th>
+                <th class="px-2 py-1">PO%</th>
+                <th class="px-2 py-1">최근</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for team in standing %}
+              <tr class="border-b {% if team.team == user.team %}bg-yellow-100 font-bold text-black{% endif %}">
+                <td class="px-2 py-1">{{ team.G }}</td>
+                <td class="px-2 py-1">{{ team.W }}</td>
+                <td class="px-2 py-1">{{ team.L }}</td>
+                <td class="px-2 py-1">{{ team.D }}</td>
+                <td class="px-2 py-1">{{ team.win_percent }}</td>
+                <td class="px-2 py-1">{{ team.games_behind }}</td>
+                <td class="px-2 py-1">{{ team.streak }}</td>
+                <td class="px-2 py-1">{{ team.home }}</td>
+                <td class="px-2 py-1">{{ team.away }}</td>
+                <td class="px-2 py-1">{{ team.weekly }}</td>
+                <td class="px-2 py-1 font-bold">{{ team.po_chance }}</td>
+                <td class="px-2 py-1">
+                  {% for result in team.recent_results %}
+                  <span class="{% if result == '승' %}text-blue-600{% elif result == '패' %}text-red-500{% else %}text-gray-500{% endif %} font-semibold text-sm mr-1">
+                    {{ result }}
+                  </span>
+                  {% endfor %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- ✅ 타자 순위 -->
+  <div id="hitters" class="tab-content hidden">
+    <div class="bg-white rounded-lg shadow p-6 mb-8 text-xs sm:text-sm">
+      <h2 class="text-xl font-bold mb-4 text-center">우리 팀 타자 순위</h2>
+        <div class="flex justify-end pr-4 mb-2 gap-2">
+        <button onclick="scrollHitter(-1)" class="text-sm bg-gray-200 px-3 py-1 rounded shadow hover:bg-gray-300 transition">⬅</button>
+        <button onclick="scrollHitter(1)" class="text-sm bg-gray-200 px-3 py-1 rounded shadow hover:bg-gray-300 transition">➡</button>
+        </div>
+      <div class="flex w-full relative">
+        <table class="border-collapse text-sm sticky left-0 z-10 bg-white border-r border-gray-300 sticky-table">
+          <thead class="bg-gray-100">
+            <tr><th class="px-2 py-1"></th><th class="px-2 py-1">이름</th></tr>
+          </thead>
+          <tbody>
+            {% for hitter in hitter_stats %}
+            <tr class="border-b">
+              <td class="px-2 py-1">{{ forloop.counter }}</td>
+              <td class="px-2 py-1 whitespace-nowrap">{{ hitter.player_name }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div id="hitter-scroll-wrapper" class="overflow-x-auto scroll-smooth w-full hide-scrollbar">
+          <table id="hitter-table" class="border-collapse text-sm min-w-[2000px] w-full">
+            <thead class="bg-gray-100">
+              <tr>
+                <th onclick="sortTable('hitter-table', 0)" class="px-2 py-1 cursor-pointer hover:underline">타율</th>
+                <th onclick="sortTable('hitter-table', 1)" class="px-2 py-1 cursor-pointer hover:underline">경기</th>
+                <th onclick="sortTable('hitter-table', 2)" class="px-2 py-1 cursor-pointer hover:underline">타석</th>
+                <th onclick="sortTable('hitter-table', 3)" class="px-2 py-1 cursor-pointer hover:underline">타수</th>
+                <th onclick="sortTable('hitter-table', 4)" class="px-2 py-1 cursor-pointer hover:underline">득점</th>
+                <th onclick="sortTable('hitter-table', 5)" class="px-2 py-1 cursor-pointer hover:underline">안타</th>
+                <th onclick="sortTable('hitter-table', 6)" class="px-2 py-1 cursor-pointer hover:underline">2루타</th>
+                <th onclick="sortTable('hitter-table', 7)" class="px-2 py-1 cursor-pointer hover:underline">3루타</th>
+                <th onclick="sortTable('hitter-table', 8)" class="px-2 py-1 cursor-pointer hover:underline">홈런</th>
+                <th onclick="sortTable('hitter-table', 9)" class="px-2 py-1 cursor-pointer hover:underline">루타</th>
+                <th onclick="sortTable('hitter-table', 10)" class="px-2 py-1 cursor-pointer hover:underline">타점</th>
+                <th onclick="sortTable('hitter-table', 11)" class="px-2 py-1 cursor-pointer hover:underline">희생타</th>
+                <th onclick="sortTable('hitter-table', 12)" class="px-2 py-1 cursor-pointer hover:underline">희생플라이</th>
+                <th onclick="sortTable('hitter-table', 13)" class="px-2 py-1 cursor-pointer hover:underline">볼넷</th>
+                <th onclick="sortTable('hitter-table', 14)" class="px-2 py-1 cursor-pointer hover:underline">사구</th>
+                <th onclick="sortTable('hitter-table', 15)" class="px-2 py-1 cursor-pointer hover:underline">몸에 맞는 공</th>
+                <th onclick="sortTable('hitter-table', 16)" class="px-2 py-1 cursor-pointer hover:underline">삼진</th>
+                <th onclick="sortTable('hitter-table', 17)" class="px-2 py-1 cursor-pointer hover:underline">병살타</th>
+                <th onclick="sortTable('hitter-table', 18)" class="px-2 py-1 cursor-pointer hover:underline">장타율</th>
+                <th onclick="sortTable('hitter-table', 19)" class="px-2 py-1 cursor-pointer hover:underline">출루율</th>
+                <th onclick="sortTable('hitter-table', 20)" class="px-2 py-1 cursor-pointer hover:underline">OPS</th>
+                <th onclick="sortTable('hitter-table', 21)" class="px-2 py-1 cursor-pointer hover:underline">멀티히트</th>
+                <th onclick="sortTable('hitter-table', 22)" class="px-2 py-1 cursor-pointer hover:underline">득점권 타율</th>
+                <th onclick="sortTable('hitter-table', 23)" class="px-2 py-1 cursor-pointer hover:underline">PH_BA</th>
+                <th onclick="sortTable('hitter-table', 24)" class="px-2 py-1 cursor-pointer hover:underline">도루 시도</th>
+                <th onclick="sortTable('hitter-table', 25)" class="px-2 py-1 cursor-pointer hover:underline">도루</th>
+                <th onclick="sortTable('hitter-table', 26)" class="px-2 py-1 cursor-pointer hover:underline">도루 실패</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for hitter in hitter_stats %}
+              <tr class="border-b">
+                <td class="px-2 py-1">{{ hitter.AVG }}</td>
+                <td class="px-2 py-1">{{ hitter.G }}</td>
+                <td class="px-2 py-1">{{ hitter.PA }}</td>
+                <td class="px-2 py-1">{{ hitter.AB }}</td>
+                <td class="px-2 py-1">{{ hitter.R }}</td>
+                <td class="px-2 py-1">{{ hitter.H }}</td>
+                <td class="px-2 py-1">{{ hitter.H_2B }}</td>
+                <td class="px-2 py-1">{{ hitter.H_3B }}</td>
+                <td class="px-2 py-1">{{ hitter.HR }}</td>
+                <td class="px-2 py-1">{{ hitter.TB }}</td>
+                <td class="px-2 py-1">{{ hitter.RBI }}</td>
+                <td class="px-2 py-1">{{ hitter.SAC }}</td>
+                <td class="px-2 py-1">{{ hitter.SF }}</td>
+                <td class="px-2 py-1">{{ hitter.BB }}</td>
+                <td class="px-2 py-1">{{ hitter.IBB }}</td>
+                <td class="px-2 py-1">{{ hitter.HBP }}</td>
+                <td class="px-2 py-1">{{ hitter.SO }}</td>
+                <td class="px-2 py-1">{{ hitter.GDP }}</td>
+                <td class="px-2 py-1">{{ hitter.SLG }}</td>
+                <td class="px-2 py-1">{{ hitter.OBP }}</td>
+                <td class="px-2 py-1">{{ hitter.OPS }}</td>
+                <td class="px-2 py-1">{{ hitter.MH }}</td>
+                <td class="px-2 py-1">{{ hitter.RISP }}</td>
+                <td class="px-2 py-1">{{ hitter.PH_BA }}</td>
+                <td class="px-2 py-1">{{ hitter.SBA }}</td>
+                <td class="px-2 py-1">{{ hitter.SB }}</td>
+                <td class="px-2 py-1">{{ hitter.CS }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ✅ 투수 순위 -->
+<div id="pitchers" class="tab-content hidden">
+    <div class="bg-white rounded-lg shadow p-6 mb-8 text-xs sm:text-sm">
+      <h2 class="text-xl font-bold mb-4 text-center">우리 팀 투수 순위</h2>
+        <div class="flex justify-end pr-4 mb-2 gap-2">
+        <button onclick="scrollPitcher(-1)" class="text-sm bg-gray-200 px-3 py-1 rounded shadow hover:bg-gray-300 transition">⬅</button>
+        <button onclick="scrollPitcher(1)" class="text-sm bg-gray-200 px-3 py-1 rounded shadow hover:bg-gray-300 transition">➡</button>
+        </div>
+      <div class="flex w-full relative">
+        <table class="border-collapse text-sm sticky left-0 z-10 bg-white border-r border-gray-300 sticky-table">
+          <thead class="bg-gray-100">
+            <tr><th class="px-2 py-1"></th><th class="px-2 py-1">이름</th></tr>
+          </thead>
+          <tbody>
+            {% for pitcher in pitcher_stats %}
+            <tr class="border-b">
+              <td class="px-2 py-1">{{ forloop.counter }}</td>
+              <td class="px-2 py-1 whitespace-nowrap">{{ pitcher.player_name }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div id="pitcher-scroll-wrapper" class="overflow-x-auto scroll-smooth w-full hide-scrollbar">
+          <table id="pitcher-table" class="border-collapse text-sm min-w-[2000px] w-full">
+            <thead class="bg-gray-100">
+              <tr>
+                <th onclick="sortTable('pitcher-table', 0)" class="px-2 py-1 cursor-pointer hover:underline">평균자책점</th>
+                <th onclick="sortTable('pitcher-table', 1)" class="px-2 py-1 cursor-pointer hover:underline">경기</th>
+                <th onclick="sortTable('pitcher-table', 2)" class="px-2 py-1 cursor-pointer hover:underline">완투</th>
+                <th onclick="sortTable('pitcher-table', 3)" class="px-2 py-1 cursor-pointer hover:underline">완봉</th>
+                <th onclick="sortTable('pitcher-table', 4)" class="px-2 py-1 cursor-pointer hover:underline">승</th>
+                <th onclick="sortTable('pitcher-table', 5)" class="px-2 py-1 cursor-pointer hover:underline">패</th>
+                <th onclick="sortTable('pitcher-table', 6)" class="px-2 py-1 cursor-pointer hover:underline">세이브</th>
+                <th onclick="sortTable('pitcher-table', 7)" class="px-2 py-1 cursor-pointer hover:underline">홀드</th>
+                <th onclick="sortTable('pitcher-table', 8)" class="px-2 py-1 cursor-pointer hover:underline">승률</th>
+                <th onclick="sortTable('pitcher-table', 9)" class="px-2 py-1 cursor-pointer hover:underline">상대타자수</th>
+                <th onclick="sortTable('pitcher-table', 10)" class="px-2 py-1 cursor-pointer hover:underline">투구수</th>
+                <th onclick="sortTable('pitcher-table', 11)" class="px-2 py-1 cursor-pointer hover:underline">이닝</th>
+                <th onclick="sortTable('pitcher-table', 12)" class="px-2 py-1 cursor-pointer hover:underline">피안타</th>
+                <th onclick="sortTable('pitcher-table', 13)" class="px-2 py-1 cursor-pointer hover:underline">2루타</th>
+                <th onclick="sortTable('pitcher-table', 14)" class="px-2 py-1 cursor-pointer hover:underline">3루타</th>
+                <th onclick="sortTable('pitcher-table', 15)" class="px-2 py-1 cursor-pointer hover:underline">피홈런</th>
+                <th onclick="sortTable('pitcher-table', 16)" class="px-2 py-1 cursor-pointer hover:underline">희생타</th>
+                <th onclick="sortTable('pitcher-table', 17)" class="px-2 py-1 cursor-pointer hover:underline">희생플라이</th>
+                <th onclick="sortTable('pitcher-table', 18)" class="px-2 py-1 cursor-pointer hover:underline">볼넷</th>
+                <th onclick="sortTable('pitcher-table', 19)" class="px-2 py-1 cursor-pointer hover:underline">고의사구</th>
+                <th onclick="sortTable('pitcher-table', 20)" class="px-2 py-1 cursor-pointer hover:underline">삼진</th>
+                <th onclick="sortTable('pitcher-table', 21)" class="px-2 py-1 cursor-pointer hover:underline">폭투</th>
+                <th onclick="sortTable('pitcher-table', 22)" class="px-2 py-1 cursor-pointer hover:underline">보크</th>
+                <th onclick="sortTable('pitcher-table', 23)" class="px-2 py-1 cursor-pointer hover:underline">실점</th>
+                <th onclick="sortTable('pitcher-table', 24)" class="px-2 py-1 cursor-pointer hover:underline">자책점</th>
+                <th onclick="sortTable('pitcher-table', 25)" class="px-2 py-1 cursor-pointer hover:underline">블론세이브</th>
+                <th onclick="sortTable('pitcher-table', 26)" class="px-2 py-1 cursor-pointer hover:underline">WHIP</th>
+                <th onclick="sortTable('pitcher-table', 27)" class="px-2 py-1 cursor-pointer hover:underline">피안타율</th>
+                <th onclick="sortTable('pitcher-table', 28)" class="px-2 py-1 cursor-pointer hover:underline">QS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for pitcher in pitcher_stats %}
+              <tr class="border-b">
+                <td class="px-2 py-1">{{ pitcher.ERA }}</td>
+                <td class="px-2 py-1">{{ pitcher.G }}</td>
+                <td class="px-2 py-1">{{ pitcher.CG }}</td>
+                <td class="px-2 py-1">{{ pitcher.SHO }}</td>
+                <td class="px-2 py-1">{{ pitcher.W }}</td>
+                <td class="px-2 py-1">{{ pitcher.L }}</td>
+                <td class="px-2 py-1">{{ pitcher.SV }}</td>
+                <td class="px-2 py-1">{{ pitcher.HLD }}</td>
+                <td class="px-2 py-1">{{ pitcher.WPCT }}</td>
+                <td class="px-2 py-1">{{ pitcher.TBF }}</td>
+                <td class="px-2 py-1">{{ pitcher.NP }}</td>
+                <td class="px-2 py-1">{{ pitcher.IP }}</td>
+                <td class="px-2 py-1">{{ pitcher.H }}</td>
+                <td class="px-2 py-1">{{ pitcher.H_2B }}</td>
+                <td class="px-2 py-1">{{ pitcher.H_3B }}</td>
+                <td class="px-2 py-1">{{ pitcher.HR }}</td>
+                <td class="px-2 py-1">{{ pitcher.SAC }}</td>
+                <td class="px-2 py-1">{{ pitcher.SF }}</td>
+                <td class="px-2 py-1">{{ pitcher.BB }}</td>
+                <td class="px-2 py-1">{{ pitcher.IBB }}</td>
+                <td class="px-2 py-1">{{ pitcher.SO }}</td>
+                <td class="px-2 py-1">{{ pitcher.WP }}</td>
+                <td class="px-2 py-1">{{ pitcher.BK }}</td>
+                <td class="px-2 py-1">{{ pitcher.R }}</td>
+                <td class="px-2 py-1">{{ pitcher.ER }}</td>
+                <td class="px-2 py-1">{{ pitcher.BSV }}</td>
+                <td class="px-2 py-1">{{ pitcher.WHIP }}</td>
+                <td class="px-2 py-1">{{ pitcher.AVG }}</td>
+                <td class="px-2 py-1">{{ pitcher.QS }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ 스타일 및 스크립트 -->
+<style>
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
+<script>
+  function showTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(div => div.classList.add('hidden'));
+    document.getElementById(tabId).classList.remove('hidden');
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+
+  function scrollRankingRight() {
+    const wrapper = document.getElementById('ranking-scroll-wrapper');
+    const visibleWidth = wrapper.clientWidth;
+    wrapper.scrollLeft += visibleWidth * 0.7;
+  }
+  function scrollRankingLeft() {
+    const wrapper = document.getElementById('ranking-scroll-wrapper');
+    const visibleWidth = wrapper.clientWidth;
+    wrapper.scrollLeft -= visibleWidth * 0.7;
+  }
+  
+  function scrollHitter(direction) {
+    const wrapper = document.getElementById('hitter-scroll-wrapper');
+    const amount = wrapper.clientWidth * 0.6;
+    wrapper.scrollLeft += amount * direction;
+  }
+
+  function scrollPitcher(direction) {
+    const wrapper = document.getElementById('pitcher-scroll-wrapper');
+    const amount = wrapper.clientWidth * 0.6;
+    wrapper.scrollLeft += amount * direction;
+  }
+  
+  const sortDirections = {};
+
+  function sortTable(tableId, colIndex) {
+    const table = document.getElementById(tableId);
+    const tbody = table.querySelector("tbody");
+    const fixedTable = table.closest(".relative").querySelector("table.sticky");
+    const fixedTbody = fixedTable.querySelector("tbody");
+
+    const key = `${tableId}-${colIndex}`;
+    sortDirections[key] = !sortDirections[key];
+
+    const dataRows = Array.from(tbody.rows);
+    const fixedRows = Array.from(fixedTbody.rows);
+
+    // 정렬할 행들 쌍 만들기
+    const rowPairs = dataRows.map((row, i) => {
+      return {
+        dataRow: row,
+        fixedRow: fixedRows[i],
+        sortValue: row.cells[colIndex].innerText.trim()
+      };
+    });
+
+    rowPairs.sort((a, b) => {
+      const A = a.sortValue;
+      const B = b.sortValue;
+      const numA = parseFloat(A.replace(/[^0-9.\-]/g, ""));
+      const numB = parseFloat(B.replace(/[^0-9.\-]/g, ""));
+      const isNumeric = !isNaN(numA) && !isNaN(numB);
+
+      if (isNumeric) {
+        return sortDirections[key] ? numA - numB : numB - numA;
+      } else {
+        return sortDirections[key] ? A.localeCompare(B) : B.localeCompare(A);
+      }
+    });
+
+    // tbody 재정렬 및 순위 재지정
+    rowPairs.forEach((pair, idx) => {
+      tbody.appendChild(pair.dataRow);
+      fixedTbody.appendChild(pair.fixedRow);
+      // 왼쪽 순위 열 (#) 값 재설정
+      const rankCell = pair.fixedRow.querySelector("td");
+      if (rankCell) rankCell.textContent = idx + 1;
+    });
+  }
+</script>
+
+{% endblock %}
