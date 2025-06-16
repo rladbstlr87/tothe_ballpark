@@ -2,10 +2,6 @@
 {% load static %}
 {% load custom_filters %}
 
-{% block styles %}
-  <link rel="stylesheet" href="{% static 'cal/css/calendar.css' %}">
-{% endblock %}
-
 {% block body %}
 
 <!-- 달력 테이블 -->
@@ -19,7 +15,7 @@
             <a href="?{{ prev_month }}" class="nav-link">
               <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Prev" class="w-16 h-16 rotate-90 inline">
             </a>
-            <span>{{ cal_data.year }}년 {{ cal_data.month }}월</span>
+            <span class="cal-title">{{ cal_data.year }}년 {{ cal_data.month }}월</span>
             <!-- 다음 달 버튼 -->
             <a href="?{{ next_month }}" class="nav-link">
               <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Next" class="w-16 h-16 -rotate-90 inline">
