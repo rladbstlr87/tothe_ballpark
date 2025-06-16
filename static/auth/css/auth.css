@@ -1,3 +1,8 @@
+html, body {
+  height: auto;
+  overflow: auto;
+}
+
 /* ----------------------------- */
 /* ✅ 전체 레이아웃 및 배경 스타일 */
 /* ----------------------------- */
@@ -6,17 +11,9 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  height: 120vh;
+  height: 100vh;
   overflow: hidden;
-
-  background-image: url('/static/auth/images/cal-paper.jpg');
-  background-color: rgba(255, 255, 255, 0.500);
-  background-blend-mode: lighten;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
 }
-
 
 /* ----------------------------- */
 /* ✅ 로그인/회원가입/아이디찾기 폼 기본 상태 */
@@ -30,7 +27,8 @@
 
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: justify-start;
+  padding-top: 40px;
 
   /* 처음에는 비활성화 상태 */
   opacity: 0;
@@ -274,8 +272,18 @@ p a:hover {
 /* ----------------------------- */
 @media (max-width: 768px) {
   .root {
+    display: flex;
+    justify-content: center;
     height: 100vh;
+    overflow: hidden;
   }
+    html, body {
+    overflow: hidden; /* 여기서도 막아야 함 */
+  }
+  .form {
+  margin-top: -40px; /* 원하는 값으로 조정 */
+  }
+  
   /* 마스코트 크기 축소 및 재배치 */
   .dusan-mascot-container,
   .samsung-mascot-container,

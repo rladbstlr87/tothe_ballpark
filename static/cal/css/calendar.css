@@ -1,29 +1,43 @@
+html, body {
+  height: 100%;
+  padding-top: 60px;
+}
+
+/* ✅ 배경이 전체 높이에 따라 늘어나는 안정적인 구조 */
 .bg-paper {
   position: relative;
   z-index: 0;
   overflow: auto;
-}
-.bg-paper::after {
-  content: '';
-  position: absolute;
+
   width: 100%;
-  top: 0;
-  bottom: 0;
-  z-index: -2;
-}
-.bg-paper::before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  top: 0;
-  bottom: 0;
+  min-height: 100vh;
+
+  /* 👉 배경을 .bg-paper 자체에 줌 */
   background-image: url('/static/cal/images/bg/cal-paper.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: rgba(255, 255, 255, 0.726); /* 반투명 흰색 덧입히기 */
-  background-blend-mode: lighten; /* 밝게 혼합 */
+  background-color: rgba(255, 255, 255, 0.726); /* 반투명 흰색 덮기 */
+  background-blend-mode: lighten;
+}
+
+/* 👉 ::before, ::after는 투명한 그림자나 효과가 필요할 때만 유지 */
+.bg-paper::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
   z-index: -1;
+
+  /* 필요하면 여기에 추가적인 효과 (예: 텍스처 오버레이) 가능 */
+}
+
+.bg-paper::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: -2;
+
+  /* 필요 없으면 이거 삭제 가능 */
 }
 
 .calendar-table {
