@@ -98,8 +98,6 @@
                 </div>
             </div>
 
-
-
             <div id="lineups" class="w-full grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div class="pr-2">
                     {% for lineup in user_lineup %}
@@ -222,66 +220,78 @@
         {% endif %}
         <div class="bg-[url('/static/cal/images/bg/peeledpaper1.png')] bg-repeat-y bg-contain w-[30px] lg:w-[50px] -translate-x-0 lg:-translate-x-8 min-h-full"></div>
     </div>
-<script>
-// 모달 열기 이벤트
-  document.querySelectorAll('[data-modal-target]').forEach(el => {
-      el.addEventListener('click', () => {
-          const playerName = el.getAttribute('data-player-name');
-          const playerId = el.getAttribute('data-player-id');
-          const type = el.getAttribute('data-type');
+    <script>
+    // 모달 열기 이벤트
+    document.querySelectorAll('[data-modal-target]').forEach(el => {
+        el.addEventListener('click', () => {
+            const playerName = el.getAttribute('data-player-name');
+            const playerId = el.getAttribute('data-player-id');
+            const type = el.getAttribute('data-type');
 
-          document.getElementById('modal-player-name').textContent = playerName;
-          document.getElementById('modal-player-img').src = `https://sports-phinf.pstatic.net/player/kbo/default/${playerId}.png?type=w150`;
+            document.getElementById('modal-player-name').textContent = playerName;
+            document.getElementById('modal-player-img').src = `https://sports-phinf.pstatic.net/player/kbo/default/${playerId}.png?type=w150`;
 
-          if (type === 'pitcher') {
-              document.getElementById('modal-batter-stats').classList.add('hidden');
-              document.getElementById('modal-pitcher-stats').classList.remove('hidden');
-              const fields = ['era', 'g', 'w', 'l', 'sv', 'hld', 'whip', 'ip', 'so', 'bb', 'r', 'er', 'avg'];
-              fields.forEach(f => {
-                const val = el.getAttribute(`data-${f}`) || '-';
-                const td = document.getElementById(`modal-pitcher-${f}`);
-                if (td) td.textContent = val;
-              });
-          } else {
-              document.getElementById('modal-pitcher-stats').classList.add('hidden');
-              document.getElementById('modal-batter-stats').classList.remove('hidden');
-              const fields = ['avg', 'g', 'pa', 'ab', 'r', 'h', 'hr', 'rbi', 'bb', 'so', 'obp', 'slg', 'ops', 'sb', 'cs'];
-              fields.forEach(f => {
-                const val = el.getAttribute(`data-${f}`) || '-';
-                const td = document.getElementById(`modal-player-${f}`);
-                if (td) td.textContent = val;
-              });
-          }
-          document.getElementById('modal-face').classList.remove('hidden');
-      });
-  });
+            if (type === 'pitcher') {
+                document.getElementById('modal-batter-stats').classList.add('hidden');
+                document.getElementById('modal-pitcher-stats').classList.remove('hidden');
+                const fields = ['era', 'g', 'w', 'l', 'sv', 'hld', 'whip', 'ip', 'so', 'bb', 'r', 'er', 'avg'];
+                fields.forEach(f => {
+                    const val = el.getAttribute(`data-${f}`) || '-';
+                    const td = document.getElementById(`modal-pitcher-${f}`);
+                    if (td) td.textContent = val;
+                });
+            } else {
+                document.getElementById('modal-pitcher-stats').classList.add('hidden');
+                document.getElementById('modal-batter-stats').classList.remove('hidden');
+                const fields = ['avg', 'g', 'pa', 'ab', 'r', 'h', 'hr', 'rbi', 'bb', 'so', 'obp', 'slg', 'ops', 'sb', 'cs'];
+                fields.forEach(f => {
+                    const val = el.getAttribute(`data-${f}`) || '-';
+                    const td = document.getElementById(`modal-player-${f}`);
+                    if (td) td.textContent = val;
+                });
+            }
+            document.getElementById('modal-face').classList.remove('hidden');
+        });
+    });
 
-  document.getElementById('modal-close').addEventListener('click', () => {
-      document.getElementById('modal-face').classList.add('hidden');
-  });
+    document.getElementById('modal-close').addEventListener('click', () => {
+        document.getElementById('modal-face').classList.add('hidden');
+    });
 
-  document.getElementById('attendance-btn').addEventListener('click', () => {
-      fetch("{% url 'cal:attendance' game.id %}", {
-          method: 'POST',
-          headers: {
-              'X-CSRFToken': '{{ csrf_token }}',
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-          },
-          body: JSON.stringify({})
-      })
-      .then(res => res.json())
-      .then(data => {
-          const icon = document.getElementById('attendance-icon');
-          icon.src = data.attended ? "{% static 'cal/images/icon/watch.png' %}" : "{% static 'cal/images/icon/notwatch.png' %}";
-          icon.alt = data.attended ? "간 경기" : "안간 경기";
-      })
-      .catch(err => {
-          console.error('출석 등록 실패:', err);
-          alert('출석 등록 중 문제가 발생했습니다.');
-      });
-  });
-    // ✅ 범례 토글 기능
+    // 바깥 영역 클릭 시 모달 닫기
+    document.getElementById('modal-face').addEventListener('click', () => {
+        document.getElementById('modal-face').classList.add('hidden');
+    });
+
+    // 모달 내부 클릭 시 닫히지 않게 함
+    document.querySelector('#modal-face .rounded-lg').addEventListener('click', (event) => {
+        event.stopPropagation();
+    });
+
+    // 출석 버튼 클릭
+    document.getElementById('attendance-btn').addEventListener('click', () => {
+        fetch("{% url 'cal:attendance' game.id %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({})
+        })
+        .then(res => res.json())
+        .then(data => {
+            const icon = document.getElementById('attendance-icon');
+            icon.src = data.attended ? "{% static 'cal/images/icon/watch.png' %}" : "{% static 'cal/images/icon/notwatch.png' %}";
+            icon.alt = data.attended ? "간 경기" : "안간 경기";
+        })
+        .catch(err => {
+            console.error('출석 등록 실패:', err);
+            alert('출석 등록 중 문제가 발생했습니다.');
+        });
+    });
+
+    // 범례 토글 기능
     const legendBtn = document.getElementById('toggle-legend-btn');
     const legendBox = document.getElementById('legend-box');
     const legendText = document.getElementById('legend-text');
@@ -289,15 +299,10 @@
 
     legendBtn.addEventListener('click', () => {
         const isHidden = legendBox.classList.toggle('hidden');
-
-        // 텍스트 변경
         legendText.textContent = isHidden ? '스탯 보기' : '스탯 닫기';
-
-        // 아이콘 아래/위 방향 토글
         legendIcon.innerHTML = isHidden
-            ? `<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />` // ▼
-            : `<path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />`; // ▲
+            ? `<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />`
+            : `<path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />`;
     });
-
-</script>
+    </script>
 {% endblock %}

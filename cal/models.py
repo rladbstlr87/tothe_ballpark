@@ -49,9 +49,6 @@ class Hitter(models.Model):
     SBA = models.PositiveIntegerField()  # 도루 시도
     SB = models.PositiveIntegerField()  # 도루 성공
     CS = models.PositiveIntegerField()  # 도루 실패
-    SB_percent = models.FloatField()  # 도루 성공률
-    OOB = models.PositiveIntegerField()  # 주루사 (Out On Base)
-    PKO = models.PositiveIntegerField()  # 견제사 (Pick Off)
     power = models.FloatField()  # 파워 (평가값일 경우 Integer로)
     contact = models.FloatField()  # 컨택트
     batting_eye = models.FloatField()  # 선구안
@@ -92,7 +89,6 @@ class Pitcher(models.Model):
     IBB = models.PositiveIntegerField()  # 고의4구
     WP = models.PositiveIntegerField()  # 폭투
     BK = models.PositiveIntegerField()  # 보크
-    birthday = models.DateField(max_length = 100)  # 생일
     speed = models.IntegerField()  # 구속
     stamina = models.FloatField()  # 체력
     control = models.FloatField()  # 제구력

@@ -111,7 +111,7 @@
     <!-- Mobile 메뉴 -->
     <div class="hidden" id="mobile-menu">
         <div class="space-y-1 px-2 pt-2 pb-3">
-            <a href="{% url 'index' %}" class="block rounded-md bg-gray-900/50 px-3 py-2 text-white">ㄴ홈</a>
+            <a href="{% url 'index' %}" class="block rounded-md bg-gray-900/50 px-3 py-2 text-white">홈</a>
             <a href="{% url 'cal:calendar' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">직돌이네 일정</a>
             <a href="{% url 'posts:post_index' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">직돌이네 응원석</a>
             {% if user.is_authenticated %}

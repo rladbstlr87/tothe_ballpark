@@ -39,4 +39,4 @@ class Command(BaseCommand):
                 if created:
                     created_count += 1
 
-            self.stdout.write(self.style.SUCCESS(f"🍽️ {created_count}개 식당 추가 완료 / {skipped}개 누락 / 총 {total}건 처리 완료"))
+            self.stdout.write(self.style.SUCCESS(f"{created_count}개 식당 추가 완료 / {skipped}개 누락 / 총 {total}건 처리 완료"))

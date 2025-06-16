@@ -1,30 +1,38 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_filters %}
+
 {% block styles %}
-<link rel="stylesheet" href="{% static 'cal/css/calendar.css' %}">
+  <link rel="stylesheet" href="{% static 'cal/css/calendar.css' %}">
 {% endblock %}
+
 {% block body %}
 
+<!-- 달력 테이블 -->
 <div class="w-full flex justify-center z-10 relative">
   <table class="calendar-table">
     <thead>
       <tr>
         <th colspan="7" class="month-header">
           <div class="flex justify-around items-center">
+            <!-- 이전 달 버튼 -->
             <a href="?{{ prev_month }}" class="nav-link">
               <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Prev" class="w-16 h-16 rotate-90 inline">
             </a>
             <span>{{ cal_data.year }}년 {{ cal_data.month }}월</span>
+            <!-- 다음 달 버튼 -->
             <a href="?{{ next_month }}" class="nav-link">
               <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Next" class="w-16 h-16 -rotate-90 inline">
             </a>
           </div>
         </th>
       </tr>
+      <!-- 요일 헤더 -->
       <tr>
         {% for day_name in cal_data.week_header %}
           <th class="{% if forloop.counter0 == 0 %}relative mon overflow-visible{% endif %} text-center w-12 h-12 align-middle">
             {% if forloop.counter0 == 0 %}
+              <!-- ⚾ 월요일 특별 배경 -->
               <div class="absolute top-1/2 left-1/2 -translate-x-6/7 -translate-y-3/7 z-0 pointer-events-none w-[300px] h-[300px] max-sm:hidden">
                 <img src="/static/cal/images/bg/mon_alert.svg" alt="동그라미" class="w-full h-full">
                 <img src="{% static 'cal/images/team/' %}{{ user.team }}-yeah.png" alt="동그라미" class="mt-70 w-[220px] h-[80px] -rotate-15 z-0" />
@@ -36,6 +44,7 @@
       </tr>
     </thead>
     <tbody>
+      <!-- 주간 반복 -->
       {% for week in cal_data.weeks %}
         <tr>
           {% for day in week %}
@@ -44,29 +53,29 @@
             {% else %}
               <td class="day-cell rounded-t-md">
                 <span class="day-number relative z-10">{{ day.day }}</span>
+                <!-- 해당 날짜의 경기 정보 -->
                 {% for game in day.games %}
                   {% if game.result == '취소' %}
+                    <!-- 취소된 경기 -->
                     <div class="game-info{% if game.id in user_attendance_game_ids %} highlight-{{ user.team }}{% endif %}">
                       <div class="game-cancel-wrapper cancel">
                         <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}">
                       </div>
                       <span class="game-time">{{ game.time }}</span>
                       {% if game.result %}
-                        <span class="game-result
-                          {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% elif game.result == '취소' %}cancel{% endif %}">
+                        <span class="game-result {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% elif game.result == '취소' %}cancel{% endif %}">
                           {{ game.result }}
                         </span>
                       {% endif %}
-                      
                     </div>
                   {% else %}
+                    <!-- 일반 경기 -->
                     <a href="{% url 'cal:lineup' game.id %}">
                       <div class="game-info{% if game.id in user_attendance_game_ids %} highlight-{{ user.team }}{% endif %}">
                         <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}">
                         <span class="game-time">{{ game.time }}</span>
                         {% if game.result %}
-                          <span class="game-result
-                            {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% elif game.result == '취소' %}cancel{% endif %}">
+                          <span class="game-result {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% elif game.result == '취소' %}cancel{% endif %}">
                             {{ game.result }}
                           </span>
                         {% endif %}
@@ -82,5 +91,59 @@
     </tbody>
   </table>
 </div>
+
+<!-- KBO 순위표 -->
+<div class="w-full max-w-4xl mx-auto mb-8 bg-white rounded-lg shadow p-6">
+  <h2 class="text-xl font-bold mb-4 text-center">KBO 순위표</h2>
+  <div class="overflow-x-auto">
+    <table class="w-full text-center border-collapse text-sm md:text-base">
+      <thead>
+        <tr class="bg-gray-200 text-gray-700">
+          <th class="py-2 px-2"></th>
+          <th class="py-2 px-2">팀</th>
+          <th class="py-2 px-2">G</th>
+          <th class="py-2 px-2">승</th>
+          <th class="py-2 px-2">패</th>
+          <th class="py-2 px-2">무</th>
+          <th class="py-2 px-2">승률</th>
+          <th class="py-2 px-2">게임차</th>
+          <th class="py-2 px-2">연속</th>
+          <th class="py-2 px-2">홈</th>
+          <th class="py-2 px-2">원정</th>
+          <th class="py-2 px-2">이번주 기록</th>
+          <th class="py-2 px-2">PO%</th>
+          <th class="py-2 px-2">최근</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for team in standings %}
+          <tr class="border-b hover:bg-gray-50 {% if team.team == user.team %}bg-yellow-100 font-bold text-black{% endif %}">
+            <td class="py-2">{{ forloop.counter }}</td>
+            <td class="py-2 font-semibold flex items-center justify-center gap-1">
+              <img src="/static/cal/images/team/{{team.team}}.svg" class="w-6 h-6">
+              {{ team.team|team_name }}
+            </td>
+            <td class="py-2">{{ team.G }}</td>
+            <td class="py-2">{{ team.W }}</td>
+            <td class="py-2">{{ team.L }}</td>
+            <td class="py-2">{{ team.D }}</td>
+            <td class="py-2">{{ team.win_percent }}</td>
+            <td class="py-2">{{ team.games_behind }}</td>
+            <td class="py-2">{{ team.streak }}</td>
+            <td class="py-2">{{ team.home }}</td>
+            <td class="py-2">{{ team.away }}</td>
+            <td class="py-2">{{ team.weekly }}</td>
+            <td class="py-2 font-bold">{{ team.po_chance }}</td>
+            <td class="py-2">
+              {% for result in team.recent_results %}
+                <span class="{% if result == '승' %}text-blue-600{% elif result == '패' %}text-red-500{% else %}text-gray-500{% endif %} font-semibold text-sm mr-1">
+                  {{ result }}
+                </span>
+              {% endfor %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+
 
 {% endblock %}

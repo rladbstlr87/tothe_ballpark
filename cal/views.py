@@ -10,6 +10,135 @@ from .utils import Calendar
 import calendar
 import random
 
+from collections import defaultdict
+def calculate_team_standings():
+    HOME_STADIUMS = {
+        'HT': ['광주'],
+        'LG': ['잠실'],
+        'OB': ['잠실'],
+        'SK': ['문학'],
+        'NC': ['창원', '울산'],
+        'HH': ['대전(신)'],
+        'WO': ['고척'],
+        'LT': ['사직'],
+        'SS': ['대구', '포항'],
+        'KT': ['수원'],
+    }
+
+    standings = defaultdict(lambda: {
+        'W': 0, 'L': 0, 'D': 0,
+        'home_W': 0, 'home_L': 0,
+        'away_W': 0, 'away_L': 0,
+        'weekly_W': 0, 'weekly_L': 0, 'weekly_D': 0,
+        'games': []
+    })
+
+    today = date.today()
+    week_start = today - timedelta(days=today.weekday())
+    week_end = week_start + timedelta(days=6)
+
+    games = Game.objects.exclude(team1_result='').exclude(team2_result='').order_by('date', 'time')
+
+    for game in games:
+        t1, t2 = game.team1, game.team2
+        r1, r2 = game.team1_result, game.team2_result
+        stadium = game.stadium
+        date_played = game.date
+
+        if stadium == '잠실':
+            t1_home = False
+            t2_home = True
+        else:
+            t1_home = stadium in HOME_STADIUMS.get(t1, [])
+            t2_home = stadium in HOME_STADIUMS.get(t2, [])
+
+        if r1 in ['승', '패', '무']:
+            standings[t1]['games'].append((date_played, r1))
+        if r2 in ['승', '패', '무']:
+            standings[t2]['games'].append((date_played, r2))
+
+        if r1 == '승':
+            standings[t1]['W'] += 1
+            standings[t2]['L'] += 1
+            if t1_home: standings[t1]['home_W'] += 1
+            else: standings[t1]['away_W'] += 1
+            if t2_home: standings[t2]['home_L'] += 1
+            else: standings[t2]['away_L'] += 1
+        elif r1 == '패':
+            standings[t1]['L'] += 1
+            standings[t2]['W'] += 1
+            if t1_home: standings[t1]['home_L'] += 1
+            else: standings[t1]['away_L'] += 1
+            if t2_home: standings[t2]['home_W'] += 1
+            else: standings[t2]['away_W'] += 1
+        elif r1 == '무':
+            standings[t1]['D'] += 1
+            standings[t2]['D'] += 1
+
+        if week_start <= date_played <= week_end:
+            if r1 == '승': standings[t1]['weekly_W'] += 1
+            elif r1 == '패': standings[t1]['weekly_L'] += 1
+            elif r1 == '무': standings[t1]['weekly_D'] += 1
+
+            if r2 == '승': standings[t2]['weekly_W'] += 1
+            elif r2 == '패': standings[t2]['weekly_L'] += 1
+            elif r2 == '무': standings[t2]['weekly_D'] += 1
+
+    team_data = []
+    for team, record in standings.items():
+        total_games = record['W'] + record['L'] + record['D']
+        win_percent = round(record['W'] / (record['W'] + record['L']), 3) if (record['W'] + record['L']) > 0 else 0
+        recent = [r for _, r in record['games'][-5:]]
+        last_10 = [r for _, r in record['games'][-10:]]
+
+        streak = "-"
+        if recent:
+            current = recent[-1]
+            count = 1
+            for r in reversed(recent[:-1]):
+                if r == current:
+                    count += 1
+                else:
+                    break
+            streak = f"{count}{current}"
+
+        recent_10_win = sum(1 for r in last_10 if r == '승')
+        recent_10_games = sum(1 for r in last_10 if r in ['승', '패'])
+        recent_10_percent = recent_10_win / recent_10_games if recent_10_games > 0 else 0
+
+        po_score = 0.7 * win_percent + 0.3 * recent_10_percent
+        po_chance = round(po_score * 100)
+
+        team_data.append({
+            'team': team,
+            'G': total_games,
+            'W': record['W'],
+            'L': record['L'],
+            'D': record['D'],
+            'win_percent': win_percent,
+            'home': f"{record['home_W']}-{record['home_L']}",
+            'away': f"{record['away_W']}-{record['away_L']}",
+            'weekly': f"{record['weekly_W']}-{record['weekly_L']}-{record['weekly_D']}",
+            'streak': streak,
+            'recent_results': recent,
+            'games_behind': None,
+            'po_chance': f"{po_chance}%",
+        })
+
+    team_data.sort(key=lambda x: x['win_percent'], reverse=True)
+
+    first = team_data[0]
+    for team in team_data:
+        if team == first:
+            team['games_behind'] = "-"
+        else:
+            gb = ((first['W'] - team['W']) + (team['L'] - first['L'])) / 2
+            team['games_behind'] = round(gb, 1)
+
+    return team_data
+
+
+
 # 홈페이지
 def index(request):
     backgrounds = [
@@ -47,12 +176,15 @@ def calendar_view(request):
     cal = Calendar(d.year, d.month, team=user_team)
     cal_data = cal.get_month_data()
 
+    standings = calculate_team_standings()
+
     context = {
         'cal_data': cal_data,
         'prev_month': prev_month(d),
         'next_month': next_month(d),
         'user_team': user_team,
         'user_attendance_game_ids': user_attendance_game_ids,
+        'standings': standings,
     }
     return render(request, 'calendar.html', context)
 

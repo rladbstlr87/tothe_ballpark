@@ -16,8 +16,8 @@ class Command(BaseCommand):
                 obj, created = Pitcher.objects.update_or_create(
                     player_id=row.get('player_id', ''),
                     defaults={
-                        'player_name': row.get('선수명', ''),
-                        'team_name': row.get('팀명', '') or row.get('팀', ''),
+                        'player_name': row.get('player_name', ''),
+                        'team_name': row.get('team', ''),
                         'ERA': float(row.get('ERA', 0) or 0),
                         'G': int(row.get('G', 0) or 0),
                         'W': int(row.get('W', 0) or 0),
@@ -48,7 +48,6 @@ class Command(BaseCommand):
                         'IBB': int(row.get('IBB', 0) or 0),
                         'WP': int(row.get('WP', 0) or 0),
                         'BK': int(row.get('BK', 0) or 0),
-                        'birthday': row.get('생일', ''),
                         'speed': float(row.get('speed', 0) or 0),
                         'stamina': float(row.get('stamina', 0) or 0),
                         'control': float(row.get('control', 0) or 0),

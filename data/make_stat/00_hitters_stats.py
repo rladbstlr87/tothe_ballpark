@@ -1,21 +1,34 @@
-from selenium import webdriver
-from selenium.webdriver.support.ui import Select, WebDriverWait
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from bs4 import BeautifulSoup
-import pandas as pd
 import time
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait, Select
+from selenium.webdriver.support import expected_conditions as EC
 
-# 크롬 드라이버 실행
 driver = webdriver.Chrome()
-driver.get("https://www.koreabaseball.com/Record/Player/HitterBasic/Basic1.aspx?sort=HRA_RT")
+
+headers = {
+    "User-Agent": "Mozilla/5.0"
+}
 
 teams = ["LG", "HH", "LT", "SS", "SK", "NC", "OB", "HT", "KT", "WO"]
-first = True  # 첫 저장 여부
+base_url = "https://www.koreabaseball.com/Record/Player/HitterBasic/Basic1.aspx?sort=HRA_RT"
+detail_url = "https://www.koreabaseball.com/Record/Player/HitterDetail/Basic.aspx?playerId={}"
+
+final_data = []
+
+columns = [
+    "team", "player_id", "player_name",
+    "AVG", "G", "PA", "AB", "R", "H", "2B", "3B", "HR", "TB", "RBI", "SB", "CS", "SAC", "SF",
+    "BB", "IBB", "HBP", "SO", "GDP", "SLG", "OBP", "E", "SB%", "MH", "OPS", "RISP", "PH-BA"
+]
+
+driver.get(base_url)
 
 for team in teams:
-    print(f"\n▶ {team} 팀 데이터 수집 시작")
-    page_dfs = []
+    print(f"\n📦 팀 선택 중: {team}")
 
     # 팀 선택
     select_element = WebDriverWait(driver, 10).until(
@@ -23,79 +36,86 @@ for team in teams:
     )
     select = Select(select_element)
     select.select_by_value(team)
-    time.sleep(1)
+    time.sleep(2)
 
-    player_ids = {}
-
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, "#cphContents_cphContents_cphContents_udpContent table"))
-    )
-    html = driver.page_source
-    soup = BeautifulSoup(html, "html.parser")
-    table = soup.select_one("#cphContents_cphContents_cphContents_udpContent table")
-
-    for row in table.select("tbody tr"):
-        link = row.select_one("td:nth-child(2) a")
-        if link:
-            player_name = link.get_text(strip=True)
-            href = link.get("href", "")
-            if "playerId=" in href:
-                player_id = href.split("playerId=")[-1]
-                player_ids[player_name] = player_id
-
-    for page_num in [1, 2]:
-        if page_num == 2:
-            try:
-                next_button = WebDriverWait(driver, 5).until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, "#cphContents_cphContents_cphContents_udpContent .more_record a.next"))
-                )
-                next_button.click()
-                print("  - 2페이지 이동 중...")
-                time.sleep(2)
-            except Exception as e:
-                print(f"  - 2페이지 이동 실패: {e}")
-                break
-
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "#cphContents_cphContents_cphContents_udpContent table"))
+    # 선수 정보 저장 함수 정의
+    def collect_player_infos():
+        players = driver.find_elements(By.CSS_SELECTOR,
+            "#cphContents_cphContents_cphContents_udpContent > div.record_result > table > tbody > tr > td:nth-child(2) > a"
         )
-        time.sleep(1)
+        return [
+            (a.get_attribute("href").split("playerId=")[-1], a.text.strip())
+            for a in players
+        ]
 
-        html = driver.page_source
-        soup = BeautifulSoup(html, "html.parser")
-        table = soup.select_one("#cphContents_cphContents_cphContents_udpContent table")
+    # ✅ 1페이지 선수 수집
+    player_infos = collect_player_infos()
 
-        headers = [th.get_text(strip=True) for th in table.select("thead th")]
-        rows = []
-        for row in table.select("tbody tr"):
-            cells = [td.get_text(strip=True) for td in row.select("td")]
-            if cells:
-                rows.append(cells)
+    # ✅ 2페이지 버튼 존재 시 → 클릭 후 수집
+    try:
+        next_btn = driver.find_element(By.ID, "cphContents_cphContents_cphContents_ucPager_btnNo2")
+        next_btn.click()
+        time.sleep(2)
 
-        df = pd.DataFrame(rows, columns=headers)
-        page_dfs.append(df)
+        player_infos += collect_player_infos()
 
-        if page_num == 2:
-            driver.get("https://www.koreabaseball.com/Record/Player/HitterBasic/Basic1.aspx?sort=HRA_RT")
-            time.sleep(2)
+        # ✅ 1페이지로 복귀
+        prev_btn = driver.find_element(By.ID, "cphContents_cphContents_cphContents_ucPager_btnNo1")
+        prev_btn.click()
+        time.sleep(2)
+    except:
+        print("➡️ 2페이지 없음")
 
-    if len(page_dfs) == 2:
-        df1, df2 = page_dfs
-        merge_keys = ['순위', '선수명', '팀명', 'AVG']
-        combined_df = pd.merge(df1, df2.drop(columns=merge_keys), left_index=True, right_index=True)
+    print(f"🔎 총 {len(player_infos)}명 선수 발견")
 
-        if '순위' in combined_df.columns:
-            combined_df.drop(columns=['순위'], inplace=True)
+    team_data = []
 
-        combined_df["player_id"] = combined_df["선수명"].map(player_ids).fillna("정보 없음")
+    for player_id, player_name in player_infos:
+        url = detail_url.format(player_id)
+        res = requests.get(url, headers=headers)
+        soup = BeautifulSoup(res.content, "html.parser")
 
-        # ✅ 기존 '팀명' 컬럼에 두 글자 팀 코드로 덮어쓰기
-        combined_df["팀명"] = team
+        try:
+            table1 = soup.select_one("div.tbl-type02.mb10 > table > tbody")
+            data1 = [td.text.strip() for td in table1.select("td")][1:]  # 첫 번째 팀명 제외
+        except:
+            data1 = []
 
-        combined_df.to_csv("../all_hitter_stats.csv", mode='w' if first else 'a', header=first, index=False, encoding='utf-8-sig')
-        print(f"  ✔ all_hitter_stats.csv에 {team} 데이터 추가 완료")
-        first = False
-    else:
-        print(f"  ⚠ {team} 팀의 데이터 수집 실패")
+        try:
+            all_tables = soup.select("div.player_records > div > table")
+            table2 = all_tables[1].select("tbody")[0]
+            data2 = [td.text.strip() for td in table2.select("td")]
+        except:
+            data2 = []
+
+        if data1 and data2:
+            row = [team, player_id, player_name] + data1 + data2
+            team_data.append(row)
+            print("✅ 저장될 데이터:", row)
+        else:
+            print(f"⚠️ 누락됨: {team} / {player_id} / {player_name}")
+
+        time.sleep(0.3)
+
+    final_data.extend(team_data)
 
 driver.quit()
+print("\n🎉 모든 팀 데이터 저장 완료!")
+
+# ✅ 임시 선수 추가
+dummy_row = [
+    "TMP", "1", "임시선수",
+    "0.300", 100, 400, 370, 50, 111, 20, 1, 15, 180, 60, 5, 2, 3, 5,
+    40, 5, 2, 30, 3, 0.450, 0.380, 2, "0.714", 25, 0.830, 0.289, 0.250
+]
+final_data.append(dummy_row)
+
+# ✅ DataFrame 변환 + SBA 컬럼 추가
+df_all = pd.DataFrame(final_data, columns=columns)
+df_all["SBA"] = df_all["SB"].astype(float) + df_all["CS"].astype(float)
+
+# ✅ 컬럼 순서 정의 + 저장
+columns_with_sba = columns + ["SBA"]
+df_all.to_csv("../all_hitter_stats.csv", index=False, encoding="utf-8-sig", columns=columns_with_sba)
+
+print("🎯 임시 선수 포함 + SBA 컬럼 포함 최종 저장 완료: all_hitter_stats.csv")

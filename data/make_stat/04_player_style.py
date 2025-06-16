@@ -17,5 +17,4 @@ print((p['style'] == 1).sum())
 print((p['style'] == 2).sum())
 print((p['style'] == 3).sum())
 
-print(h.loc[h['style'] == 1, '선수명'].to_list())
-# print(p.loc[p['style'] == 0, '선수명'].to_list())
+print(h.loc[h['style'] == 1, 'player_name'].to_list())
