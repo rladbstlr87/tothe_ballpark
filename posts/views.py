@@ -74,7 +74,6 @@ def create(request):
             post.user = request.user
             post.save()
             
-            
             # 이미지 여러 장 저장 
             images = request.FILES.getlist('images')
             for image in images:
@@ -85,12 +84,12 @@ def create(request):
                     
                 
             return redirect('posts:detail', id=post.id)
-        else:
-            
-            print(form.errors)
+      
     else:
         form = PostForm()
     return render(request, 'create.html', {'form': form})
+            
+            
 
 # 게시글 상세
 def detail(request, id):
@@ -133,18 +132,25 @@ def update(request, id):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
-            form.save()
             
-             # ✅ 사용자가 체크한 이미지만 삭제
+            # 폼 저장 전에 이미지 삭제 처리
             delete_ids = request.POST.getlist('delete_images')
-            PostImage.objects.filter(id__in=delete_ids, post=post).delete()
+            if delete_ids:
+                # 실제 파일 시스템에서도 이미지 삭제
+                images_to_delete = PostImage.objects.filter(id__in=delete_ids, post=post)
+                for image in images_to_delete:
+                    if image.image:  # 이미지 파일이 존재하는지 확인
+                        image.image.delete()  # 실제 파일 삭제
+                    image.delete()  # DB에서 레코드 삭제
 
-            # ✅ 새 이미지 추가
-            images = request.FILES.getlist('images')
-           
-            for image in images:
+            # 폼 저장
+            post = form.save()
+
+            # 새 이미지 추가
+            for image in request.FILES.getlist('images'):
                 processed = handle_uploaded_image(image)
-                PostImage.objects.create(post=post, image=processed)
+                if processed:
+                    PostImage.objects.create(post=post, image=processed)
 
             return redirect('posts:detail', id=id)
     else:

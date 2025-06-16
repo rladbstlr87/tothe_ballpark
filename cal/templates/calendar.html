@@ -35,57 +35,117 @@
               </div>
             {% endif %}
             <span class="relative z-10">{{ day_name }}</span>
-          </th>
-        {% endfor %}
-      </tr>
-    </thead>
-    <tbody>
-      <!-- 주간 반복 -->
-      {% for week in cal_data.weeks %}
-        <tr>
-          {% for day in week %}
-            {% if day.day == 0 %}
-              <td></td>
-            {% else %}
-              <td class="day-cell rounded-t-md">
-                <span class="day-number relative z-10">{{ day.day }}</span>
-                <!-- 해당 날짜의 경기 정보 -->
-                {% for game in day.games %}
-                  {% if game.result == '취소' %}
-                    <!-- 취소된 경기 -->
-                    <div class="game-info{% if game.id in user_attendance_game_ids %} highlight-{{ user.team }}{% endif %}">
-                      <div class="game-cancel-wrapper cancel">
-                        <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}">
-                      </div>
-                      <span class="game-time">{{ game.time }}</span>
-                      {% if game.result %}
-                        <span class="game-result {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% elif game.result == '취소' %}cancel{% endif %}">
-                          {{ game.result }}
-                        </span>
-                      {% endif %}
-                    </div>
-                  {% else %}
-                    <!-- 일반 경기 -->
-                    <a href="{% url 'cal:lineup' game.id %}">
-                      <div class="game-info{% if game.id in user_attendance_game_ids %} highlight-{{ user.team }}{% endif %}">
-                        <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}">
-                        <span class="game-time">{{ game.time }}</span>
-                        {% if game.result %}
-                          <span class="game-result {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% elif game.result == '취소' %}cancel{% endif %}">
-                            {{ game.result }}
-                          </span>
-                        {% endif %}
-                      </div>
-                    </a>
-                  {% endif %}
-                {% endfor %}
-              </td>
-            {% endif %}
+            </th>
           {% endfor %}
         </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {% for week in cal_data.weeks %}
+          <tr class="z-10 relative">
+            {% for day in week %}
+              {% if day.day == 0 %}
+                <td>
+                </td>
+              {% else %}
+          <td class="day-cell rounded-t-md">
+            <span class="day-number relative z-10">{{ day.day }}</span>
+                    {% for game in day.games %}
+                      {% if game.result == '취소'%}
+                        <div class="game-info{% if game.id in user_attendance_game_ids %} highlight-{{user.team}}{% endif %}">
+                          <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}">
+                          <span class="game-time">{{ game.time }}</span>
+                          {% if game.result %}
+                            <span class="game-result
+                              {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% elif game.result == '취소' %}cancel{% endif %}">
+                              {{ game.result }}
+                            </span>
+                          {% endif %}
+                        </div>
+                      {% else %}
+                        <a href="{% url 'cal:lineup' game.id %}">
+                          <div class="game-info{% if game.id in user_attendance_game_ids %} highlight-{{user.team}}{% endif %}">
+                            <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}">
+                            <span class="game-time">{{ game.time }}</span>
+                            {% if game.result %}
+                              <span class="game-result
+                                {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% elif game.result == '취소' %}cancel{% endif %}">
+                                {{ game.result }}
+                              </span>
+                            {% endif %}
+                          </div>
+                        </a>
+                      {% endif %}
+                    {% endfor %}
+                </td>
+              {% endif %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+ <!-- ✅ 모바일에서만 보이는 버튼 (캘린더 밑에 넣기) -->
+<div class="block sm:hidden w-full  mt-6">
+  <img src="/static/cal/images/icon/ticket.png" alt="티켓 메모"
+      id="ticketBtnMobile"
+      class="w-[140px] h-[140px] cursor-pointer hover:scale-105 transition">
 </div>
 
+<!-- 티켓팅 팝업 모달 -->
+<div id="ticketModal" class="fixed inset-0  bg-opacity-10  flex justify-center items-center z-50 hidden">
+  <div class="relative w-[460px] h-[460px] sm:w-[460px] sm:h-[460px] w-[90vw] h-[90vw]">
+    
+    <!-- 종이 배경 -->
+    <img src="/static/cal/images/icon/note-paper.png" alt="티켓 팝업 배경"
+         class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0" />
+
+    <!-- 닫기 버튼 -->
+    <button id="closeModal" class="absolute top-17 right-12 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
+      ×
+    </button>
+
+    <!-- 내용 -->
+    <div class="absolute top-16 left-16 right-5 bottom-5 text-[13px] leading-[1.5] text-gray-800 font-medium z-10 whitespace-pre-line">
+<span class="inline-block text-pink-500 font-semibold">📌</span> <span class="font-bold">티켓팅 일정 및 링크</span>
+
+<span class="font-semibold">🎟️ 티켓링크</span>  
+・ <a href="https://www.ticketlink.co.kr/sports/137/63" class="text-blue-600 underline" target="_blank">한화</a>: 7일 전 오전 11시  
+・ <a href="https://www.ticketlink.co.kr/sports/137/62" class="text-blue-600 underline" target="_blank">KT</a>: 7일 전 오후 2시  
+・ <a href="https://www.ticketlink.co.kr/sports/137/58" class="text-blue-600 underline" target="_blank">기아</a>: 7일 전 오전 11시  
+・ <a href="https://www.ticketlink.co.kr/sports/137/57" class="text-blue-600 underline" target="_blank">삼성</a>: 7일 전 오전 11시 (첫 경기 기준)  
+・ <a href="https://www.ticketlink.co.kr/sports/137/59" class="text-blue-600 underline" target="_blank">엘지</a>: 7일 전 오전 11시  
+・ <a href="https://www.ticketlink.co.kr/sports/137/476" class="text-blue-600 underline" target="_blank">SSG</a>: 4일 전 오전 11시  
+
+<span class="font-semibold">🎟️ 인터파크</span>  
+・ <a href="https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB003" class="text-blue-600 underline" target="_blank">키움</a>: 7일 전 오후 2시  
+・ <a href="https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB004" class="text-blue-600 underline" target="_blank">두산</a>: 7일 전 오전 11시  
+
+<span class="font-semibold">🎟️ 홈페이지 예매</span>  
+・ <a href="https://ticket.giantsclub.com/loginForm.do" class="text-blue-600 underline" target="_blank">롯데</a>: 7일 전 오후 2시 (첫 경기 기준)  
+・ <a href="https://www.ncdinos.com/" class="text-blue-600 underline" target="_blank">NC</a>: 6일 전 오전 11시  
+    </div>
+  </div>
+</div>
+<script>
+  const ticketBtn = document.getElementById("ticketBtn");
+  const ticketBtnMobile = document.getElementById("ticketBtnMobile");
+  const ticketModal = document.getElementById("ticketModal");
+  const closeModal = document.getElementById("closeModal");
+
+  [ticketBtn, ticketBtnMobile].forEach(btn => {
+    btn?.addEventListener("click", () => {
+      ticketModal?.classList.remove("hidden");
+    });
+  });
+
+  closeModal?.addEventListener("click", () => {
+    ticketModal.classList.add("hidden");
+  });
+
+  ticketModal?.addEventListener("click", (e) => {
+    if (e.target === ticketModal) {
+      ticketModal.classList.add("hidden");
+    }
+  });
+</script>
 {% endblock %}

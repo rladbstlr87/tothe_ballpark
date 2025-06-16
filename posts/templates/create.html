@@ -23,13 +23,17 @@
           <div>
             {{ form.content }}
           </div>
-          <div>
-            <input type="file" name="images" multiple
-              class="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 
-              file:border file:rounded-md file:border-gray-300 file:bg-gray-100 
-              hover:file:bg-gray-200">
-          </div>
-
+          
+          <!-- 새 이미지 미리보기 -->
+          <div id="preview-container" class="flex gap-4 flex-wrap "></div>
+          
+          <!-- 이미지 업로드 버튼 -->
+          <label for="image-input" class="inline-block px-4 py-2 bg-gray-300 rounded-md text-white rounded cursor-pointer">
+            이미지 선택
+          </label>
+          <small class="ml-2 text-gray-500" id="file-count-label">0개 파일 선택됨 (최대 10장)</small>
+          <input type="file" name="images" id="image-input" multiple hidden>
+          
           <div class="text-center mt-8">
             <button type="submit"
                 class="rounded-full px-8 py-3 bg-[#9AA6B2] text-white text-lg font-semibold 
@@ -40,4 +44,86 @@
       </form>
     </div>
   </div>
+              
+              
+         
+
+  <script>
+  // ✅ 새 이미지 업로드 처리 (기존 코드 그대로 유지)
+  const input = document.getElementById('image-input');
+  const preview = document.getElementById('preview-container');
+  const fileCountLabel = document.getElementById('file-count-label');
+  let selectedFiles = [];
+
+  input.addEventListener('change', function () {
+    const files = Array.from(this.files);
+
+    if ((selectedFiles.length + files.length) > 10) {
+      alert("최대 10장까지 업로드 가능합니다.");
+      input.value = "";
+      return;
+    }
+
+    files.forEach(file => {
+      selectedFiles.push(file);
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const container = document.createElement('div');
+        container.className = 'relative w-24 h-24';
+
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.className = 'w-full h-full object-cover rounded';
+
+        const delBtn = document.createElement('button');
+        delBtn.innerHTML = '✕';
+        delBtn.className = 'absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full rounded cursor-pointer';
+        delBtn.onclick = function (e) {
+          e.preventDefault(); // 추가: 기본 동작 방지
+          container.remove(); // 변경: preview.removeChild(container) 대신 직접 remove 사용
+          selectedFiles = selectedFiles.filter(f => f !== file);
+          // input의 files 업데이트
+          const dt = new DataTransfer();
+          selectedFiles.forEach(file => dt.items.add(file));
+          input.files = dt.files;
+          fileCountLabel.textContent = `${selectedFiles.length}개 파일 선택됨 (최대 10장)`;
+        };
+
+        container.appendChild(img);
+        container.appendChild(delBtn);
+        preview.appendChild(container);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    fileCountLabel.textContent = `${selectedFiles.length}개 파일 선택됨 (최대 10장)`;
+  });
+
+  // ✅ 기존 이미지 ✕ 버튼 눌렀을 때 체크박스 체크
+   document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+    const form = document.querySelector('form');
+
+    deleteButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        const checkbox = document.getElementById(`checkbox-${id}`);
+        if (checkbox) {
+          checkbox.checked = true;
+          // hidden input 추가하여 삭제할 이미지 ID를 서버에 전송
+          const hiddenInput = document.createElement('input');
+          hiddenInput.type = 'hidden';
+          hiddenInput.name = 'delete_images';
+          hiddenInput.value = id;
+          form.appendChild(hiddenInput);
+        }
+
+        // 이미지 박스 제거
+        const box = btn.closest('.image-box');
+        if (box) box.remove();
+      });
+    });
+  });
+</script>
 {% endblock %}

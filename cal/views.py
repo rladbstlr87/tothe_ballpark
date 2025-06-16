@@ -102,13 +102,6 @@ def calculate_team_standings():
                     break
             streak = f"{count}{current}"
 
-        recent_10_win = sum(1 for r in last_10 if r == '승')
-        recent_10_games = sum(1 for r in last_10 if r in ['승', '패'])
-        recent_10_percent = recent_10_win / recent_10_games if recent_10_games > 0 else 0
-
-        po_score = 0.7 * win_percent + 0.3 * recent_10_percent
-        po_chance = round(po_score * 100)
-
         team_data.append({
             'team': team,
             'G': total_games,
@@ -122,7 +115,6 @@ def calculate_team_standings():
             'streak': streak,
             'recent_results': recent,
             'games_behind': None,
-            'po_chance': f"{po_chance}%",
         })
 
     team_data.sort(key=lambda x: x['win_percent'], reverse=True)
