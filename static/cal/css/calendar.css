@@ -4,7 +4,6 @@ html, body {
 
 .bg-paper {
   position: relative;
-  z-index: 0;
   overflow: auto;
   width: 100%;
   min-height: 100vh;
@@ -12,7 +11,7 @@ html, body {
   background-image: url('/static/cal/images/bg/cal-paper.jpg');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
+  background-repeat: repeat;
   background-color: rgba(255, 255, 255, 0.726);
   background-blend-mode: lighten;
 }
