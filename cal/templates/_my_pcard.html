@@ -39,8 +39,15 @@
         data-bk="{{ lineup.pitcher.BK }}"
     >
     </div>
-    <div class="flex justify-center mt-1 space-x-1 relative">
-        <img id="style-icon" src="{% static 'cal/images/icon/pitcher_icon/' %}{{ lineup.pitcher.style }}.svg" class="w-12 h-12 -mt-6 -ml-6 absolute z-10 left-14">
+    <div class="flex justify-center mt-1 space-x-1 relative group">
+        <img id="style-icon" src="{% static 'cal/images/icon/pitcher_icon/' %}{{ lineup.pitcher.style }}.svg" class="w-12 h-12 -mt-6 -ml-6 absolute z-10 left-14 cursor-pointer">
+            <!-- 툴팁 박스 -->
+            <div class="opacity-0 w-max max-w-xs bg-black text-white text-center text-xs rounded-lg py-2 px-3 absolute z-20 group-hover:opacity-100 bottom-full left-1/2 -translate-x-1/2 mb-2 pointer-events-none">
+                {{ lineup.pitcher|style_description }}
+                <svg class="absolute text-black h-2 w-full left-0 top-full" viewBox="0 0 255 255">
+                    <polygon class="fill-current" points="0,0 127.5,127.5 255,0"/>
+                </svg>
+            </div>
         <p class="">{{ lineup.pitcher.player_name }}</p>
     </div>
     <div id="my_pstat_bar" class="w-54 ml-[-12px]">
