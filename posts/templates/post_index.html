@@ -1,86 +1,76 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block extra_head %}
-  <style>
-    @font-face {
-      font-family: 'YdestreetB';
-      src: url("{% static 'fonts/YdestreetB.woff2' %}") format('woff2');
-      font-weight: bold;
-      font-style: normal;
-    }
-
-    .font-handdrawn {
-      font-family: 'YdestreetB', sans-serif;
-    }
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+{% block styles %}
+  <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}">
+  <link rel="stylesheet" href="{% static 'posts/css/post_index.css' %}">
 {% endblock %}
   
 {% block body %}
-  <link rel="stylesheet" href="{% static 'posts/css/post_index.css' %}">
-  
-  <body class="pt-[90px] bg-neutral-100 font-handdrawn">
-    
-      <div class="mx-auto bg-white rounded-2xl px-12 pt-0 pb-5 shadow-xl w-full max-w-6xl max-sm:px-4 w-full max-sm:max-w-sm">
+
+<div class="pt-[90px] bg-neutral-100 font-handdrawn">
+
+  <!-- 🏷️ 게시판 박스 -->
+  <div class="mx-auto bg-white rounded-2xl shadow-xl w-full max-w-6xl px-12 pt-0 pb-5 max-sm:px-4 max-sm:max-w-sm">
+
+    <!-- ✅ 상단 헤더 (제목 + 아이콘) -->
+    <div class="relative border-b-[3px] pb-4 text-gray-900 text-center tracking-wider">
+      <div class="flex justify-between items-end gap-4 px-4 py-4 md:px-8">
         
-        <!-- 제목 영역 -->
-        <div class="relative border-b-[3px] pb-4 text-gray-900 text-center tracking-wider">
+        <!-- 왼쪽: 야구공 이미지 -->
+        <img src="{% static 'posts/images/index/baseball.png' %}" alt="야구공"
+             class="w-36 mt-10 ml-[100px] max-sm:w-16 max-sm:ml-0">
 
-          <!-- 이미지 + 텍스트 세로 정렬 -->
-          <div class="flex justify-between items-end gap-4 px-4 py-4 md:px-8 ">
-            <!-- 왼쪽: 야구공 -->
-            <img src="{% static 'posts/images/index/baseball.png' %}" alt="야구공" class="w-36 mt-10 ml-[100px] max-sm:w-16 max-sm:ml-0" >
+        <!-- 가운데: 게시판 제목 -->
+        <h1 class="text-2xl max-sm:text-base whitespace-nowrap font-black">직돌이네 응원석</h1>
 
-            <!-- 가운데: 게시판 제목 -->
-            <h1 class="text-2xl max-sm:text-base whitespace-nowrap   font-black">직돌이네 응원석</h1>
+        <!-- 오른쪽: 작성하기 아이콘 -->
+        <a href="{% url 'posts:create' %}">
+          <img src="{% static 'posts/images/index/miffy.png' %}" alt="질문하기"
+               class="w-36 mt-10 mr-20 max-sm:w-16 hover:scale-105 transition transform translate-y-7">
+        </a>
+      </div>
+    </div>
 
-            <!-- 오른쪽: 문의 링크 + 이미지 -->
-            <a href="{% url 'posts:create' %}">
-              <img src="{% static 'posts/images/index/miffy.png' %}" alt="질문하기" class="w-36 mt-10 mr-20 max-sm:w-16 hover:scale-105 transition transform translate-y-7">
-            </a>
+    <!-- 📋 게시판 헤더 -->
+    <div class="post-header whitespace-nowrap">
+      <div class="col">번호</div>
+      <div class="col">제목</div>
+      <div class="col max-sm:px-2">카테고리</div>
+      <div class="col max-sm:px-2">닉네임</div>
+      <div class="col max-sm:px-2">작성일</div>
+    </div>
+
+    <!-- 📌 게시글 목록 -->
+    <div class="post-list-wrapper">
+      {% for number, post in posts_with_number %}
+        <div class="post-card">
+          <div class="post-number">{{ number }}</div>
+          <div class="post-title max-sm:px-2 truncate">
+            <a href="{% url 'posts:detail' post.id %}">{{ post.title }}</a>
           </div>
+          <div class="post-category max-sm:px-4 whitespace-nowrap">{{ post.get_category_display }}</div>
+          <div class="post-nickname whitespace-nowrap">{{ post.user.nickname }}</div>
+          <div class="post-date">{{ post.created_at|date:"Y.m.d" }}</div>
+        </div>
+      {% empty %}
+        <div class="post-empty">등록된 질문이 없습니다 🥲</div>
+      {% endfor %}
+    </div>
 
-        </div>
-        
-        <!-- 헤더 -->
-        <div class="post-header whitespace-nowrap ">
-          <div class="col ">번호</div>
-          <div class="col">제목</div>
-          <div class="col max-sm:px-2 ">카테고리</div>
-          <div class="col max-sm:px-2">닉네임</div>
-          <div class="col max-sm:px-2 ">작성일</div>
-        </div>
-        
-        <!-- 질문 목록 -->
-        <div class="post-list-wrapper ">
-          {% for number, post in posts_with_number %}
-            <div class="post-card">
-              <div class="post-number">{{ number }}</div>
-              <div class="post-title max-sm:px-2 truncate">
-                <a href="{% url 'posts:detail' post.id %}">{{ post.title }}</a>
-              </div>
-              <div class="post-category max-sm:px-4 whitespace-nowrap" >{{ post.get_category_display }}</div>
-              <div class="post-nickname whitespace-nowrap">{{ post.user.nickname }}</div>
-              <div class="post-date">{{ post.created_at|date:"Y.m.d" }}</div>
-            </div>
-          {% empty %}
-            <div class="post-empty">등록된 질문이 없습니다 🥲</div>
-          {% endfor %}
-        </div>
   </div>
-  
+
+  <!-- 🔁 페이지네이션 -->
   <div class="flex items-center justify-center space-x-2 my-8 text-sm text-gray-600">
-  
-    <!-- 이전 버튼 -->
+
+    <!-- 이전 페이지 -->
     {% if page_obj.has_previous %}
-      <a href="?page={{ page_obj.previous_page_number }}"
-        class="px-2 py-1 rounded hover:bg-gray-100">&lt;</a>
+      <a href="?page={{ page_obj.previous_page_number }}" class="px-2 py-1 rounded hover:bg-gray-100">&lt;</a>
     {% else %}
       <span class="px-2 py-1 text-gray-300">&lt;</span>
     {% endif %}
 
-    <!-- 페이지 숫자 목록 -->
+    <!-- 페이지 숫자 -->
     {% for num in page_obj.paginator.page_range %}
       {% if num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
         {% if num == page_obj.number %}
@@ -95,13 +85,12 @@
       {% endif %}
     {% endfor %}
 
-    <!-- 다음 버튼 -->
+    <!-- 다음 페이지 -->
     {% if page_obj.has_next %}
-      <a href="?page={{ page_obj.next_page_number }}"
-        class="px-2 py-1 rounded hover:bg-gray-100">&gt;</a>
+      <a href="?page={{ page_obj.next_page_number }}" class="px-2 py-1 rounded hover:bg-gray-100">&gt;</a>
     {% else %}
       <span class="px-2 py-1 text-gray-300">&gt;</span>
     {% endif %}
   </div>
-</body>
+</div>
 {% endblock %}

@@ -1,8 +1,8 @@
 {% load static %}
 <nav x-data="{ mobileMenuOpen: false }"
-    class="bg-cover left-0 w-full bg-transparent z-10 py-1 md:py-3 font-jaram [background-position:0%_100%]"
+    class="bg-cover left-0 w-full bg-transparent z-30 relative py-1 md:py-3 font-jaram [background-position:0%_100%]"
     style="{% if user.team == none %}background-image: url('{% static 'nav/nav-' %}nothing.png');{% else %}background-image: url('{% static 'nav/nav-' %}{{ user.team }}.png');{% endif %}">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ">
         <div class="relative flex h-16">
             <!-- Mobile menu button -->
             <div class="absolute inset-y-0 left-0 flex md:hidden">
@@ -38,19 +38,19 @@
                     <div class="flex flex-1 items-center">
                         <a href="{% url 'cal:calendar' %}" class="p-3 text-black hover:text-blue-500">
                             <span class="relative tracking-widest">
-                                <span class="absolute inset-x-0 bottom-0 h-2 bg-green-400  -z-10"></span>
+                                <span class="absolute inset-x-0 bottom-0 h-2 bg-[#F7FBFC]  -z-10"></span>
                                 <span>캘린더</span>
                             </span>
                         </a>
                         <a href="{% url 'posts:post_index' %}" class="p-3 text-black hover:text-blue-500">
                             <span class="relative tracking-widest">
-                                <span class="absolute inset-x-0 bottom-0 h-2 bg-yellow-400  -z-10"></span>
+                                <span class="absolute inset-x-0 bottom-0 h-2 bg-[#D6E6F2]  -z-10"></span>
                                 <span>응원석</span>
                             </span>
                         </a>
                         <a href="{% url 'cal:standings'%}" class="p-3 text-black hover:text-blue-500">
                             <span class="relative tracking-widest">
-                                <span class="absolute inset-x-0 bottom-0 h-2 bg-red-400  -z-10"></span>
+                                <span class="absolute inset-x-0 bottom-0 h-2 bg-[#B9D7EA]  -z-10"></span>
                                 <span>순위</span>
                             </span>
                         </a>
@@ -71,7 +71,7 @@
                     <div class="flex items-center">
                     <div class="relative group">
                         <span class="relative tracking-widest">
-                            <span class="absolute inset-x-0 bottom-0 h-2 bg-green-400 -z-10"></span>
+                            <span class="absolute inset-x-0 bottom-0 h-2 bg-[#769FCD] -z-10"></span>
                             <span class="hover:text-blue-500">경기장</span>
                         </span>
 
@@ -134,7 +134,7 @@
     </div>
     <!-- Mobile 메뉴 -->
     <div class="hidden" id="mobile-menu">
-        <div class="space-y-1 px-2 pt-2 pb-3">
+        <div class="space-y-1 px-2 pt-2 pb-3 z-20">
             <a href="{% url 'index' %}" class="block rounded-md bg-gray-900/50 px-3 py-2 text-white">홈</a>
             <a href="{% url 'cal:calendar' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">캘린더</a>
             <a href="{% url 'posts:post_index' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">응원석</a>
