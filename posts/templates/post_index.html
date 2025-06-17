@@ -2,16 +2,15 @@
 {% load static %}
 
 {% block styles %}
-  <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}">
   <link rel="stylesheet" href="{% static 'posts/css/post_index.css' %}">
 {% endblock %}
   
 {% block body %}
 
-<div class="pt-[90px] bg-neutral-100 font-handdrawn">
+<div class="pt-[30px] md:pt-[80px]">
 
   <!-- 🏷️ 게시판 박스 -->
-  <div class="mx-auto bg-white rounded-2xl shadow-xl w-full max-w-6xl px-12 pt-0 pb-5 max-sm:px-4 max-sm:max-w-sm">
+  <div class="mx-auto rounded-2xl shadow-xl w-full max-w-6xl px-12 pt-0 pb-5 max-sm:px-4 max-sm:max-w-sm">
 
     <!-- ✅ 상단 헤더 (제목 + 아이콘) -->
     <div class="relative border-b-[3px] pb-4 text-gray-900 text-center tracking-wider">
@@ -19,7 +18,7 @@
         
         <!-- 왼쪽: 야구공 이미지 -->
         <img src="{% static 'posts/images/index/baseball.png' %}" alt="야구공"
-             class="w-36 mt-10 ml-[100px] max-sm:w-16 max-sm:ml-0">
+            class="w-36 mt-10 ml-[100px] max-sm:w-16 max-sm:ml-0">
 
         <!-- 가운데: 게시판 제목 -->
         <h1 class="text-2xl max-sm:text-base whitespace-nowrap font-black">직돌이네 응원석</h1>
@@ -27,7 +26,7 @@
         <!-- 오른쪽: 작성하기 아이콘 -->
         <a href="{% url 'posts:create' %}">
           <img src="{% static 'posts/images/index/miffy.png' %}" alt="질문하기"
-               class="w-36 mt-10 mr-20 max-sm:w-16 hover:scale-105 transition transform translate-y-7">
+              class="w-36 mt-10 mr-20 max-sm:w-16 hover:scale-105 transition transform translate-y-7">
         </a>
       </div>
     </div>

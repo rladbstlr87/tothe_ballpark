@@ -1,19 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block styles %}
-  <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}">
-{% endblock %}
-
-
 {% block body %}
-<div class="min-h-screen bg-neutral-100 flex items-center justify-center py-12 px-4 font-handdrawn relative z-0">
+<div class="min-h-screen bg-neutral-100 flex items-center justify-center py-12 px-4 relative z-0">
 
   <!-- 🟡 배경 스티커 이미지들 -->
   <img src="{% static 'posts/images/detail/pinkhitter.png' %}" alt="스티커"
-       class="w-36 absolute top-4 left-4 z-0 mt-50">
+      class="w-36 absolute top-4 left-4 z-0 mt-50">
   <img src="{% static 'posts/images/detail/bluehitter.png' %}" alt="스티커"
-       class="w-36 absolute top-4 right-4 z-0 mt-90 max-sm:hidden">
+      class="w-36 absolute top-4 right-4 z-0 mt-90 max-sm:hidden">
 
   <!-- 🟢 본문 박스 -->
   <div class="bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl z-10 relative">
