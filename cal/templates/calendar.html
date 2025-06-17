@@ -62,14 +62,11 @@
                 {% for game in day.games %}
                   {% if game.result == '취소' %}
                     <div class="game-info{% if game.id in user_attendance_game_ids %} highlight-{{ user.team }}{% endif %}">
-                      <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}">
+                      <div class="relative inline-block">
+                        <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}" class="cancel-game-img">
+                      </div>
                       <span class="game-time">{{ game.time }}</span>
-                      {% if game.result %}
-                        <span class="game-result
-                          {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% elif game.result == '취소' %}cancel{% endif %}">
-                          {{ game.result }}
-                        </span>
-                      {% endif %}
+                      <span class="game-result cancel">{{ game.result }}</span>
                     </div>
                   {% else %}
                     <a href="{% url 'cal:lineup' game.id %}">
@@ -191,8 +188,6 @@
     </div>
   </div>
 </div>
-
-
 
 <!-- ✅ 스크립트 -->
 <script>

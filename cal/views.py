@@ -13,16 +13,9 @@ from collections import defaultdict
 
 def calculate_team_standings():
     HOME_STADIUMS = {
-        'HT': ['광주'],
-        'LG': ['잠실'],
-        'OB': ['잠실'],
-        'SK': ['문학'],
-        'NC': ['창원', '울산'],
-        'HH': ['대전(신)'],
-        'WO': ['고척'],
-        'LT': ['사직'],
-        'SS': ['대구', '포항'],
-        'KT': ['수원'],
+        'HT': ['광주'], 'LG': ['잠실'], 'OB': ['잠실'], 'SK': ['문학'],
+        'NC': ['창원', '울산'], 'HH': ['대전(신)'], 'WO': ['고척'],
+        'LT': ['사직'], 'SS': ['대구', '포항'], 'KT': ['수원'],
     }
 
     standings = defaultdict(lambda: {
@@ -45,52 +38,52 @@ def calculate_team_standings():
         stadium = game.stadium
         date_played = game.date
 
+        # 홈팀 판별 (잠실만 특별 규칙 적용)
         if stadium == '잠실':
-            t1_home = False
-            t2_home = True
+            t1_home, t2_home = False, True
         else:
             t1_home = stadium in HOME_STADIUMS.get(t1, [])
             t2_home = stadium in HOME_STADIUMS.get(t2, [])
 
+        # 각 팀 경기 결과 기록
         if r1 in ['승', '패', '무']:
             standings[t1]['games'].append((date_played, r1))
         if r2 in ['승', '패', '무']:
             standings[t2]['games'].append((date_played, r2))
 
+        # 승패 무 기록 업데이트
         if r1 == '승':
             standings[t1]['W'] += 1
             standings[t2]['L'] += 1
-            if t1_home: standings[t1]['home_W'] += 1
-            else: standings[t1]['away_W'] += 1
-            if t2_home: standings[t2]['home_L'] += 1
-            else: standings[t2]['away_L'] += 1
+            standings[t1]['home_W' if t1_home else 'away_W'] += 1
+            standings[t2]['home_L' if t2_home else 'away_L'] += 1
         elif r1 == '패':
             standings[t1]['L'] += 1
             standings[t2]['W'] += 1
-            if t1_home: standings[t1]['home_L'] += 1
-            else: standings[t1]['away_L'] += 1
-            if t2_home: standings[t2]['home_W'] += 1
-            else: standings[t2]['away_W'] += 1
+            standings[t1]['home_L' if t1_home else 'away_L'] += 1
+            standings[t2]['home_W' if t2_home else 'away_W'] += 1
         elif r1 == '무':
             standings[t1]['D'] += 1
             standings[t2]['D'] += 1
 
+        # 주간 기록 업데이트
         if week_start <= date_played <= week_end:
-            if r1 == '승': standings[t1]['weekly_W'] += 1
-            elif r1 == '패': standings[t1]['weekly_L'] += 1
-            elif r1 == '무': standings[t1]['weekly_D'] += 1
+            result_map = {'승': 'weekly_W', '패': 'weekly_L', '무': 'weekly_D'}
+            if r1 in result_map:
+                standings[t1][result_map[r1]] += 1
+            if r2 in result_map:
+                standings[t2][result_map[r2]] += 1
 
-            if r2 == '승': standings[t2]['weekly_W'] += 1
-            elif r2 == '패': standings[t2]['weekly_L'] += 1
-            elif r2 == '무': standings[t2]['weekly_D'] += 1
-
+    # 최종 팀별 통계 정리
     team_data = []
     for team, record in standings.items():
         total_games = record['W'] + record['L'] + record['D']
         win_percent = round(record['W'] / (record['W'] + record['L']), 3) if (record['W'] + record['L']) > 0 else 0
+
         recent = [r for _, r in record['games'][-5:]]
         last_10 = [r for _, r in record['games'][-10:]]
 
+        # 연승/연패 계산
         streak = "-"
         if recent:
             current = recent[-1]
@@ -117,8 +110,10 @@ def calculate_team_standings():
             'games_behind': None,
         })
 
+    # 순위 정렬
     team_data.sort(key=lambda x: x['win_percent'], reverse=True)
 
+    # 게임차 계산
     first = team_data[0]
     for team in team_data:
         if team == first:
@@ -130,8 +125,7 @@ def calculate_team_standings():
     return team_data
 
 
-
-# 홈페이지
+# ✅ 홈페이지 - 배경 이미지 랜덤 적용
 def index(request):
     backgrounds = [
         'cal/images/bg/home0.png',
@@ -143,59 +137,56 @@ def index(request):
         'cal/images/bg/mobile1.png',
         'cal/images/bg/mobile2.png',
     ]
-        
-    chosen_background = random.choice(backgrounds)
-    chosen_mobile_background = random.choice(mobile_backgrounds)
-    context = {
-        'random_bg': chosen_background,
-        'random_mobile_bg': chosen_mobile_background,
-    }
 
+    context = {
+        'random_bg': random.choice(backgrounds),
+        'random_mobile_bg': random.choice(mobile_backgrounds),
+    }
     return render(request, 'index.html', context)
 
+
+# ✅ 팀 순위 + 유저 팀의 타자/투수 기록 표시
 @never_cache
 @login_required
 def standings(request):
+    user_team = request.user.team
     standing = calculate_team_standings()
-    if request.user.is_authenticated:
-        user_team = request.user.team
 
     hitter_stats = Hitter.objects.filter(team_name=user_team)
     pitcher_stats = Pitcher.objects.filter(team_name=user_team)
+
     context = {
         'standing': standing,
         'hitter_stats': hitter_stats,
         'pitcher_stats': pitcher_stats,
-
     }
     return render(request, 'standings.html', context)
 
-# 캘린더 메인 뷰
+
+# ✅ 캘린더 메인 뷰 - 로그인 유저의 팀/출석 데이터 기반
 @never_cache
 @login_required
 def calendar_view(request):
-    user_team = None
-    user_attendance_game_ids = []
+    user = request.user
+    user_team = user.team
+    attendance_ids = list(user.attendance_game.values_list('id', flat=True))
 
-    if request.user.is_authenticated:
-        user_team = request.user.team
-        user_attendance_game_ids = list(request.user.attendance_game.values_list('id', flat=True))
-
-    d = get_date(request.GET.get('day', None))
-    cal = Calendar(d.year, d.month, team=user_team)
-    cal_data = cal.get_month_data()
+    current_day = get_date(request.GET.get('day', None))
+    calendar = Calendar(current_day.year, current_day.month, team=user_team)
+    cal_data = calendar.get_month_data()
 
     standing = calculate_team_standings()
 
     context = {
         'cal_data': cal_data,
-        'prev_month': prev_month(d),
-        'next_month': next_month(d),
+        'prev_month': prev_month(current_day),
+        'next_month': next_month(current_day),
         'user_team': user_team,
-        'user_attendance_game_ids': user_attendance_game_ids,
+        'user_attendance_game_ids': attendance_ids,
         'standing': standing,
     }
     return render(request, 'calendar.html', context)
+
 
 # 날짜 유틸 함수
 def get_date(req_day):
@@ -217,6 +208,7 @@ def next_month(d):
     last = d.replace(day=days_in_month)
     next_ = last + timedelta(days=1)
     return f'day={next_.year}-{next_.month}-{next_.day}'
+
 
 # 키플레이어 함수
 def calculate_hitter_score(h):
@@ -240,6 +232,7 @@ def calculate_pitcher_score(p):
         p.R * 1.0 +
         p.SO * 1.0
     )
+
 
 # 라인업 뷰
 @never_cache
