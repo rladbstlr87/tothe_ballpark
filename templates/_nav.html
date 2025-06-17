@@ -1,10 +1,6 @@
 {% load static %}
 <nav x-data="{ mobileMenuOpen: false }"
-<<<<<<< HEAD
     class="relative z-9999 bg-cover w-full bg-transparent z-10 py-1 md:py-3 font-jaram [background-position:0%_100%]"
-=======
-    class="bg-cover left-0 w-full bg-transparent z-9999 py-1 md:py-3 font-jaram [background-position:0%_100%]"
->>>>>>> origin/fix_structure
     style="{% if user.team == none %}background-image: url('{% static 'nav/nav-' %}nothing.png');{% else %}background-image: url('{% static 'nav/nav-' %}{{ user.team }}.png');{% endif %}">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ">
         <div class="relative flex h-16">
