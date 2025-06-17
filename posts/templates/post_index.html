@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block body %}
-<div class="pt-[90px] ">
+<div class="pt-[50px] ">
 
   <!-- 🏷️ 게시판 박스 -->
-  <div class="mx-auto bg-white rounded-2xl shadow-xl w-full max-w-6xl px-9 pt-0 pb-5 max-sm:px-4 max-sm:max-w-sm">
+  <div class="mx-auto bg-white rounded-2xl shadow-xl w-full max-w-6xl px-9 pt-0 pb-8 max-sm:px-4 max-sm:max-w-sm">
 
     <!-- ✅ 상단 헤더 (제목 + 아이콘) -->
-    <div class="relative  pb-4 text-gray-900 text-center tracking-wider">
-      <div class="flex justify-between items-end gap-4 px-4 py-4 md:px-8">
+    <div class="relative pb-4 text-gray-900 text-center tracking-wider">
+      <div class="flex justify-between items-end gap-4 px-4 md:px-8">
         
         <!-- 왼쪽: 야구공 이미지 -->
         <img src="{% static 'posts/images/index/baseball.png' %}" alt="야구공"
@@ -20,7 +20,7 @@
         <!-- 오른쪽: 작성하기 아이콘 -->
         <a href="{% url 'posts:create' %}">
           <img src="{% static 'posts/images/index/miffy.png' %}" alt="질문하기"
-              class="w-36 mt-10 mr-20 max-sm:w-16 hover:scale-105 transition transform translate-y-7">
+              class="w-36 mr-20 max-sm:w-16 hover:scale-105 transition transform translate-y-7">
         </a>
       </div>
     </div>
@@ -65,7 +65,7 @@
   </div>
 
   <!-- 🔁 페이지네이션 -->
-  <div class="flex items-center justify-center space-x-2 my-8 text-sm text-gray-600">
+  <div class="flex items-center justify-center space-x-2 my-8 pb-4 text-sm text-gray-600">
 
     <!-- 이전 페이지 -->
     {% if page_obj.has_previous %}
