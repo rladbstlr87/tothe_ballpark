@@ -84,7 +84,7 @@
                         </a>
                         {% else %}
                         <a href="{% url 'index' %}" class="flex items-center">
-                            <img src="{% static 'cal/images/logo.png' %}" alt="Baseball" class="h-24">
+                            <img src="{% static 'cal/images/mascots/' %}{{ user.team }}line.svg" alt="{{  }} Mascot" class="h-24">
                         </a>
                         {% endif %}
                     </div>

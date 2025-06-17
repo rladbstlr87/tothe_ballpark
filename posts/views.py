@@ -24,7 +24,7 @@ def handle_uploaded_image(file):
         
 
         # 최대 크기 제한 (비율 유지)
-        img.thumbnail((400, 400))
+        img.thumbnail((500, 500))
 
         buffer = BytesIO()
 
