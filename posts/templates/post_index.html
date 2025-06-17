@@ -1,14 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block styles %}
-  <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}">
-  <link rel="stylesheet" href="{% static 'posts/css/post_index.css' %}">
-{% endblock %}
-  
 {% block body %}
-
-<div class="pt-[90px] bg-neutral-100 font-handdrawn">
+<div class="pt-[90px] bg-neutral-100">
 
   <!-- 🏷️ 게시판 박스 -->
   <div class="mx-auto bg-white rounded-2xl shadow-xl w-full max-w-6xl px-12 pt-0 pb-5 max-sm:px-4 max-sm:max-w-sm">
@@ -20,7 +14,7 @@
         <!-- 왼쪽: 야구공 이미지 -->
         <img src="{% static 'posts/images/index/baseball.png' %}" alt="야구공"
              class="w-36 mt-10 ml-[100px] max-sm:w-16 max-sm:ml-0">
-
+        
         <!-- 가운데: 게시판 제목 -->
         <h1 class="text-2xl max-sm:text-base whitespace-nowrap font-black">직돌이네 응원석</h1>
 
@@ -32,30 +26,41 @@
       </div>
     </div>
 
-    <!-- 📋 게시판 헤더 -->
-    <div class="post-header whitespace-nowrap">
-      <div class="col">번호</div>
-      <div class="col">제목</div>
-      <div class="col max-sm:px-2">카테고리</div>
-      <div class="col max-sm:px-2">닉네임</div>
-      <div class="col max-sm:px-2">작성일</div>
-    </div>
+    <!-- 📋 게시판 테이블 -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm max-sm:text-xs table-fixed whitespace-nowrap border border-gray-200 rounded-2xl overflow-hidden">
 
-    <!-- 📌 게시글 목록 -->
-    <div class="post-list-wrapper">
-      {% for number, post in posts_with_number %}
-        <div class="post-card">
-          <div class="post-number">{{ number }}</div>
-          <div class="post-title max-sm:px-2 truncate">
-            <a href="{% url 'posts:detail' post.id %}">{{ post.title }}</a>
-          </div>
-          <div class="post-category max-sm:px-4 whitespace-nowrap">{{ post.get_category_display }}</div>
-          <div class="post-nickname whitespace-nowrap">{{ post.user.nickname }}</div>
-          <div class="post-date">{{ post.created_at|date:"Y.m.d" }}</div>
-        </div>
-      {% empty %}
-        <div class="post-empty">등록된 질문이 없습니다 🥲</div>
-      {% endfor %}
+        <!-- 테이블 헤더 -->
+        <thead class="bg-gray-100 text-gray-500">
+          <tr class="text-center">
+            <th class="text-left px-4 py-2 max-sm:px-2 max-sm:py-1 w-[10%] rounded-tl-2xl border-b border-gray-200">번호</th>
+            <th class="text-left px-4 py-2 max-sm:px-2 max-sm:py-1 w-[40%] border-b border-gray-200">제목</th>
+            <th class="px-4 py-2 max-sm:px-2 max-sm:py-1 w-[15%] border-b border-gray-200">분류</th>
+            <th class="px-4 py-2 max-sm:px-2 max-sm:py-1 w-[15%] border-b border-gray-200">닉네임</th>
+            <th class="px-4 py-2 max-sm:px-2 max-sm:py-1 w-[20%] rounded-tr-2xl border-b border-gray-200">작성일</th>
+          </tr>
+        </thead>
+
+        <!-- 테이블 본문 -->
+        <tbody>
+          {% for number, post in posts_with_number %}
+            <tr class="text-center border-b border-gray-200 last:rounded-b-2xl hover:bg-gray-50">
+              <td class="text-left px-4 py-2 max-sm:px-2">{{ number }}</td>
+              <td class="text-left px-4 py-2 max-sm:px-2 truncate">
+                <a href="{% url 'posts:detail' post.id %}" class="hover:underline">{{ post.title }}</a>
+              </td>
+              <td class="px-4 py-2 max-sm:px-2">{{ post.get_category_display }}</td>
+              <td class="px-4 py-2 max-sm:px-2">{{ post.user.nickname }}</td>
+              <td class="px-4 py-2 max-sm:px-2 sm:table-cell hidden">{{ post.created_at|date:"Y.m.d" }}</td>
+              <td class="px-4 py-2 max-sm:px-2 sm:hidden">{{ post.created_at|date:"m.d" }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5" class="text-center text-gray-500 py-4">등록된 질문이 없습니다 🥲</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
 
   </div>
@@ -92,5 +97,6 @@
       <span class="px-2 py-1 text-gray-300">&gt;</span>
     {% endif %}
   </div>
+
 </div>
 {% endblock %}

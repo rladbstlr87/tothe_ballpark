@@ -116,7 +116,7 @@
     <img src="/static/cal/images/icon/note-paper.png" alt="티켓 팝업 배경"
          class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0" />
     <!-- 닫기 버튼 -->
-    <button id="closeRanking" class="absolute top-17 right-12 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
+    <button id="closeTicketModal" class="absolute top-17 right-12 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
       ×
     </button>
     <!-- 내용 -->
@@ -151,7 +151,7 @@
          class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0" />
 
     <!-- 닫기 버튼 -->
-    <button id="closeRanking" class="absolute top-17 right-12 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
+    <button id="closeRankingModal" class="absolute top-17 right-12 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
       ×
     </button>
 
@@ -199,7 +199,7 @@
   const ticketBtn = document.getElementById("ticketBtn");
   const ticketBtnMobile = document.getElementById("ticketBtnMobile");
   const ticketModal = document.getElementById("ticketModal");
-  const closeModal = document.getElementById("closeModal");
+  const closeTicketModal = document.getElementById("closeTicketModal");
 
   [ticketBtn, ticketBtnMobile].forEach(btn => {
     btn?.addEventListener("click", () => {
@@ -207,7 +207,7 @@
     });
   });
 
-  closeModal?.addEventListener("click", () => {
+  closeTicketModal?.addEventListener("click", () => {
     ticketModal.classList.add("hidden");
   });
 
@@ -220,7 +220,7 @@
   const rankingBtn = document.getElementById("rankingBtn");
   const rankingBtnMobile = document.getElementById("rankingBtnMobile");
   const rankingModal = document.getElementById("rankingModal");
-  const closeRanking = document.getElementById("closeRanking");
+  const closeRankingModal = document.getElementById("closeRankingModal");
 
   [rankingBtn, rankingBtnMobile].forEach(btn => {
     btn?.addEventListener("click", () => {
@@ -228,7 +228,7 @@
     });
   });
 
-  closeRanking?.addEventListener("click", () => {
+  closeRankingModal?.addEventListener("click", () => {
     rankingModal.classList.add("hidden");
   });
 
