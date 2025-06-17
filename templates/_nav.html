@@ -1,6 +1,6 @@
 {% load static %}
 <nav x-data="{ mobileMenuOpen: false }"
-    class="bg-cover left-0 w-full bg-transparent z-10 py-1 md:py-3 font-jaram [background-position:0%_100%]"
+    class="relative z-9999 bg-cover w-full bg-transparent z-10 py-1 md:py-3 font-jaram [background-position:0%_100%]"
     style="{% if user.team == none %}background-image: url('{% static 'nav/nav-' %}nothing.png');{% else %}background-image: url('{% static 'nav/nav-' %}{{ user.team }}.png');{% endif %}">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="relative flex h-16">
@@ -35,7 +35,7 @@
                         <!-- 일부러 둔 빈div박스 -->
                         <span class="p-3 w-15 text-center text-gray-700"></span>
                     </div>
-                    <div class="flex flex-1 items-center">
+                    <div class="flex flex-1 items-center gap-x-6">
                         <a href="{% url 'cal:calendar' %}" class="p-3 text-black hover:text-blue-500">
                             <span class="relative tracking-widest">
                                 <span class="absolute inset-x-0 bottom-0 h-2 bg-green-400  -z-10"></span>
@@ -54,6 +54,27 @@
                                 <span>순위</span>
                             </span>
                         </a>
+                        <div x-data="{ open: false }">
+                            <!-- 드롭다운 트리거 -->
+                            <span @click="open = !open"
+                                    class="relative tracking-widest">
+                                <span class="absolute inset-x-0 bottom-0 h-2 bg-green-400 -z-10"></span>
+                                <span class="hover:text-blue-500">경기장</span>
+                            </span>
+
+                            <!-- 드롭다운 메뉴 -->
+                            <div x-show="open"
+                                @click.outside="open = false"
+                                x-transition
+                                class="absolute mt-2 bg-white border border-gray-300 shadow-lg rounded-md z-50 w-40">
+                                {% for stadium in stadiums %}
+                                    <a href="{% url 'cal:stadium_info' stadium %}" 
+                                        class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                        {{ stadium }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                     <!-- 가운데 홈버튼 -->
                     <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -68,26 +89,17 @@
                         {% endif %}
                     </div>
                     <!-- 오른쪽 사용자 메뉴 -->
-                    <div class="flex items-center">
-                    <div class="relative group">
-                        <span class="relative tracking-widest">
-                            <span class="absolute inset-x-0 bottom-0 h-2 bg-green-400 -z-10"></span>
-                            <span class="hover:text-blue-500">경기장</span>
-                        </span>
-
-                        <!-- 드롭다운 -->
-                        <div class="absolute hidden group-hover:flex flex-col mt-2 bg-white border border-gray-300 shadow-lg rounded-md z-50 w-40">
-                            {% for stadium in stadiums %}
-                            <a href="{% url 'cal:stadium_info' stadium %}" class="px-4 py-2 hover:bg-gray-100 text-gray-800">
-                                {{ stadium }}
-                            </a>
-                            {% endfor %}
-                        </div>
-                    </div>
+                    <div class="flex items-center gap-x-6">
 
                         {% if user.is_authenticated %}
+                        <span class="relative tracking-widest p-3 text-gray-700">
+                            <span class="absolute inset-x-0 bottom-[18px] h-2 bg-yellow-400 -z-10"></span>
+                            <span class="-rotate-7">{{ user.nickname }}</span>
+                        </span>
 
-                        <span class="p-3 w-30 text-center text-gray-700 -rotate-7">{{ user.nickname }}</span>
+
+
+
 
                         <a href="{% url 'accounts:logout' %}" class="p-3 text-black hover:text-blue-500">
                             <span class="relative tracking-widest">

@@ -185,12 +185,15 @@ def calendar_view(request):
     cal = Calendar(d.year, d.month, team=user_team)
     cal_data = cal.get_month_data()
 
+    standing = calculate_team_standings()
+
     context = {
         'cal_data': cal_data,
         'prev_month': prev_month(d),
         'next_month': next_month(d),
         'user_team': user_team,
         'user_attendance_game_ids': user_attendance_game_ids,
+        'standing': standing,
     }
     return render(request, 'calendar.html', context)
 
