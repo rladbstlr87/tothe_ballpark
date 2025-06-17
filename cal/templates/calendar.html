@@ -38,7 +38,7 @@
             {% endif %}
             {% if forloop.counter0 == 6 %}
               <!-- 오른쪽 순위 버튼 (진짜 오른쪽 위치) -->
-              <div class="absolute top-1/2 right-10 -translate-y-1/2 z-10 max-sm:hidden">
+              <div class="absolute top-1/2 right-20  z-10 max-sm:hidden">
                 <img src="{% static 'cal/images/icon/rank.png' %}" alt="순위 보기"
                     id="rankingBtn"
                     class="w-[200px] h-[200px] cursor-pointer hover:scale-105 transition" />
@@ -96,11 +96,17 @@
   
 </div>
 
-<!-- ✅ 모바일 전용 티켓 버튼 -->
-<div class="block sm:hidden w-full mt-6">
+<!-- ✅ 모바일 전용 버튼 영역 -->
+<div class="block sm:hidden w-full mt-6 flex justify-center gap-4">
+  <!-- 티켓 버튼 -->
   <img src="/static/cal/images/icon/ticket.png" alt="티켓 메모"
        id="ticketBtnMobile"
-       class="w-[140px] h-[140px] cursor-pointer hover:scale-105 transition">
+       class="w-[120px] h-[120px] cursor-pointer hover:scale-105 transition">
+
+  <!-- 순위 버튼 -->
+  <img src="/static/cal/images/icon/rank.png" alt="순위 보기"
+       id="rankingBtnMobile"
+       class="w-[120px] h-[120px] cursor-pointer hover:scale-105 transition">
 </div>
 
 <!-- ✅ 티켓팅 모달 -->
@@ -110,7 +116,7 @@
     <img src="/static/cal/images/icon/note-paper.png" alt="티켓 팝업 배경"
          class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0" />
     <!-- 닫기 버튼 -->
-    <button id="closeModal" class="absolute top-17 right-12 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
+    <button id="closeRanking" class="absolute top-17 right-12 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
       ×
     </button>
     <!-- 내용 -->
@@ -145,7 +151,7 @@
          class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0" />
 
     <!-- 닫기 버튼 -->
-    <button id="closeModal" class="absolute top-17 right-12 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
+    <button id="closeRanking" class="absolute top-17 right-12 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
       ×
     </button>
 
@@ -212,11 +218,14 @@
   });
 
   const rankingBtn = document.getElementById("rankingBtn");
+  const rankingBtnMobile = document.getElementById("rankingBtnMobile");
   const rankingModal = document.getElementById("rankingModal");
   const closeRanking = document.getElementById("closeRanking");
 
-  rankingBtn?.addEventListener("click", () => {
-    rankingModal?.classList.remove("hidden");
+  [rankingBtn, rankingBtnMobile].forEach(btn => {
+    btn?.addEventListener("click", () => {
+      rankingModal?.classList.remove("hidden");
+    });
   });
 
   closeRanking?.addEventListener("click", () => {
