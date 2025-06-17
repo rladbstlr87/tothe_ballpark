@@ -66,6 +66,7 @@ TEMPLATES = [
                 'accounts.context_processors.win_count_total', # 사용자 승리 횟수 계산을 위한 컨텍스트 프로세서 추가
                 'accounts.context_processors.all_users_winning_percent', # 전체 사용자 승률 계산을 위한 컨텍스트 프로세서 추가
                 'cal.context_processors1.stadium_list',
+                'cal.context_processors1.random_backgrounds'
             ],
         },
     },

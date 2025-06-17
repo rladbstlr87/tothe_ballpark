@@ -20,5 +20,7 @@ def random_backgrounds(request):
         'cal/images/mascots/KTline.svg',
         'cal/images/mascots/WOline.svg',
     ]
-    return random.choice(team_icons)
+    return {
+        'random_background': random.choice(team_icons)
+    }
     
