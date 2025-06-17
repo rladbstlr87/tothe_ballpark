@@ -55,7 +55,7 @@
 
         <!-- 스크롤 열 -->
         <div id="ranking-scroll-wrapper" class="overflow-x-auto scroll-smooth w-fit hide-scrollbar">
-          <table id="ranking-table" class="border-collapse text-sm w-full min-w-[1000px] bg-white">
+          <table id="ranking-table" class="border-collapse text-sm w-full min-w-[930px] bg-white">
             <thead class="bg-blue-100">
               <tr>
                 <th class="py-1">경기</th>
@@ -86,7 +86,7 @@
                 <td class="py-1">{{ team.weekly }}</td>
                 <td class="py-1">
                   {% for result in team.recent_results %}
-                  <span class="{% if result == '승' %}text-blue-600{% elif result == '패' %}text-red-500{% else %}text-gray-500{% endif %} font-semibold text-sm mr-1">
+                  <span class="{% if result == '승' %}text-blue-600{% elif result == '패' %}text-red-500{% else %}text-gray-500{% endif %} font-semibold text-sm mr-2">
                     {{ result }}
                   </span>
                   {% endfor %}
