@@ -3,7 +3,7 @@
 
 {% block styles %}
   <link rel="stylesheet" href="{% static 'posts/css/detail.css' %}">
-  <link reader="stylesheet" href="{% static 'fonts/fonts.css' %}"> 
+  <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}">
 {% endblock %}
   
 {% block body %}
@@ -16,6 +16,9 @@
   <img id="scrollStickerLeft" src="{% static 'posts/images/detail/fan.png' %}" alt="왼쪽 스크롤 스티커" class="fixed left-4 top-1/3 w-30 opacity-0 scale-90 z-10 pointer-events-none transition-all duration-500 transform -translate-y-1/2" />
 
   <div class="mx-auto bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl z-10 relative">
+    <a href="{% url 'posts:post_index' %}" class="">
+    <span class="font-ydestreetl font-thin text-sm underline-offset-3 text-gray-500 underline">직돌이네 응원석</span>
+    <span class="font-ydestreetl font-thin text-xs ml-1 text-gray-500">{{ total }}개의 글</span></a>
     <!-- 게시글 제목 및 메타 -->
     <div class="border-b pb-4 mb-4">
       <h1 class="text-2xl font-bold text-gray-800 text-center">{{ post.title }}</h1>
