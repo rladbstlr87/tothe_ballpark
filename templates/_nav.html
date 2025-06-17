@@ -2,14 +2,14 @@
 <nav x-data="{ mobileMenuOpen: false }"
     class="relative z-9999 bg-cover w-full bg-transparent z-10 py-1 md:py-3 font-jaram [background-position:0%_100%]"
     style="{% if user.team == none %}background-image: url('{% static 'nav/nav-' %}nothing.png');{% else %}background-image: url('{% static 'nav/nav-' %}{{ user.team }}.png');{% endif %}">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 ">
+    <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 ">
         <div class="relative flex h-16">
             <!-- Mobile menu button -->
             <div class="absolute inset-y-0 left-0 flex md:hidden">
                 <button type="button"
                         @click="mobileMenuOpen = !mobileMenuOpen"
                         :aria-expanded="mobileMenuOpen"
-                        class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset"
+                        class="inline-flex items-center rounded-md m-2 p-4 text-gray-400 hover:bg-gray-500 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset"
                         aria-controls="mobile-menu">
                     <span class="absolute -inset-0.5"></span>
                     <!-- 메뉴 닫힌 상태 -->
@@ -18,9 +18,9 @@
                         fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg>
-                <!-- 메뉴 열린 상태 -->
-                <svg :class="{ 'block': mobileMenuOpen, 'hidden': !mobileMenuOpen }"
+                    </svg>
+                    <!-- 메뉴 열린 상태 -->
+                    <svg :class="{ 'block': mobileMenuOpen, 'hidden': !mobileMenuOpen }"
                         class="size-6"
                         fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -96,10 +96,6 @@
                             <span class="-rotate-7">{{ user.nickname }}</span>
                         </span>
 
-
-
-
-
                         <a href="{% url 'accounts:logout' %}" class="p-3 text-black hover:text-blue-500">
                             <span class="relative tracking-widest">
                                 <span class="absolute inset-x-0 bottom-0 h-2 bg-red-400  -z-10"></span>
@@ -123,20 +119,19 @@
             </div>
             <!-- 승리요정 -->
             {% if user.is_authenticated %}
-                <div class="grid grid-cols-1 flex justify-end w-[160px] h-[120px]" x-show="!mobileMenuOpen" x-transition.opacity>
-                    {% comment %} <img src="/static/cal/images/bg/attended_alert.svg" alt="dd" class="py-4 w-28 ml-20 -rotate-15"> {% endcomment %}
+                <div class="grid grid-cols-1 justify-end items-end h-auto" style="width: clamp(90px, 20vw, 160px);" x-show="!mobileMenuOpen" x-transition.opacity>
                     {% with winning_percent=winning_percent %}
-                    <a id="fairy" href="{% url 'cal:user_games' user.id %}" class="flex rotate-7 translate-x-2">
+                    <a id="fairy" href="{% url 'cal:user_games' user.id %}" class="inline-block w-fit">
                         {% if winning_percent >= 50 %}
                             <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-winning.svg" alt="승리요정"
-                                class="w-[20vw] h-auto">
+                                class="w-full max-w-[100px] md:max-w-[160px] h-auto">
                         {% else %}
                             <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-losing.svg" alt="패배요정"
-                                class="w-[20vw] h-auto">
+                                class="w-full max-w-[100px] md:max-w-[160px] h-auto">
                         {% endif %}
                     </a>
                     {% if request.resolver_match.url_name == 'calendar' %}
-                        <img src="/static/cal/images/bg/attended_alert.svg" alt="dd" class="py-4 w-28 ml-20 -rotate-15 max-sm:hidden"> 
+                        <img src="/static/cal/images/bg/attended_alert.svg" alt="dd" class="py-4 w-28 ml-12 -rotate-15 max-lg:hidden"> 
                     {% endif %}
                     {% endwith %}
                 </div>
@@ -145,41 +140,54 @@
     </div>
     <!-- Mobile 메뉴 -->
     <div class="hidden" id="mobile-menu">
-        <div class="space-y-1 px-2 pt-2 pb-3 z-20">
-            <a href="{% url 'index' %}" class="block rounded-md bg-gray-900/50 px-3 py-2 text-white">홈</a>
-            <a href="{% url 'cal:calendar' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">캘린더</a>
-            <a href="{% url 'posts:post_index' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">응원석</a>
-            <a href="{% url 'cal:standings'%}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">순위</a>
+        <div class="w-3/4 space-y-1 p-2 text-xl text-stroke">
+            <a href="{% url 'index' %}" class="block rounded-md px-3 py-1 bg-gray-900/50 mask-linear-50 mask-direction-right mask-linear-from-20% mask-linear-to-100%">
+                홈
+            </a>
+            <a href="{% url 'cal:calendar' %}" class="block rounded-md px-3 py-1 active:bg-gray-700 mask-linear-50 mask-direction-right mask-linear-from-20% mask-linear-to-100%">
+                캘린더
+            </a>
+            <a href="{% url 'posts:post_index' %}" class="block rounded-md px-3 py-1 active:bg-gray-700 mask-linear-50 mask-direction-right mask-linear-from-20% mask-linear-to-100%">
+                응원석
+            </a>
+            <a href="{% url 'cal:standings'%}" class="block rounded-md px-3 py-1 active:bg-gray-700 mask-linear-50 mask-direction-right mask-linear-from-20% mask-linear-to-100%">
+                순위
+            </a>
 
             <div x-data="{ open: false }" class="relative">
-            <button @click="open = !open"
-                    class="w-full flex justify-between items-center rounded-md px-3 py-2 text-white hover:bg-gray-700">
-                <span>경기장</span>
-                <svg :class="{ 'transform rotate-180': open }"
-                    class="w-4 h-4 ml-2 transition-transform"
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 9l-7 7-7-7"/>
-                </svg>
-            </button>
+                <button @click="open = !open"
+                        class="w-full flex justify-between items-center rounded-md px-3 py-2 text-white hover:bg-gray-700">
+                    <span>경기장</span>
+                    <svg :class="{ 'transform rotate-180': open }"
+                        class="w-4 h-4 ml-2 transition-transform"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
 
-            <!-- 드롭다운 목록 -->
-            <div x-show="open" @click.outside="open = false" x-transition
-                class="mt-1 space-y-1 rounded-md bg-gray-800 py-2 px-2 shadow-lg z-50">
-                {% for stadium in stadiums %}
-                <a href="{% url 'cal:stadium_info' stadium %}"
-                    class="block px-4 py-2 text-white hover:bg-gray-700 rounded-md">
-                    {{ stadium }}
-                </a>
-                {% endfor %}
+                <!-- 드롭다운 목록 -->
+                <div x-show="open" @click.outside="open = false" x-transition
+                    class="mt-1 space-y-1 rounded-md bg-gray-800 py-2 px-2 shadow-lg z-50">
+                    {% for stadium in stadiums %}
+                    <a href="{% url 'cal:stadium_info' stadium %}"
+                        class="block px-4 py-2 text-white hover:bg-gray-700 rounded-md">
+                        {{ stadium }}
+                    </a>
+                    {% endfor %}
+                </div>
             </div>
-            </div>
-
             {% if user.is_authenticated %}
-            <a href="{% url 'cal:user_games' user.id %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">직관 승률</a>
-            <a href="{% url 'accounts:logout' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">로그아웃</a>
+            <a href="{% url 'cal:user_games' user.id %}" class="block rounded-md px-3 py-1 active:bg-gray-700 mask-linear-50 mask-direction-right mask-linear-from-20% mask-linear-to-100%">
+                직관 승률
+            </a>
+            <a href="{% url 'accounts:logout' %}" class="block rounded-md px-3 py-1 active:bg-gray-700 mask-linear-50 mask-direction-right mask-linear-from-20% mask-linear-to-100%">
+                로그아웃
+            </a>
             {% else %}
-            <a href="{% url 'accounts:auth' %}" class="block rounded-md px-3 py-2 text-white hover:bg-gray-700 hover:text-white">로그인</a>
+            <a href="{% url 'accounts:auth' %}" class="block rounded-md px-3 py-1 active:bg-gray-700 mask-linear-50 mask-direction-right mask-linear-from-20% mask-linear-to-100%">
+                로그인
+            </a>
             {% endif %}
         </div>
     </div>

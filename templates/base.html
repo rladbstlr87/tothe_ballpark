@@ -17,7 +17,7 @@
         {% block styles %}
         {% endblock %}
 </head>
-<body x-data="{ mobileMenuOpen: false }" class="min-h-screen max-w-screen relative font-ydestreetl bg-paper">
+<body x-data="{ mobileMenuOpen: false }" class="min-h-screen max-w-screen relative font-ydestreetl bg-paper overflow-x-hidden">
     {% include '_nav.html' %}
     {% block body %}
     {% endblock %}
@@ -36,6 +36,16 @@
         openIcon.classList.toggle('hidden', !isExpanded);
         closeIcon.classList.toggle('hidden', isExpanded);
         mobileMenu.classList.toggle('hidden');
+        });
+        // 화면 리사이즈 시 메뉴 닫기
+        window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+            // md 이상일 경우 메뉴 닫힘 상태로 초기화
+            toggleBtn.setAttribute('aria-expanded', 'false');
+            openIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            mobileMenu.classList.add('hidden');
+        }
         });
     });
     </script>
