@@ -1,55 +1,44 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block extra_head %}
+{% block styles %}
   <link rel="stylesheet" href="{% static 'posts/css/create.css' %}">
 {% endblock %}
 
 {% block body %}
-  <div class="bg-neutral-100 flex items-center justify-center py-12 px-4 font-handdrawn">
-    <img src="{% static 'posts/images/detail/pinkhitter.png' %}" alt="스티커" class="w-36 absolute top-4 left-4 z-0 mt-50">
-<img src="{% static 'posts/images/detail/bluehitter.png' %}" alt="스티커" class="w-36 absolute top-4 right-4 z-0  mt-90">
-    <div class="bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl z-10 relative">
-      <h1 class="text-3xl font-extrabold text-center text-black mb-10 tracking-wider">게시글 작성</h1>
+<div class="bg-neutral-100 flex items-center justify-center py-12 px-4 font-handdrawn">
+  <img src="{% static 'posts/images/detail/pinkhitter.png' %}" alt="스티커" class="w-36 absolute top-4 left-4 z-0 mt-50">
+  <img src="{% static 'posts/images/detail/bluehitter.png' %}" alt="스티커" class="w-36 absolute top-4 right-4 z-0 mt-90 max-sm:hidden">
 
-      <form action="" method="POST" enctype="multipart/form-data" class="space-y-6 text-gray-800">
-          {% csrf_token %}
-          <div>
-            {{ form.category }}
-          </div>
-          <div>
-            {{ form.title }}
-          </div>
-          <div>
-            {{ form.content }}
-          </div>
-          
-          <!-- 새 이미지 미리보기 -->
-          <div id="preview-container" class="flex gap-4 flex-wrap "></div>
-          
-          <!-- 이미지 업로드 버튼 -->
-          <label for="image-input" class="inline-block px-4 py-2 bg-gray-300 rounded-md text-white rounded cursor-pointer">
-            이미지 선택
-          </label>
-          <small class="ml-2 text-gray-500" id="file-count-label">0개 파일 선택됨 (최대 10장)</small>
-          <input type="file" name="images" id="image-input" multiple hidden>
-          
-          <div class="text-center mt-8">
-            <button type="submit"
-                class="rounded-full px-8 py-3 bg-[#9AA6B2] text-white text-lg font-semibold 
-                       hover:bg-[#BCCCDC] transition duration-200 shadow-md">
-                작성 완료
-            </button>
-          </div>
-      </form>
-    </div>
+  <div class="bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl z-10 relative">
+    <h1 class="text-3xl font-extrabold text-center text-black mb-10 tracking-wider">게시글 작성</h1>
+
+    <form action="" method="POST" enctype="multipart/form-data" class="space-y-6 text-gray-800">
+      {% csrf_token %}
+      <div>{{ form.category }}</div>
+      <div>{{ form.title }}</div>
+      <div>{{ form.content }}</div>
+
+      <!-- 이미지 미리보기 -->
+      <div id="preview-container" class="flex gap-4 flex-wrap"></div>
+
+      <!-- 이미지 업로드 -->
+      <label for="image-input" class="inline-block px-4 py-2 bg-gray-300 text-white rounded cursor-pointer">
+        이미지 선택
+      </label>
+      <small class="ml-2 text-gray-500" id="file-count-label">0개 파일 선택됨 (최대 10장)</small>
+      <input type="file" name="images" id="image-input" multiple hidden>
+
+      <div class="text-center mt-8">
+        <button type="submit" class="rounded-full px-8 py-3 bg-[#9AA6B2] text-white text-lg font-semibold hover:bg-[#BCCCDC] transition duration-200 shadow-md">
+          작성 완료
+        </button>
+      </div>
+    </form>
   </div>
-              
-              
-         
+</div>
 
-  <script>
-  // ✅ 새 이미지 업로드 처리 (기존 코드 그대로 유지)
+<script>
   const input = document.getElementById('image-input');
   const preview = document.getElementById('preview-container');
   const fileCountLabel = document.getElementById('file-count-label');
@@ -66,8 +55,8 @@
 
     files.forEach(file => {
       selectedFiles.push(file);
-
       const reader = new FileReader();
+
       reader.onload = function (e) {
         const container = document.createElement('div');
         container.className = 'relative w-24 h-24';
@@ -78,12 +67,12 @@
 
         const delBtn = document.createElement('button');
         delBtn.innerHTML = '✕';
-        delBtn.className = 'absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full rounded cursor-pointer';
+        delBtn.className = 'absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full cursor-pointer';
         delBtn.onclick = function (e) {
-          e.preventDefault(); // 추가: 기본 동작 방지
-          container.remove(); // 변경: preview.removeChild(container) 대신 직접 remove 사용
+          e.preventDefault();
+          container.remove();
           selectedFiles = selectedFiles.filter(f => f !== file);
-          // input의 files 업데이트
+
           const dt = new DataTransfer();
           selectedFiles.forEach(file => dt.items.add(file));
           input.files = dt.files;
@@ -94,14 +83,14 @@
         container.appendChild(delBtn);
         preview.appendChild(container);
       };
+
       reader.readAsDataURL(file);
     });
 
     fileCountLabel.textContent = `${selectedFiles.length}개 파일 선택됨 (최대 10장)`;
   });
 
-  // ✅ 기존 이미지 ✕ 버튼 눌렀을 때 체크박스 체크
-   document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function () {
     const deleteButtons = document.querySelectorAll('.delete-btn');
     const form = document.querySelector('form');
 
@@ -111,7 +100,6 @@
         const checkbox = document.getElementById(`checkbox-${id}`);
         if (checkbox) {
           checkbox.checked = true;
-          // hidden input 추가하여 삭제할 이미지 ID를 서버에 전송
           const hiddenInput = document.createElement('input');
           hiddenInput.type = 'hidden';
           hiddenInput.name = 'delete_images';
@@ -119,7 +107,6 @@
           form.appendChild(hiddenInput);
         }
 
-        // 이미지 박스 제거
         const box = btn.closest('.image-box');
         if (box) box.remove();
       });

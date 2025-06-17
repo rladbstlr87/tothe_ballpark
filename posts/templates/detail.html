@@ -1,36 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block extra_head %}
-  <style>
-    @font-face {
-      font-family: 'YdestreetB';
-      src: url("{% static 'fonts/YdestreetB.woff2' %}") format('woff2');
-      font-weight: bold;
-      font-style: normal;
-    }
-    .font-handdrawn {
-      font-family: 'YdestreetB', sans-serif;
-    }
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  {% endblock %}
+{% block styles %}
+  <link rel="stylesheet" href="{% static 'posts/css/detail.css' %}">
+  <link reader="stylesheet" href="{% static 'fonts/fonts.css' %}"> 
+{% endblock %}
   
-  {% block body %}
-<link rel="stylesheet" href="{% static 'posts/css/detail.css' %}">
-<body class="pt-[90px] bg-neutral-100 font-ydestreetb">
+{% block body %}
+<div class="pt-[90px] bg-neutral-100 font-ydestreetb">
   <!-- 위에 배경 스티커 -->
   <img src="{% static 'posts/images/detail/pinkhitter.png' %}" alt="스티커" class="w-36 absolute top-4 left-4 z-0 mt-50">
-  <img src="{% static 'posts/images/detail/bluehitter.png' %}" alt="스티커" class="w-36 absolute top-4 right-4 z-0  mt-90">
+  <img src="{% static 'posts/images/detail/bluehitter.png' %}" alt="스티커" class="w-36 absolute top-4 right-4 z-0 mt-90 max-sm:hidden">
   <!-- 밑에 배경 스티커 -->
-  <img id="scrollSticker"
-    src="{% static 'posts/images/detail/yellowhitter.png' %}"
-    alt="스크롤 스티커"
-    class="fixed right-4 top-1/2 w-30 opacity-0 scale-90 z-10 pointer-events-none transition-all duration-500 transform -translate-y-1/2" />
-  <img id="scrollStickerLeft"
-    src="{% static 'posts/images/detail/fan.png' %}"
-    alt="왼쪽 스크롤 스티커"
-    class="fixed left-4 top-1/3 w-30 opacity-0 scale-90 z-10 pointer-events-none transition-all duration-500 transform -translate-y-1/2" />
+  <img id="scrollSticker" src="{% static 'posts/images/detail/yellowhitter.png' %}" alt="스크롤 스티커" class="fixed right-4 top-1/2 w-30 opacity-0 scale-90 z-10 pointer-events-none transition-all duration-500 transform -translate-y-1/2" />
+  <img id="scrollStickerLeft" src="{% static 'posts/images/detail/fan.png' %}" alt="왼쪽 스크롤 스티커" class="fixed left-4 top-1/3 w-30 opacity-0 scale-90 z-10 pointer-events-none transition-all duration-500 transform -translate-y-1/2" />
+
   <div class="mx-auto bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl z-10 relative">
     <!-- 게시글 제목 및 메타 -->
     <div class="border-b pb-4 mb-4">
