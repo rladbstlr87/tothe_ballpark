@@ -1,29 +1,23 @@
 {% load static %}
-<section class="w-full max-w-xl grid grid-cols-1 p-12 mx-auto "
+<section class="w-full max-w-xl grid grid-cols-1 p-4 sm:p-8 md:p-8 mx-auto"
         style="background-image: url({% static 'cal/images/team/' %}{{ user.team }}-box.svg);
             background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
             ">
 
-    <div class="p-4 grid grid-cols-7 gap-4 item-center">
-        <div class="col-span-1 flex justify-end items-center w-full ">
-            <img src="{% static 'cal/images/team/' %}{{ user.team }}.svg" alt="우리팀 라인업" class="h-16">
+    <div class="p-2 grid grid-cols-5 gap-4 item-center overflow-hidden">
+        <div class="flex justify-end items-center w-full ">
+            <img src="{% static 'cal/images/team/' %}{{ user.team }}.svg" alt="우리팀 라인업" class="h-24 w-24 object-contain">
         </div>
 
         <!-- ✅ 내 팀 점수 (크게 표시) -->
-        {% if user_score is not None %}
-            <div class="col-span-1 w-fit text-4xl font-extrabold text-800 text-white place-self-center">
-                {{ user_score }}
-            </div>
-        {% else %}
-            <div class="col-span-1 w-fit text-4xl font-extrabold text-800 text-white place-self-center">
-                0
-            </div>
-        {% endif %}
+        <div class="w-fit text-4xl font-extrabold text-800 text-white self-center justify-self-start">
+            {% if user_score is not None %}{{ user_score }}{% else %}0{% endif %}
+        </div>
 
         <!-- ✅ 중앙 정보 -->
-        <div class="col-span-3 w-fit text-center place-self-center">
+        <div class="w-fit text-center place-self-center">
             {% if not is_after_game %}
                 <a href="{{ ticket_url }}" target="_blank">
                     <button class="block mx-auto px-2 py-1 mb-1 rounded-md shadow-md bg-slate-600 text-white text-xs md:text-lg transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
@@ -38,19 +32,13 @@
         </div>
 
         <!-- ✅ 상대 팀 점수 (크게 표시) -->
-        {% if opponent_score is not None %}
-            <div class="w-fit text-4xl font-extrabold text-800 text-white place-self-center">
-                {{ opponent_score }}
-            </div>
-        {% else %}
-            <div class="w-fit text-4xl font-extrabold text-800 text-white place-self-center">
-                0
-            </div>
-        {% endif %}
+        <div class="w-fit text-4xl font-extrabold text-800 text-white place-self-center self-center justify-self-end">
+            {% if opponent_score is not None %}{{ opponent_score }}{% else %}0{% endif %}
+        </div>
 
         <!-- ✅ 상대 팀 이미지 -->
         <div class="h-fit w-fit place-self-center flex justify-center">
-            <img src="{% static 'cal/images/team/' %}{{ opponent_team }}.svg" alt="상대팀 라인업" class="h-16">
+            <img src="{% static 'cal/images/team/' %}{{ opponent_team }}.svg" alt="상대팀 라인업" class="h-24 w-24 object-contain">
         </div>
     </div>
 </section>

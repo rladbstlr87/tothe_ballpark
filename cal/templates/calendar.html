@@ -25,15 +25,15 @@
       <!-- 요일 헤더 -->
       <tr>
         {% for day_name in cal_data.week_header %}
-          <th class="{% if forloop.counter0 == 0 %}relative mon overflow-visible{% endif %} text-center w-12 h-12 align-middle">
+          <th class="{% if forloop.counter0 == 0 %}relative mon overflow-visible{% endif %} text-center w-12 h-12">
             {% if forloop.counter0 == 0 %}
               <!-- 왼쪽 배경 -->
-              <div class="absolute top-1/2 left-1/2 -translate-x-6/7 -translate-y-3/7 z-0 w-[300px] h-[300px] max-sm:hidden">
+              <div class="absolute top-1/2 left-1/2 -translate-x-6/7 -translate-y-3/7 z-0 w-[300px] h-[300px] max-lg:hidden">
                 <img src="/static/cal/images/bg/mon_alert.svg" alt="동그라미" class="w-full h-full pointer-events-none">
                 <img src="/static/cal/images/icon/ticket.png" alt="티켓 메모" id="ticketBtn"
-                     class="hidden sm:block w-[200px] h-[200px] z-0 transform -translate-x-10 cursor-pointer hover:scale-105 transition">
+                    class="hidden sm:block w-[200px] h-[200px] z-0 transform -translate-x-10 cursor-pointer hover:scale-105 transition">
                 <img src="{% static 'cal/images/team/' %}{{ user.team }}-yeah.png" alt="동그라미"
-                     class="mt-20 w-[220px] h-[80px] -rotate-15 z-0 pointer-events-none" />
+                    class="mt-20 w-[220px] h-[80px] -rotate-15 z-0 pointer-events-none" />
               </div>
             {% endif %}
             {% if forloop.counter0 == 6 %}
@@ -97,10 +97,10 @@
 </div>
 
 <!-- ✅ 모바일 전용 티켓 버튼 -->
-<div class="block sm:hidden w-full mt-6">
+<div class="block lg:hidden w-full mt-6">
   <img src="/static/cal/images/icon/ticket.png" alt="티켓 메모"
-       id="ticketBtnMobile"
-       class="w-[140px] h-[140px] cursor-pointer hover:scale-105 transition">
+      id="ticketBtnMobile"
+      class="w-[140px] h-[140px] cursor-pointer hover:scale-105 transition">
 </div>
 
 <!-- ✅ 티켓팅 모달 -->
@@ -108,7 +108,7 @@
   <div class="relative w-[460px] h-[460px] sm:w-[460px] sm:h-[460px] w-[90vw] h-[90vw]">
     <!-- 배경 종이 -->
     <img src="/static/cal/images/icon/note-paper.png" alt="티켓 팝업 배경"
-         class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0" />
+        class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0" />
     <!-- 닫기 버튼 -->
     <button id="closeModal" class="absolute top-17 right-12 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
       ×
@@ -142,7 +142,7 @@
     
     <!-- 배경 종이 -->
     <img src="/static/cal/images/icon/note-paper.png" alt="순위 팝업 배경"
-         class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0" />
+        class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0" />
 
     <!-- 닫기 버튼 -->
     <button id="closeModal" class="absolute top-17 right-12 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">

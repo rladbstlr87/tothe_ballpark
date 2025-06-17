@@ -119,20 +119,19 @@
             </div>
             <!-- 승리요정 -->
             {% if user.is_authenticated %}
-                <div class="grid grid-cols-1 flex justify-end w-[160px] h-[120px]" x-show="!mobileMenuOpen" x-transition.opacity>
-                    {% comment %} <img src="/static/cal/images/bg/attended_alert.svg" alt="dd" class="py-4 w-28 ml-20 -rotate-15"> {% endcomment %}
+                <div class="grid grid-cols-1 justify-end items-end h-auto" style="width: clamp(90px, 20vw, 160px);" x-show="!mobileMenuOpen" x-transition.opacity>
                     {% with winning_percent=winning_percent %}
-                    <a id="fairy" href="{% url 'cal:user_games' user.id %}" class="flex rotate-7 translate-x-2">
+                    <a id="fairy" href="{% url 'cal:user_games' user.id %}" class="inline-block w-fit">
                         {% if winning_percent >= 50 %}
                             <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-winning.svg" alt="승리요정"
-                                class="w-[20vw] h-auto">
+                                class="w-full max-w-[100px] md:max-w-[160px] h-auto">
                         {% else %}
                             <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-losing.svg" alt="패배요정"
-                                class="w-[20vw] h-auto">
+                                class="w-full max-w-[100px] md:max-w-[160px] h-auto">
                         {% endif %}
                     </a>
                     {% if request.resolver_match.url_name == 'calendar' %}
-                        <img src="/static/cal/images/bg/attended_alert.svg" alt="dd" class="py-4 w-28 ml-20 -rotate-15 max-sm:hidden"> 
+                        <img src="/static/cal/images/bg/attended_alert.svg" alt="dd" class="py-4 w-28 ml-12 -rotate-15 max-lg:hidden"> 
                     {% endif %}
                     {% endwith %}
                 </div>
