@@ -38,19 +38,19 @@
                     <div class="flex flex-1 items-center gap-x-6">
                         <a href="{% url 'cal:calendar' %}" class="p-3 text-black hover:text-blue-500">
                             <span class="relative tracking-widest">
-                                <span class="absolute inset-x-0 bottom-0 h-2 bg-[#F7FBFC]  -z-10"></span>
+                                <span class="absolute inset-x-0 bottom-0 h-2 bg-[#FEFFDE]  -z-10"></span>
                                 <span>캘린더</span>
                             </span>
                         </a>
                         <a href="{% url 'posts:post_index' %}" class="p-3 text-black hover:text-blue-500">
                             <span class="relative tracking-widest">
-                                <span class="absolute inset-x-0 bottom-0 h-2 bg-[#D6E6F2]  -z-10"></span>
+                                <span class="absolute inset-x-0 bottom-0 h-2 bg-[#DDFFBC]  -z-10"></span>
                                 <span>응원석</span>
                             </span>
                         </a>
                         <a href="{% url 'cal:standings'%}" class="p-3 text-black hover:text-blue-500">
                             <span class="relative tracking-widest">
-                                <span class="absolute inset-x-0 bottom-0 h-2 bg-[#B9D7EA]  -z-10"></span>
+                                <span class="absolute inset-x-0 bottom-0 h-2 bg-[#91C788]  -z-10"></span>
                                 <span>순위</span>
                             </span>
                         </a>
@@ -58,7 +58,7 @@
                             <!-- 드롭다운 트리거 -->
                             <span @click="open = !open"
                                     class="relative tracking-widest">
-                                <span class="absolute inset-x-0 bottom-0 h-2 bg-[#769FCD] -z-10"></span>
+                                <span class="absolute inset-x-0 bottom-0 h-2 bg-[#52734D] -z-10"></span>
                                 <span class="hover:text-blue-500">경기장</span>
                             </span>
 
@@ -92,7 +92,7 @@
                     <div class="flex items-center gap-x-6">
                         {% if user.is_authenticated %}
                         <span class="relative tracking-widest p-3 text-gray-700">
-                            <span class="absolute inset-x-0 bottom-[18px] h-2 bg-yellow-400 -z-10"></span>
+                            <span class="absolute inset-x-0 bottom-[18px] h-2 bg-[#FCEF91] -z-10"></span>
                             <span class="-rotate-7">{{ user.nickname }}</span>
                         </span>
 
