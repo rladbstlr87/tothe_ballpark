@@ -275,19 +275,34 @@ def lineup(request, game_id):
     for record in today_pitcher_records:
         latest_pitcher_stats[record.player_id] = record
 
-    # 수훈선수 선정
-    today_hitters = list(today_hitter_records)
-    today_pitchers = list(today_pitcher_records)
+    # 👉 유저 팀 정보
+    user_team = request.user.team
 
-    best_hitter = max(today_hitters, key=calculate_hitter_score, default=None)
-    best_pitcher = max(today_pitchers, key=calculate_pitcher_score, default=None)
+    # 👉 우리 팀 소속 타자 ID들
+    our_hitter_ids = set(Hitter.objects.filter(team_name=user_team).values_list('player_id', flat=True))
 
-    # 오늘 기록 없을 경우 전체 최신 기록에서 대체
-    if not best_hitter and latest_daily_stats:
-        best_hitter = max(latest_daily_stats.values(), key=calculate_hitter_score, default=None)
+    # 👉 우리 팀 소속 투수 ID들
+    our_pitcher_ids = set(Pitcher.objects.filter(team_name=user_team).values_list('player_id', flat=True))
 
-    if not best_pitcher and latest_pitcher_stats:
-        best_pitcher = max(latest_pitcher_stats.values(), key=calculate_pitcher_score, default=None)
+    # 👉 오늘 경기 중 우리 팀 타자 기록만
+    today_hitters = [r for r in today_hitter_records if r.player_id in our_hitter_ids]
+
+    # 👉 오늘 경기 중 우리 팀 투수 기록만
+    today_pitchers = [r for r in today_pitcher_records if r.player_id in our_pitcher_ids]
+
+    # 👉 오늘 기록이 없으면, 최신 기록 중 우리 팀만
+    if not today_hitters:
+        team_hitters = [r for r in latest_daily_stats.values() if r.player_id in our_hitter_ids]
+        best_hitter = max(team_hitters, key=calculate_hitter_score, default=None)
+    else:
+        best_hitter = max(today_hitters, key=calculate_hitter_score, default=None)
+
+    if not today_pitchers:
+        team_pitchers = [r for r in latest_pitcher_stats.values() if r.player_id in our_pitcher_ids]
+        best_pitcher = max(team_pitchers, key=calculate_pitcher_score, default=None)
+    else:
+        best_pitcher = max(today_pitchers, key=calculate_pitcher_score, default=None)
+
 
     hitter_score = calculate_hitter_score(best_hitter) if best_hitter else -999
     pitcher_score = calculate_pitcher_score(best_pitcher) if best_pitcher else -999
@@ -323,7 +338,6 @@ def lineup(request, game_id):
             away_lineup = lineups[pitcher_indexes[0]:pitcher_indexes[0]+10]
             home_lineup = lineups[pitcher_indexes[1]:pitcher_indexes[1]+10]
 
-            user_team = request.user.team
             if user_team == game.team1:
                 opponent_team = game.team2
                 user_lineup = away_lineup
@@ -335,7 +349,6 @@ def lineup(request, game_id):
         else:
             has_lineup = False
     else:
-        user_team = request.user.team
         opponent_team = game.team2 if user_team == game.team1 else game.team1
 
     # 점수 처리
@@ -376,7 +389,7 @@ def lineup(request, game_id):
         'game': game,
         'user_lineup': user_lineup,
         'opponent_lineup': opponent_lineup,
-        'user_team': request.user.team,
+        'user_team': user_team,
         'opponent_team': opponent_team,
         'has_lineup': has_lineup,
         'latest_daily_stats': latest_daily_stats,
