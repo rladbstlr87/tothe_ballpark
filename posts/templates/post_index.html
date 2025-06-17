@@ -2,21 +2,21 @@
 {% load static %}
 
 {% block body %}
-<div class="pt-[90px] bg-neutral-100">
+<div class="pt-[90px] ">
 
   <!-- 🏷️ 게시판 박스 -->
-  <div class="mx-auto bg-white rounded-2xl shadow-xl w-full max-w-6xl px-12 pt-0 pb-5 max-sm:px-4 max-sm:max-w-sm">
+  <div class="mx-auto bg-white rounded-2xl shadow-xl w-full max-w-6xl px-9 pt-0 pb-5 max-sm:px-4 max-sm:max-w-sm">
 
     <!-- ✅ 상단 헤더 (제목 + 아이콘) -->
-    <div class="relative border-b-[3px] pb-4 text-gray-900 text-center tracking-wider">
+    <div class="relative  pb-4 text-gray-900 text-center tracking-wider">
       <div class="flex justify-between items-end gap-4 px-4 py-4 md:px-8">
         
         <!-- 왼쪽: 야구공 이미지 -->
         <img src="{% static 'posts/images/index/baseball.png' %}" alt="야구공"
-             class="w-36 mt-10 ml-[100px] max-sm:w-16 max-sm:ml-0">
+             class="w-36 mt-10 ml-[100px] max-sm:w-16 max-sm:ml-0 max-sm:py-0 ">
         
         <!-- 가운데: 게시판 제목 -->
-        <h1 class="text-2xl max-sm:text-base whitespace-nowrap font-black">직돌이네 응원석</h1>
+        <h1 class="text-2xl max-sm:text-base whitespace-nowrap font-black max-sm:px-3">직돌이네 응원석</h1>
 
         <!-- 오른쪽: 작성하기 아이콘 -->
         <a href="{% url 'posts:create' %}">
@@ -27,12 +27,12 @@
     </div>
 
     <!-- 📋 게시판 테이블 -->
-    <div class="overflow-x-auto">
-      <table class="w-full text-sm max-sm:text-xs table-fixed whitespace-nowrap border border-gray-200 rounded-2xl overflow-hidden">
+    <div class=" border-b rounded-b-2xl border-sky-200 overflow-hidden">
+      <table class="w-full text-sm max-sm:text-xs   table-fixed whitespace-nowrap border border-gray-200 rounded-2xl overflow-hidden">
 
         <!-- 테이블 헤더 -->
-        <thead class="bg-gray-100 text-gray-500">
-          <tr class="text-center">
+        <thead class="bg-blue-100 text-gray-500 border-b border-gray-200 ">
+          <tr class="text-center ">
             <th class="text-left px-4 py-2 max-sm:px-2 max-sm:py-1 w-[10%] rounded-tl-2xl border-b border-gray-200">번호</th>
             <th class="text-left px-4 py-2 max-sm:px-2 max-sm:py-1 w-[40%] border-b border-gray-200">제목</th>
             <th class="px-4 py-2 max-sm:px-2 max-sm:py-1 w-[15%] border-b border-gray-200">분류</th>
@@ -44,8 +44,8 @@
         <!-- 테이블 본문 -->
         <tbody>
           {% for number, post in posts_with_number %}
-            <tr class="text-center border-b border-gray-200 last:rounded-b-2xl hover:bg-gray-50">
-              <td class="text-left px-4 py-2 max-sm:px-2">{{ number }}</td>
+            <tr class="text-center border-b border-x border-sky-200 last:rounded-b-2xl hover:bg-sky-50">
+              <td class="text-left px-4 py-2  max-sm:px-2">{{ number }}</td>
               <td class="text-left px-4 py-2 max-sm:px-2 truncate">
                 <a href="{% url 'posts:detail' post.id %}" class="hover:underline">{{ post.title }}</a>
               </td>
