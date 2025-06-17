@@ -137,10 +137,12 @@ def index(request):
         'cal/images/bg/mobile1.png',
         'cal/images/bg/mobile2.png',
     ]
-
+   
+    
     context = {
         'random_bg': random.choice(backgrounds),
         'random_mobile_bg': random.choice(mobile_backgrounds),
+        
     }
     return render(request, 'index.html', context)
 
