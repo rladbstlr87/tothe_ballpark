@@ -17,18 +17,34 @@
         </div>
 
         <!-- ✅ 중앙 정보 -->
-        <div class="w-fit text-center place-self-center">
+        <div class="flex flex-col items-center text-center place-self-center space-y-2">
             {% if not is_after_game %}
-                <a href="{{ ticket_url }}" target="_blank">
-                    <button class="block mx-auto px-2 py-1 mb-1 rounded-md shadow-md bg-slate-600 text-white text-xs md:text-lg transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
+                <a href="{{ ticket_url }}" target="_blank" class="grid-span-3">
+                    <button class="block mx-auto px-2 py-1 mb-1 rounded-md shadow-md bg-slate-600 text-white text-xs md:text-base transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
                         경기 전<br>예매하기
                     </button>
                 </a>
             {% endif %}
-            <a href="{% url 'cal:stadium_info' game.stadium %}?ticket_url={{ ticket_url|urlencode }}" class="block text-white text-xs md:text-lg">
+            <a href="{% url 'cal:stadium_info' game.stadium %}?ticket_url={{ ticket_url|urlencode }}" class="grid-span-3 text-white text-xs md:text-lg">
                 {{ game.stadium }}
             </a>
-            <div class="mt-1 text-sm text-gray-500">{{ today|date:"Y.m.d" }}</div>
+            <div class="mt-1 text-sm flex items-center justify-center">
+                {% if prev_game_id %}
+                    <a href="/cal/calendar/{{ prev_game_id }}/"
+                    class="px-2 text-white">
+                    <<
+                    </a>
+                {% endif %}
+
+                <span class="px-2 text-gray-300">{{ today|date:"y.m.d" }}</span>
+
+                {% if next_game_id %}
+                    <a href="/cal/calendar/{{ next_game_id }}/"
+                    class="px-2 text-white">
+                    >>
+                    </a>
+                {% endif %}
+            </div>
         </div>
 
         <!-- ✅ 상대 팀 점수 (크게 표시) -->

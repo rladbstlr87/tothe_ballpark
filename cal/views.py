@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
+from django.db.models import Q
 from datetime import datetime, timedelta, date
 from collections import defaultdict
 from .models import *
@@ -125,7 +126,7 @@ def calculate_team_standings():
     return team_data
 
 
-# ✅ 홈페이지 - 배경 이미지 랜덤 적용
+# 배경 이미지 랜덤 적용
 def index(request):
     backgrounds = [
         'cal/images/bg/home0.png',
@@ -137,7 +138,6 @@ def index(request):
         'cal/images/bg/mobile1.png',
         'cal/images/bg/mobile2.png',
     ]
-   
     
     context = {
         'random_bg': random.choice(backgrounds),
@@ -188,7 +188,6 @@ def calendar_view(request):
         'standing': standing,
     }
     return render(request, 'calendar.html', context)
-
 
 # 날짜 유틸 함수
 def get_date(req_day):
@@ -380,6 +379,21 @@ def lineup(request, game_id):
         '울산': "https://ticket.ncdinos.com/games",
     }
 
+    # 이전/다음 경기 버튼
+    team_games = Game.objects.filter(
+        Q(team1=user_team) | Q(team2=user_team)
+    ).order_by('date', 'id')
+
+    team_game_ids = list(team_games.values_list('id', flat=True))
+
+    try:
+        current_index = team_game_ids.index(game.id)
+        prev_game_id = team_game_ids[current_index - 1] if current_index > 0 else None
+        next_game_id = team_game_ids[current_index + 1] if current_index < len(team_game_ids) - 1 else None
+    except ValueError:
+        prev_game_id = None
+        next_game_id = None
+
     context = {
         'game': game,
         'user_lineup': user_lineup,
@@ -400,10 +414,11 @@ def lineup(request, game_id):
         'score': round(score, 2),
         'is_today_best': is_today_best,
         'show_best_player': show_best_player,
+        'prev_game_id': prev_game_id,
+        'next_game_id': next_game_id,
     }
 
     return render(request, 'lineup.html', context)
-
 
 # 직관 체크
 @never_cache
