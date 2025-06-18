@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}
+홈 | 직돌이
+{% endblock %}
+
 {% block body %}
   <div class="w-full aspect-[16/9] bg-center bg-cover bg-no-repeat -mb-12 hidden sm:block"
       style="background-image: url({% static random_bg %});">

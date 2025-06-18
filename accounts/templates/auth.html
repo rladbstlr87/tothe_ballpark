@@ -2,7 +2,7 @@
 {% load static %}
 {% load custom_filters1 %}
 {% block title %}
-    로그인/회원가입
+    로그인 | 직돌이
 {% endblock %}
 {% block styles %}
 <!-- 회원가입/로그인 페이지에 적용될 CSS 불러오기 -->
@@ -406,6 +406,64 @@
 				resultBox.className = 'text-sm mt-1 ' + (data.success ? 'text-green-600' : 'text-red-600');
 			});
 	}
+
+	document.addEventListener('DOMContentLoaded', function () {
+		// ✅ 제목 설정 함수
+		function setPageTitle(title) {
+			document.title = title;
+		}
+
+		// ✅ 폼 요소
+		const signinWrapper = document.querySelector('.signin-wrapper');
+		const signupWrapper = document.querySelector('.signup-wrapper');
+		const findIdWrapper = document.querySelector('.find-id-wrapper');
+		const findPasswordWrapper = document.querySelector('.find-password-wrapper');
+
+		// ✅ 폼 전환 함수
+		const switchForm = (targetWrapper) => {
+			[signinWrapper, signupWrapper, findIdWrapper, findPasswordWrapper].forEach(wrapper => {
+				wrapper.classList.remove('active');
+			});
+			targetWrapper.classList.add('active');
+		};
+
+		// ✅ 클릭 이벤트에 따라 폼 전환 + 타이틀 변경
+		document.getElementById('find-id-link').addEventListener('click', e => {
+			e.preventDefault();
+			switchForm(findIdWrapper);
+			setPageTitle('아이디 찾기 | 직돌이');
+		});
+
+		document.getElementById('find-password-link').addEventListener('click', e => {
+			e.preventDefault();
+			switchForm(findPasswordWrapper);
+			setPageTitle('비밀번호 찾기 | 직돌이');
+		});
+
+		document.getElementById('signup-link').addEventListener('click', e => {
+			e.preventDefault();
+			switchForm(signupWrapper);
+			setPageTitle('회원가입 | 직돌이');
+		});
+
+		document.getElementById('signin-link-from-signup').addEventListener('click', e => {
+			e.preventDefault();
+			switchForm(signinWrapper);
+			setPageTitle('로그인 | 직돌이');
+		});
+
+		document.getElementById('signin-link-from-others').addEventListener('click', e => {
+			e.preventDefault();
+			switchForm(signinWrapper);
+			setPageTitle('로그인 | 직돌이');
+		});
+
+		document.getElementById('signin-link-from-password').addEventListener('click', e => {
+			e.preventDefault();
+			switchForm(signinWrapper);
+			setPageTitle('로그인 | 직돌이');
+		});
+	});
 </script>
 
 {% endblock %}
