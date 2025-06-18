@@ -282,9 +282,7 @@ p a:hover {
     height: 100vh;
     overflow: hidden;
   }
-    html, body {
-    overflow: hidden; /* 여기서도 막아야 함 */
-  }
+
   .form {
     padding-top: 10px;
   }
