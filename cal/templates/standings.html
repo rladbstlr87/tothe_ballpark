@@ -29,22 +29,23 @@
         <button onclick="scrollRankingLeft()" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition">⬅</button>
         <button onclick="scrollRankingRight()" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition ml-2">➡</button>
       </div>
-      <div class="flex w-full relative rounded-[15px] overflow-hidden border border-gray-300">
+      <div class="flex w-full relative rounded-[15px] overflow-hidden border border-gray-300 text-xs">
+
         <!-- 고정 열 -->
-        <div class="sticky left-0 z-20">
-          <table class="border-collapse text-sm bg-white/90 border-r border-gray-300">
+        <div class="sticky left-0 z-20 w-[140px] bg-white/90 border-r border-gray-300">
+          <table class="table-fixed border-collapse w-full">
             <thead class="bg-blue-100">
               <tr>
-                <th class="px-2 py-1 w-[40px]"></th>
-                <th class="px-2 py-1 w-[100px]">팀</th>
+                <th class="px-1 py-1 w-[40px]"></th>
+                <th class="px-1 py-1 w-[50px]">팀</th>
               </tr>
             </thead>
             <tbody>
               {% for team in standing %}
-              <tr class="border-b border-b-gray-300 bg-[#f9f9f9] {% if team.team == user.team %}bg-yellow-100 font-bold text-black{% endif %}">
-                <td class="px-2 py-1">{{ forloop.counter }}</td>
-                <td class="px-2 py-1 whitespace-nowrap flex items-center justify-start gap-1">
-                  <img src="/static/cal/images/team/{{team.team}}.svg" class="w-5 h-5">
+              <tr class="border-b border-gray-300 bg-[#f9f9f9] {% if team.team == user.team %}bg-yellow-100 font-bold text-black{% endif %}">
+                <td class="px-1 py-1 text-center">{{ forloop.counter }}</td>
+                <td class="px-1 py-1 whitespace-nowrap flex items-center gap-1">
+                  <img src="/static/cal/images/team/{{ team.team }}.svg" class="w-5 h-5">
                   {{ team.team|team_name }}
                 </td>
               </tr>
@@ -54,39 +55,39 @@
         </div>
 
         <!-- 스크롤 열 -->
-        <div id="ranking-scroll-wrapper" class="overflow-x-auto scroll-smooth w-fit hide-scrollbar">
-          <table id="ranking-table" class="border-collapse text-sm w-full min-w-[930px] bg-white">
+        <div id="ranking-scroll-wrapper" class="overflow-x-auto scroll-smooth w-full hide-scrollbar">
+          <table id="ranking-table" class="table-fixed border-collapse w-full bg-white">
             <thead class="bg-blue-100">
               <tr>
-                <th class="py-1">경기</th>
-                <th class="py-1">승</th>
-                <th class="py-1">패</th>
-                <th class="py-1">무</th>
-                <th class="py-1">승률</th>
-                <th class="py-1">게임차</th>
-                <th class="py-1">연속</th>
-                <th class="py-1">홈</th>
-                <th class="py-1">원정</th>
-                <th class="py-1">이번주</th>
-                <th class="py-1">최근</th>
+                <th class="px-1 py-1 w-[50px]">경기</th>
+                <th class="px-1 py-1 w-[40px]">승</th>
+                <th class="px-1 py-1 w-[40px]">패</th>
+                <th class="px-1 py-1 w-[40px]">무</th>
+                <th class="px-1 py-1 w-[60px]">승률</th>
+                <th class="px-1 py-1 w-[60px]">게임차</th>
+                <th class="px-1 py-1 w-[60px]">연속</th>
+                <th class="px-1 py-1 w-[60px]">홈</th>
+                <th class="px-1 py-1 w-[60px]">원정</th>
+                <th class="px-1 py-1 w-[60px]">이번주</th>
+                <th class="px-1 py-1 w-[120px]">최근</th>
               </tr>
             </thead>
             <tbody>
               {% for team in standing %}
-              <tr class="border-b border-b-gray-300 bg-[#f9f9f9] {% if team.team == user.team %}bg-yellow-100 font-bold text-black{% endif %}">
-                <td class="py-1">{{ team.G }}</td>
-                <td class="py-1">{{ team.W }}</td>
-                <td class="py-1">{{ team.L }}</td>
-                <td class="py-1">{{ team.D }}</td>
-                <td class="py-1">{{ team.win_percent }}</td>
-                <td class="py-1">{{ team.games_behind }}</td>
-                <td class="py-1">{{ team.streak }}</td>
-                <td class="py-1">{{ team.home }}</td>
-                <td class="py-1">{{ team.away }}</td>
-                <td class="py-1">{{ team.weekly }}</td>
-                <td class="py-1">
+              <tr class="border-b border-gray-300 bg-[#f9f9f9] {% if team.team == user.team %}bg-yellow-100 font-bold text-black{% endif %}">
+                <td class="px-1 py-1 text-center">{{ team.G }}</td>
+                <td class="px-1 py-1 text-center">{{ team.W }}</td>
+                <td class="px-1 py-1 text-center">{{ team.L }}</td>
+                <td class="px-1 py-1 text-center">{{ team.D }}</td>
+                <td class="px-1 py-1 text-center">{{ team.win_percent }}</td>
+                <td class="px-1 py-1 text-center">{{ team.games_behind }}</td>
+                <td class="px-1 py-1 text-center">{{ team.streak }}</td>
+                <td class="px-1 py-1 text-center">{{ team.home }}</td>
+                <td class="px-1 py-1 text-center">{{ team.away }}</td>
+                <td class="px-1 py-1 text-center">{{ team.weekly }}</td>
+                <td class="px-1 py-1 text-center">
                   {% for result in team.recent_results %}
-                  <span class="{% if result == '승' %}text-blue-600{% elif result == '패' %}text-red-500{% else %}text-gray-500{% endif %} font-semibold text-sm mr-2">
+                  <span class="{% if result == '승' %}text-blue-600{% elif result == '패' %}text-red-500{% else %}text-gray-500{% endif %} font-semibold text-sm mr-1">
                     {{ result }}
                   </span>
                   {% endfor %}
@@ -97,6 +98,7 @@
           </table>
         </div>
       </div>
+
     </div>
   </div>
 </div>
