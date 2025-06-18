@@ -29,10 +29,10 @@
         <button onclick="scrollRankingLeft()" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition">⬅</button>
         <button onclick="scrollRankingRight()" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition ml-2">➡</button>
       </div>
-      <div class="flex w-full relative rounded-[15px] overflow-hidden border border-gray-300 text-xs">
+      <div class="flex w-full relative rounded-[15px] overflow-hidden border border-gray-300">
 
         <!-- 고정 열 -->
-        <div class="sticky left-0 z-20 w-[140px] bg-white/90 border-r border-gray-300">
+        <div class="sticky left-0 z-20 w-[180px] bg-white/90 border-r border-gray-300">
           <table class="table-fixed border-collapse w-full">
             <thead class="bg-blue-100">
               <tr>
@@ -106,7 +106,7 @@
   <!-- ✅ 타자 순위 -->
   <div id="hitters" class="tab-content hidden">
     <div class="standing-box bg-white shadow p-6 mb-8 text-xs sm:text-sm">
-      <div class="flex justify-center gap-4 mb-6">
+      <div class="flex justify-center my-3">
         <button onclick="showTab('ranking')"
                 class="tab-btn w-[200px] h-[70px] bg-[url('/static/cal/images/standing/standing_kbo.png')] bg-no-repeat bg-contain bg-center hover:brightness-90">
         </button>
@@ -130,7 +130,10 @@
       <div class="flex w-full relative rounded-[15px] overflow-hidden border border-gray-300">
         <table class="border-collapse text-sm sticky left-0 z-10 bg-white/90 border-r border-gray-300 sticky-table">
           <thead class="bg-blue-100">
-            <tr><th class="px-2 py-1"></th><th class="px-2 py-1">이름</th></tr>
+            <tr>
+              <th class="px-2 py-1"></th>
+              <th class="px-2 py-1">이름</th>
+            </tr>
           </thead>
           <tbody>
             {% for hitter in hitter_stats %}
@@ -217,7 +220,7 @@
   <!-- ✅ 투수 순위 -->
 <div id="pitchers" class="tab-content hidden">
     <div class="standing-box bg-white shadow p-6 mb-8 text-xs sm:text-sm">
-      <div class="flex justify-center gap-4 mb-6">
+      <div class="flex justify-center my-3">
         <button onclick="showTab('ranking')"
                 class="tab-btn w-[200px] h-[70px] bg-[url('/static/cal/images/standing/standing_kbo.png')] bg-no-repeat bg-contain bg-center hover:brightness-90">
         </button>
@@ -239,9 +242,13 @@
       </div>
 
       <div class="flex w-full relative rounded-[15px] overflow-hidden border border-gray-300">
+
         <table class="border-collapse text-sm sticky left-0 z-10 bg-white/90 border-r border-gray-300 sticky-table">
           <thead class="bg-blue-100">
-            <tr><th class="px-2 py-1"></th><th class="px-2 py-1">이름</th></tr>
+            <tr>
+              <th class="px-2 py-1"></th>
+              <th class="px-2 py-1">이름</th>
+            </tr>
           </thead>
           <tbody>
             {% for pitcher in pitcher_stats %}
