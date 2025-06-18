@@ -1,0 +1,303 @@
+html, body {
+  height: auto;
+  overflow: auto;
+}
+
+/* ----------------------------- */
+/* ✅ 전체 레이아웃 및 배경 스타일 */
+/* ----------------------------- */
+.root {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  height: auto;
+  overflow: hidden;
+  padding-top: 30px;
+  margin-bottom: 30px;
+}
+
+
+/* ----------------------------- */
+/* ✅ 로그인/회원가입/아이디찾기 폼 기본 상태 */
+/* ----------------------------- */
+.form {
+  position: absolute;
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 20px;
+
+  /* 처음에는 비활성화 상태 */
+  opacity: 0;
+  transform: scale(0.95) rotate(-1.5deg);
+  pointer-events: none;
+
+  transition: all 0.6s ease;
+  z-index: 1;
+}
+
+/* 활성화된 상태의 폼 */
+.form.active {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+  pointer-events: all;
+  z-index: 10;
+}
+
+/* ----------------------------- */
+/* ✅ 폼 카드 스타일 (로그인/회원가입 박스) */
+/* ----------------------------- */
+.form-wrapper {
+  background-color: #fdfcf7;
+  width: 480px;
+  height: 650px;
+
+  padding: 40px 32px;
+  border-radius: 16px;
+  box-shadow: 6px 6px 0 #bfb89b;
+  border: 1px solid #d6d1b1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  animation: fadeInUp 0.5s ease;
+}
+
+/* ----------------------------- */
+/* ✅ 제목 텍스트 스타일 (로그인, 회원가입 등) */
+/* ----------------------------- */
+h5 {
+  font-size: 28px;
+  color: #3e3426;
+  margin-bottom: 35px;
+  font-weight: 600;
+}
+
+
+/* ----------------------------- */
+/* ✅ 모든 input/select 공통 스타일 */
+/* ----------------------------- */
+.form-field {
+  width: 100%;
+  height: 45px;
+  margin-bottom: 22px;
+
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid #d9d2b4;
+  background: #fffef9;
+
+  font-size: 16px;
+  color: #3e3e3e;
+
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+
+/* ----------------------------- */
+/* ✅ 버튼 기본 스타일 */
+/* ----------------------------- */
+.button {
+  width: 100%;
+  height: 50px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+
+  margin-bottom: 18px;
+  transition: all 0.3s ease;
+}
+
+/* 주요 버튼 (로그인, 회원가입 등) */
+.primary {
+  background-color: #826d47;
+  color: #fffbea;
+  border: none;
+}
+.primary:hover {
+  background-color: #6b5739;
+}
+
+/* 보조 버튼 (중복확인, 이메일 인증 등) */
+.secondary {
+  background-color: transparent;
+  color: #826d47;
+  border: 1px solid #826d47;
+}
+.secondary:hover {
+  background-color: #f9f6ee;
+}
+
+
+/* ----------------------------- */
+/* ✅ 링크 및 안내 텍스트 스타일 */
+/* ----------------------------- */
+p {
+  font-size: 14px;
+  color: #555;
+}
+
+p a {
+  color: #826d47;
+  text-decoration: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+p a:hover {
+  color: #b08b56;
+}
+
+/* ----------------------------- */
+/* ✅ 페이드 전환 애니메이션 */
+/* ----------------------------- */
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+.fade-out {
+  opacity: 1;
+  animation: fadeOut 0.3s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+@keyframes fadeOut {
+  to { opacity: 0; }
+}
+
+.overlay-img {
+  position: absolute;
+  transform: translateY(-40px);
+  justify-content: center;
+  width: 700px;
+  height: 700px;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.dusan-mascot-container {
+  position: absolute;
+  transform: translateY(40px);
+  z-index: 15;
+  pointer-events: none;
+  width: 125px;
+}
+
+.hanhwa-mascot-container {
+  position: absolute;
+  transform: translate(175px, -100px);
+  z-index: 15;
+  pointer-events: none;
+  width: 400px;
+}
+
+.samsung-mascot-container {
+  position: absolute;
+  transform: translate(-175px, 40px);
+  z-index: 15;
+  pointer-events: none;
+  width: 125px;
+}
+
+.kt-mascot-container {
+  position: absolute;
+  top: 10%;
+  transform: translate(280px);
+  z-index: 15;
+  pointer-events: none;
+  width: 250px;
+}
+
+.lotte-mascot-container {
+  position: absolute;
+  top: 40%;
+  transform: translate(290px);
+  z-index: 15;
+  pointer-events: none;
+  width: 200px;
+}
+
+.kiwom-mascot-container {
+  position: absolute;
+  top: 70%;
+  transform: translate(300px);
+  z-index: 15;
+  pointer-events: none;
+  width: 150px;
+}
+
+.kia-mascot-container {
+  position: absolute;
+  top: 13%;
+  transform: translate(-275px);
+  z-index: 15;
+  pointer-events: none;
+  width: 150px;
+}
+
+.lg-mascot-container {
+  position: absolute;
+  top: 30%;
+  transform: translate(-275px);
+  z-index: 15;
+  pointer-events: none;
+  width: 150px;
+}
+
+.sk-mascot-container {
+  position: absolute;
+  top: 50%;
+  transform: translate(-275px);
+  z-index: 15;
+  pointer-events: none;
+  width: 150px;
+}
+
+.nc-mascot-container {
+  position: absolute;
+  top: 70%;
+  transform: translate(-275px);
+  z-index: 15;
+  pointer-events: none;
+  width: 150px;
+}
+
+/* ----------------------------- */
+/* ✅ 모바일 대응 (세로 좁은 화면용) */
+/* ----------------------------- */
+@media (max-width: 768px) {
+  .root {
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .form {
+    padding-top: 10px;
+  }
+  
+  /* 마스코트 숨김 */
+  .dusan-mascot-container,
+  .samsung-mascot-container,
+  .kt-mascot-container,
+  .lotte-mascot-container,
+  .kiwom-mascot-container,
+  .kia-mascot-container,
+  .lg-mascot-container,
+  .sk-mascot-container,
+  .nc-mascot-container,
+  .hanhwa-mascot-container {
+    display: none;
+  }
+}

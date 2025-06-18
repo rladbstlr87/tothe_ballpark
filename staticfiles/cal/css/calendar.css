@@ -1,0 +1,290 @@
+html, body {
+  height: 100%;
+}
+
+.bg-paper {
+  position: relative;
+  overflow: auto;
+  width: 100%;
+  min-height: 100vh;
+
+  background-image: url('/static/cal/images/bg/cal-paper.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: repeat;
+  background-color: rgba(255, 255, 255, 0.726);
+  background-blend-mode: lighten;
+}
+
+.calendar-table {
+  width: 100%;
+  max-width: 900px;      /* 캘린더 전체 최대 너비 */
+  margin: 0 auto;        /* 가운데 정렬 */
+  table-layout: fixed;   /* 셀 너비 고정 */
+  border-collapse: separate; /* 셀 간격 유지 */
+  border-spacing: 10px 10px; /* 셀 사이 간격(가로, 세로) */
+  background: transparent;      /* 배경 흰색 */
+}
+
+/* 모든 th, td 기본 스타일 */
+.calendar-table th,
+.calendar-table td {
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  text-align: center;
+  vertical-align: top;
+  background: transparent;
+}
+
+/* 월요일 헤더만 빨간색 */
+.calendar-table th.mon {
+  color: #e11d48;
+}
+
+/* 년/월, 요일 헤더 셀은 테두리와 배경 제거 */
+.calendar-table .month-header,
+.calendar-table .month-header th,
+.calendar-table thead tr:first-child th,
+.calendar-table thead tr:nth-child(2) th {
+  border: none !important;
+  background: transparent;
+}
+
+/* 요일 헤더 스타일 */
+.calendar-table th {
+  background: transparent;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* 년/월(제목) 스타일 */
+.calendar-table .month-header {
+  text-align: center;
+  padding: 1rem 0;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #000;
+}
+
+/* 이전/다음달 이동 링크 스타일 */
+.calendar-table .nav-link {
+  font-size: 3rem;
+  color: #000;
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+/* 이동 링크 hover 효과 */
+.calendar-table .nav-link:hover {
+  color: #3b82f6;
+}
+
+/* 날짜 셀: 항상 같은 크기의 직사각형 */
+.calendar-table .day-cell {
+  aspect-ratio: 6 / 5;
+  width: 100%;
+  min-width: 110px;
+  max-width: 110px;
+  min-height: 90px;
+  max-height: 90px;
+  height: 90px;
+  padding: 0.25rem;
+  font-size: 0.875rem;
+  background: transparent;
+  border: 2px dashed #555;
+  box-sizing: border-box;
+  vertical-align: top;
+  overflow: auto;
+  box-shadow: 2px 2px 0 #ccc;
+  transition: transform 0.2s ease, background-color 0.2s ease; /* ✅ 호버 효과 부드럽게 */
+}
+
+/* ✅ 날짜 셀 호버 시 효과 */
+.calendar-table .day-cell:hover {
+  transform: scale(1.03);
+  background-color: #f3f4f6;
+}
+
+/* 빈 날짜(글씨 없는 칸)는 테두리 제거 */
+.calendar-table td:not(.day-cell) {
+  border: none !important;
+  background: transparent;
+}
+
+/* 날짜 숫자 스타일 */
+.calendar-table .day-cell .day-number {
+  font-weight: bold;
+}
+
+/* 경기 정보(로고, 시간, 결과) flex 정렬 */
+.calendar-table .game-info {
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* 팀 로고 크기 */
+.calendar-table .game-info img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: inline-block;
+}
+
+/* 경기 시간 스타일 */
+.calendar-table .game-time {
+  font-size: 0.75rem;
+  color: #000;
+  font-weight: bold;
+}
+
+/* 경기 결과 스타일 */
+.calendar-table .game-result {
+  margin-left: 0.3em;
+  font-weight: bold;
+  font-size: 0.85em;
+}
+
+/* 승: 파란색 */
+.calendar-table .game-result.win {
+  color: #2563eb;
+}
+
+/* 패: 빨간색 */
+.calendar-table .game-result.lose {
+  color: #e11d48;
+}
+
+/* 취소: 회색 */
+.calendar-table .game-result.cancel {
+  color: #888;
+}
+
+/* LG 트윈스 */
+.color-LG { color: #C60C30; }
+.highlight-LG {
+  border: 2px solid #C60C30;
+  background-color: #fee9ec;
+  border-radius: 15px;
+}
+
+/* 한화 이글스 */
+.color-HH { color: #FA6A00; }
+.highlight-HH {
+  border: 2px solid #FA6A00;
+  background-color: #fff5e6;
+  border-radius: 15px;
+}
+
+/* 롯데 자이언츠 */
+.color-LT { color: #002955; }
+.highlight-LT {
+  border: 2px solid #002955;
+  background-color: #f0f4fb;
+  border-radius: 15px;
+}
+
+/* 삼성 라이온즈 */
+.color-SS { color: #005BAC; }
+.highlight-SS {
+  border: 2px solid #005BAC;
+  background-color: #e8f4ff;
+  border-radius: 15px;
+}
+
+/* SSG 랜더스 */
+.color-SK { color: #c8102e; }
+.highlight-SK {
+  border: 2px solid #c8102e;
+  background-color: #ffe9ea;
+  border-radius: 15px;
+}
+
+/* NC 다이노스 */
+.color-NC { color: #1F3C88; }
+.highlight-NC {
+  border: 2px solid #1F3C88;
+  background-color: #f0f2fa;
+  border-radius: 15px;
+}
+
+/* 두산 베어스 */
+.color-OB { color: #0E2344; }
+.highlight-OB {
+  border: 2px solid #0E2344;
+  background-color: #f0f2f7;
+  border-radius: 15px;
+}
+
+/* KIA 타이거즈 */
+.color-HT { color: #C6011F; }
+.highlight-HT {
+  border: 2px solid #C6011F;
+  background-color: #ffe9eb;
+  border-radius: 15px;
+}
+
+/* KT 위즈 */
+.color-KT { color: #000000; }
+.highlight-KT {
+  border: 2px solid #000000;
+  background-color: #f7f7f7;
+  border-radius: 15px;
+}
+
+/* 키움 히어로즈 */
+.color-WO { color: #6F263D; }
+.highlight-WO {
+  border: 2px solid #6F263D;
+  background-color: #f9efef;
+  border-radius: 15px;
+}
+
+/* 경기 취소 */
+.cancel-game-img {
+  position: relative;
+  filter: grayscale(100%) brightness(0.7);
+}
+
+.cancel-game-img::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: rgba(128, 128, 128, 0.8);
+  transform: rotate(-15deg);
+  z-index: 20;
+}
+
+@media (max-width: 750px) {
+  .calendar-table .day-cell {
+    aspect-ratio: 6 / 5;
+    min-width: 40px;
+    max-width: 40px;
+    min-height: 40px;
+    max-height: 40px;
+    height: 40px;
+    font-size: 0.7rem;
+    padding: 2px;
+  }
+  .calendar-table .game-time,
+  .calendar-table .game-result {
+    display: none !important;
+  }
+  .calendar-table .game-info {
+    justify-content: center;
+  }
+  .calendar-table .game-info img {
+    height: 1.2rem;
+  }
+  .calendar-table .day-number {
+    font-size: 0.7rem;
+  }
+  .calendar-table .month-header {
+    font-size: 1.2rem;
+    padding: 0.5rem 0;
+  }
+}
