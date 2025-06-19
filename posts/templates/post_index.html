@@ -17,7 +17,7 @@
         
         <!-- 왼쪽: 야구공 이미지 -->
         <img src="{% static 'posts/images/index/baseball.png' %}" alt="야구공"
-             class="w-36 mt-10 ml-[100px] max-sm:w-16 max-sm:ml-0 max-sm:py-0 ">
+            class="w-36 mt-10 ml-[100px] max-sm:w-16 max-sm:ml-0 max-sm:py-0 ">
         
         <!-- 가운데: 게시판 제목 -->
         <h1 class="text-2xl max-sm:text-base whitespace-nowrap font-black max-sm:px-3">직돌이네 응원석</h1>
@@ -35,9 +35,9 @@
       <table class="w-full text-sm max-sm:text-xs   table-fixed whitespace-nowrap border border-gray-200 rounded-2xl overflow-hidden">
 
         <!-- 테이블 헤더 -->
-        <thead class="bg-blue-100 text-gray-500 border-b border-gray-200 ">
-          <tr class="text-center ">
-            <th class="text-left px-4 py-2 max-sm:px-2 max-sm:py-1 w-[10%] rounded-tl-2xl border-b border-gray-200">번호</th>
+        <thead class="bg-blue-100 text-gray-500">
+          <tr class="text-center">
+            <th class="text-left px-4 py-2 max-sm:px-2 max-sm:py-1 w-[8%] rounded-tl-2xl border-b border-gray-200"></th>
             <th class="text-left px-4 py-2 max-sm:px-2 max-sm:py-1 w-[40%] border-b border-gray-200">제목</th>
             <th class="px-4 py-2 max-sm:px-2 max-sm:py-1 w-[15%] border-b border-gray-200">분류</th>
             <th class="px-4 py-2 max-sm:px-2 max-sm:py-1 w-[15%] border-b border-gray-200">닉네임</th>
@@ -54,7 +54,7 @@
                 <a href="{% url 'posts:detail' post.id %}" class="hover:underline">{{ post.title }}</a>
               </td>
               <td class="px-4 py-2 max-sm:px-2">{{ post.get_category_display }}</td>
-              <td class="px-4 py-2 max-sm:px-2">{{ post.user.nickname }}</td>
+              <td class="px-4 py-2 max-sm:px-2 truncate">{{ post.user.nickname }}</td>
               <td class="px-4 py-2 max-sm:px-2 sm:table-cell hidden">{{ post.created_at|date:"Y.m.d" }}</td>
               <td class="px-4 py-2 max-sm:px-2 sm:hidden">{{ post.created_at|date:"m.d" }}</td>
             </tr>

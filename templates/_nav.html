@@ -1,11 +1,11 @@
 {% load static %}
 <nav x-data="{ mobileMenuOpen: false }"
-    class="relative z-9999 bg-cover w-full bg-transparent z-10 py-1 md:py-3 font-jaram [background-position:0%_100%]"
+    class="relative z-9999 bg-cover w-full bg-transparent z-10 py-1 md:py-3 font-parkdahyun [background-position:0%_100%]"
     style="{% if user.team == none %}background-image: url('{% static 'nav/nav-' %}nothing.png');{% else %}background-image: url('{% static 'nav/nav-' %}{{ user.team }}.png');{% endif %}">
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 ">
         <div class="relative flex h-16">
             <!-- Mobile menu button -->
-            <div class="absolute inset-y-0 left-0 flex lg:hidden">
+            <div class="absolute inset-y-0 left-0 flex md:hidden">
                 <button type="button"
                         @click="mobileMenuOpen = !mobileMenuOpen"
                         :aria-expanded="mobileMenuOpen"
@@ -29,28 +29,28 @@
                 </button>
             </div>
             <div class="flex flex-1 justify-center">
-                <div id="menu" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 justify-between w-full items-center text-shadows lg:flex hidden">
+                <div id="menu" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 justify-between w-full items-center text-shadows md:flex hidden">
                     <!-- 왼쪽 메뉴 -->
                     <div class="flex items-center">
                         <!-- 일부러 둔 빈div박스 -->
                         <span class="p-3 w-15 text-center text-gray-700"></span>
                     </div>
                     <div class="flex flex-1 items-center gap-x-6">
-                        <a href="{% url 'cal:calendar' %}" class="p-3 text-black hover:text-blue-500">
+                        <a href="{% url 'cal:calendar' %}" class="text-black hover:text-blue-600">
                             <span class="relative tracking-widest">
-                                <span class="absolute inset-x-0 bottom-0 h-2 bg-[#FEFFDE]  -z-10"></span>
+                                <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-yellow-200 -z-10"></span>
                                 <span>캘린더</span>
                             </span>
                         </a>
-                        <a href="{% url 'posts:post_index' %}" class="p-3 text-black hover:text-blue-500">
+                        <a href="{% url 'posts:post_index' %}" class="text-black hover:text-blue-500">
                             <span class="relative tracking-widest">
-                                <span class="absolute inset-x-0 bottom-0 h-2 bg-[#DDFFBC]  -z-10"></span>
+                                <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-[#DDFFBC]  -z-10"></span>
                                 <span>응원석</span>
                             </span>
                         </a>
-                        <a href="{% url 'cal:standings'%}" class="p-3 text-black hover:text-blue-500">
+                        <a href="{% url 'cal:standings'%}" class="text-black hover:text-blue-500">
                             <span class="relative tracking-widest">
-                                <span class="absolute inset-x-0 bottom-0 h-2 bg-[#91C788]  -z-10"></span>
+                                <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-[#91C788]  -z-10"></span>
                                 <span>순위</span>
                             </span>
                         </a>
@@ -58,7 +58,7 @@
                             <!-- 드롭다운 트리거 -->
                             <span @click="open = !open"
                                     class="relative tracking-widest">
-                                <span class="absolute inset-x-0 bottom-0 h-2 bg-[#52734D] -z-10"></span>
+                                <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-[#52734D] -z-10"></span>
                                 <span class="hover:text-blue-500">경기장</span>
                             </span>
 
@@ -95,21 +95,21 @@
                     <!-- 오른쪽 사용자 메뉴 -->
                     <div class="flex items-center gap-x-6">
                         {% if user.is_authenticated %}
-                        <span class="relative tracking-widest p-3 text-gray-700">
-                            <span class="absolute inset-x-0 bottom-[18px] h-2 bg-[#FCEF91] -z-10"></span>
-                            <span class="-rotate-7">{{ user.nickname }}</span>
+                        <span class="relative tracking-widest text-gray-700">
+                            <span class="absolute inset-x-0 bottom-1 h-6 rounded-md bg-[#FCEF91] -z-10"></span>
+                            <span>{{ user.nickname }}</span>
                         </span>
 
-                        <a href="{% url 'accounts:logout' %}" class="p-3 text-black hover:text-blue-500">
+                        <a href="{% url 'accounts:logout' %}" class="text-black hover:text-blue-500">
                             <span class="relative tracking-widest">
-                                <span class="absolute inset-x-0 bottom-0 h-2 bg-red-400  -z-10"></span>
+                                <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-red-400 -z-10"></span>
                                 <span>로그아웃</span>
                             </span>
                         </a>
                         {% else %}
-                        <a href="{% url 'accounts:auth' %}" class="p-3 text-black hover:text-blue-600">
+                        <a href="{% url 'accounts:auth' %}" class="text-black hover:text-blue-600">
                             <span class="relative tracking-widest">
-                                <span class="absolute inset-x-0 bottom-0 h-2 bg-red-400  -z-10"></span>
+                                <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-red-400 -z-10"></span>
                                 <span>로그인</span>
                             </span>
                         </a>
