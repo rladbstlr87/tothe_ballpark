@@ -68,7 +68,7 @@ def reset_password_view(request):
             send_mail(
                 subject="비밀번호 재설정 인증번호",
                 message=f"비밀번호 재설정을 위한 인증번호는 {code} 입니다.",
-                from_email=None,
+                from_email="직돌이 운영팀 <seongjin5743@naver.com>",
                 recipient_list=[email],
             )
 
