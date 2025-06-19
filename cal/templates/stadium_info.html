@@ -142,7 +142,7 @@
 
   // 모바일이라면 href를 네이버 지도 링크로 변경
   if (isMobile) {
-    const naverUrl = "{{ naver_url }}";
+    const naverUrl = "{{ naver_url|safe }}";
     const link = document.getElementById('direction-link');
     if (naverUrl && link) {
       link.href = naverUrl;
