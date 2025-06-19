@@ -11,6 +11,7 @@ from .utils import Calendar
 import calendar
 import random
 from collections import defaultdict
+import urllib.parse
 
 def calculate_team_standings():
     HOME_STADIUMS = {
@@ -532,6 +533,7 @@ def stadium_info(request, stadium):
     }
 
     lat, lng, name, place_id = team_info[stadium].split(',', 3)
+    encoded_name = urllib.parse.quote(name)
 
     # 티켓링크 처리
     stadium_ticket = stadium
@@ -556,6 +558,7 @@ def stadium_info(request, stadium):
         'parkings': parkings,
         'restaurants': restaurants,
         'google_url': f"https://www.google.com/maps/dir/?api=1&destination={lat},{lng}&destination_place_id={place_id}",
+        'naver_url': f"nmap://route/public?dlat={lat}&dlng={lng}&dname={encoded_name}",
         'ticket_url': ticket.get(stadium_ticket, "#"),
     }
 
