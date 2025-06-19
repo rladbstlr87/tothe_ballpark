@@ -37,7 +37,7 @@
     <!-- 게시글 제목 및 메타 -->
     <div class="border-b pb-4 mb-4">
       <h1 class="text-2xl font-bold text-gray-800 text-center">{{ post.title }}</h1>
-      <div class="flex justify-between items-center text-sm text-gray-500 mt-1 whitespace-nowrap">
+      <div class="flex items-center text-sm text-gray-500 mt-1 whitespace-nowrap">
         {% if post.user.team %}
           <img src="{% static 'posts/images/detail/' %}{{ post.user.team }}.png" alt="프로필 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
         {% else %}
