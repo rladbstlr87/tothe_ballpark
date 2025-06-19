@@ -114,7 +114,7 @@
               <span class="font-semibold mr-2">{{ comment.user.nickname }}</span>
             </div>
             <span class="text-xs text-gray-400">
-              {{ comment.updated_at|date:"Y.m.d H:i" }}
+              {{ comment.updated_at|date:"y.m.d H:i" }}
               {% if comment.is_updated %}
                 <span class="text-blue-500">(수정됨)</span>
               {% endif %}
