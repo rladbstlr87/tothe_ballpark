@@ -6,10 +6,10 @@
 {% endblock %}
 
 {% block body %}
-<div class="pt-[50px] ">
+<div class="pt-[50px] max-sm:pt-[20px] relative">
 
   <!-- 🏷️ 게시판 박스 -->
-  <div class="mx-auto bg-white rounded-2xl shadow-xl w-full max-w-6xl px-9 pt-0 pb-8 max-sm:px-4 max-sm:max-w-sm">
+  <div class="mx-auto bg-white rounded-2xl shadow-xl w-full max-w-6xl px-9 pt-0 pb-8 max-sm:px-4  max-sm:w-full">
 
     <!-- ✅ 상단 헤더 (제목 + 아이콘) -->
     <div class="relative pb-4 text-gray-900 text-center tracking-wider">
@@ -63,10 +63,20 @@
               <td colspan="5" class="text-center text-gray-500 py-4">등록된 질문이 없습니다 🥲</td>
             </tr>
           {% endfor %}
+          
         </tbody>
       </table>
     </div>
-
+    <div class="flex justify-end mt-4 max-sm:mt-5">
+      <a href="{% url 'posts:create' %}" class=" inline-flex items-center bg-blue-100 text-gray-500 px-1 py-1 max-sm:text-[10px] max-sm:px-1.5 max-sm:py-0.5 rounded-md ">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 max-sm:w-3 max-sm:h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+              </svg>
+              응원남기기
+            </a>
+    </div>
   </div>
 
   <!-- 🔁 페이지네이션 -->
