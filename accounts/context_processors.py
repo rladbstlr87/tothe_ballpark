@@ -41,6 +41,7 @@ def all_users_winning_percent(request):
         winning_percent = round((win_count / total_games) * 100, 2) if total_games > 0 else 0
         user_win_data.append({
             'username': user.username,
+            'nickname': user.nickname,
             'winning_percent': winning_percent,
             'total_games': total_games,
             'win_count': win_count

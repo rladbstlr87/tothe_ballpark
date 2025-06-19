@@ -6,86 +6,147 @@
 {% endblock %}
 
 {% block body %}
-  <main class="max-w-5xl mx-auto p-4">
-    <!-- 경기장 이름 -->
-    <div class="text-center p-8">
-      <h1 class="text-3xl font-bold">{{ stadium.stadium }}</h1>
+<main class="max-w-5xl mx-auto text-xs md:text-sm">
+  <!-- 경기장 이름 -->
+  <div class="text-center p-8">
+    <h1 class="text-xl md:text-3xl font-bold">{{ stadium.stadium }}</h1>
+  </div>
+
+<!-- 예매 버튼 -->
+<section class="text-center p-2">
+  {% if stadium.stadium == "잠실" %}
+    <div class="inline-block relative" id="ticket-dropdown">
+      <button id="dropdownToggle"
+              class="w-32 px-3 py-1.5 text-xs md:text-sm rounded-md bg-slate-600 text-white font-semibold shadow-md hover:shadow-lg focus:outline-none">
+        예매하기
+      </button>
+      <ul id="dropdownMenu"
+          class="absolute left-0 mt-2 w-32 bg-white border rounded shadow-lg z-50 text-xs md:text-sm hidden">
+        <li>
+          <a href="https://www.ticketlink.co.kr/sports/137/59"
+             target="_blank"
+             class="block px-3 py-1.5 hover:bg-gray-100">
+            LG 트윈스 예매
+          </a>
+        </li>
+        <li>
+          <a href="https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB004"
+             target="_blank"
+             class="block px-3 py-1.5 hover:bg-gray-100">
+            두산 베어스 예매
+          </a>
+        </li>
+      </ul>
     </div>
-    <section class="text-center p-2">
-        <a href="{{ticket_url}}" target="_blank">
-          <button class="inline-block w-38 px-4 py-2 rounded-md bg-slate-600 text-white font-semibold shadow-md transition-transform hover:-translate-y-1 hover:shadow-lg">
-              예매하기
-          </button>
-        </a>
-    </section>
-    <section class="text-center p-2">
-      <a href="{{ google_url }}" target="_blank" rel="noopener noreferrer"
-        class="inline-block w-38 px-4 py-2 rounded-md bg-blue-600 text-white font-semibold shadow-md transition-transform hover:-translate-y-1 hover:shadow-lg">
-        구장까지 길찾기
-      </a>
-    </section>
-    <!-- 좌석 정보 -->
-    <section class="p-4">
-      <h2 class="text-2xl font-semibold p-4">🔹 좌석 정보</h2>
+  {% else %}
+    <a href="{{ ticket_url }}" target="_blank">
+      <button
+        class="w-32 px-3 py-1.5 text-xs md:text-sm rounded-md bg-slate-600 text-white font-semibold shadow-md transition-transform hover:-translate-y-1 hover:shadow-lg">
+        예매하기
+      </button>
+    </a>
+  {% endif %}
+</section>
 
-      <!-- 좌석표 이미지 위쪽에 배치 -->
-      <div class="w-full mb-6">
-        <img src="{% static 'cal/images/stadium/' %}{{ stadium.stadium }}.png"
-            alt="{{ stadium.stadium }} 좌석표"
-            class="w-full h-auto rounded-lg shadow-md">
-      </div>
+<!-- 길찾기 버튼 -->
+<section class="text-center p-2">
+  <a id="direction-link" href="{{ google_url }}" target="_blank" rel="noopener noreferrer">
+    <button
+      class="w-32 px-3 py-1.5 text-xs md:text-sm rounded-md bg-blue-600 text-white font-semibold shadow-md transition-transform hover:-translate-y-1 hover:shadow-lg">
+      구장까지 길찾기
+    </button>
+  </a>
+</section>
 
-      <!-- 좌석 설명 카드 -->
-      <div class="grid gap-4 md:grid-cols-2">
-        {% for seat in seats %}
-          <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
-            <h3 class="text-lg font-medium">{{ seat.seat_name }}</h3>
-            <p class="text-sm text-gray-600 mt-1">{{ seat.note }}</p>
-          </div>
-        {% empty %}
-          <p class="text-gray-500">등록된 좌석 정보가 없습니다.</p>
-        {% endfor %}
-      </div>
-    </section>
 
-    <!-- 주차장 정보 -->
-    <section class="p-4">
-      <h2 class="text-2xl font-semibold mb-4">🅿️ 근처 주차장 정보</h2>
-      <div class="grid gap-4 md:grid-cols-2">
-        {% for parking in parkings %}
-          <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
-            <h3 class="text-lg font-medium">{{ parking.parking_name }}</h3>
-            <p class="text-sm text-gray-600">{{ parking.adress }}</p>
-            <p class="text-sm text-gray-600 mt-1">{{ parking.note }}</p>
-          </div>
-        {% empty %}
-          <p class="text-gray-500">등록된 주차장 정보가 없습니다.</p>
-        {% endfor %}
-      </div>
-    </section>
-    <!-- 식당 정보 -->
-    <section class="p-4">
-      <h2 class="text-2xl font-semibold mb-4">🍽 식당 정보</h2>
-      <div class="grid gap-4 md:grid-cols-2">
-        {% for restaurant in restaurants %}
-          <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
-            <h3 class="text-lg font-medium">{{ restaurant.restaurant_name }}</h3>
-            <p class="text-sm text-gray-600">
-              <a 
-                href="https://map.naver.com/v5/search/{{ restaurant.adress|add:' ' }}{{ restaurant.restaurant_name|urlencode }}" 
-                target="_blank" 
-                class="text-blue-600 hover:underline"
-              >
-                {{ restaurant.adress }}
-              </a>
-            </p>
-            <p class="text-sm text-gray-600 mt-1">{{ restaurant.note }}</p>
-          </div>
-        {% empty %}
-          <p class="text-gray-500">등록된 식당 정보가 없습니다.</p>
-        {% endfor %}
-      </div>
-    </section>
 
-  </main>
+  <!-- 좌석 정보 -->
+  <section class="p-4">
+    <h2 class="text-lg md:text-2xl font-semibold p-4">🔹 좌석 정보</h2>
+    <div class="w-full mb-6">
+      <img src="{% static 'cal/images/stadium/' %}{{ stadium.stadium }}.png"
+           alt="{{ stadium.stadium }} 좌석표"
+           class="w-full h-auto rounded-lg shadow-md">
+    </div>
+    <div class="grid gap-4 md:grid-cols-2">
+      {% for seat in seats %}
+        <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
+          <h3 class="text-base md:text-lg font-medium">{{ seat.seat_name }}</h3>
+          <p class="text-xs md:text-sm text-gray-600 mt-1">{{ seat.note }}</p>
+        </div>
+      {% empty %}
+        <p class="text-gray-500 text-xs md:text-sm">등록된 좌석 정보가 없습니다.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- 주차장 정보 -->
+  <section class="p-4">
+    <h2 class="text-lg md:text-2xl font-semibold mb-4">🅿️ 근처 주차장 정보</h2>
+    <div class="grid gap-4 md:grid-cols-2">
+      {% for parking in parkings %}
+        <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
+          <h3 class="text-base md:text-lg font-medium">{{ parking.parking_name }}</h3>
+          <p class="text-xs md:text-sm text-gray-600">{{ parking.adress }}</p>
+          <p class="text-xs md:text-sm text-gray-600 mt-1">{{ parking.note }}</p>
+        </div>
+      {% empty %}
+        <p class="text-gray-500 text-xs md:text-sm">등록된 주차장 정보가 없습니다.</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- 식당 정보 -->
+  <section class="p-4">
+    <h2 class="text-lg md:text-2xl font-semibold mb-4">🍽 식당 정보</h2>
+    <div class="grid gap-4 md:grid-cols-2">
+      {% for restaurant in restaurants %}
+        <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
+          <h3 class="text-base md:text-lg font-medium">{{ restaurant.restaurant_name }}</h3>
+          <p class="text-xs md:text-sm text-gray-600">
+            <a href="https://map.naver.com/v5/search/{{ restaurant.adress|add:' ' }}{{ restaurant.restaurant_name|urlencode }}" 
+               target="_blank" 
+               class="text-blue-600 hover:underline">
+              {{ restaurant.adress }}
+            </a>
+          </p>
+          <p class="text-xs md:text-sm text-gray-600 mt-1">{{ restaurant.note }}</p>
+        </div>
+      {% empty %}
+        <p class="text-gray-500 text-xs md:text-sm">등록된 식당 정보가 없습니다.</p>
+      {% endfor %}
+    </div>
+  </section>
+</main>
+
+<!-- ✅ 드롭다운 스크립트 -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleButton = document.getElementById('dropdownToggle');
+    const menu = document.getElementById('dropdownMenu');
+
+    if (toggleButton && menu) {
+      toggleButton.addEventListener('click', () => {
+        menu.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', (e) => {
+        const dropdown = document.getElementById('ticket-dropdown');
+        if (dropdown && !dropdown.contains(e.target)) {
+          menu.classList.add('hidden');
+        }
+      });
+    }
+  });
+  const isMobile = /iPhone|Android|iPad|iPod/i.test(navigator.userAgent);
+
+  // 모바일이라면 href를 네이버 지도 링크로 변경
+  if (isMobile) {
+    const naverUrl = "{{ naver_url|safe }}";
+    const link = document.getElementById('direction-link');
+    if (naverUrl && link) {
+      link.href = naverUrl;
+    }
+  }
+</script>
 {% endblock %}

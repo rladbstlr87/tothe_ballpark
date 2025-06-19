@@ -15,13 +15,25 @@
   <img src="{% static 'posts/images/detail/pinkhitter.png' %}" alt="스티커" class="w-36 absolute top-4 left-4 z-0 mt-50">
   <img src="{% static 'posts/images/detail/bluehitter.png' %}" alt="스티커" class="w-36 absolute top-4 right-4 z-0 mt-90 max-sm:hidden">
   <!-- 밑에 배경 스티커 -->
-  <img id="scrollSticker" src="{% static 'posts/images/detail/yellowhitter.png' %}" alt="스크롤 스티커" class="fixed right-4 top-1/2 w-30 opacity-0 scale-90 z-10 pointer-events-none transition-all duration-500 transform -translate-y-1/2" />
-  <img id="scrollStickerLeft" src="{% static 'posts/images/detail/fan.png' %}" alt="왼쪽 스크롤 스티커" class="fixed left-4 top-1/3 w-30 opacity-0 scale-90 z-10 pointer-events-none transition-all duration-500 transform -translate-y-1/2" />
+  <img id="scrollSticker" src="{% static 'posts/images/detail/yellowhitter.png' %}" alt="스크롤 스티커" class="fixed right-4 top-1/2 w-30 opacity-0 scale-90 z-10 pointer-events-none transition-all duration-500 transform -translate-y-1/2"/>
+  <img id="scrollStickerLeft" src="{% static 'posts/images/detail/fan.png' %}" alt="왼쪽 스크롤 스티커" class="fixed left-4 top-1/3 w-30 opacity-0 scale-90 z-10 pointer-events-none transition-all duration-500 transform -translate-y-1/2"/>
 
-  <div class="mx-auto bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl z-10 relative">
-    <a href="{% url 'posts:post_index' %}" class="">
-    <span class="font-ydestreetl font-thin text-sm underline-offset-3 text-gray-500 underline">직돌이네 응원석</span>
-    <span class="font-ydestreetl font-thin text-xs ml-1 text-gray-500">{{ total }}개의 글</span></a>
+  <div class="mx-auto bg-white rounded-2xl px-6 py-10 shadow-xl w-full max-w-6xl z-10 relative sm:px-12">
+    <div class="flex justify-between items-center gap-2 ml-auto text-gray-500">
+      <a href="{% url 'posts:post_index' %}" class="flex flex-col items-start">
+        <span class="text-sm underline-offset-3 underline">직돌이네 응원석</span>
+        <span class="p-1 text-xs ml-1">{{ total }}개의 글</span>
+      </a>
+      <div class="flex flex-col items-end">
+        <span class="items-center text-sm">
+          {{ post.updated_at|date:"y.m.d H:i" }}
+          {% if is_post_updated %}
+            <span class="text-xs text-blue-500">(수정됨)</span>
+          {% endif %}
+        </span>
+        <span class="team-tag tag-{{post.category}}">{{ post.get_category_display }}</span>
+      </div>
+    </div>
     <!-- 게시글 제목 및 메타 -->
     <div class="border-b pb-4 mb-4">
       <h1 class="text-2xl font-bold text-gray-800 text-center">{{ post.title }}</h1>
@@ -40,15 +52,6 @@
           </svg>
         {% endif %}
         <span>{{ post.user.nickname }}</span>
-        <div class="flex items-center gap-4 ml-auto max-sm:px-2">
-          <span class="team-tag tag-{{post.category}}">{{ post.get_category_display }}</span>
-          <span>
-            {{ post.updated_at|date:"Y.m.d H:i" }}
-            {% if is_post_updated %}
-              <span class="text-xs text-blue-500">(수정됨)</span>
-            {% endif %}
-          </span>
-        </div>
       </div>
     </div>
 
@@ -67,14 +70,13 @@
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
           </svg>
-          </a>
+        </a>
         <form action="{% url 'posts:delete' post.id %}" method="POST" onsubmit="return confirm('삭제할까요?')">
           {% csrf_token %}
           <button type="submit" class="rounded-full px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-          </svg>
-
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+            </svg>
           </button>
         </form>
       </div>
@@ -88,10 +90,10 @@
                   {% else %}
                     border-gray-300 text-gray-500
                   {% endif %}"
-           data-post-id="{{ post.id }}">
+          data-post-id="{{ post.id }}">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
-             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round">
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
           <path d="M7 10v12"/>
           <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/>
         </svg>
@@ -102,17 +104,14 @@
     <!-- 댓글 작성 -->
     <hr class="my-6">
     <form action="{% url 'posts:comment_create' post.id %}" method="POST" enctype="multipart/form-data"
-          class="bg-gray-50 p-4 rounded space-y-4 ">
+          class="bg-gray-50 p-4 rounded space-y-4">
       {% csrf_token %}
       {{ form.content }}
       {{ form.image }}
       <div class="text-right"> 
-         <button type="submit"
-              class="rounded-full px-5 py-3 bg-[#9AA6B2] text-white text-lg font-semibold  
-                     hover:bg-[#BCCCDC] transition duration-200 shadow-md">
+        <button type="submit" class="rounded-full px-4 py-1 bg-[#9AA6B2] text-white text-lg font-semibold hover:bg-[#BCCCDC] transition duration-200 shadow-md">
           댓글등록
         </button> 
-        
       </div>
     </form>
 
@@ -121,13 +120,13 @@
       {% for comment in comments %}
         <li id="comment-{{ comment.id }}" class="border-b pb-4">
           <div class="flex justify-between text-sm text-gray-600 mb-2">
-                      <!-- 이미지 + 닉네임 묶기 -->
+            <!-- 이미지 + 닉네임 묶기 -->
             <div class="flex items-center space-x-1">
-                <img src="{% static 'posts/images/detail/' %}{{ comment.user.team }}.png" alt="프로필 이미지" class="w-8 h-8 rounded-full object-cover ">
-                <span class="font-semibold mr-2">{{ comment.user.nickname }}</span>
+              <img src="{% static 'posts/images/detail/' %}{{ comment.user.team }}.png" alt="프로필 이미지" class="w-8 h-8 rounded-full object-cover">
+              <span class="font-semibold mr-2">{{ comment.user.nickname }}</span>
             </div>
             <span class="text-xs text-gray-400">
-              {{ comment.updated_at|date:"Y.m.d H:i" }}
+              {{ comment.updated_at|date:"y.m.d H:i" }}
               {% if comment.is_updated %}
                 <span class="text-blue-500">(수정됨)</span>
               {% endif %}
@@ -148,10 +147,10 @@
                         {% else %}
                           text-gray-500 border-gray-300
                         {% endif %}"
-                 data-comment-id="{{ comment.id }}">
+                data-comment-id="{{ comment.id }}">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                   fill="none" stroke="currentColor" stroke-width="2"
-                   stroke-linecap="round" stroke-linejoin="round">
+                  fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
                 <path d="M7 10v12"/>
                 <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/>
               </svg>
@@ -205,42 +204,48 @@
     </ul>
 
     <!-- 다른 질문 목록 -->
-    <hr class="my-12 border-t-2 border-dashed border-gray-300 ">
-
-    <div class="mt-4 max-sm:hidden">
-      <h2 class="text-xl font-bold text-gray-700 mb-4 px-2">다른 Q&A 보기</h2>
-
+    <hr class="my-12 border-t-2 border-dashed border-gray-300">
+    <div class="mt-4">
+      <a href="{% url 'posts:post_index' %}" class="text-xl font-bold text-gray-700 mb-4 px-2">다른 응원글 보기</a>
       <div class="bg-neutral-50 rounded-xl shadow-sm overflow-hidden">
-        <!-- 헤더 -->
-        <div class="grid grid-cols-12 py-3 px-4 text-sm font-bold text-gray-600 bg-white text-center border-b border-sky-300 whitespace-nowrap">
-          <div class="col-span-1">번호</div>
-          <div class="col-span-7 text-left pl-4">제목</div>
-          <div class="col-span-1 max-sm:px-1 ">카테고리</div>
-          <div class="col-span-2">닉네임</div>
-          <div class="col-span-1">작성일</div>
-        </div>
+<!-- 헤더 -->
+<div class="grid grid-cols-10 py-3 px-4 text-sm font-bold text-gray-600 bg-white text-center border-b border-sky-300 whitespace-nowrap max-sm:text-xs">
+  <div class="col-span-1">번호</div>
+  <div class="col-span-5 text-left pl-2 max-sm:col-span-5">제목</div>
+  <div class="col-span-1 text-xs">분류</div>
+  <div class="col-span-2 max-sm:col-span-2">닉네임</div>
+  <div class="col-span-1 max-sm:col-span-1">작성일</div>
+</div>
 
-        <!-- 질문 목록 -->
-        <ul>
-          {% for number, post in page_obj %}
-            <li class="grid grid-cols-12 py-3 px-4 text-sm items-center text-center border-b bg-white border-sky-200 hover:bg-sky-100 transition">
-              <div class="col-span-1 text-gray-600 font-mono">{{ number }}</div>
-              <div class="col-span-7 text-left pl-4 ">
-                <a href="{% url 'posts:detail' post.id %}" class=" truncate text-black font-semibold hover:underline underline-offset-4 decoration-wavy  ">
-                  {{ post.title }}
-                </a>
-              </div>
-              <div class="col-span-1 ">{{ post.get_category_display }}</div>
-              <div class="col-span-2 text-gray-600">{{ post.user.nickname }}</div>
-              <div class="col-span-1 text-gray-500 text-xs">{{ post.created_at|date:"Y.m.d" }}</div>
-            </li>
-          {% empty %}
-            <li class="text-center py-10 text-gray-400">등록된 질문이 없습니다 🥲</li>
-          {% endfor %}
-        </ul>
+<!-- 질문 목록 -->
+<ul>
+  {% for number, post in page_obj %}
+    <li class="grid grid-cols-10 py-3 px-4 text-sm items-center text-center border-b bg-white border-sky-200 hover:bg-sky-100 transition max-sm:text-xs">
+      <div class="col-span-1 text-gray-600 font-mono">{{ number }}</div>
+      <div class="col-span-5 text-left pl-2 max-sm:col-span-5">
+        <a href="{% url 'posts:detail' post.id %}"
+          class="block truncate max-w-full sm:max-w-[500px] text-black font-semibold hover:underline underline-offset-4 decoration-wavy">
+          {{ post.title }}
+        </a>
+      </div>
+      <div class="col-span-1 text-gray-700 text-xs">{{ post.get_category_display }}</div>
+      <div class="col-span-2 text-gray-600 max-sm:col-span-2">{{ post.user.nickname }}</div>
+      <div class="col-span-1 text-gray-500 text-xs max-sm:col-span-1 max-sm:text-right">
+        {{ post.created_at|date:"m.d" }}
+      </div>
+    </li>
+  {% empty %}
+    <li class="text-center py-10 text-gray-400">등록된 질문이 없습니다 🥲</li>
+  {% endfor %}
+</ul>
+
+
+
+
       </div>
     </div>
-    <div class="flex items-center justify-center space-x-2 my-8 text-sm text-gray-600 max-sm:hidden">
+
+    <div class="flex items-center justify-center space-x-2 my-8 text-sm text-gray-600">
   
       <!-- 이전 버튼 -->
       {% if page_obj.has_previous %}
@@ -272,7 +277,7 @@
       {% else %}
         <span class="px-2 py-1 text-gray-300">&gt;</span>
       {% endif %}
-  </div>
+    </div>
 
   </div>
 
