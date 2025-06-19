@@ -1,6 +1,6 @@
 {% load static %}
 <nav x-data="{ mobileMenuOpen: false }"
-    class="relative z-9999 bg-cover w-full bg-transparent z-10 py-1 md:py-3 font-parkdahyun [background-position:0%_100%]"
+    class="relative z-9999 bg-cover w-full bg-transparent z-10 py-1 md:py-3 font-nav [background-position:0%_100%]"
     style="{% if user.team == none %}background-image: url('{% static 'nav/nav-' %}nothing.png');{% else %}background-image: url('{% static 'nav/nav-' %}{{ user.team }}.png');{% endif %}">
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 ">
         <div class="relative flex h-16">
