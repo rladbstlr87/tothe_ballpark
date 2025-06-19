@@ -58,6 +58,11 @@
     font-size: 30px;
 }
 
+.font-nav {
+    font-family: 'Ownglyph_ParkDaHyun', cursive;
+    font-size: 26px;
+}
+
 @media (min-width: 600px) {
     .cal-title {
         font-size: 50px;
