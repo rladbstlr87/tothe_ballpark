@@ -520,10 +520,10 @@ def stadium_info(request, stadium):
     # 경기장 좌표 및 지도 링크 정보
     team_info = {
         '광주': '35.168275,126.888934,광주기아챔피언스필드,19909618',
-        '잠실': '37.512898,127.071107,잠실종합운동장잠실야구장,13202577',
+        '잠실': '37.512898,127.071107,잠실종합운동장 잠실야구장,13202577',
         '문학': '37.435123,126.693024,인천SSG 랜더스필드,13202558',
         '창원': '35.222571,128.582776,NC 다이노스,36046999',
-        '대전(신)': '36.317056,127.428072,(구 한화구장)한화생명이글스파크,11831114',
+        '대전(신)': '36.317056,127.428072, 한화생명이글스파크,11831114',
         '고척': '37.498184,126.867129,고척스카이돔,18967604',
         '사직': '35.194956,129.060426,부산사직종합운동장 사직야구장,13202715',
         '대구': '35.841965,128.681198,대구삼성라이온즈파크,19909612',
@@ -534,6 +534,8 @@ def stadium_info(request, stadium):
 
     lat, lng, name, place_id = team_info[stadium].split(',', 3)
     encoded_name = urllib.parse.quote(name)
+
+    naver_url =f"nmap://route/public?dlat={lat}&dlng={lng}&dname={encoded_name}"
 
     # 티켓링크 처리
     stadium_ticket = stadium
@@ -558,7 +560,7 @@ def stadium_info(request, stadium):
         'parkings': parkings,
         'restaurants': restaurants,
         'google_url': f"https://www.google.com/maps/dir/?api=1&destination={lat},{lng}&destination_place_id={place_id}",
-        'naver_url': f"nmap://route/public?dlat={lat}&dlng={lng}&dname={encoded_name}",
+        'naver_url': naver_url,
         'ticket_url': ticket.get(stadium_ticket, "#"),
     }
 
