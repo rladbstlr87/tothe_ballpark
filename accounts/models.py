@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     KBO_TEAMS = [
-        ('', '응원하시는 팀을 선택해주세요'),
+        ('', '응원팀을 선택해주세요! 추후 변경 X'),
         ('SK', 'SSG 랜더스'),
         ('LG', 'LG 트윈스'),
         ('KT', 'KT 위즈'),
