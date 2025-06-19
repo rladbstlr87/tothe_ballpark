@@ -25,8 +25,11 @@
 <body x-data="{ mobileMenuOpen: false }" class="min-h-screen max-w-screen relative font-ydestreetl bg-paper overflow-x-hidden">
     {% include '_nav.html' %}
     {% block body %}
-    {% endblock %}
 
+    {% endblock %}
+    <footer class="text-center py-6 text-xs text-gray-400 sm:text-sm">
+        © 2025 직돌이. 응원하는 마음, 함께합니다!
+    </footer>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         const toggleBtn = document.querySelector('button[aria-controls="mobile-menu"]');
