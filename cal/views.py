@@ -377,6 +377,10 @@ def lineup(request, game_id):
     # 이전/다음 경기 버튼
     team_games = Game.objects.filter(
         Q(team1=user_team) | Q(team2=user_team)
+    ).exclude(
+        team1_result="취소"
+    ).exclude(
+        team2_result="취소"
     ).order_by('date', 'id')
 
     team_game_ids = list(team_games.values_list('id', flat=True))
@@ -388,6 +392,7 @@ def lineup(request, game_id):
     except ValueError:
         prev_game_id = None
         next_game_id = None
+
 
     context = {
         'game': game,
