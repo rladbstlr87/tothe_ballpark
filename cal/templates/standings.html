@@ -11,205 +11,209 @@
 
 <!-- ✅ 탭 버튼 영역 -->
 <div class="w-full max-w-6xl mx-auto mt-10 my-3 px-4 text-center">
-    <div class="flex justify-center my-3">
-      <button onclick="showTab('ranking')" id="ranking-tab"
-              class="tab-btn w-[200px] h-[70px] bg-[url('/static/cal/images/standing/standing_kbo.png')] bg-no-repeat bg-contain bg-center">
-      </button>
+  <div class="flex justify-center my-3">
+    <button onclick="showTab('ranking')" id="ranking-tab"
+            class="tab-btn w-[200px] h-[70px] bg-[url('/static/cal/images/standing/standing_kbo.png')] bg-no-repeat bg-contain bg-center">
+    </button>
 
-      <button onclick="showTab('hitters')" id="hitters-tab"
-              class="tab-btn w-[200px] h-[70px] bg-[url('/static/cal/images/standing/standing_hitter.png')] bg-no-repeat bg-contain bg-center">
-      </button>
+    <button onclick="showTab('hitters')" id="hitters-tab"
+            class="tab-btn w-[200px] h-[70px] bg-[url('/static/cal/images/standing/standing_hitter.png')] bg-no-repeat bg-contain bg-center">
+    </button>
 
-      <button onclick="showTab('pitchers')" id="pitchers-tab"
-              class="tab-btn w-[200px] h-[70px] bg-[url('/static/cal/images/standing/standing_pitcher.png')] bg-no-repeat bg-contain bg-center">
-      </button>
-    </div>
+    <button onclick="showTab('pitchers')" id="pitchers-tab"
+            class="tab-btn w-[200px] h-[70px] bg-[url('/static/cal/images/standing/standing_pitcher.png')] bg-no-repeat bg-contain bg-center">
+    </button>
+  </div>
+
   <!-- ✅ KBO 순위 -->
-<div id="ranking" class="tab-content">
-  <div class="standing-box p-6 mb-8 bg-white text-xs sm:text-sm">
-    <div class="relative w-full">
-      <div class="flex justify-end mb-2">
-        <button onclick="scrollRankingLeft()" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition">⬅</button>
-        <button onclick="scrollRankingRight()" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition ml-2">➡</button>
+  <div id="ranking" class="tab-content">
+    <div class="standing-box p-6 mb-8 bg-white text-xs sm:text-sm">
+      <div class="relative w-full">
+        <div class="flex justify-end mb-2">
+          <button onclick="scrollRankingLeft()" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition">⬅</button>
+          <button onclick="scrollRankingRight()" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition ml-2">➡</button>
+        </div>
+        
+        <div class="flex w-full relative rounded-[15px] overflow-hidden border border-gray-300">
+
+          <!-- 고정 열 -->
+          <div class="sticky left-0 z-20 w-[180px] bg-white/90 border-r border-gray-300">
+            <table class="table-fixed border-collapse w-full">
+              <thead class="bg-blue-100">
+                <tr>
+                  <th class="px-1 py-1"></th>
+                  <th class="px-1 py-1">팀</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for team in standing %}
+                <tr class="border-b border-gray-300 bg-[#f9f9f9] {% if team.team == user.team %}bg-yellow-100 font-bold text-black{% endif %}">
+                  <td class="px-1 py-1 text-center">{{ forloop.counter }}</td>
+                  <td class="px-1 py-1 whitespace-nowrap flex items-center">
+                    <img src="/static/cal/images/team/{{ team.team }}.svg" class="w-5 h-5">
+                    {{ team.team|team_name }}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 스크롤 열 -->
+          <div id="ranking-scroll-wrapper" class="overflow-x-auto scroll-smooth w-full hide-scrollbar">
+            <table id="ranking-table" class="table-fixed border-collapse w-full bg-white">
+              <thead class="bg-blue-100">
+                <tr>
+                  <th class="px-1 py-1 w-[50px]">경기</th>
+                  <th class="px-1 py-1 w-[40px]">승</th>
+                  <th class="px-1 py-1 w-[40px]">패</th>
+                  <th class="px-1 py-1 w-[40px]">무</th>
+                  <th class="px-1 py-1 w-[60px]">승률</th>
+                  <th class="px-1 py-1 w-[60px]">게임차</th>
+                  <th class="px-1 py-1 w-[60px]">연속</th>
+                  <th class="px-1 py-1 w-[60px]">홈</th>
+                  <th class="px-1 py-1 w-[60px]">원정</th>
+                  <th class="px-1 py-1 w-[60px]">이번주</th>
+                  <th class="px-1 py-1 w-[120px]">최근</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for team in standing %}
+                <tr class="border-b border-gray-300 bg-[#f9f9f9] {% if team.team == user.team %}bg-yellow-100 font-bold text-black{% endif %}">
+                  <td class="px-1 py-1 text-center">{{ team.G }}</td>
+                  <td class="px-1 py-1 text-center">{{ team.W }}</td>
+                  <td class="px-1 py-1 text-center">{{ team.L }}</td>
+                  <td class="px-1 py-1 text-center">{{ team.D }}</td>
+                  <td class="px-1 py-1 text-center">{{ team.win_percent }}</td>
+                  <td class="px-1 py-1 text-center">{{ team.games_behind }}</td>
+                  <td class="px-1 py-1 text-center">{{ team.streak }}</td>
+                  <td class="px-1 py-1 text-center">{{ team.home }}</td>
+                  <td class="px-1 py-1 text-center">{{ team.away }}</td>
+                  <td class="px-1 py-1 text-center">{{ team.weekly }}</td>
+                  <td class="px-1 py-1 text-center">
+                    {% for result in team.recent_results %}
+                    <span class="{% if result == '승' %}text-blue-600{% elif result == '패' %}text-red-500{% else %}text-gray-500{% endif %} font-semibold text-sm mr-1">
+                      {{ result }}
+                    </span>
+                    {% endfor %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
+    </div>
+  </div>
+
+  <!-- ✅ 타자 순위 -->
+<div id="hitters" class="tab-content">
+  <div class="standing-box bg-white shadow p-6 mb-8 text-xs sm:text-sm">
+    
+    <!-- 🔘 스크롤 버튼 -->
+    <div class="flex justify-end mb-2">
+      <button onclick="scrollHitter(-1)" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition">⬅</button>
+      <button onclick="scrollHitter(1)" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition ml-2">➡</button>
+    </div>
+
+    <!-- ✅ 테이블 전체 박스 -->
+    <div class="relative w-full flex rounded-[15px] overflow-hidden border border-gray-300">
       
-      <div class="flex w-full relative rounded-[15px] overflow-hidden border border-gray-300">
-
-        <!-- 고정 열 -->
-        <div class="sticky left-0 z-20 w-[180px] bg-white/90 border-r border-gray-300">
-          <table class="table-fixed border-collapse w-full">
-            <thead class="bg-blue-100">
-              <tr>
-                <th class="px-1 py-1"></th>
-                <th class="px-1 py-1">팀</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for team in standing %}
-              <tr class="border-b border-gray-300 bg-[#f9f9f9] {% if team.team == user.team %}bg-yellow-100 font-bold text-black{% endif %}">
-                <td class="px-1 py-1 text-center">{{ forloop.counter }}</td>
-                <td class="px-1 py-1 whitespace-nowrap flex items-center">
-                  <img src="/static/cal/images/team/{{ team.team }}.svg" class="w-5 h-5">
-                  {{ team.team|team_name }}
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-
-        <!-- 스크롤 열 -->
-        <div id="ranking-scroll-wrapper" class="overflow-x-auto scroll-smooth w-full hide-scrollbar">
-          <table id="ranking-table" class="table-fixed border-collapse w-full bg-white">
-            <thead class="bg-blue-100">
-              <tr>
-                <th class="px-1 py-1 w-[50px]">경기</th>
-                <th class="px-1 py-1 w-[40px]">승</th>
-                <th class="px-1 py-1 w-[40px]">패</th>
-                <th class="px-1 py-1 w-[40px]">무</th>
-                <th class="px-1 py-1 w-[60px]">승률</th>
-                <th class="px-1 py-1 w-[60px]">게임차</th>
-                <th class="px-1 py-1 w-[60px]">연속</th>
-                <th class="px-1 py-1 w-[60px]">홈</th>
-                <th class="px-1 py-1 w-[60px]">원정</th>
-                <th class="px-1 py-1 w-[60px]">이번주</th>
-                <th class="px-1 py-1 w-[120px]">최근</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for team in standing %}
-              <tr class="border-b border-gray-300 bg-[#f9f9f9] {% if team.team == user.team %}bg-yellow-100 font-bold text-black{% endif %}">
-                <td class="px-1 py-1 text-center">{{ team.G }}</td>
-                <td class="px-1 py-1 text-center">{{ team.W }}</td>
-                <td class="px-1 py-1 text-center">{{ team.L }}</td>
-                <td class="px-1 py-1 text-center">{{ team.D }}</td>
-                <td class="px-1 py-1 text-center">{{ team.win_percent }}</td>
-                <td class="px-1 py-1 text-center">{{ team.games_behind }}</td>
-                <td class="px-1 py-1 text-center">{{ team.streak }}</td>
-                <td class="px-1 py-1 text-center">{{ team.home }}</td>
-                <td class="px-1 py-1 text-center">{{ team.away }}</td>
-                <td class="px-1 py-1 text-center">{{ team.weekly }}</td>
-                <td class="px-1 py-1 text-center">
-                  {% for result in team.recent_results %}
-                  <span class="{% if result == '승' %}text-blue-600{% elif result == '패' %}text-red-500{% else %}text-gray-500{% endif %} font-semibold text-sm mr-1">
-                    {{ result }}
-                  </span>
-                  {% endfor %}
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+      <!-- 📌 고정 열 -->
+      <div class="w-[180px] overflow-hidden border-r border-gray-300 bg-white/90">
+        <table class="table-fixed border-collapse w-full sticky" id="hitter-fixed">
+          <thead class="bg-blue-100">
+            <tr>
+              <th class="px-1 py-1"></th>
+              <th class="px-1 py-1">이름</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for hitter in hitter_stats %}
+            <tr class="border-b border-b-gray-300 bg-[#f9f9f9]">
+              <td class="px-1 py-1 text-center">{{ forloop.counter }}</td>
+              <td class="px-1 py-1 whitespace-nowrap text-center">{{ hitter.player_name }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
 
+      <!-- 📌 스크롤 열 -->
+      <div id="hitter-scroll-wrapper" class="overflow-x-auto scroll-smooth w-full hide-scrollbar">
+        <table id="hitter-table" class="table-fixed border-collapse w-full bg-white">
+          <thead class="bg-blue-100">
+            <tr>
+              <th class="px-1 py-1 w-[80px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 0)">타율</th>
+              <th class="px-1 py-1 w-[80px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 1)">경기</th>
+              <th class="px-1 py-1 w-[80px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 2)">타석</th>
+              <th class="px-1 py-1 w-[80px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 3)">타수</th>
+              <th class="px-1 py-1 w-[60px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 4)">득점</th>
+              <th class="px-1 py-1 w-[60px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 5)">안타</th>
+              <th class="px-1 py-1 w-[60px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 6)">2루타</th>
+              <th class="px-1 py-1 w-[60px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 7)">3루타</th>
+              <th class="px-1 py-1 w-[60px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 8)">홈런</th>
+              <th class="px-1 py-1 w-[80px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 9)">루타</th>
+              <th class="px-1 py-1 w-[60px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 10)">타점</th>
+              <th class="px-1 py-1 w-[60px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 11)">희생타</th>
+              <th class="px-1 py-1 w-[90px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 12)">희생플라이</th>
+              <th class="px-1 py-1 w-[60px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 13)">볼넷</th>
+              <th class="px-1 py-1 w-[80px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 14)">고의 사구</th>
+              <th class="px-1 py-1 w-[90px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 15)">몸에 맞는 공</th>
+              <th class="px-1 py-1 w-[60px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 16)">삼진</th>
+              <th class="px-1 py-1 w-[60px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 17)">병살타</th>
+              <th class="px-1 py-1 w-[80px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 18)">장타율</th>
+              <th class="px-1 py-1 w-[80px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 19)">출루율</th>
+              <th class="px-1 py-1 w-[80px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 20)">OPS</th>
+              <th class="px-1 py-1 w-[80px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 21)">멀티히트</th>
+              <th class="px-1 py-1 w-[100px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 22)">득점권 타율</th>
+              <th class="px-1 py-1 w-[90px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 23)">PH_BA</th>
+              <th class="px-1 py-1 w-[80px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 24)">도루 시도</th>
+              <th class="px-1 py-1 w-[60px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 25)">도루</th>
+              <th class="px-1 py-1 w-[90px] cursor-pointer hover:underline" onclick="sortTable('hitter-table', 26)">도루 실패</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for hitter in hitter_stats %}
+            <tr class="border-b border-gray-300 bg-[#f9f9f9]">
+              <td class="px-1 py-1 text-center">{{ hitter.AVG }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.G }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.PA }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.AB }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.R }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.H }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.H_2B }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.H_3B }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.HR }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.TB }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.RBI }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.SAC }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.SF }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.BB }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.IBB }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.HBP }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.SO }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.GDP }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.SLG }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.OBP }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.OPS }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.MH }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.RISP }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.PH_BA }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.SBA }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.SB }}</td>
+              <td class="px-1 py-1 text-center">{{ hitter.CS }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
-
-  <!-- ✅ 타자 순위 -->
-  <div id="hitters" class="tab-content hidden">
-    <div class="standing-box bg-white shadow p-6 mb-8 text-xs sm:text-sm">
-      <div class="flex justify-end mb-2">
-        <button onclick="scrollHitter(-1)" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition">⬅</button>
-        <button onclick="scrollHitter(1)" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition ml-2">➡</button>
-      </div>
-
-      <div class="flex w-full relative rounded-[15px] overflow-hidden border border-gray-300">
-
-        <div class="sticky left-0 z-20 w-[180px] bg-white/90 border-r border-gray-300">
-          <table class="table-fixed border-collapse w-full">
-            <thead class="bg-blue-100">
-              <tr>
-                <th class="px-1 py-1"></th>
-                <th class="px-1 py-1">이름</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for hitter in hitter_stats %}
-              <tr class="border-b border-b-gray-300 bg-[#f9f9f9]">
-                <td class="px-1 py-1 text-center">{{ forloop.counter }}</td>
-                <td class="px-1 py-1 whitespace-nowrap text-center">{{ hitter.player_name }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-
-        <div id="hitter-scroll-wrapper" class="overflow-x-auto scroll-smooth w-full hide-scrollbar">
-          <table id="hitter-table" class="table-fixed border-collapse w-full bg-white">
-            <thead class="bg-blue-100">
-              <tr>
-                <th class="px-1 py-1 w-[80px]" onclick="sortTable('hitter-table', 0)">타율</th>
-                <th class="px-1 py-1 w-[80px]" onclick="sortTable('hitter-table', 1)">경기</th>
-                <th class="px-1 py-1 w-[80px]" onclick="sortTable('hitter-table', 2)">타석</th>
-                <th class="px-1 py-1 w-[80px]" onclick="sortTable('hitter-table', 3)">타수</th>
-                <th class="px-1 py-1 w-[60px]" onclick="sortTable('hitter-table', 4)">득점</th>
-                <th class="px-1 py-1 w-[60px]" onclick="sortTable('hitter-table', 5)">안타</th>
-                <th class="px-1 py-1 w-[60px]" onclick="sortTable('hitter-table', 6)">2루타</th>
-                <th class="px-1 py-1 w-[60px]" onclick="sortTable('hitter-table', 7)">3루타</th>
-                <th class="px-1 py-1 w-[60px]" onclick="sortTable('hitter-table', 8)">홈런</th>
-                <th class="px-1 py-1 w-[80px]" onclick="sortTable('hitter-table', 9)">루타</th>
-                <th class="px-1 py-1 w-[60px]" onclick="sortTable('hitter-table', 10)">타점</th>
-                <th class="px-1 py-1 w-[60px]" onclick="sortTable('hitter-table', 11)">희생타</th>
-                <th class="px-1 py-1 w-[90px]" onclick="sortTable('hitter-table', 12)">희생플라이</th>
-                <th class="px-1 py-1 w-[60px]" onclick="sortTable('hitter-table', 13)">볼넷</th>
-                <th class="px-1 py-1 w-[80px]" onclick="sortTable('hitter-table', 14)">고의 사구</th>
-                <th class="px-1 py-1 w-[90px]" onclick="sortTable('hitter-table', 15)">몸에 맞는 공</th>
-                <th class="px-1 py-1 w-[60px]" onclick="sortTable('hitter-table', 16)">삼진</th>
-                <th class="px-1 py-1 w-[60px]" onclick="sortTable('hitter-table', 17)">병살타</th>
-                <th class="px-1 py-1 w-[80px]" onclick="sortTable('hitter-table', 18)">장타율</th>
-                <th class="px-1 py-1 w-[80px]" onclick="sortTable('hitter-table', 19)">출루율</th>
-                <th class="px-1 py-1 w-[80px]" onclick="sortTable('hitter-table', 20)">OPS</th>
-                <th class="px-1 py-1 w-[80px]" onclick="sortTable('hitter-table', 21)">멀티히트</th>
-                <th class="px-1 py-1 w-[100px]" onclick="sortTable('hitter-table', 22)">득점권 타율</th>
-                <th class="px-1 py-1 w-[90px]" onclick="sortTable('hitter-table', 23)">PH_BA</th>
-                <th class="px-1 py-1 w-[80px]" onclick="sortTable('hitter-table', 24)">도루 시도</th>
-                <th class="px-1 py-1 w-[60px]" onclick="sortTable('hitter-table', 25)">도루</th>
-                <th class="px-1 py-1 w-[90px]" onclick="sortTable('hitter-table', 26)">도루 실패</th>
-              </tr>
-
-
-            </thead>
-            <tbody>
-              {% for hitter in hitter_stats %}
-              <tr class="border-b border-gray-300 bg-[#f9f9f9]">
-                <td class="px-1 py-1 text-center">{{ hitter.AVG }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.G }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.PA }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.AB }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.R }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.H }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.H_2B }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.H_3B }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.HR }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.TB }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.RBI }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.SAC }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.SF }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.BB }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.IBB }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.HBP }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.SO }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.GDP }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.SLG }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.OBP }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.OPS }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.MH }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.RISP }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.PH_BA }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.SBA }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.SB }}</td>
-                <td class="px-1 py-1 text-center">{{ hitter.CS }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-
-        </div>
-      </div>
-    </div>
-  </div>
 
 
   <!-- ✅ 투수 순위 -->
@@ -242,7 +246,7 @@
         </div>
 
         <div id="pitcher-scroll-wrapper" class="overflow-x-auto scroll-smooth w-full hide-scrollbar">
-          <table id="pitcher-table" class="table-fixed border-collapse w-full bg-white">
+          <table id="pitcher-table" class="table-fixed border-collapse w-full sticky bg-white">
             <thead class="bg-blue-100">
               <tr>
                 <th class="px-1 py-1 w-[100px] cursor-pointer hover:underline" onclick="sortTable('pitcher-table', 0)">평균자책점</th>
@@ -352,6 +356,7 @@
     const visibleWidth = wrapper.clientWidth;
     wrapper.scrollLeft += visibleWidth * 0.7;
   }
+
   function scrollRankingLeft() {
     const wrapper = document.getElementById('ranking-scroll-wrapper');
     const visibleWidth = wrapper.clientWidth;
@@ -369,52 +374,36 @@
     const amount = wrapper.clientWidth * 0.6;
     wrapper.scrollLeft += amount * direction;
   }
-  
-  const sortDirections = {};
+
+  let sortStates = {};
 
   function sortTable(tableId, colIndex) {
     const table = document.getElementById(tableId);
     const tbody = table.querySelector("tbody");
-    const fixedTable = table.closest(".relative").querySelector("table.sticky");
-    const fixedTbody = fixedTable.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
 
-    const key = `${tableId}-${colIndex}`;
-    sortDirections[key] = !sortDirections[key];
+    const currentState = sortStates[colIndex] || "none";
+    let newState = currentState === "asc" ? "desc" : "asc";
+    sortStates[colIndex] = newState;
 
-    const dataRows = Array.from(tbody.rows);
-    const fixedRows = Array.from(fixedTbody.rows);
+    rows.sort((a, b) => {
+      const valA = a.children[colIndex].innerText.trim();
+      const valB = b.children[colIndex].innerText.trim();
 
-    // 정렬할 행들 쌍 만들기
-    const rowPairs = dataRows.map((row, i) => {
-      return {
-        dataRow: row,
-        fixedRow: fixedRows[i],
-        sortValue: row.cells[colIndex].innerText.trim()
-      };
-    });
+      const numA = parseFloat(valA.replace('%', ''));
+      const numB = parseFloat(valB.replace('%', ''));
 
-    rowPairs.sort((a, b) => {
-      const A = a.sortValue;
-      const B = b.sortValue;
-      const numA = parseFloat(A.replace(/[^0-9.\-]/g, ""));
-      const numB = parseFloat(B.replace(/[^0-9.\-]/g, ""));
-      const isNumeric = !isNaN(numA) && !isNaN(numB);
-
-      if (isNumeric) {
-        return sortDirections[key] ? numA - numB : numB - numA;
+      const isNumber = !isNaN(numA) && !isNaN(numB);
+      if (isNumber) {
+        return newState === "asc" ? numA - numB : numB - numA;
       } else {
-        return sortDirections[key] ? A.localeCompare(B) : B.localeCompare(A);
+        return newState === "asc"
+          ? valA.localeCompare(valB)
+          : valB.localeCompare(valA);
       }
     });
 
-    // tbody 재정렬 및 순위 재지정
-    rowPairs.forEach((pair, idx) => {
-      tbody.appendChild(pair.dataRow);
-      fixedTbody.appendChild(pair.fixedRow);
-      // 왼쪽 순위 열 (#) 값 재설정
-      const rankCell = pair.fixedRow.querySelector("td");
-      if (rankCell) rankCell.textContent = idx + 1;
-    });
+    rows.forEach(row => tbody.appendChild(row));
   }
 
   function showTab(tabId) {
