@@ -36,7 +36,7 @@
     </div>
     <!-- 게시글 제목 및 메타 -->
     <div class="border-b pb-4 mb-4">
-      <h1 class="text-2xl font-bold text-gray-800 text-center">{{ post.title }}</h1>
+      <h1 class="text-2xl font-bold text-gray-800 text-center">{{post.title }}</h1>
       <div class="flex items-center text-sm text-gray-500 mt-1 whitespace-nowrap">
         {% if post.user.team %}
           <img src="{{ post.user.profile_image.url }}" alt="프로필 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
