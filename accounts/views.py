@@ -4,10 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
-from django.contrib.auth import get_user_model
-from .forms import CustomUserCreationForm, CustomAuthenticationForm
+from .forms import *
 from .models import User
-from cal import views
+
+from django.contrib import messages
 
 import json
 import string
@@ -68,7 +68,7 @@ def reset_password_view(request):
             send_mail(
                 subject="비밀번호 재설정 인증번호",
                 message=f"비밀번호 재설정을 위한 인증번호는 {code} 입니다.",
-                from_email=None,
+                from_email="직돌이 운영팀 <seongjin5743@naver.com>",
                 recipient_list=[email],
             )
 
@@ -139,7 +139,7 @@ def auth_view(request):
     # POST 요청 처리
     if request.method == 'POST':
         if mode == 'signup':
-            signup_form = CustomUserCreationForm(request.POST)
+            signup_form = CustomUserCreationForm(request.POST, request.FILES)
             login_form = CustomAuthenticationForm(request)  # 비워진 로그인 폼
 
             if signup_form.is_valid():
@@ -188,3 +188,62 @@ def check_duplicate(request):
             return JsonResponse({"success": False, "message": f"{field}이(가) 이미 사용 중입니다."})
         else:
             return JsonResponse({"success": True, "message": f"{field}은(는) 사용 가능합니다."})
+
+@login_required
+def mypage(request):
+    user = request.user
+    password_form = PasswordChangeCustomForm(user)
+    nickname_form = NicknameChangeForm(instance=user)
+    team_form = TeamChangeForm(instance=user)
+
+    if request.method == 'POST':
+        mode = request.POST.get('mode')
+        print(mode)
+        if mode == 'password':
+            password_form = PasswordChangeCustomForm(user, request.POST)
+            if password_form.is_valid():
+                password_form.save()
+                messages.success(request, '비밀번호가 변경되었습니다.')
+                return redirect('accounts:mypage')
+        elif mode == 'nickname':
+            nickname_form = NicknameChangeForm(request.POST, instance=user)
+            if nickname_form.is_valid():
+                nickname_form.save()
+                messages.success(request, '닉네임이 변경되었습니다.')
+                return redirect('accounts:mypage')
+        elif mode == 'team':
+            team_form = TeamChangeForm(request.POST, instance=user)
+            if team_form.is_valid():
+                team_form.save()
+                messages.success(request, '응원팀이 변경되었습니다.')
+                return redirect('accounts:mypage')
+
+    context = {
+        'password_form': password_form,
+        'nickname_form': nickname_form,
+        'team_form': team_form,
+    }
+    return render(request, 'mypage.html', context)
+
+@login_required
+def update_profile_image(request):
+    # 디버깅을 위해 request.FILES 출력
+    print("request.FILES:", request.FILES)
+
+    if request.method == 'POST' and request.FILES.get('profile_image'):
+        profile_image = request.FILES['profile_image']
+        user = request.user
+        
+        # 디버깅: 프로필 이미지 파일 확인
+        print("프로필 이미지 파일:", profile_image)
+
+        user.profile_image = profile_image
+        user.save()
+
+        messages.success(request, '프로필 이미지가 업데이트되었습니다.')
+        return redirect('accounts:mypage')
+    
+    # 요청에 파일이 없을 때 디버깅
+    print("파일이 업로드되지 않았습니다.")
+    messages.error(request, '이미지 업로드에 실패했습니다.')
+    return redirect('accounts:mypage')

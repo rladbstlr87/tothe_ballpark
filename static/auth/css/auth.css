@@ -1,6 +1,7 @@
 html, body {
   height: auto;
   overflow: auto;
+  box-sizing: border-box;
 }
 
 /* ----------------------------- */
@@ -13,26 +14,24 @@ html, body {
   align-items: flex-start;
   min-height: 100vh;
   height: auto;
-  overflow: hidden;
+  overflow: visible;
   padding-top: 30px;
   margin-bottom: 30px;
+  box-sizing: border-box;
 }
-
 
 /* ----------------------------- */
 /* ✅ 로그인/회원가입/아이디찾기 폼 기본 상태 */
 /* ----------------------------- */
 .form {
   position: absolute;
-
   width: 100%;
-  height: 100%;
+  min-height: auto;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   padding-top: 20px;
 
-  /* 처음에는 비활성화 상태 */
   opacity: 0;
   transform: scale(0.95) rotate(-1.5deg);
   pointer-events: none;
@@ -41,7 +40,6 @@ html, body {
   z-index: 1;
 }
 
-/* 활성화된 상태의 폼 */
 .form.active {
   opacity: 1;
   transform: scale(1) rotate(0deg);
@@ -50,13 +48,11 @@ html, body {
 }
 
 /* ----------------------------- */
-/* ✅ 폼 카드 스타일 (로그인/회원가입 박스) */
-/* ----------------------------- */
+/* ✅ 폼 카드 스타일 */
 .form-wrapper {
   background-color: #fdfcf7;
-  width: 480px;
-  height: 650px;
-
+  width: 500px;
+  min-height: 800px;
   padding: 40px 32px;
   border-radius: 16px;
   box-shadow: 6px 6px 0 #bfb89b;
@@ -68,11 +64,11 @@ html, body {
   align-items: center;
 
   animation: fadeInUp 0.5s ease;
+  box-sizing: border-box;
 }
 
 /* ----------------------------- */
-/* ✅ 제목 텍스트 스타일 (로그인, 회원가입 등) */
-/* ----------------------------- */
+/* ✅ 제목 텍스트 스타일 */
 h5 {
   font-size: 28px;
   color: #3e3426;
@@ -80,32 +76,30 @@ h5 {
   font-weight: 600;
 }
 
-
 /* ----------------------------- */
 /* ✅ 모든 input/select 공통 스타일 */
-/* ----------------------------- */
 .form-field {
   width: 100%;
-  height: 45px;
-  margin-bottom: 22px;
-
-  padding: 0 12px;
-  border-radius: 6px;
-  border: 1px solid #d9d2b4;
-  background: #fffef9;
+  max-width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  margin-bottom: 20px;
 
   font-size: 16px;
   color: #3e3e3e;
+  border: 1px solid #d9d2b4;
+  border-radius: 6px;
+  background: #fffef9;
 
   box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
 }
-
 
 /* ----------------------------- */
 /* ✅ 버튼 기본 스타일 */
-/* ----------------------------- */
 .button {
   width: 100%;
+  max-width: 100%;
   height: 50px;
   border-radius: 6px;
   font-weight: bold;
@@ -114,9 +108,9 @@ h5 {
 
   margin-bottom: 18px;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
-/* 주요 버튼 (로그인, 회원가입 등) */
 .primary {
   background-color: #826d47;
   color: #fffbea;
@@ -126,7 +120,6 @@ h5 {
   background-color: #6b5739;
 }
 
-/* 보조 버튼 (중복확인, 이메일 인증 등) */
 .secondary {
   background-color: transparent;
   color: #826d47;
@@ -136,10 +129,8 @@ h5 {
   background-color: #f9f6ee;
 }
 
-
 /* ----------------------------- */
 /* ✅ 링크 및 안내 텍스트 스타일 */
-/* ----------------------------- */
 p {
   font-size: 14px;
   color: #555;
@@ -157,8 +148,6 @@ p a:hover {
 
 /* ----------------------------- */
 /* ✅ 페이드 전환 애니메이션 */
-/* ----------------------------- */
-
 .fade-in {
   opacity: 0;
   animation: fadeIn 0.3s forwards;
@@ -175,6 +164,8 @@ p a:hover {
   to { opacity: 0; }
 }
 
+/* ----------------------------- */
+/* ✅ 배경 마스코트 위치 스타일 */
 .overlay-img {
   position: absolute;
   transform: translateY(-40px);
@@ -273,21 +264,50 @@ p a:hover {
 }
 
 /* ----------------------------- */
-/* ✅ 모바일 대응 (세로 좁은 화면용) */
+/* ✅ 모바일 (768px 이하) 반응형 스타일 */
 /* ----------------------------- */
 @media (max-width: 768px) {
   .root {
     display: flex;
     justify-content: center;
-    height: 100vh;
-    overflow: hidden;
+    height: auto;
+    padding: 20px 10px;
+    overflow: auto;
   }
 
   .form {
     padding-top: 10px;
   }
-  
-  /* 마스코트 숨김 */
+
+  .form-wrapper {
+    width: 90%;
+    min-height: auto;
+    padding: 24px 20px;
+    border-radius: 12px;
+    box-sizing: border-box;
+  }
+
+  h5 {
+    font-size: 22px;
+    margin-bottom: 24px;
+  }
+
+  .form-field {
+    font-size: 14px;
+    height: 42px;
+    padding: 0 10px;
+    margin-bottom: 18px;
+  }
+
+  .button {
+    height: 45px;
+    font-size: 15px;
+  }
+
+  input[type="file"] {
+    max-width: 100%;
+  }
+
   .dusan-mascot-container,
   .samsung-mascot-container,
   .kt-mascot-container,

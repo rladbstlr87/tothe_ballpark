@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     KBO_TEAMS = [
-        ('', '응원팀을 선택해주세요! 추후 변경 X'),
+        ('', '응원팀을 선택해주세요!'),
         ('SK', 'SSG 랜더스'),
         ('LG', 'LG 트윈스'),
         ('KT', 'KT 위즈'),
@@ -26,3 +26,5 @@ class User(AbstractUser):
     nickname = models.CharField(max_length=20, unique=True)
 
     email = models.EmailField(max_length=254, unique=False, blank=True, null=True)
+
+    profile_image = models.ImageField(upload_to='auth/images/', blank=True, null=True, verbose_name='프로필 이미지')

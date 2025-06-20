@@ -1,6 +1,6 @@
 {% load static %}
 <nav x-data="{ mobileMenuOpen: false }"
-    class="relative z-9999 bg-cover w-full bg-transparent z-10 py-1 md:py-3 font-parkdahyun [background-position:0%_100%]"
+    class="relative z-90 bg-cover w-full bg-transparent py-1 md:py-3 font-nav [background-position:0%_100%]"
     style="{% if user.team == none %}background-image: url('{% static 'nav/nav-' %}nothing.png');{% else %}background-image: url('{% static 'nav/nav-' %}{{ user.team }}.png');{% endif %}">
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 ">
         <div class="relative flex h-16">
@@ -34,6 +34,11 @@
                         </a>
                     </div> 
             </div>
+            <!-- 중앙에 '직돌이' 타이틀 추가 -->
+            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl font-bold text-white"
+                style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">
+                직돌이
+            </div>
             <div class="flex flex-1 justify-center">
                 <div id="menu" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 justify-between w-full items-center text-shadows md:flex hidden">
                     <!-- 왼쪽 메뉴 -->
@@ -63,7 +68,7 @@
                         <div x-data="{ open: false }">
                             <!-- 드롭다운 트리거 -->
                             <span @click="open = !open"
-                                    class="relative tracking-widest">
+                                    class="relative tracking-widest cursor-pointer">
                                 <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-[#52734D] -z-10"></span>
                                 <span class="hover:text-blue-500">경기장</span>
                             </span>
@@ -101,24 +106,26 @@
                     <!-- 오른쪽 사용자 메뉴 -->
                     <div class="flex items-center gap-x-6">
                         {% if user.is_authenticated %}
-                        <span class="relative tracking-widest text-gray-700">
-                            <span class="absolute inset-x-0 bottom-1 h-6 rounded-md bg-[#FCEF91] -z-10"></span>
-                            <span>{{ user.nickname }}</span>
-                        </span>
+                            <a href="{% url 'accounts:mypage' %}" class="text-black hover:text-blue-500">
+                                <span class="relative tracking-widest">
+                                    <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-[#FCEF91] -z-10"></span>
+                                    <span>{{ user.nickname }}</span>
+                                </span>
+                            </a>
 
-                        <a href="{% url 'accounts:logout' %}" class="text-black hover:text-blue-500">
-                            <span class="relative tracking-widest">
-                                <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-red-400 -z-10"></span>
-                                <span>로그아웃</span>
-                            </span>
-                        </a>
+                            <a href="{% url 'accounts:logout' %}" class="text-black hover:text-blue-500">
+                                <span class="relative tracking-widest">
+                                    <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-red-400 -z-10"></span>
+                                    <span>로그아웃</span>
+                                </span>
+                            </a>
                         {% else %}
-                        <a href="{% url 'accounts:auth' %}" class="text-black hover:text-blue-600">
-                            <span class="relative tracking-widest">
-                                <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-red-400 -z-10"></span>
-                                <span>로그인</span>
-                            </span>
-                        </a>
+                            <a href="{% url 'accounts:auth' %}" class="text-black hover:text-blue-600">
+                                <span class="relative tracking-widest">
+                                    <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-red-400 -z-10"></span>
+                                    <span>로그인</span>
+                                </span>
+                            </a>
                         {% endif %}
                     </div>
                     <div class="flex items-center">
