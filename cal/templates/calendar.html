@@ -158,7 +158,7 @@
 
     <!-- 배경 종이 -->
     <img src="/static/cal/images/icon/note-paper.png" alt="순위 팝업 배경"
-         class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0" />
+        class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0" />
 
     <!-- 닫기 버튼 -->
     <button id="closeRankingModal"
@@ -209,6 +209,56 @@
         </tbody>
       </table>
     </div>
+  </div>
+</div>
+
+<!-- 데스크탑 저니 -->
+<div id="introOverlay" class="fixed grid inset-0 bg-black/40 z-100 cursor-pointer hidden">
+  <div class="text-white pt-24">
+    <div id="introSteps" class="flex flex-col md:flex-row gap-6 px-4">
+      <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-2/3 top-[100px] hidden select-none">
+        <strong class="text-2xl">승리요정</strong>을 소개합니다! 👉<br><br>
+        여기 보이는 귀여운 마스코트는, 바로<br>
+        당신의 직관 승률을 보여주는 승리요정입니다.<br>
+        직관을 간 경기 중에서 승률이<br>
+        50% 이상이면 승리요정이 기쁘게 응원하고,<br>
+        50% 미만이면 승리요정이 슬퍼해요ㅠ<br><br>
+        이미지를 <strong>클릭</strong>하면,<br>
+        - 지금까지의 <strong>직관 전적</strong><br>
+        - <strong>전체 유저 중 나의 순위</strong><br>
+        등을 확인할 수 있어요!
+      </p>
+      <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-1/2 top-[270px] -translate-x-1/2 hidden select-none">
+        <strong>캘린더</strong>에서 <strong>원하는 경기 일정을 클릭</strong>하면,<br>
+        해당 경기의 <strong>자세한 정보</strong>를 확인할 수 있어요.
+      </p>
+      <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-1/2 top-[270px] -translate-x-1/2 hidden select-none">
+      경기가 <strong>끝난 날</strong>이라면,<br>
+        점수, 선발 라인업, 각 선수들의 <strong>성적과 능력치</strong>까지 볼 수 있고요.
+      </p>
+      <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-1/2 top-[270px] -translate-x-1/2 hidden select-none">
+        <strong>앞으로 열릴 경기</strong>를 누르면 <strong>예매 버튼</strong>도 함께 제공돼요!<br>
+        바로 연결해서 티켓을 예매할 수 있답니다<br>
+      </p>
+      <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-2/7 top-[400px] -translate-x-1/2 hidden select-none"">
+        왼쪽 포스트잇에서는<br>
+        <strong>각 팀의 예매 일정</strong>을 확인할 수 있고,<br>
+      </p>
+      <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-5/7 top-[400px] -translate-x-1/2 hidden select-none"">
+        오른쪽 포스트잇에서는<br>
+        <strong>이번 시즌 KBO 팀 순위</strong>를 한눈에 볼 수 있어요!
+      </p>
+    </div>
+  </div>
+
+  <!-- 마지막 안내 박스 -->
+  <div id="finalMessage" class="bg-white/70 backdrop-blur-sm p-6 rounded-lg text-center max-w-md shadow-xl absolute left-1/2 top-[300px] -translate-x-1/2 hidden select-none">
+    <p class="p-2">
+        주요 기능들을 모두 살펴보셨어요!
+    </p>
+    <button onclick="console.log('버튼 눌림'); closeIntro()" class="mt-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700">
+        다시 보지 않기
+    </button>
   </div>
 </div>
 
