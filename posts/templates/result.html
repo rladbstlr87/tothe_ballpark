@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}직돌이 테스트 결과{% endblock %}
+
+{% block body %}
+<div class="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#f3e7ff] via-[#ffeef2] to-[#d5f3ff]">
+  <!-- ✅ 질문 카드 전체 영역: 배경이미지 + 내용 -->
+  <div class="w-full sm:max-w-[450px] max-sm:min-h-screen aspect-[9/16] sm:rounded-2xl overflow-hidden shadow-lg bg-cover bg-center relative px-4"
+     style="background-image: url('{% static 'posts/images/'|add:result.tag|add:'.png' %}'); background-size: cover; background-position: center;">
+   
+    <!-- 재시작 버튼 -->
+     <div class="absolute bottom-20 w-full flex justify-center font-parkdahyun">
+            <a href="{% url 'posts:test_start' %}"
+            class="bg-blue-400 hover:bg-blue-500 text-white font-bold py-4 px-8 rounded-full text-[30px] shadow-xl transition ">
+            다시하기 ♤
+            </a>
+        </div>
+    <!-- SNS 공유 버튼들 -->
+{% comment %} <div class="flex justify-center gap-4 mt-6">
+
+  <!-- 페이스북 공유 버튼 -->
+  <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank"
+     class="bg-blue-600 text-white py-3 px-8 rounded-full text-lg font-semibold hover:bg-blue-500 transition-all duration-300">
+    페이스북 공유
+  </a>
+
+  <!-- 트위터 공유 버튼 -->
+  <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text=직돌이%20테스트%20결과" target="_blank"
+     class="bg-blue-400 text-white py-3 px-8 rounded-full text-lg font-semibold hover:bg-blue-300 transition-all duration-300">
+    트위터 공유
+  </a>
+
+  <!-- 카카오톡 공유 버튼 (카카오톡 링크) -->
+    <a href="https://developers.kakao.com/tool/demo/share?url={{ request.build_absolute_uri }}" target="_blank"
+    class="bg-yellow-500 text-white py-3 px-8 rounded-full text-lg font-semibold hover:bg-yellow-400 transition-all duration-300">
+    카카오톡 공유
+    </a>
+
+</div> {% endcomment %}
+  </div>
+</div>
+{% endblock %}

@@ -17,7 +17,11 @@ urlpatterns = [
     path('<int:post_id>/like', views.post_like, name='post_like'),
     path('<int:id>/like-async/', views.like_async, name='like_async'),
     path('comments/<int:comment_id>/like-async/', views.comment_like_async, name='comment_like_async'),
+    
+    # 직돌이 테스트
+    path('test/start/', views.test_start, name='test_start'),
+    path('test/question/<int:step>', views.test_question, name='test_question'),
+    path('test/result/', views.test_result, name='test_result'),
 ]
 
-# if settings.DEBUG:
-#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
