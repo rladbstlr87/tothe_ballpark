@@ -4,6 +4,7 @@ import datetime
 from urllib.parse import urlparse, parse_qs
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 
 # ✅ KBO 팀 코드 매핑
 TEAM_CODE = {
@@ -96,8 +97,14 @@ with open('data/kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
         game_info_map[key] = {'stadium': stadium, 'game_id': game_id_counter}
         game_id_counter += 1
 
-# ✅ Selenium 크롬 드라이버 실행
-driver = webdriver.Chrome()
+# ✅ Selenium 크롬 드라이버를 백그라운드(headless) 모드로 실행
+options = Options()
+options.add_argument('--headless')
+options.add_argument('--disable-gpu')
+options.add_argument('--no-sandbox')
+options.add_argument('--window-size=1920x1080')
+options.add_argument('--disable-dev-shm-usage')
+driver = webdriver.Chrome(options=options)
 
 # ✅ lineups.csv 파일에 이어서 저장
 with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
@@ -127,7 +134,7 @@ with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
             game_id = game_id_lookup.get((date_str, team1, team2, time_str))
             stadium = row.get('stadium', '')
 
-            # ✅ 네이버 경기 ID 결정 (일반, 더블헤더 1/2차전 등)
+            # ✅ 네이버 경기 ID 결정
             if len(games_sorted) == 1:
                 naver_game_id = '02025'
             elif idx == 0:
@@ -139,19 +146,19 @@ with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
 
             team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, naver_game_id, driver)
 
-            # 더블헤더 첫 경기 실패 시 두 번째 경기 판단 보정용
+            # 더블헤더 첫 경기 실패 시 보정
             if len(games_sorted) > 1 and idx == 0 and not team1_lineup and not team2_lineup:
                 double_header_failed = True
             elif len(games_sorted) > 1 and idx == 0:
                 first_game_lineup1 = team1_lineup
                 first_game_lineup2 = team2_lineup
 
-            # 더블헤더 두 번째 경기 재시도 (22025 → 02025)
+            # 더블헤더 두 번째 경기 재시도
             if len(games_sorted) > 1 and idx == 1 and not team1_lineup and not team2_lineup and naver_game_id == '22025':
                 print("22025 라인업 없음, 02025로 재시도")
                 team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, '02025', driver)
 
-            # 더블헤더 두 번째 경기: 라인업에 첫 경기 선두 타자 추가
+            # 더블헤더 두 번째 경기: 첫 타자 삽입
             if len(games_sorted) > 1 and idx == 1:
                 if len(team1_lineup) == 9 and first_game_lineup1:
                     team1_lineup.insert(0, first_game_lineup1[0])

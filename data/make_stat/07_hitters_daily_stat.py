@@ -4,6 +4,7 @@ import datetime
 from urllib.parse import urlparse, parse_qs
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 import pandas as pd
 
 # 팀 코드 매핑 (네이버 URL 구성용)
@@ -21,7 +22,6 @@ def get_record(date, team1_code, team2_code, game_id, driver):
     data = {'away': [], 'home': []}
     columns = ['AB', 'R', 'H', 'RBI', 'HR', 'BB', 'SO', 'SB']
 
-    # 선수 ID 추출 함수
     def extract_pid(th):
         try:
             a = th.find_element(By.TAG_NAME, 'a')
@@ -99,9 +99,15 @@ for _, row in df_filtered.iterrows():
     game_map.setdefault(key, []).append((row, next_gid))
     next_gid += 1
 
-# Selenium 웹드라이버 실행
-driver = webdriver.Chrome()
-driver.fullscreen_window()
+# ✅ Selenium 웹드라이버 실행 (headless + 가상 전체화면 해상도)
+chrome_options = Options()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--disable-gpu')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--window-size=1920,1080')
+chrome_options.add_argument('--disable-dev-shm-usage')
+
+driver = webdriver.Chrome(options=chrome_options)
 
 # 기록 파일 열기 (없으면 헤더 작성)
 with open('data/hitters_records.csv', 'a', newline='', encoding='utf-8-sig') as rout:
@@ -142,13 +148,13 @@ with open('data/hitters_records.csv', 'a', newline='', encoding='utf-8-sig') as 
             if not rec['away'] and not rec['home']:
                 print(f"⚠️ 기록 없음: {d} {t1} vs {t2} ({gcode})")
                 continue
+
             # 기록 저장
             for team in ['away', 'home']:
                 for r in rec[team]:
-                    if not r['player_id'].strip():  # player_id가 공백이면 건너뜀
+                    if not r['player_id'].strip():
                         continue
                     rw.writerow([r.get(k, '') for k in ['AB','R','H','RBI','HR','BB','SO','SB']] + [r['player_id'], team, gid, d])
-
 
             print(f"✅ 저장 완료: {d} {t1} vs {t2} ({gcode}) → game_id={gid}, 선수 수: {len(rec['away']) + len(rec['home'])}")
             time.sleep(1.5)

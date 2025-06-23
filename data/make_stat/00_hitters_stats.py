@@ -6,8 +6,17 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 
-driver = webdriver.Chrome()
+# ✅ Headless 크롬 드라이버 설정
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--window-size=1920,1080")
+chrome_options.add_argument("--disable-dev-shm-usage")
+
+driver = webdriver.Chrome(options=chrome_options)
 
 headers = {
     "User-Agent": "Mozilla/5.0"
@@ -38,7 +47,7 @@ for team in teams:
     select.select_by_value(team)
     time.sleep(2)
 
-    # 선수 정보 저장 함수 정의
+    # 선수 정보 수집 함수
     def collect_player_infos():
         players = driver.find_elements(By.CSS_SELECTOR,
             "#cphContents_cphContents_cphContents_udpContent > div.record_result > table > tbody > tr > td:nth-child(2) > a"

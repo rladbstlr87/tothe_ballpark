@@ -6,8 +6,17 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 
-driver = webdriver.Chrome()
+# ✅ Headless 크롬 드라이버 설정
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--window-size=1920,1080")
+chrome_options.add_argument("--disable-dev-shm-usage")
+
+driver = webdriver.Chrome(options=chrome_options)
 
 headers = {
     "User-Agent": "Mozilla/5.0"
@@ -95,7 +104,7 @@ for team in teams:
 
     final_data.extend(team_data)
     df_all = pd.DataFrame(final_data, columns=columns)
-    df_all.to_csv("../all_pitcher_stats.csv", index=False, encoding="utf-8-sig")
+    df_all.to_csv("data/all_pitcher_stats.csv", index=False, encoding="utf-8-sig")
     print(f"💾 누적 저장 완료: all_pitcher_stats.csv")
 
 driver.quit()
