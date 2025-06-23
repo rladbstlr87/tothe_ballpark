@@ -338,20 +338,20 @@ QUESTIONS = [
     ]
 # 직돌이 점수
 SCORE_TABLE = [
-                        ['A', 'C'],
-                        ['D', 'C'],
-                        ['D', 'B'],
-                        ['A', 'E'],
-                        ['A', 'E'],
-                        ['A', 'B'],
-                        ['D', 'E'],
-                        ['A', 'C'],
-                        ['D', 'C'],
-                        ['A', 'B'],
-                        ['D', 'B'],
-                        ['A', 'B'],
-                        ['A', 'C'],
-                        ['D', 'E'], ]
+                        ['A,B,D,E', 'C'],
+                        ['A,D', 'B,C,E'],
+                        ['A,D', 'E'],
+                        ['A,D', 'E'],
+                        ['D', 'B,E'],
+                        ['A,C,D', 'B,E'],
+                        ['A,D', 'B,C,E'],
+                        ['A,D', 'B,E'],
+                        ['A,D', 'B,C,E'],
+                        ['A,C,D,E', 'B'],
+                        ['A,D', 'B,E'],
+                        ['A,C,D', 'B'],
+                        ['A,D', 'B,E'],
+                        ['A', 'B,E'], ]
 # 테스트 질문 처리 
 def test_question(request, step):
     if step > len(QUESTIONS):
@@ -368,7 +368,10 @@ def test_question(request, step):
 
         # 세션에 유형별 점수 누적
         type_scores = request.session.get('type_scores', {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0})
-        type_scores[type_code] += 1
+        for code in type_code.split(','):
+            code = code.strip()
+            if code:  # 빈 문자열 무시
+                type_scores[code] += 1
         request.session['type_scores'] = type_scores
 
         return redirect('posts:test_question', step=step + 1)
