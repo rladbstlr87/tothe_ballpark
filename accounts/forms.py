@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, Pass
 from .models import User
 import os
 
-# ✅ 사용자 정의 회원가입 폼
+# 사용자 정의 회원가입 폼
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
@@ -50,7 +50,7 @@ class CustomUserCreationForm(UserCreationForm):
         return user
 
 
-# ✅ 사용자 정의 로그인 폼
+# 사용자 정의 로그인 폼
 class CustomAuthenticationForm(AuthenticationForm):
     def __init__(self, request=None, *args, **kwargs):
         super().__init__(request, *args, **kwargs)

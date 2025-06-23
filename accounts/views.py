@@ -13,7 +13,7 @@ import json
 import string
 import random
 
-# ✅ 아이디 찾기
+# 아이디 찾기
 @csrf_exempt
 def find_id_view(request):
     if request.method == "POST":
@@ -39,16 +39,16 @@ def find_id_view(request):
             return JsonResponse({"success": False, "message": "해당 이메일로 등록된 계정을 찾을 수 없습니다."})
 
 
-# ✅ 인증번호 저장용 변수
+# 인증번호 저장용 변수
 VERIFICATION_CODES = {}   # username: code
 VERIFIED_USERS = set()    # 인증 완료된 username 저장
 
-# ✅ 인증번호 생성 함수
+# 인증번호 생성 함수
 def generate_code(length=6):
     return ''.join(random.choices(string.digits, k=length))
 
 
-# ✅ 비밀번호 재설정: 인증번호 요청
+# 비밀번호 재설정: 인증번호 요청
 @csrf_exempt
 def reset_password_view(request):
     if request.method == "POST":
@@ -77,7 +77,7 @@ def reset_password_view(request):
             return JsonResponse({"success": False, "message": "아이디 또는 이메일이 올바르지 않습니다."})
 
 
-# ✅ 인증번호 확인
+# 인증번호 확인
 @csrf_exempt
 def confirm_verification_code(request):
     if request.method == "POST":
@@ -94,7 +94,7 @@ def confirm_verification_code(request):
             return JsonResponse({"success": False, "message": "인증번호가 일치하지 않습니다."})
 
 
-# ✅ 새 비밀번호 설정
+# 새 비밀번호 설정
 @csrf_exempt
 def set_new_password(request):
     if request.method == "POST":
@@ -120,19 +120,19 @@ def set_new_password(request):
             return JsonResponse({"success": False, "message": "사용자를 찾을 수 없습니다."})
 
 
-# ✅ 로그아웃 처리
+# 로그아웃 처리
 @login_required
 def logout(request):
     auth_logout(request)  # 세션에서 로그아웃
     return redirect('/')  # 홈으로 리디렉션
 
 
-# ✅ 홈 접근 시 달력으로 리디렉션
+# 홈 접근 시 달력으로 리디렉션
 def home(request):
     return redirect('/')
 
 
-# ✅ 회원가입 / 로그인 처리
+# 회원가입 / 로그인 처리
 def auth_view(request):
     mode = request.GET.get('mode', 'login')
 
@@ -170,7 +170,7 @@ def auth_view(request):
     return render(request, 'auth.html', context)
 
 
-# ✅ 사용자명/닉네임 중복 확인
+# 사용자명/닉네임 중복 확인
 @csrf_exempt
 def check_duplicate(request):
     if request.method == "POST":

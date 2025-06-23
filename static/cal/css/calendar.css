@@ -94,10 +94,10 @@ html, body {
   vertical-align: top;
   overflow: auto;
   box-shadow: 2px 2px 0 #ccc;
-  transition: transform 0.2s ease, background-color 0.2s ease; /* ✅ 호버 효과 부드럽게 */
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-/* ✅ 날짜 셀 호버 시 효과 */
+/* 날짜 셀 호버 시 효과 */
 .calendar-table .day-cell:hover {
   transform: scale(1.03);
   background-color: #f3f4f6;
