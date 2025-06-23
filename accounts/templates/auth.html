@@ -163,11 +163,11 @@
             <form method="post" id="find-id-form">
                 {% csrf_token %}
                 <input type="email" name="email" placeholder="이메일을 입력하세요" class="form-field" required>
-                <button type="submit" class="button primary">이메일로 아이디 받기</button>
+                <button type="submit" class="button primary my-1">이메일로 아이디 받기</button>
             </form>
             <div id="id-code-result" class="my-2 text-center text-sm text-green-600"></div>
 
-            <div class="text-sm text-center text-gray-600 space-x-4 my-4">
+            <div class="text-sm text-center text-gray-600">
                 <a href="#" id="signin-link-from-others" class="hover:underline">로그인</a>
             </div>
         </div>
@@ -183,7 +183,7 @@
                 {% csrf_token %}
                 <input type="text" name="username" placeholder="아이디를 입력하세요" class="form-field" required>
                 <input type="email" name="email" placeholder="이메일을 입력하세요" class="form-field" required>
-                <button type="submit" class="button primary">이메일로 인증번호 받기</button>
+                <button type="submit" class="button primary my-1">이메일로 인증번호 받기</button>
             </form>
 
             <!-- 2단계: 인증번호 입력 -->
@@ -203,7 +203,7 @@
 
             <div id="pw-code-result" class="my-2 text-center text-sm text-green-600"></div>
 
-            <div class="text-sm text-center text-gray-600 space-x-4 my-4">
+            <div class="text-sm text-center text-gray-600">
                 <a href="#" id="signin-link-from-password" class="hover:underline">로그인</a>
             </div>
         </div>
