@@ -148,7 +148,7 @@ def index(request):
     return render(request, 'index.html', context)
 
 
-# ✅ 팀 순위 + 유저 팀의 타자/투수 기록 표시
+# 팀 순위 + 유저 팀의 타자/투수 기록 표시
 @never_cache
 @login_required
 def standings(request):
@@ -166,7 +166,7 @@ def standings(request):
     return render(request, 'standings.html', context)
 
 
-# ✅ 캘린더 메인 뷰 - 로그인 유저의 팀/출석 데이터 기반
+# 캘린더 메인 뷰 - 로그인 유저의 팀/출석 데이터 기반
 @never_cache
 @login_required
 def calendar_view(request):

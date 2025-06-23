@@ -4,9 +4,7 @@ html, body {
   box-sizing: border-box;
 }
 
-/* ----------------------------- */
-/* ✅ 전체 레이아웃 및 배경 스타일 */
-/* ----------------------------- */
+/* 전체 레이아웃 및 배경 스타일 */
 .root {
   position: relative;
   display: flex;
@@ -18,9 +16,8 @@ html, body {
   box-sizing: border-box;
 }
 
-/* ----------------------------- */
-/* ✅ 로그인/회원가입/아이디찾기 폼 기본 상태 */
-/* ----------------------------- */
+/* 로그인/회원가입/아이디찾기 폼 기본 상태 */
+
 .form {
   position: absolute;
   width: 100%;
@@ -44,8 +41,7 @@ html, body {
   z-index: 10;
 }
 
-/* ----------------------------- */
-/* ✅ 폼 카드 스타일 */
+/* 폼 카드 스타일 */
 .form-wrapper {
   background-color: #fdfcf7;
   width: 500px;
@@ -64,8 +60,7 @@ html, body {
   box-sizing: border-box;
 }
 
-/* ----------------------------- */
-/* ✅ 제목 텍스트 스타일 */
+/* 제목 텍스트 스타일 */
 h5 {
   font-size: 28px;
   color: #3e3426;
@@ -73,8 +68,7 @@ h5 {
   font-weight: 600;
 }
 
-/* ----------------------------- */
-/* ✅ 모든 input/select 공통 스타일 */
+/* 모든 input/select 공통 스타일 */
 .form-field {
   width: 100%;
   max-width: 100%;
@@ -93,8 +87,7 @@ h5 {
   box-sizing: border-box;
 }
 
-/* ----------------------------- */
-/* ✅ 버튼 기본 스타일 */
+/* 버튼 기본 스타일 */
 .button {
   width: 100%;
   max-width: 100%;
@@ -127,8 +120,7 @@ h5 {
   background-color: #f9f6ee;
 }
 
-/* ----------------------------- */
-/* ✅ 링크 및 안내 텍스트 스타일 */
+/* 링크 및 안내 텍스트 스타일 */
 p {
   font-size: 14px;
   color: #555;
@@ -144,8 +136,7 @@ p a:hover {
   color: #b08b56;
 }
 
-/* ----------------------------- */
-/* ✅ 페이드 전환 애니메이션 */
+/* 페이드 전환 애니메이션 */
 .fade-in {
   opacity: 0;
   animation: fadeIn 0.3s forwards;
@@ -162,8 +153,7 @@ p a:hover {
   to { opacity: 0; }
 }
 
-/* ----------------------------- */
-/* ✅ 배경 마스코트 위치 스타일 */
+/* 배경 마스코트 위치 스타일 */
 .overlay-img {
   position: absolute;
   transform: translateY(-40px);
@@ -261,9 +251,8 @@ p a:hover {
   width: 150px;
 }
 
-/* ----------------------------- */
-/* ✅ 모바일 (768px 이하) 반응형 스타일 */
-/* ----------------------------- */
+/* 모바일 (768px 이하) 반응형 스타일 */
+
 @media (max-width: 768px) {
   .root {
     display: flex;

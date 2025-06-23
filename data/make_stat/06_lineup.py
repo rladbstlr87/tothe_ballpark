@@ -5,13 +5,13 @@ from urllib.parse import urlparse, parse_qs
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-# ✅ KBO 팀 코드 매핑
+# KBO 팀 코드 매핑
 TEAM_CODE = {
     'LT': 'LT', 'HT': 'HT', 'LG': 'LG', 'OB': 'OB', 'SK': 'SK',
     'WO': 'WO', 'SS': 'SS', 'HH': 'HH', 'KT': 'KT', 'NC': 'NC',
 }
 
-# ✅ 특정 경기의 라인업 페이지에서 선수 이름과 playerId를 가져오는 함수
+# 특정 경기의 라인업 페이지에서 선수 이름과 playerId를 가져오는 함수
 def get_lineup(today, team1_code, team2_code, game_id, driver):
     url = f'https://m.sports.naver.com/game/{today}{team1_code}{team2_code}{game_id}/lineup'
     driver.get(url)
@@ -96,10 +96,10 @@ with open('../kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
         game_info_map[key] = {'stadium': stadium, 'game_id': game_id_counter}
         game_id_counter += 1
 
-# ✅ Selenium 크롬 드라이버 실행
+# Selenium 크롬 드라이버 실행
 driver = webdriver.Chrome()
 
-# ✅ lineups.csv 파일에 이어서 저장
+# lineups.csv 파일에 이어서 저장
 with open('../lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
     writer = csv.writer(outfile)
     if last_date is None:
@@ -127,7 +127,7 @@ with open('../lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
             game_id = game_id_lookup.get((date_str, team1, team2, time_str))
             stadium = row.get('stadium', '')
 
-            # ✅ 네이버 경기 ID 결정 (일반, 더블헤더 1/2차전 등)
+            # 네이버 경기 ID 결정 (일반, 더블헤더 1/2차전 등)
             if len(games_sorted) == 1:
                 naver_game_id = '02025'
             elif idx == 0:
@@ -158,7 +158,7 @@ with open('../lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
                 if len(team2_lineup) == 9 and first_game_lineup2:
                     team2_lineup.insert(0, first_game_lineup2[0])
 
-            # ✅ 라인업 CSV로 저장
+            # 라인업 CSV로 저장
             for i, (player_name, player_id) in enumerate(team1_lineup):
                 if i == 0:
                     writer.writerow([date_str, 1, game_id, 1, player_id, stadium])
@@ -173,6 +173,6 @@ with open('../lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
 
             time.sleep(1.5)  # 요청 간 딜레이
 
-# ✅ 브라우저 종료
+# 브라우저 종료
 driver.quit()
 print("✅ 오늘까지의 라인업 저장 완료")

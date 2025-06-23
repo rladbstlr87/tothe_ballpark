@@ -48,10 +48,10 @@ for team in teams:
             for a in players
         ]
 
-    # ✅ 1페이지 선수 수집
+    # 1페이지 선수 수집
     player_infos = collect_player_infos()
 
-    # ✅ 2페이지 버튼 존재 시 → 클릭 후 수집
+    # 2페이지 버튼 존재 시 → 클릭 후 수집
     try:
         next_btn = driver.find_element(By.ID, "cphContents_cphContents_cphContents_ucPager_btnNo2")
         next_btn.click()
@@ -59,7 +59,7 @@ for team in teams:
 
         player_infos += collect_player_infos()
 
-        # ✅ 1페이지로 복귀
+        # 1페이지로 복귀
         prev_btn = driver.find_element(By.ID, "cphContents_cphContents_cphContents_ucPager_btnNo1")
         prev_btn.click()
         time.sleep(2)
@@ -102,7 +102,7 @@ for team in teams:
 driver.quit()
 print("\n🎉 모든 팀 데이터 저장 완료!")
 
-# ✅ 임시 선수 추가
+# 임시 선수 추가
 dummy_row = [
     "TMP", "1", "임시선수",
     "0.300", 100, 400, 370, 50, 111, 20, 1, 15, 180, 60, 5, 2, 3, 5,
@@ -110,11 +110,11 @@ dummy_row = [
 ]
 final_data.append(dummy_row)
 
-# ✅ DataFrame 변환 + SBA 컬럼 추가
+# DataFrame 변환 + SBA 컬럼 추가
 df_all = pd.DataFrame(final_data, columns=columns)
 df_all["SBA"] = df_all["SB"].astype(float) + df_all["CS"].astype(float)
 
-# ✅ 컬럼 순서 정의 + 저장
+# 컬럼 순서 정의 + 저장
 columns_with_sba = columns + ["SBA"]
 df_all.to_csv("../all_hitter_stats.csv", index=False, encoding="utf-8-sig", columns=columns_with_sba)
 

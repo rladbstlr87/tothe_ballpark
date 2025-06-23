@@ -9,7 +9,7 @@
 
 {% block body %}
 
-<!-- ✅ 탭 버튼 영역 -->
+<!-- 탭 버튼 영역 -->
 <div class="w-full max-w-6xl mx-auto mt-10 my-3 px-4 text-center">
   <div class="flex justify-center my-3">
     <button onclick="showTab('ranking')" id="ranking-tab"
@@ -25,7 +25,7 @@
     </button>
   </div>
 
-  <!-- ✅ KBO 순위 -->
+  <!-- KBO 순위 -->
   <div id="ranking" class="tab-content">
     <div class="standing-box p-6 mb-8 bg-white text-xs sm:text-sm">
       <div class="relative w-full">
@@ -108,17 +108,17 @@
     </div>
   </div>
 
-  <!-- ✅ 타자 순위 -->
+  <!-- 타자 순위 -->
 <div id="hitters" class="tab-content">
   <div class="standing-box bg-white shadow p-6 mb-8 text-xs sm:text-sm">
     
-    <!-- 🔘 스크롤 버튼 -->
+    <!-- 스크롤 버튼 -->
     <div class="flex justify-end mb-2">
       <button onclick="scrollHitter(-1)" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition">⬅</button>
       <button onclick="scrollHitter(1)" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition ml-2">➡</button>
     </div>
 
-    <!-- ✅ 테이블 전체 박스 -->
+    <!-- 테이블 전체 박스 -->
     <div class="relative w-full flex rounded-[15px] overflow-hidden border border-gray-300">
       
       <!-- 📌 고정 열 -->
@@ -216,7 +216,7 @@
 </div>
 
 
-  <!-- ✅ 투수 순위 -->
+  <!-- 투수 순위 -->
 <div id="pitchers" class="tab-content hidden">
     <div class="standing-box bg-white shadow p-6 mb-8 text-xs sm:text-sm">
 
@@ -346,7 +346,7 @@
   </div>
 </div>
 
-<!-- ✅ 스타일 및 스크립트 -->
+<!-- 스타일 및 스크립트 -->
 <style>
   .standing-box {
     border-radius: 15px;

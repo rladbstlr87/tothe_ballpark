@@ -19,7 +19,7 @@ def handle_uploaded_image(file):
         return file
 
     try:
-        file.seek(0)  # ✅ 파일 커서 초기화
+        file.seek(0)  # 파일 커서 초기화
         img = Image.open(file)
 
         
