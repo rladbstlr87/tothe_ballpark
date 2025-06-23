@@ -1,7 +1,7 @@
 import pandas as pd
 
-h = pd.read_csv('../all_hitter_stats.csv')
-p = pd.read_csv('../all_pitcher_stats.csv')
+h = pd.read_csv('data/all_hitter_stats.csv')
+p = pd.read_csv('data/all_pitcher_stats.csv')
 
 def parsing_0(value):
     try:

@@ -4,6 +4,7 @@ import datetime
 from urllib.parse import urlparse, parse_qs
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 import pandas as pd
 
 TEAM_CODE = {
@@ -25,12 +26,9 @@ def convert_ip_to_float(ip_str):
     if not ip_str:
         return 0.0
     ip_str = ip_str.strip()
-    
     fraction_map = {'⅓': 1/3, '⅔': 2/3}
-    
     if ip_str in fraction_map:
         return round(fraction_map[ip_str], 3)
-    
     parts = ip_str.split()
     if len(parts) == 1:
         try:
@@ -88,7 +86,7 @@ last_date = None
 max_game_id = 0
 
 try:
-    with open('../pitchers_records.csv', 'r', encoding='utf-8-sig') as f:
+    with open('data/pitchers_records.csv', 'r', encoding='utf-8-sig') as f:
         rows = list(csv.DictReader(f))
         if rows:
             last_date = datetime.datetime.strptime(rows[-1]['date'], '%Y%m%d').date()
@@ -96,7 +94,7 @@ try:
 except FileNotFoundError:
     pass
 
-df = pd.read_csv('../kbo_schedule.csv')
+df = pd.read_csv('data/kbo_schedule.csv')
 game_map = {}
 next_gid = max_game_id + 1
 
@@ -119,10 +117,18 @@ for _, row in df_filtered.iterrows():
     game_map.setdefault(key, []).append((row, next_gid))
     next_gid += 1
 
-# 크롬 드라이버 실행
-driver = webdriver.Chrome()
+# ✅ 크롬 드라이버 실행 (headless + 전체화면 해상도)
+chrome_options = Options()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--disable-gpu')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--window-size=1920,1080')
+chrome_options.add_argument('--disable-dev-shm-usage')
 
-with open('../pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as prout:
+driver = webdriver.Chrome(options=chrome_options)
+
+# 기록 저장
+with open('data/pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as prout:
     pw = csv.writer(prout)
 
     if last_date is None:
@@ -162,7 +168,7 @@ with open('../pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as p
             for team in ['away', 'home']:
                 for r in rec[team]:
                     pid = r.get('player_id', '').strip()
-                    if not pid:  # 공백이거나 None이면 저장하지 않음
+                    if not pid:
                         continue
                     pw.writerow([
                         convert_ip_to_float(r.get('IP', '')),

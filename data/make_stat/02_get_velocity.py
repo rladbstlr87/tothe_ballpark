@@ -13,7 +13,7 @@ options.add_argument('--disable-dev-shm-usage')
 driver = webdriver.Chrome(options=options)
 
 # 2. CSV 불러오기
-df = pd.read_csv('../all_pitcher_stats.csv')
+df = pd.read_csv('data/all_pitcher_stats.csv')
 player_ids = df['player_id'].dropna().astype(int).tolist()
 
 # 3. 결과 저장 리스트
@@ -66,6 +66,6 @@ driver.quit()
 # 결과 병합 및 저장
 speed_df = pd.DataFrame(results)
 df_merged = pd.merge(df, speed_df, on='player_id', how='left')
-df_merged.to_csv('../all_pitcher_stats.csv', index=False)
+df_merged.to_csv('data/all_pitcher_stats.csv', index=False)
 
-print("✅ speed 컬럼 추가 및 저장 완료: ../all_pitcher_stats.csv")
+print("✅ speed 컬럼 추가 및 저장 완료: data/all_pitcher_stats.csv")
