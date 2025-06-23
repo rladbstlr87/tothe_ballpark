@@ -128,6 +128,29 @@
   </div>
 </div>
 
+<!-- 데스크탑 저니 -->
+<div id="introOverlay" class="fixed grid inset-0 bg-black/40 z-100 cursor-pointer hidden">
+  <div class="text-white pt-24">
+    <div id="introSteps" class="flex flex-col md:flex-row gap-6 px-4">
+      <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-1/2 md:top-[270px] md:-translate-x-1/2 hidden select-none">
+        <strong class="text-2xl">직관 전적</strong>게시판을 소개합니다!<br><br>
+        나의 직관 전적 승률과<br>
+        다른 사람들의 전적 승률도 확인해보세요!
+      </p>
+    </div>
+  </div>
+
+  <!-- 마지막 안내 박스 -->
+  <div id="finalMessage" class="bg-white/70 backdrop-blur-sm p-6 rounded-lg text-center max-w-md shadow-xl absolute left-1/2 top-[300px] -translate-x-1/2 hidden select-none">
+    <p class="p-2">
+        주요 기능들을 모두 살펴보셨어요!
+    </p>
+    <button onclick="closeIntro()" class="mt-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700">
+        다시 보지 않기
+    </button>
+  </div>
+</div>
+
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const rows = document.querySelectorAll("#ranking-body tr");
