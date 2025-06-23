@@ -21,7 +21,8 @@ urlpatterns = [
     # 직돌이 테스트
     path('test/start/', views.test_start, name='test_start'),
     path('test/question/<int:step>', views.test_question, name='test_question'),
-    path('test/result/', views.test_result, name='test_result'),
+    path('test/result/', views.test_result, name='test_result'),  
+    path('test/result/<str:type_code>/', views.result_share, name='result_share'),  
 ]
 
 
