@@ -101,6 +101,7 @@ for _, row in df_filtered.iterrows():
 
 # Selenium 웹드라이버 실행
 driver = webdriver.Chrome()
+driver.fullscreen_window()
 
 # 기록 파일 열기 (없으면 헤더 작성)
 with open('../hitters_records.csv', 'a', newline='', encoding='utf-8-sig') as rout:

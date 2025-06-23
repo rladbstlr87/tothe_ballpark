@@ -121,6 +121,7 @@ for _, row in df_filtered.iterrows():
 
 # 크롬 드라이버 실행
 driver = webdriver.Chrome()
+driver.fullscreen_window()
 
 with open('../pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as prout:
     pw = csv.writer(prout)
