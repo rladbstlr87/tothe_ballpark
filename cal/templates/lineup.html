@@ -13,7 +13,7 @@
 
                 {% if game %}
                     <div class="flex flex-col items-center w-full max-w-7xl p-4 sm:px-6 lg:px-8 bg-white">
-                        <div id="top" class="w-full py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div id="top" class="w-full py-4 flex flex-col sm:flex-row items-center justify-between">
                             <div id="scorebar" class="w-full sm:flex-grow sm:pl-20">
                                 {% include '_scorebar.html' %}
                             </div>
@@ -26,9 +26,9 @@
                             </button>
                         </div>
                         {% if show_best_player %}
-                            <div class="w-full flex justify-center mb-6">
+                            <div class="w-full flex justify-center my-3">
                                 <div class="border border-yellow-400 rounded-lg px-6 py-4 shadow text-center">
-                                    <p class="text-lg font-bold">
+                                    <p id="keyplayer" class="text-lg font-bold">
                                         {% if is_today_best %}
                                             ✨ 오늘의 수훈선수 ✨
                                         {% else %}
@@ -43,12 +43,12 @@
                             </div>
                         {% endif %}
                         <button id="toggle-legend-btn"
-                            class="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-800 transition duration-200">
+                            class="flex items-center text-sm text-gray-600 hover:text-blue-800 transition duration-200">
                             <svg id="legend-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="2" stroke="currentColor" class="w-4 h-4">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                             </svg>
-                            <span id="legend-text">설명 보기</span>
+                            <span id="legend-text" class="p-2">설명 보기</span>
                         </button>
                         <!-- 범례 (처음엔 숨김) -->
                         <div id="legend-box" class="grid grid-cols-2 w-full border border-gray-300 rounded-lg p-4 mb-6 bg-gray-50 text-sm text-gray-700 hidden">
@@ -188,7 +188,7 @@
                                                     <span class="text-sm ml-1">{{ lineup.batting_order|add:"-1" }}</span>
                                                 </div>
                                                 {% if record %}
-                                                    <div class="text-xs text-gray-700 mr-6 text-right">
+                                                    <div id="today_stats" class="text-xs text-gray-700 mr-6 text-right">
                                                         {% if record.date == today %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
                                                         {{record.AB}}타수 / {{record.R}}득점 / {{ record.H }}안타 / {{ record.RBI }}타점 / {{ record.HR }}홈런 / {{ record.BB }}볼넷 / {{ record.SO }}삼진 / {{ record.SB }}도루
                                                     </div>
@@ -244,7 +244,6 @@
                 {% endif %}
             {% else %}
                 <div class="flex flex-col items-center w-full max-w-7xl px-4 sm:px-6 lg:px-8 bg-white min-h-screen">
-
                     <div id="scorebar" class="w-full py-4">
                         {% include '_scorebar.html' %}
                     </div>
@@ -254,6 +253,61 @@
                 </div>
             {% endif %}
             <div class="bg-[url('/static/cal/images/bg/peeledpaper1.png')] bg-repeat-y bg-contain w-[30px] lg:w-[50px] -translate-x-0 lg:-translate-x-8 min-h-full"></div>
+        </div>
+    </div>
+    <!-- 데스크탑 저니 -->
+    <div id="introOverlay" class="fixed grid inset-0 bg-black/40 z-100 cursor-pointer hidden">
+        <div class="text-white pt-24">
+            <div id="introSteps" class="flex flex-col md:flex-row gap-6 px-4">
+                <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-1/2 top-[270px] -translate-x-1/2 hidden select-none">
+                    <strong class="text-2xl">라인업</strong>을 소개합니다!<br>
+                    이 곳에서는 경기 결과, 당일 선발 라인업을 확인할 수 있어요.<br>
+                </p>
+                <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-1/2 top-[270px] -translate-x-1/2 hidden select-none">
+                    이미 <strong class="text-2xl">종료된 경기</strong>라면<br>
+                    <strong>선발 라인업</strong>과 <strong>경기 결과</strong>를 확인할 수 있어요.<br>
+                </p>
+                <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-5/7 top-[270px] hidden select-none">
+                    해당 경기를 <strong class="text-2xl">직접 관람</strong>했다면,<br>
+                    <strong>버튼</strong>을 눌러 표시해주세요<br>
+                    기록이 모이면 내가 <strong>승리요정</strong>인지<br>
+                    마스코트를 통해서 알 수 있어요.<br><br>
+                    '직관 ON'으로 표시되어있으면 내가 간 경기,<br>
+                    '직관 OFF'로 표시되어있으면 가지 않은 경기예요.
+                </p>
+                <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-1/2 top-[300px] -translate-x-1/2 hidden select-none">
+                    경기 전이라면, 눈여겨봐야 할 승부의 변수!<br>
+                    오늘의 <strong class="text-2xl">키 플레이어</strong>를 확인해보세요.<br>
+                    이 선수가 움직이면 경기의 흐름이 바뀝니다.
+                </p>
+                <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-1/2 top-[300px] -translate-x-1/2 hidden select-none">
+                    경기 후라면, 경기에서 가장 빛난 주인공!<br>
+                    <strong class="text-2xl">수훈 선수</strong>를 확인해보세요<br>
+                    팬들의 환호를 이끌어낸 최고의 활약! 바로 이 선수였습니다!
+                </p>
+                <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-1/2 top-[330px] -translate-x-1/2 hidden select-none">
+                    <strong class="text-2xl">설명 보기</strong> 토글을 눌러보시면<br>
+                    선수마다 붙은 <strong>스티커</strong>의 설명을 볼 수 있어요.<br>
+                </p>
+                <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-1/2 top-[200px] -translate-x-1/2 hidden select-none">
+                    직돌이만의 <strong class="text-2xl">선수 스탯</strong>을 통해 이 선수의 능력치도 쉽게 알 수 있어요.<br>
+                    관심있는 선수의 플레이 스타일을 확인해보세요!
+                </p>
+                <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-3/11 top-[300px] -translate-x-1/2 hidden select-none">
+                    <strong class="text-2xl">오늘 기록</strong>은 경기 당일의 기록이예요.<br>
+                    당신이 주목한 선수, 어떤 활약을 했는지 확인해보세요.
+                </p>
+            </div>
+        </div>
+
+        <!-- 마지막 안내 박스 -->
+        <div id="finalMessage" class="bg-white/70 backdrop-blur-sm p-6 rounded-lg text-center max-w-md shadow-xl absolute left-1/2 top-[300px] -translate-x-1/2 hidden select-none">
+            <p class="p-2">
+                주요 기능들을 모두 살펴보셨어요!
+            </p>
+            <button onclick="closeIntro()" class="mt-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700">
+                다시 보지 않기
+            </button>
         </div>
     </div>
     <script>

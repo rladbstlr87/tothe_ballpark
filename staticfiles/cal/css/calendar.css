@@ -18,12 +18,12 @@ html, body {
 
 .calendar-table {
   width: 100%;
-  max-width: 900px;      /* 캘린더 전체 최대 너비 */
-  margin: 0 auto;        /* 가운데 정렬 */
-  table-layout: fixed;   /* 셀 너비 고정 */
-  border-collapse: separate; /* 셀 간격 유지 */
-  border-spacing: 10px 10px; /* 셀 사이 간격(가로, 세로) */
-  background: transparent;      /* 배경 흰색 */
+  max-width: 900px;
+  margin: 0 auto;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 10px 10px;
+  background: transparent;
 }
 
 /* 모든 th, td 기본 스타일 */
@@ -96,10 +96,10 @@ html, body {
   vertical-align: top;
   overflow: auto;
   box-shadow: 2px 2px 0 #ccc;
-  transition: transform 0.2s ease, background-color 0.2s ease; /* ✅ 호버 효과 부드럽게 */
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-/* ✅ 날짜 셀 호버 시 효과 */
+/* 날짜 셀 호버 시 효과 */
 .calendar-table .day-cell:hover {
   transform: scale(1.03);
   background-color: #f3f4f6;

@@ -132,11 +132,11 @@
         <strong class="text-2xl">좌석정보</strong>는 예매 전 참고할 수 있는 좌석 위치와 종류를 알 수 있어요.<br>
         <strong>좌석</strong>별로 살펴보시고 어떤 좌석이 좋을지 구경해보세요!
       </p>
-      <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-3/7 top-[200px] -translate-x-1/3 hidden select-none">
+      <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-1/2 top-[100px] -translate-x-1/2 hidden select-none">
         <strong class="text-2xl">주차장 정보</strong>는 구장의 주차장을 이용하지 않을 경우,<br>
         인근의 가까운 <strong>주차장</strong>의 정보를 확인해보세요!
       </p>
-      <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-3/7 top-[500px] -translate-x-1/3 hidden select-none">
+      <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-1/2 top-[200px] -translate-x-1/2 hidden select-none">
         <strong class="text-2xl">식당 정보</strong>는 야구 관람 전후로 이용할 수 있는<br>
         맛집들을 확인할 수 있어요.<br>
         실제 야구 선수들이 종종 찾아가는 맛집도 있으니,<br>
@@ -151,13 +151,13 @@
     <p class="p-2">
         주요 기능들을 모두 살펴보셨어요!
     </p>
-    <button onclick="console.log('버튼 눌림'); closeIntro()" class="mt-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700">
+    <button onclick="closeIntro()" class="mt-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700">
         다시 보지 않기
     </button>
   </div>
 </div>
 
-<!-- ✅ 드롭다운 스크립트 -->
+<!-- 드롭다운 스크립트 -->
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const toggleButton = document.getElementById('dropdownToggle');
@@ -186,56 +186,5 @@
       link.href = naverUrl;
     }
   }
-
-  document.addEventListener('DOMContentLoaded', () => {
-      const pageKey = `visited_${window.location.pathname}`;
-      const overlay = document.getElementById('introOverlay');
-      const steps = document.querySelectorAll('#introSteps p');
-      const finalMessage = document.getElementById('finalMessage');
-      let currentStep = 0;
-
-      if (!localStorage.getItem(pageKey)) {
-          overlay.classList.remove('hidden');
-          steps[0].classList.remove('hidden');
-
-          overlay.addEventListener('click', () => {
-              // 현재 p 숨기기
-              steps[currentStep].classList.add('hidden');
-
-              // 스크롤 이동 처리
-              switch(currentStep) {
-                  case 1: // 세 번째 p 태그일 때
-                      const elementA = document.getElementById('seat_info');
-                      if (elementA) elementA.scrollIntoView({ behavior: 'smooth' });
-                      break;
-                  case 2: // 네 번째 p 태그일 때
-                      const elementB = document.getElementById('parkinglot_info');
-                      if (elementB) elementB.scrollIntoView({ behavior: 'smooth' });
-                      break;
-                  case 3: // 다섯 번째 p 태그일 때
-                      const elementC = document.getElementById('restaurant_info');
-                      if (elementC) elementC.scrollIntoView({ behavior: 'smooth' });
-                      break;
-                  default:
-                      break;
-              }
-
-              currentStep++;
-
-              if (currentStep < steps.length) {
-                  // 다음 p 보이기
-                  steps[currentStep].classList.remove('hidden');
-              } else {
-                  // 모든 설명 끝나면 안내 박스 표시
-                  finalMessage.classList.remove('hidden');
-              }
-          });
-      }
-
-      window.closeIntro = () => {
-          overlay.classList.add('hidden');
-          localStorage.setItem(pageKey, 'true');
-      };
-  });
 </script>
 {% endblock %}
