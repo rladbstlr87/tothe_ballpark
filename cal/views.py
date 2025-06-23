@@ -212,7 +212,7 @@ def next_month(d):
     return f'day={next_.year}-{next_.month}-{next_.day}'
 
 
-# 키플레이어 함수
+# 수훈선수 함수
 def calculate_hitter_score(h):
     return (
         h.RBI * 3 +
@@ -270,22 +270,22 @@ def lineup(request, game_id):
     for record in today_pitcher_records:
         latest_pitcher_stats[record.player_id] = record
 
-    # 👉 유저 팀 정보
+    # 유저 팀 정보
     user_team = request.user.team
 
-    # 👉 우리 팀 소속 타자 ID들
+    # 우리 팀 소속 타자 ID들
     our_hitter_ids = set(Hitter.objects.filter(team_name=user_team).values_list('player_id', flat=True))
 
-    # 👉 우리 팀 소속 투수 ID들
+    # 우리 팀 소속 투수 ID들
     our_pitcher_ids = set(Pitcher.objects.filter(team_name=user_team).values_list('player_id', flat=True))
 
-    # 👉 오늘 경기 중 우리 팀 타자 기록만
+    # 오늘 경기 중 우리 팀 타자 기록만
     today_hitters = [r for r in today_hitter_records if r.player_id in our_hitter_ids]
 
-    # 👉 오늘 경기 중 우리 팀 투수 기록만
+    # 오늘 경기 중 우리 팀 투수 기록만
     today_pitchers = [r for r in today_pitcher_records if r.player_id in our_pitcher_ids]
 
-    # 👉 오늘 기록이 없으면, 최신 기록 중 우리 팀만
+    # 오늘 기록이 없으면, 최신 기록 중 우리 팀만
     if not today_hitters:
         team_hitters = [r for r in latest_daily_stats.values() if r.player_id in our_hitter_ids]
         best_hitter = max(team_hitters, key=calculate_hitter_score, default=None)
