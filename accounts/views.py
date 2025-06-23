@@ -212,10 +212,21 @@ def mypage(request):
                 messages.success(request, '닉네임이 변경되었습니다.')
                 return redirect('accounts:mypage')
         elif mode == 'team':
+            # 팀 변경 시 직관한 경기 초기화
+            old_team = user.team
             team_form = TeamChangeForm(request.POST, instance=user)
             if team_form.is_valid():
+                # 새로운 팀으로 변경
                 team_form.save()
                 messages.success(request, '응원팀이 변경되었습니다.')
+
+                # 직관한 경기에서 기존 응원팀을 제외시킴
+                attended_games = user.attendance_game.all()
+                for game in attended_games:
+                    if game.team1 == old_team:
+                        game.attendance_users.remove(user)
+                    elif game.team2 == old_team:
+                        game.attendance_users.remove(user)
                 return redirect('accounts:mypage')
 
     context = {

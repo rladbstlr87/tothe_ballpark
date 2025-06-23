@@ -27,18 +27,14 @@
                             d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
                 </button>
-                <!-- 모바일 홈 텍스트 추가 -->
-                   <div class="absolute left-1/2 inset-x-0 flex justify-center items-center">
-                     <a href="{% url 'index' %}" class="absolute   text-xl font-bold text-white ">
-                        직돌이
-                        </a>
-                    </div> 
             </div>
             <!-- 중앙에 '직돌이' 타이틀 추가 -->
-            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl font-bold text-white"
-                style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">
-                직돌이
-            </div>
+            <a href="{% url 'index' %}">
+                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl font-bold text-white" 
+                    style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">
+                    직돌이
+                </div>
+            </a>
             <div class="flex flex-1 justify-center">
                 <div id="menu" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 justify-between w-full items-center text-shadows md:flex hidden">
                     <!-- 왼쪽 메뉴 -->
@@ -158,6 +154,11 @@
     <!-- Mobile 메뉴 -->
     <div class="hidden" id="mobile-menu">
         <div class="space-y-1 p-2 text-xl text-stroke">
+            {% if user.is_authenticated %}
+                <a href="{% url 'accounts:mypage' %}" class="block rounded-md px-3 py-1 active:bg-[#FFFFFF] mask-linear-50 mask-direction-right mask-linear-from-20% mask-linear-to-100%">
+                    {{user.nickname}}
+                </a>
+            {% endif %}
             <a href="{% url 'index' %}" class="text-white block rounded-md px-3 py-1 bg-gray-900/50 mask-linear-50 mask-direction-right mask-linear-from-20% mask-linear-to-100%">
                 홈
             </a>
