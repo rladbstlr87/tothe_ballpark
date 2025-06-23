@@ -116,6 +116,6 @@ df_all["SBA"] = df_all["SB"].astype(float) + df_all["CS"].astype(float)
 
 # ✅ 컬럼 순서 정의 + 저장
 columns_with_sba = columns + ["SBA"]
-df_all.to_csv("../all_hitter_stats.csv", index=False, encoding="utf-8-sig", columns=columns_with_sba)
+df_all.to_csv("data/all_hitter_stats.csv", index=False, encoding="utf-8-sig", columns=columns_with_sba)
 
 print("🎯 임시 선수 포함 + SBA 컬럼 포함 최종 저장 완료: all_hitter_stats.csv")

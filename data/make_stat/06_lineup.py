@@ -58,7 +58,7 @@ today = datetime.date.today()
 last_date = None
 max_game_id = 0
 try:
-    with open('../lineups.csv', 'r', encoding='utf-8-sig') as f:
+    with open('data/lineups.csv', 'r', encoding='utf-8-sig') as f:
         reader = list(csv.DictReader(f))
         if reader:
             last_row = reader[-1]
@@ -70,7 +70,7 @@ except FileNotFoundError:
 print(f"마지막 저장된 날짜: {last_date}, 마지막 game_id: {max_game_id}")
 
 # 📅 kbo_schedule.csv에서 오늘까지의 경기만 필터링하고 game_id 부여
-with open('../kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
+with open('data/kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
     reader = list(csv.DictReader(infile))
     game_map = {}
     game_info_map = {}
@@ -100,7 +100,7 @@ with open('../kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
 driver = webdriver.Chrome()
 
 # ✅ lineups.csv 파일에 이어서 저장
-with open('../lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
+with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
     writer = csv.writer(outfile)
     if last_date is None:
         # 첫 실행 시 헤더 작성

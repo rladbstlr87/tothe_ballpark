@@ -48,5 +48,5 @@ p['stamina'] = (normalize(game_count(p['stamina'], p['G']))/2 + 0.5).round(3)
 p['control'] = (normalize(game_count(p['control'], p['G']))/2 + 0.5).round(3)
 
 # CSV 저장
-h.to_csv('../all_hitter_stats.csv', index=False)
-p.to_csv('../all_pitcher_stats.csv', index=False)
+h.to_csv('data/all_hitter_stats.csv', index=False)
+p.to_csv('data/all_pitcher_stats.csv', index=False)

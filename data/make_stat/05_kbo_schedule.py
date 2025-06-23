@@ -161,6 +161,6 @@ for month in range(3, 10):  # 3월부터 9월까지
 # 전체 결과 저장
 if all_schedules:
     final_df = pd.concat(all_schedules, ignore_index=True)
-    final_df.to_csv("../kbo_schedule.csv", index=False, encoding='utf-8-sig')
+    final_df.to_csv("data/kbo_schedule.csv", index=False, encoding='utf-8-sig')
 
 driver.quit()

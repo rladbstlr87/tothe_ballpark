@@ -66,6 +66,6 @@ driver.quit()
 # 결과 병합 및 저장
 speed_df = pd.DataFrame(results)
 df_merged = pd.merge(df, speed_df, on='player_id', how='left')
-df_merged.to_csv('../all_pitcher_stats.csv', index=False)
+df_merged.to_csv('data/all_pitcher_stats.csv', index=False)
 
 print("✅ speed 컬럼 추가 및 저장 완료: ../all_pitcher_stats.csv")

@@ -110,5 +110,5 @@ dummy_row = [
 final_data.append(dummy_row)
 
 df_all = pd.DataFrame(final_data, columns=columns)
-df_all.to_csv("../all_pitcher_stats.csv", index=False, encoding="utf-8-sig")
+df_all.to_csv("data/all_pitcher_stats.csv", index=False, encoding="utf-8-sig")
 print("🎯 임시 선수 포함 최종 저장 완료: all_pitcher_stats.csv")
