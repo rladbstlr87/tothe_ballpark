@@ -18,26 +18,26 @@
         <div class="form-wrapper">
             <h5>로그인</h5>
             <form method="post" action="?mode=login">
-            {% csrf_token %}
-            {{ login_form.non_field_errors }}
+				{% csrf_token %}
+				{{ login_form.non_field_errors }}
 
-            {{ login_form.username }}
-            {% for error in login_form.username.errors %}
-            <p class="text-sm text-red-500 mt-1">{{ error }}</p>
-            {% endfor %}
+				{{ login_form.username }}
+				{% for error in login_form.username.errors %}
+					<p class="text-sm text-red-500 my-1">{{ error }}</p>
+				{% endfor %}
 
-            <div class="{% if login_form.password.errors %}border border-red-500 rounded-md{% endif %}">
-                {{ login_form.password }}
-            </div>
-            {% for error in login_form.password.errors %}
-                <p class="text-sm text-red-500 mt-1">{{ error }}</p>
-            {% endfor %}
+				<div class="{% if login_form.password.errors %}border border-red-500 rounded-md{% endif %}">
+					{{ login_form.password }}
+				</div>
+				{% for error in login_form.password.errors %}
+					<p class="text-sm text-red-500 my-1">{{ error }}</p>
+				{% endfor %}
 
-            <button type="submit" class="button primary">로그인</button>
+				<button type="submit" class="button primary my-1">로그인</button>
             </form>
 
             <!-- 하단 네비게이션: 아이디/비밀번호 찾기, 회원가입 링크 -->
-            <div class="mt-4 text-sm text-center text-gray-600 space-x-4">
+            <div class="my-4 text-sm text-center text-gray-600 space-x-4">
                 <a href="#" id="find-id-link" class="hover:underline">아이디 찾기</a>
                 <span>|</span>
                 <a href="#" id="find-password-link" class="hover:underline">비밀번호 찾기</a>
@@ -49,117 +49,112 @@
 
 	<!-- 회원가입 -->
 	<div class="signup-wrapper form {% if mode == 'signup' %}active{% endif %}">
-	<div class="form-wrapper">
-		<h5>회원가입</h5>
-		<form method="post" action="?mode=signup" enctype="multipart/form-data">
-		{% csrf_token %}
+		<div class="form-wrapper">
+			<h5>회원가입</h5>
+			<form method="post" action="?mode=signup" enctype="multipart/form-data">
+				{% csrf_token %}
+				<!-- 아이디 -->
+				<div class="flex flex-col">
+					<div class="flex items-center mt-2">
+						<input type="text" name="username" id="id_username"
+							value="{{ signup_form.username.value|default:'' }}"
+							class="form-field"
+							placeholder="아이디">
+						<button type="button"
+								class="rounded-md text-sm px-2 whitespace-nowrap"
+								onclick="checkDuplicate('username')">중복확인</button>
+					</div>
+					<p id="username-check-result" class="text-sm"></p>
+					{% for error in signup_form.username.errors %}
+						<p class="text-sm text-red-500 my-1">{{ error }}</p>
+					{% endfor %}
+				</div>
 
-		<!-- 사용자명 -->
-		<div class="flex flex-col gap-1">
-			<label for="id_username" class="text-sm">아이디</label>
-			<div class="flex gap-2 items-center">
-				<input type="text" name="username" id="id_username"
-					value="{{ signup_form.username.value|default:'' }}"
-					class="form-field"
-					placeholder="아이디">
-				<button type="button"
-						class="text-sm px-2 py-1 h-8 hover:text-blue-500 whitespace-nowrap"
-						onclick="checkDuplicate('username')">중복확인</button>
+				<!-- 닉네임 -->
+				<div class="flex flex-col">
+					<div class="flex items-center">
+						<input type="text" name="nickname" id="id_nickname"
+							value="{{ signup_form.nickname.value|default:'' }}"
+							class="form-field"
+							placeholder="닉네임">
+						<button type="button"
+								class="rounded-md text-sm px-2 whitespace-nowrap"
+								onclick="checkDuplicate('nickname')">중복확인</button>
+					</div>
+					<!-- ✅ 중복확인 결과 메시지 박스 -->
+					<p id="nickname-check-result" class="text-sm"></p>
+
+					{% for error in signup_form.nickname.errors %}
+						<p class="text-sm text-red-500 my-1">{{ error }}</p>
+					{% endfor %}
+				</div>
+
+
+				<!-- 이메일 -->
+				<div class="mb-1">
+					<input type="email" name="email"
+							value="{{ signup_form.email.value|default:'' }}"
+							class="form-field"
+							placeholder="이메일">
+					{% for error in signup_form.email.errors %}
+						<p class="text-sm text-red-500 my-1">{{ error }}</p>
+					{% endfor %}
+				</div>
+
+				<!-- 프로필 이미지 업로드 -->
+				<div class="flex justify-between">
+					<!-- 커스텀 파일 선택 레이아웃 -->
+					<div class="items-center flex-wrap my-1">
+						<label class="block text-sm text-gray-700">프로필 이미지</label>
+						<!-- 선택된 파일명 표시 영역 -->
+						<span id="selectedFileName" class="mr-2 text-sm text-gray-600 truncate max-w-[200px]">선택된 파일 없음</span>
+
+						<!-- 실제 파일 input (숨김 처리) -->
+						<input type="file" id="imageUpload" name="profile_image" accept="image/*"
+						class="hidden">
+					</div>
+					<!-- 파일 선택 버튼 -->
+					<label for="imageUpload" class="my-3 px-2 py-1 primary cursor-pointer justify-center rounded-md text-sm transition">
+						파일선택
+					</label>
+
+					<!-- 에러 메시지 -->
+					{% for error in signup_form.profile_image.errors %}
+						<p class="text-sm text-red-500 my-1">{{ error }}</p>
+					{% endfor %}
+				</div>
+
+				<div class="mb-1">
+					<!-- 팀 선택 -->
+					{{ signup_form.team }}
+					{% for error in signup_form.team.errors %}
+					<p class="text-sm text-red-500 my-1">{{ error }}</p>
+					{% endfor %}
+				</div>
+
+				<!-- 비밀번호 -->
+				<input type="password" name="password1" class="form-field" placeholder="비밀번호">
+				{% for error in signup_form.password1.errors %}
+					<p class="text-sm text-red-500 my-1">{{ error }}</p>
+				{% endfor %}
+
+				<input type="password" name="password2" class="form-field" placeholder="비밀번호 확인">
+				{% for error in signup_form.password2.errors %}
+					<p class="text-sm text-red-500 my-1">{{ error }}</p>
+				{% endfor %}
+
+				{% for error in signup_form.non_field_errors %}
+					<p class="text-sm text-red-500 my-1">{{ error }}</p>
+				{% endfor %}
+
+				<button type="submit" class="button primary my-3">회원가입</button>
+			</form>
+
+			<div class="text-sm text-center text-gray-600">
+				<a href="#" id="signin-link-from-signup" class="hover:underline">로그인</a>
 			</div>
-			<p id="username-check-result" class="text-sm"></p>
-			{% for error in signup_form.username.errors %}
-				<p class="text-sm text-red-500 mt-1">{{ error }}</p>
-			{% endfor %}
-		</div>
-
-		<!-- 닉네임 -->
-		<div class="flex flex-col gap-1">
-			<label for="id_nickname" class="text-sm">닉네임</label>
-			<div class="flex gap-2 items-center">
-				<input type="text" name="nickname" id="id_nickname"
-					value="{{ signup_form.nickname.value|default:'' }}"
-					class="form-field"
-					placeholder="닉네임">
-				<button type="button"
-						class="text-sm px-2 py-1 h-8 hover:text-blue-500 whitespace-nowrap"
-						onclick="checkDuplicate('nickname')">중복확인</button>
-			</div>
-			<!-- ✅ 중복확인 결과 메시지 박스 -->
-			<p id="nickname-check-result" class="text-sm mt-1"></p>
-
-			{% for error in signup_form.nickname.errors %}
-				<p class="text-sm text-red-500 mt-1">{{ error }}</p>
-			{% endfor %}
-		</div>
-
-
-		<!-- 이메일 -->
-		<label for="id_email" class="text-sm">이메일</label>
-		<input type="email" name="email"
-				value="{{ signup_form.email.value|default:'' }}"
-				class="form-field"
-				placeholder="이메일">
-		{% for error in signup_form.email.errors %}
-			<p class="text-sm text-red-500 mt-1">{{ error }}</p>
-		{% endfor %}
-
-		<!-- 프로필 이미지 업로드 -->
-		<div class="mt-4 mb-4">
-			<label class="block mb-1 text-sm text-gray-700">프로필 이미지</label>
-
-			<!-- 커스텀 파일 선택 레이아웃 -->
-			<div class="flex items-center gap-4 flex-wrap">
-			<!-- 선택된 파일명 표시 영역 -->
-			<span id="selectedFileName" class="text-sm text-gray-600 truncate max-w-[200px]">선택된 파일 없음</span>
-
-			<!-- 파일 선택 버튼 -->
-			<label for="imageUpload" class="cursor-pointer px-3 py-1 bg-gray-200 rounded-md text-sm hover:bg-gray-300 transition">
-				파일 선택
-			</label>
-
-			<!-- 실제 파일 input (숨김 처리) -->
-			<input type="file" id="imageUpload" name="profile_image" accept="image/*"
-					class="hidden">
-			</div>
-
-			<!-- 에러 메시지 -->
-			{% for error in signup_form.profile_image.errors %}
-			<p class="text-sm text-red-500 mt-1">{{ error }}</p>
-			{% endfor %}
-		</div>
-
-		<!-- 팀 선택 -->
-		<div class="mb-4">
-			{{ signup_form.team }}
-			{% for error in signup_form.team.errors %}
-			<p class="text-sm text-red-500 mt-1">{{ error }}</p>
-			{% endfor %}
-		</div>
-
-		<!-- 비밀번호 -->
-		<input type="password" name="password1" class="form-field" placeholder="비밀번호">
-		{% for error in signup_form.password1.errors %}
-			<p class="text-sm text-red-500 mt-1">{{ error }}</p>
-		{% endfor %}
-
-		<input type="password" name="password2" class="form-field" placeholder="비밀번호 확인">
-		{% for error in signup_form.password2.errors %}
-			<p class="text-sm text-red-500 mt-1">{{ error }}</p>
-		{% endfor %}
-
-		{% for error in signup_form.non_field_errors %}
-			<p class="text-sm text-red-500 mt-1">{{ error }}</p>
-		{% endfor %}
-
-		<button type="submit" class="button primary mt-3">회원가입</button>
-		</form>
-
-		<div class="text-sm text-center text-gray-600 space-x-4 mt-4">
-		<a href="#" id="signin-link-from-signup" class="hover:underline">로그인</a>
 		</div>
 	</div>
-	</div>
-
 
     <!-- 아이디 찾기 폼 -->
     <div class="find-id-wrapper form">
@@ -170,9 +165,9 @@
                 <input type="email" name="email" placeholder="이메일을 입력하세요" class="form-field" required>
                 <button type="submit" class="button primary">이메일로 아이디 받기</button>
             </form>
-            <div id="id-code-result" class="mt-2 text-center text-sm text-green-600"></div>
+            <div id="id-code-result" class="my-2 text-center text-sm text-green-600"></div>
 
-            <div class="text-sm text-center text-gray-600 space-x-4 mt-4">
+            <div class="text-sm text-center text-gray-600 space-x-4 my-4">
                 <a href="#" id="signin-link-from-others" class="hover:underline">로그인</a>
             </div>
         </div>
@@ -192,23 +187,23 @@
             </form>
 
             <!-- 2단계: 인증번호 입력 -->
-            <form method="post" id="verify-code-form" class="mt-4 hidden">
+            <form method="post" id="verify-code-form" class="my-4 hidden">
                 {% csrf_token %}
                 <input type="text" name="code" placeholder="인증번호 입력" class="form-field" required>
                 <button type="submit" class="button primary">인증번호 확인</button>
             </form>
 
             <!-- 3단계: 새 비밀번호 설정 -->
-            <form method="post" id="reset-password-form" class="mt-4 hidden">
+            <form method="post" id="reset-password-form" class="my-4 hidden">
                 {% csrf_token %}
                 <input type="password" name="new_password" placeholder="새 비밀번호" class="form-field" required>
                 <input type="password" name="confirm_password" placeholder="새 비밀번호 확인" class="form-field" required>
                 <button type="submit" class="button primary">비밀번호 재설정</button>
             </form>
 
-            <div id="pw-code-result" class="mt-2 text-center text-sm text-green-600"></div>
+            <div id="pw-code-result" class="my-2 text-center text-sm text-green-600"></div>
 
-            <div class="text-sm text-center text-gray-600 space-x-4 mt-4">
+            <div class="text-sm text-center text-gray-600 space-x-4 my-4">
                 <a href="#" id="signin-link-from-password" class="hover:underline">로그인</a>
             </div>
         </div>
@@ -414,7 +409,7 @@
 
 		if (!input || !input.value.trim()) {
 			resultBox.textContent = `${field}을(를) 입력하세요.`;
-			resultBox.className = 'text-sm text-red-600 mt-1';
+			resultBox.className = 'text-sm text-red-600 my-1';
 			return;
 		}
 
@@ -429,7 +424,7 @@
 			.then(res => res.json())
 			.then(data => {
 				resultBox.textContent = data.message;
-				resultBox.className = 'text-sm mt-1 ' + (data.success ? 'text-green-600' : 'text-red-600');
+				resultBox.className = 'text-sm my-1 ' + (data.success ? 'text-green-600' : 'text-red-600');
 			});
 	}
 
