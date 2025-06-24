@@ -36,7 +36,7 @@
                 </div>
             </a>
             <div class="flex flex-1 justify-center">
-                <div id="menu" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 justify-between w-full items-center text-shadows md:flex hidden">
+                <div id="menu" class="absolute z-30 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 justify-between w-full items-center text-shadows md:flex hidden">
                     <!-- 왼쪽 메뉴 -->
                     <div class="flex items-center">
                         <!-- 일부러 둔 빈div박스 -->
@@ -103,36 +103,36 @@
                     <div class="flex items-center gap-x-6">
                         {% if user.is_authenticated %}
                             <a href="{% url 'accounts:mypage' %}" class="text-black hover:text-blue-500">
-                                <span class="relative tracking-widest">
-                                    <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-[#FCEF91] -z-10"></span>
-                                    <span>{{ user.nickname }}</span>
+                                <span class="relative z-20 tracking-widest">
+                                    <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-[#FCEF91] z-0"></span>
+                                    <span class="relative z-20">{{ user.nickname }}</span>
                                 </span>
                             </a>
 
                             <a href="{% url 'accounts:logout' %}" class="text-black hover:text-blue-500">
                                 <span class="relative tracking-widest">
-                                    <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-red-400 -z-10"></span>
-                                    <span>로그아웃</span>
+                                    <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-red-400 z-0"></span>
+                                    <span class="relative z-20">로그아웃</span>
                                 </span>
                             </a>
                         {% else %}
                             <a href="{% url 'accounts:auth' %}" class="text-black hover:text-blue-600">
                                 <span class="relative tracking-widest">
-                                    <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-red-400 -z-10"></span>
-                                    <span>로그인</span>
+                                    <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-red-400 z-0"></span>
+                                    <span class="relative z-20">로그인</span>
                                 </span>
                             </a>
                         {% endif %}
                     </div>
                     <div class="flex items-center">
                         <!-- 일부러 둔 빈div박스 -->
-                        <span class="p-3 w-32 text-center text-gray-700"></span>
+                        <span class="relative -z-10 w-32 text-center text-gray-700"></span>
                     </div>
                 </div>
             </div>
             <!-- 승리요정 -->
             {% if user.is_authenticated %}
-                <div class="grid grid-cols-1 justify-end items-end h-auto" style="width: clamp(90px, 20vw, 160px);" x-show="!mobileMenuOpen" x-transition.opacity>
+                <div class="relative z-0 h-auto grid grid-cols-1 justify-end items-end" style="width: clamp(90px, 20vw, 160px);" x-show="!mobileMenuOpen" x-transition.opacity>
                     {% with winning_percent=winning_percent %}
                     <a id="fairy" href="{% url 'cal:user_games' user.id %}" class="inline-block w-fit">
                         {% if winning_percent >= 50 %}
