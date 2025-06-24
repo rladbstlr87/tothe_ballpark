@@ -143,7 +143,7 @@
                                                 {% with p_record=latest_pitcher_stats|get_item:lineup.pitcher.player_id %}
                                                     {% if p_record %}
                                                         <div class="text-xs text-gray-700 mt-1 text-center">
-                                                            {% if p_record.date == today %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
+                                                            {% if p_record.date == gameday %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
                                                             {{ p_record.IP }}이닝 / {{ p_record.H }}피안타 / {{ p_record.R }}실점 / {{ p_record.ER }}자책 / {{ p_record.BB }}볼넷 / {{ p_record.SO }}삼진 / {{ p_record.HR }}피홈런 / {{ p_record.NP }}투구수
                                                         </div>
                                                     {% endif %}
@@ -157,7 +157,7 @@
                                                 </div>
                                                 {% if record %}
                                                     <div class="text-xs text-gray-700 ml-6">
-                                                        {% if record.date == today %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
+                                                        {% if record.date == gameday %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
                                                         {{record.AB}}타수 / {{record.R}}득점 / {{ record.H }}안타 / {{ record.RBI }}타점 / {{ record.HR }}홈런 / {{ record.BB }}볼넷 / {{ record.SO }}삼진 / {{ record.SB }}도루
                                                     </div>
                                                 {% endif %}
@@ -175,7 +175,7 @@
                                                 {% with p_record=latest_pitcher_stats|get_item:lineup.pitcher.player_id %}
                                                     {% if p_record %}
                                                         <div class="text-xs text-gray-700 mt-1 text-center">
-                                                            {% if p_record.date == today %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
+                                                            {% if p_record.date == gameday %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
                                                             {{ p_record.IP }}이닝 / {{ p_record.H }}피안타 / {{ p_record.R }}실점 / {{ p_record.ER }}자책 / {{ p_record.BB }}볼넷 / {{ p_record.SO }}삼진 / {{ p_record.HR }}피홈런 / {{ p_record.NP }}투구수
                                                         </div>
                                                     {% endif %}
@@ -189,7 +189,7 @@
                                                 </div>
                                                 {% if record %}
                                                     <div id="today_stats" class="text-xs text-gray-700 mr-6 text-right">
-                                                        {% if record.date == today %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
+                                                        {% if record.date == gameday %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
                                                         {{record.AB}}타수 / {{record.R}}득점 / {{ record.H }}안타 / {{ record.RBI }}타점 / {{ record.HR }}홈런 / {{ record.BB }}볼넷 / {{ record.SO }}삼진 / {{ record.SB }}도루
                                                     </div>
                                                 {% endif %}
@@ -250,6 +250,9 @@
                     <div class="text-center mt-10 text-red-500 text-lg sm:text-xl">
                         ⚠️ 라인업이 아직 등록되지 않았습니다.
                     </div>
+                    {% if gameday in booking_dates %}
+                        예매 가능날짜입니다
+                    {% endif %}
                 </div>
             {% endif %}
             <div class="bg-[url('/static/cal/images/bg/peeledpaper1.png')] bg-repeat-y bg-contain w-[30px] lg:w-[50px] -translate-x-0 lg:-translate-x-8 min-h-full"></div>
