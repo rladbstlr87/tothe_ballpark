@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, Pass
 from .models import User
 import os
 
-# ✅ 사용자 정의 회원가입 폼
+# 사용자 정의 회원가입 폼
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
@@ -50,7 +50,7 @@ class CustomUserCreationForm(UserCreationForm):
         return user
 
 
-# ✅ 사용자 정의 로그인 폼
+# 사용자 정의 로그인 폼
 class CustomAuthenticationForm(AuthenticationForm):
     def __init__(self, request=None, *args, **kwargs):
         super().__init__(request, *args, **kwargs)
@@ -117,7 +117,7 @@ class TeamChangeForm(forms.ModelForm):
 class ProfileImageForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['profile_image']  # profile_image 필드만 처리
+        fields = ['profile_image']
 
     def save(self, commit=True):
         # 프로필 이미지를 변경할 때, 기존 이미지를 삭제하는 로직

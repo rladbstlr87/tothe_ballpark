@@ -38,14 +38,16 @@
     <div class="border-b pb-4 mb-4">
       <h1 class="text-2xl font-bold text-gray-800 text-center">{{post.title }}</h1>
       <div class="flex items-center text-sm text-gray-500 mt-1 whitespace-nowrap">
-        {% if post.user.team %}
+        {% if post.user.profile_image %} 
           <img src="{{ post.user.profile_image.url }}" alt="프로필 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
+        {% elif post.user.team %}
+          <img src="{% static 'posts/images/detail/'|add:post.user.team|add:'.png' %}" alt="기본 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
         {% else %}
           <svg xmlns="http://www.w3.org/2000/svg"
-            class="w-8 h-8 text-gray-400 mr-2"
-            viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
+              class="w-8 h-8 text-gray-400 mr-2"
+              viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 20a6 6 0 0 0-12 0"/>
             <circle cx="12" cy="10" r="4"/>
             <circle cx="12" cy="12" r="10"/>
@@ -122,7 +124,21 @@
           <div class="flex justify-between text-sm text-gray-600 mb-2">
             <!-- 이미지 + 닉네임 묶기 -->
             <div class="flex items-center space-x-1">
-              <img src="{{ comment.user.profile_image.url }}" alt="프로필 이미지" class="w-8 h-8 rounded-full object-cover">
+              {% if comment.user.profile_image %} 
+                <img src="{{ comment.user.profile_image.url }}" alt="프로필 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
+              {% elif post.user.team %}
+                <img src="{% static 'posts/images/detail/'|add:comment.user.team|add:'.png' %}" alt="기본 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
+              {% else %}
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="w-8 h-8 text-gray-400 mr-2"
+                    viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 20a6 6 0 0 0-12 0"/>
+                  <circle cx="12" cy="10" r="4"/>
+                  <circle cx="12" cy="12" r="10"/>
+                </svg>
+              {% endif %}
               <span class="font-semibold mr-2">{{ comment.user.nickname }}</span>
             </div>
             <span class="text-xs text-gray-400">
@@ -175,6 +191,7 @@
                   </label>
                 </div>
               {% endif %}
+              
               <input type="file" name="image" class="block w-full text-sm">
 
               <div class="flex justify-end gap-2">
@@ -208,45 +225,42 @@
     <div class="mt-4">
       <a href="{% url 'posts:post_index' %}" class="text-xl font-bold text-gray-700 mb-4 px-2">다른 응원글 보기</a>
       <div class="bg-neutral-50 rounded-xl shadow-sm overflow-hidden">
-<!-- 헤더 -->
-<div class="grid grid-cols-10 py-3 px-4 text-sm font-bold text-gray-600 bg-white text-center border-b border-sky-300 whitespace-nowrap max-sm:text-xs">
-  <div class="col-span-1">번호</div>
-  <div class="col-span-5 text-left pl-2 max-sm:col-span-5">제목</div>
-  <div class="col-span-1 text-xs">분류</div>
-  <div class="col-span-2 max-sm:col-span-2">닉네임</div>
-  <div class="col-span-1 max-sm:col-span-1">작성일</div>
-</div>
+        <!-- 헤더 -->
+        <div class="grid grid-cols-10 py-3 px-4 text-sm font-bold text-gray-600 bg-white text-center border-b border-sky-300 whitespace-nowrap max-sm:text-xs">
+          <div class="col-span-1">번호</div>
+          <div class="col-span-5 text-left pl-2 max-sm:col-span-5">제목</div>
+          <div class="col-span-1 text-xs">분류</div>
+          <div class="col-span-2 max-sm:col-span-2">닉네임</div>
+          <div class="col-span-1 max-sm:col-span-1">작성일</div>
+        </div>
 
-<!-- 질문 목록 -->
-<ul>
-  {% for number, post in page_obj %}
-    <li class="grid grid-cols-10 py-3 px-4 text-sm items-center text-center border-b bg-white border-sky-200 hover:bg-sky-100 transition max-sm:text-xs">
-      <div class="col-span-1 text-gray-600 font-mono">{{ number }}</div>
-      <div class="col-span-5 text-left pl-2 max-sm:col-span-5">
-        <a href="{% url 'posts:detail' post.id %}"
-          class="block truncate max-w-full sm:max-w-[500px] text-black font-semibold hover:underline underline-offset-4 decoration-wavy">
-          {{ post.title }}
-        </a>
-      </div>
-      <div class="col-span-1 text-gray-700 text-xs">{{ post.get_category_display }}</div>
-      <div class="col-span-2 text-gray-600 max-sm:col-span-2">{{ post.user.nickname }}</div>
-      <div class="col-span-1 text-gray-500 text-xs max-sm:col-span-1 max-sm:text-right">
-        {{ post.created_at|date:"m.d" }}
-      </div>
-    </li>
-  {% empty %}
-    <li class="text-center py-10 text-gray-400">등록된 질문이 없습니다 🥲</li>
-  {% endfor %}
-</ul>
-
-
-
-
+        <!-- 질문 목록 -->
+        <ul>
+          {% for number, post in page_obj %}
+            <li class="grid grid-cols-10 py-3 px-4 text-sm items-center text-center border-b bg-white border-sky-200 hover:bg-sky-100 transition max-sm:text-xs">
+              <div class="col-span-1 text-gray-600 font-mono">{{ number }}</div>
+              <div class="col-span-5 text-left pl-2 max-sm:col-span-5">
+                <a href="{% url 'posts:detail' post.id %}"
+                  class="block truncate max-w-full sm:max-w-[500px] text-black font-semibold hover:underline underline-offset-4 decoration-wavy">
+                  {{ post.title }}
+                </a>
+              </div>
+              <div class="col-span-1 text-gray-700 text-xs">{{ post.get_category_display }}</div>
+              <div class="col-span-2 text-gray-600 max-sm:col-span-2">{{ post.user.nickname }}</div>
+              <div class="col-span-1 text-gray-500 text-xs max-sm:col-span-1 max-sm:text-right">
+                {{ post.created_at|date:"m.d" }}
+              </div>
+            </li>
+          {% empty %}
+            <li class="text-center py-10 text-gray-400">등록된 질문이 없습니다 🥲</li>
+          {% endfor %}
+        </ul>
       </div>
     </div>
 
+    <!-- 페이지네이션 -->
     <div class="flex items-center justify-center space-x-2 my-8 text-sm text-gray-600">
-  
+
       <!-- 이전 버튼 -->
       {% if page_obj.has_previous %}
         <a href="?page={{ page_obj.previous_page_number }}"
@@ -280,67 +294,66 @@
     </div>
 
   </div>
+</div>
 
-  <!-- 좋아요 관련 스크립트 -->
-  <script>
-    document.querySelectorAll('.like-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const postId = btn.dataset.postId;
-        const res = await fetch(`/posts/${postId}/like-async`);
-        const result = await res.json();
-        const countSpan = btn.querySelector('.like-count');
-        btn.classList.toggle('text-red-500', result.status);
-        btn.classList.toggle('border-red-500', result.status);
-        btn.classList.toggle('text-gray-500', !result.status);
-        btn.classList.toggle('border-gray-300', !result.status);
-        countSpan.innerText = result.count;
-      });
-    });
 
-    document.querySelectorAll('.comment-like-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const commentId = btn.dataset.commentId;
-        const res = await fetch(`/posts/comments/${commentId}/like-async/`);
-        const result = await res.json();
-        const countSpan = btn.querySelector('.comment-like-count');
-        btn.classList.toggle('text-red-500', result.status);
-        btn.classList.toggle('border-red-400', result.status);
-        btn.classList.toggle('text-gray-500', !result.status);
-        btn.classList.toggle('border-gray-300', !result.status);
-        countSpan.innerText = result.count;
-      });
-    });
-  </script>
-  
-</body>
+<!-- 좋아요 관련 스크립트 -->
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const stickerRight = document.getElementById("scrollSticker");
-    const stickerLeft = document.getElementById("scrollStickerLeft");
-
-    window.addEventListener("scroll", function () {
-      const scrollY = window.scrollY;
-
-      // 오른쪽 스티커: 스크롤 200px 이상이면 등장
-      if (scrollY > 420) {
-        stickerRight.classList.remove("opacity-0", "scale-90");
-        stickerRight.classList.add("opacity-100", "scale-100");
-      } else {
-        stickerRight.classList.remove("transition-all", "duration-500");
-        stickerRight.classList.add("opacity-0", "scale-90");
-        stickerRight.classList.remove("opacity-100", "scale-100");
-      }
-
-      // 왼쪽 스티커: 스크롤 400px 이상이면 등장
-      if (scrollY > 350) {
-        stickerLeft.classList.remove("opacity-0", "scale-90");
-        stickerLeft.classList.add("opacity-100", "scale-100");
-      } else {
-        stickerLeft.classList.remove("transition-all", "duration-500");
-        stickerLeft.classList.add("opacity-0", "scale-90");
-        stickerLeft.classList.remove("opacity-100", "scale-100");
-      }
-    });
+document.querySelectorAll('.like-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const postId = btn.dataset.postId;
+    const res = await fetch(`/posts/${postId}/like-async`);
+    const result = await res.json();
+    const countSpan = btn.querySelector('.like-count');
+    btn.classList.toggle('text-red-500', result.status);
+    btn.classList.toggle('border-red-500', result.status);
+    btn.classList.toggle('text-gray-500', !result.status);
+    btn.classList.toggle('border-gray-300', !result.status);
+    countSpan.innerText = result.count;
   });
+});
+
+document.querySelectorAll('.comment-like-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const commentId = btn.dataset.commentId;
+    const res = await fetch(`/posts/comments/${commentId}/like-async/`);
+    const result = await res.json();
+    const countSpan = btn.querySelector('.comment-like-count');
+    btn.classList.toggle('text-red-500', result.status);
+    btn.classList.toggle('border-red-400', result.status);
+    btn.classList.toggle('text-gray-500', !result.status);
+    btn.classList.toggle('border-gray-300', !result.status);
+    countSpan.innerText = result.count;
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const stickerRight = document.getElementById("scrollSticker");
+  const stickerLeft = document.getElementById("scrollStickerLeft");
+
+  window.addEventListener("scroll", function () {
+    const scrollY = window.scrollY;
+
+    // 오른쪽 스티커
+    if (scrollY > 420) {
+      stickerRight.classList.remove("opacity-0", "scale-90");
+      stickerRight.classList.add("opacity-100", "scale-100");
+    } else {
+      stickerRight.classList.remove("transition-all", "duration-500");
+      stickerRight.classList.add("opacity-0", "scale-90");
+      stickerRight.classList.remove("opacity-100", "scale-100");
+    }
+
+    // 왼쪽 스티커
+    if (scrollY > 350) {
+      stickerLeft.classList.remove("opacity-0", "scale-90");
+      stickerLeft.classList.add("opacity-100", "scale-100");
+    } else {
+      stickerLeft.classList.remove("transition-all", "duration-500");
+      stickerLeft.classList.add("opacity-0", "scale-90");
+      stickerLeft.classList.remove("opacity-100", "scale-100");
+    }
+    });
+});
 </script>
 {% endblock %}

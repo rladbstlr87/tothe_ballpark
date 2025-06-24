@@ -1,9 +1,6 @@
 from django.forms import ModelForm
 from .models import Post, Comment
 from django import forms
-from django.forms.widgets import FileInput
-
-
     
 class PostForm(ModelForm):
     class Meta():
@@ -18,12 +15,6 @@ class PostForm(ModelForm):
                          'focus:outline-none focus:ring-2 focus:ring-sky-400 '
                          'placeholder-gray-400 text-base resize-y'
             }),
-            
-            # 'image': forms.ClearableFileInput(attrs={
-            #     'class': 'w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 '
-            #              'file:border file:rounded-md file:border-gray-300 file:bg-gray-100 '
-            #              'hover:file:bg-gray-200'
-            # }),
             'category': forms.Select(attrs={
                 'class': 'w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white'
             })
@@ -48,4 +39,3 @@ class CommentForm(ModelForm):
                 'hover:file:bg-gray-200'
             }),
         }
-        

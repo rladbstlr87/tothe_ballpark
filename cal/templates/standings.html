@@ -9,7 +9,7 @@
 
 {% block body %}
 
-<!-- ✅ 탭 버튼 영역 -->
+<!-- 탭 버튼 영역 -->
 <div class="w-full max-w-6xl mx-auto mt-10 my-3 px-4 text-center">
   <div class="flex justify-center my-3">
     <button onclick="showTab('ranking')" id="ranking-tab"
@@ -25,7 +25,7 @@
     </button>
   </div>
 
-  <!-- ✅ KBO 순위 -->
+  <!-- KBO 순위 -->
   <div id="ranking" class="tab-content">
     <div class="standing-box p-6 mb-8 bg-white text-xs sm:text-sm">
       <div class="relative w-full">
@@ -108,17 +108,17 @@
     </div>
   </div>
 
-  <!-- ✅ 타자 순위 -->
+  <!-- 타자 순위 -->
 <div id="hitters" class="tab-content">
   <div class="standing-box bg-white shadow p-6 mb-8 text-xs sm:text-sm">
     
-    <!-- 🔘 스크롤 버튼 -->
+    <!-- 스크롤 버튼 -->
     <div class="flex justify-end mb-2">
       <button onclick="scrollHitter(-1)" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition">⬅</button>
       <button onclick="scrollHitter(1)" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition ml-2">➡</button>
     </div>
 
-    <!-- ✅ 테이블 전체 박스 -->
+    <!-- 테이블 전체 박스 -->
     <div class="relative w-full flex rounded-[15px] overflow-hidden border border-gray-300">
       
       <!-- 📌 고정 열 -->
@@ -216,7 +216,7 @@
 </div>
 
 
-  <!-- ✅ 투수 순위 -->
+  <!-- 투수 순위 -->
 <div id="pitchers" class="tab-content hidden">
     <div class="standing-box bg-white shadow p-6 mb-8 text-xs sm:text-sm">
 
@@ -323,11 +323,11 @@
   </div>
 </div>
 
-<!-- 데스크탑 저니 -->
+<!-- 데스크탑 튜토리얼 -->
 <div id="introOverlay" class="fixed grid inset-0 bg-black/40 z-100 cursor-pointer hidden">
   <div class="text-white pt-24">
     <div id="introSteps" class="flex flex-col md:flex-row gap-6 px-4">
-      <p class="p-4 bg-white/30 backdrop-blur-sm rounded-lg absolute left-1/2 top-[270px] -translate-x-1/2 hidden select-none">
+      <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-1/2 md:top-[270px] md:-translate-x-1/2 hidden select-none">
         <strong class="text-2xl">순위 게시판</strong>을 소개합니다!<br><br>
         팀 순위와 타자, 투수 별로 순위를 볼 수 있어요<br>
         우리 팀에서 응원하는 선수가 어떤 성적을 기록하고 있는지 확인해보세요!
@@ -340,13 +340,13 @@
     <p class="p-2">
         주요 기능들을 모두 살펴보셨어요!
     </p>
-    <button onclick="console.log('버튼 눌림'); closeIntro()" class="mt-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700">
+    <button onclick="closeIntro()" class="mt-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700">
         다시 보지 않기
     </button>
   </div>
 </div>
 
-<!-- ✅ 스타일 및 스크립트 -->
+<!-- 스타일 및 스크립트 -->
 <style>
   .standing-box {
     border-radius: 15px;

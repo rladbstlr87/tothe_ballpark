@@ -13,6 +13,27 @@ import random
 from collections import defaultdict
 import urllib.parse
 
+# 배경 이미지 랜덤 적용
+def index(request):
+    backgrounds = [
+        'cal/images/bg/home0.png',
+        'cal/images/bg/home1.png',
+        'cal/images/bg/home2.png',
+    ]
+    mobile_backgrounds = [
+        'cal/images/bg/mobile0.png',
+        'cal/images/bg/mobile1.png',
+        'cal/images/bg/mobile2.png',
+    ]
+    
+    context = {
+        'random_bg': random.choice(backgrounds),
+        'random_mobile_bg': random.choice(mobile_backgrounds),
+        
+    }
+    return render(request, 'index.html', context)
+
+
 def calculate_team_standings():
     HOME_STADIUMS = {
         'HT': ['광주'], 'LG': ['잠실'], 'OB': ['잠실'], 'SK': ['문학'],
@@ -126,29 +147,7 @@ def calculate_team_standings():
 
     return team_data
 
-
-# 배경 이미지 랜덤 적용
-def index(request):
-    backgrounds = [
-        'cal/images/bg/home0.png',
-        'cal/images/bg/home1.png',
-        'cal/images/bg/home2.png',
-    ]
-    mobile_backgrounds = [
-        'cal/images/bg/mobile0.png',
-        'cal/images/bg/mobile1.png',
-        'cal/images/bg/mobile2.png',
-    ]
-    
-    context = {
-        'random_bg': random.choice(backgrounds),
-        'random_mobile_bg': random.choice(mobile_backgrounds),
-        
-    }
-    return render(request, 'index.html', context)
-
-
-# ✅ 팀 순위 + 유저 팀의 타자/투수 기록 표시
+# 팀 순위 + 유저 팀의 타자,투수 기록 표시
 @never_cache
 @login_required
 def standings(request):
@@ -166,7 +165,7 @@ def standings(request):
     return render(request, 'standings.html', context)
 
 
-# ✅ 캘린더 메인 뷰 - 로그인 유저의 팀/출석 데이터 기반
+# 캘린더 메인 뷰
 @never_cache
 @login_required
 def calendar_view(request):
@@ -190,6 +189,7 @@ def calendar_view(request):
     }
     return render(request, 'calendar.html', context)
 
+
 # 날짜 유틸 함수
 def get_date(req_day):
     try:
@@ -212,7 +212,7 @@ def next_month(d):
     return f'day={next_.year}-{next_.month}-{next_.day}'
 
 
-# 키플레이어 함수
+# 수훈선수 함수
 def calculate_hitter_score(h):
     return (
         h.RBI * 3 +
@@ -270,22 +270,19 @@ def lineup(request, game_id):
     for record in today_pitcher_records:
         latest_pitcher_stats[record.player_id] = record
 
-    # 👉 유저 팀 정보
+    # 유저 팀 정보
     user_team = request.user.team
 
-    # 👉 우리 팀 소속 타자 ID들
+    # 우리 팀 소속 타자 ID들
     our_hitter_ids = set(Hitter.objects.filter(team_name=user_team).values_list('player_id', flat=True))
 
-    # 👉 우리 팀 소속 투수 ID들
+    # 우리 팀 소속 투수 ID들
     our_pitcher_ids = set(Pitcher.objects.filter(team_name=user_team).values_list('player_id', flat=True))
 
-    # 👉 오늘 경기 중 우리 팀 타자 기록만
     today_hitters = [r for r in today_hitter_records if r.player_id in our_hitter_ids]
-
-    # 👉 오늘 경기 중 우리 팀 투수 기록만
     today_pitchers = [r for r in today_pitcher_records if r.player_id in our_pitcher_ids]
 
-    # 👉 오늘 기록이 없으면, 최신 기록 중 우리 팀만
+    # 오늘 기록이 없으면, 최신 기록 중 우리 팀만
     if not today_hitters:
         team_hitters = [r for r in latest_daily_stats.values() if r.player_id in our_hitter_ids]
         best_hitter = max(team_hitters, key=calculate_hitter_score, default=None)
@@ -297,7 +294,6 @@ def lineup(request, game_id):
         best_pitcher = max(team_pitchers, key=calculate_pitcher_score, default=None)
     else:
         best_pitcher = max(today_pitchers, key=calculate_pitcher_score, default=None)
-
 
     hitter_score = calculate_hitter_score(best_hitter) if best_hitter else -999
     pitcher_score = calculate_pitcher_score(best_pitcher) if best_pitcher else -999
@@ -358,9 +354,6 @@ def lineup(request, game_id):
     is_after_game = (game.team1_score is not None) and (game.team2_score is not None)
     show_best_player = is_after_game and (user_score > opponent_score)
 
-    # 티켓링크 처리
-    stadium_ticket = game.stadium
-
     ticket = {
         "대전(신)": "https://www.ticketlink.co.kr/sports/137/63",
         "수원": "https://www.ticketlink.co.kr/sports/137/62",
@@ -407,7 +400,7 @@ def lineup(request, game_id):
         'user_score': user_score,
         'opponent_score': opponent_score,
         'is_after_game': is_after_game,
-        'ticket_url': ticket.get(stadium_ticket, "#"),
+        'ticket_url': ticket[game.stadium],
         'best_player': best_player,
         'best_player_name': best_player_name,
         'player_type': player_type,
@@ -540,11 +533,6 @@ def stadium_info(request, stadium):
     lat, lng, name, place_id = team_info[stadium].split(',', 3)
     encoded_name = urllib.parse.quote(name)
 
-    naver_url =f"nmap://route/public?dlat={lat}&dlng={lng}&dname={encoded_name}"
-
-    # 티켓링크 처리
-    stadium_ticket = stadium
-
     ticket = {
         "대전(신)": "https://www.ticketlink.co.kr/sports/137/63",
         "수원": "https://www.ticketlink.co.kr/sports/137/62",
@@ -565,8 +553,8 @@ def stadium_info(request, stadium):
         'parkings': parkings,
         'restaurants': restaurants,
         'google_url': f"https://www.google.com/maps/dir/?api=1&destination={lat},{lng}&destination_place_id={place_id}",
-        'naver_url': naver_url,
-        'ticket_url': ticket.get(stadium_ticket, "#"),
+        'naver_url': f"nmap://route/public?dlat={lat}&dlng={lng}&dname={encoded_name}",
+        'ticket_url': ticket[stadium],
     }
 
     return render(request, 'stadium_info.html', context)

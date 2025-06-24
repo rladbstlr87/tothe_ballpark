@@ -7,25 +7,25 @@
 
 {% block body %}
 <div class="max-sm:pt-[10px] min-h-screen flex items-center justify-center py-12 px-4 relative z-0 max-sm:mx-0 max-sm:px-0">
-  <!-- 🟡 배경 스티커 이미지들 -->
+  <!-- 배경 스티커 이미지들 -->
   <img src="{% static 'posts/images/detail/pinkhitter.png' %}" alt="스티커"
       class="w-36 absolute top-4 left-4 z-0 mt-50">
   <img src="{% static 'posts/images/detail/bluehitter.png' %}" alt="스티커"
       class="w-36 absolute top-4 right-4 z-0 mt-90 max-sm:hidden">
 
-  <!-- 🟢 본문 박스 -->
+  <!-- 본문 박스 -->
   <div class="bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl z-10 relative ">
     <h1 class="text-3xl font-extrabold text-center text-black mb-10 tracking-wider">게시글 수정</h1>
 
     <form action="" method="POST" enctype="multipart/form-data" class="space-y-6 text-gray-800">
       {% csrf_token %}
 
-      <!-- 📌 카테고리 / 제목 / 내용 -->
+      <!-- 카테고리 / 제목 / 내용 -->
       <div>{{ form.category }}</div>
       <div>{{ form.title }}</div>
       <div>{{ form.content }}</div>
 
-      <!-- 📸 기존 이미지 리스트 -->
+      <!-- 기존 이미지 리스트 -->
       <div id="image-container" class="flex gap-4 flex-wrap mb-6">
         {% for img in existing_images %}
           <div class="relative w-24 h-24 image-box">
@@ -38,18 +38,18 @@
           </div>
         {% endfor %}
 
-        <!-- 🌠 새 이미지 미리보기 영역 -->
+        <!--  새 이미지 미리보기 영역 -->
         <div id="preview-container" class="flex gap-4 flex-wrap"></div>
       </div>
 
-      <!-- 📂 이미지 업로드 버튼 -->
+      <!--  이미지 업로드 버튼 -->
       <label for="image-input" class="inline-block px-4 py-2 bg-gray-300 rounded-md text-white cursor-pointer">
         이미지 선택
       </label>
       <small class="ml-2 text-gray-500" id="file-count-label">0개 파일 선택됨</small>
       <input type="file" name="images" id="image-input" multiple hidden>
 
-      <!-- ✅ 제출 버튼 -->
+      <!-- 제출 버튼 -->
       <div class="text-center mt-8">
         <button type="submit"
                 class="rounded-full px-8 py-3 bg-[#9AA6B2] text-white text-lg font-semibold hover:bg-[#BCCCDC] transition duration-200 shadow-md">
@@ -60,9 +60,9 @@
   </div>
 </div>
 
-<!-- ✅ JS 스크립트 -->
+
 <script>
-  // ✅ 새 이미지 업로드 처리
+  //  새 이미지 업로드 처리
   const input = document.getElementById('image-input');
   const preview = document.getElementById('preview-container');
   const fileCountLabel = document.getElementById('file-count-label');
@@ -128,7 +128,7 @@
     fileCountLabel.textContent = `${selectedFiles.length}개 파일 선택됨 `;
   });
 
-  // ✅ 기존 이미지 ✕ 버튼 누르면 삭제 체크박스 처리
+  // 기존 이미지 ✕ 버튼 누르면 삭제 체크박스 처리
   document.addEventListener('DOMContentLoaded', function () {
     const deleteButtons = document.querySelectorAll('.delete-btn');
     const form = document.querySelector('form');
@@ -155,6 +155,3 @@
   });
 </script>
 {% endblock %}
-
-    
-

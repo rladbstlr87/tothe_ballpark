@@ -86,11 +86,11 @@ if last_date:
 # 유효한 경기만 game_map에 정리
 for _, row in df_filtered.iterrows():
     if str(row.get('canceled', '')).strip() == '취소':
-        print(f"⛔ 취소된 경기: {row['day']} {row['team1']} vs {row['team2']} ({row['time']})")
+        print(f"취소된 경기: {row['day']} {row['team1']} vs {row['team2']} ({row['time']})")
         next_gid += 1
         continue
     if pd.isna(row['team1_score']) or pd.isna(row['team2_score']):
-        print(f"⛔ 점수 없음: {row['day']} {row['team1']} vs {row['team2']} ({row['time']})")
+        print(f"점수 없음: {row['day']} {row['team1']} vs {row['team2']} ({row['time']})")
         next_gid += 1
         continue
 
@@ -99,7 +99,6 @@ for _, row in df_filtered.iterrows():
     game_map.setdefault(key, []).append((row, next_gid))
     next_gid += 1
 
-# ✅ Selenium 웹드라이버 실행 (headless + 가상 전체화면 해상도)
 chrome_options = Options()
 chrome_options.add_argument('--headless')
 chrome_options.add_argument('--disable-gpu')
@@ -123,7 +122,7 @@ with open('data/hitters_records.csv', 'a', newline='', encoding='utf-8-sig') as 
             d, t1, t2 = row['day'].replace('.', ''), row['team1'], row['team2']
             t1c, t2c = TEAM_CODE.get(t1, ''), TEAM_CODE.get(t2, '')
             if not t1c or not t2c:
-                print(f"⚠️ 팀 코드 누락: {t1}, {t2}")
+                print(f"팀 코드 누락: {t1}, {t2}")
                 continue
 
             # 더블헤더 처리
@@ -156,9 +155,9 @@ with open('data/hitters_records.csv', 'a', newline='', encoding='utf-8-sig') as 
                         continue
                     rw.writerow([r.get(k, '') for k in ['AB','R','H','RBI','HR','BB','SO','SB']] + [r['player_id'], team, gid, d])
 
-            print(f"✅ 저장 완료: {d} {t1} vs {t2} ({gcode}) → game_id={gid}, 선수 수: {len(rec['away']) + len(rec['home'])}")
+            print(f"저장 완료: {d} {t1} vs {t2} ({gcode}) → game_id={gid}, 선수 수: {len(rec['away']) + len(rec['home'])}")
             time.sleep(1.5)
 
 # 종료 처리
-print('✅ 기록 저장 완료')
+print('기록 저장 완료')
 driver.quit()

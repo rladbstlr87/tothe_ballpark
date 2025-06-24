@@ -16,7 +16,7 @@ class Command(BaseCommand):
                 game_obj = Game.objects.get(pk=str(row['game_id']))
                 hitter_obj = Hitter.objects.get(pk=str(row['hitter_id']))
                 pitcher_obj = Pitcher.objects.get(pk=str(row['pitcher_id']))
-                stadium_obj = Stadium.objects.get(stadium=row['stadium'])  # ✅ Stadium 인스턴스 가져오기
+                stadium_obj = Stadium.objects.get(stadium=row['stadium'])  # Stadium 인스턴스 가져오기
                 print(game_obj, hitter_obj, pitcher_obj, int(row['batting_order']), stadium_obj)
 
                 obj, created = Lineup.objects.update_or_create(

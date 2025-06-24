@@ -158,7 +158,7 @@ for month in range(3, 10):  # 3월부터 9월까지
     except Exception as e:
         print(f"[{month_str}월] 크롤링 실패: {e}")
 
-# 전체 결과 저장
+# 저장
 if all_schedules:
     final_df = pd.concat(all_schedules, ignore_index=True)
     final_df.to_csv("data/kbo_schedule.csv", index=False, encoding='utf-8-sig')

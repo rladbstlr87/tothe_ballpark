@@ -8,7 +8,6 @@ from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
-# ✅ Headless 크롬 드라이버 설정
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-gpu")
@@ -37,7 +36,7 @@ columns = [
 driver.get(base_url)
 
 for team in teams:
-    print(f"\n📦 팀 선택 중: {team}")
+    print(f"\n팀 선택 중: {team}")
 
     select_element = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "cphContents_cphContents_cphContents_ddlTeam_ddlTeam"))
@@ -68,9 +67,9 @@ for team in teams:
         prev_btn.click()
         time.sleep(2)
     except:
-        print("➡️ 2페이지 없음")
+        print("2페이지 없음")
 
-    print(f"🔎 총 {len(player_infos)}명 선수 발견")
+    print(f"총 {len(player_infos)}명 선수 발견")
 
     team_data = []
 
@@ -79,14 +78,14 @@ for team in teams:
         res = requests.get(url, headers=headers)
         soup = BeautifulSoup(res.content, "html.parser")
 
-        # ✅ 첫 번째 테이블 (팀명 제외)
+        # 첫 번째 테이블 (팀명 제외)
         try:
             table1 = soup.select_one("div.tbl-type02.tbl-type02-pd0.mb35 > table > tbody")
             data1 = [td.text.strip() for td in table1.select("td")][1:]
         except:
             data1 = []
 
-        # ✅ 두 번째 테이블
+        # 두 번째 테이블
         try:
             table2 = soup.select_one("div.player_records > div:nth-child(4) > table > tbody")
             data2 = [td.text.strip() for td in table2.select("td")]
@@ -108,9 +107,9 @@ for team in teams:
     print(f"💾 누적 저장 완료: all_pitcher_stats.csv")
 
 driver.quit()
-print("\n🎉 모든 투수 데이터 저장 완료!")
+print("\n모든 투수 데이터 저장 완료!")
 
-# ✅ 임시 선수 추가
+# 임시 선수 추가
 dummy_row = [
     "TMP", "1", "임시선수",
     "3.21", 10, 0, 0, 2, 1, 1, 0, "0.667", 150, 1000, 55.1, 48, 5, 0, 3,
@@ -120,4 +119,4 @@ final_data.append(dummy_row)
 
 df_all = pd.DataFrame(final_data, columns=columns)
 df_all.to_csv("data/all_pitcher_stats.csv", index=False, encoding="utf-8-sig")
-print("🎯 임시 선수 포함 최종 저장 완료: all_pitcher_stats.csv")
+print("임시 선수 포함 최종 저장 완료: all_pitcher_stats.csv")

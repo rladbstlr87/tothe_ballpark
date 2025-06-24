@@ -104,11 +104,11 @@ if last_date:
 
 for _, row in df_filtered.iterrows():
     if str(row.get('canceled', '')).strip() == '취소':
-        print(f"⛔ 취소된 경기: {row['day']} {row['team1']} vs {row['team2']} ({row['time']})")
+        print(f"취소된 경기: {row['day']} {row['team1']} vs {row['team2']} ({row['time']})")
         next_gid += 1
         continue
     if pd.isna(row['team1_score']) or pd.isna(row['team2_score']):
-        print(f"⛔ 점수 없음: {row['day']} {row['team1']} vs {row['team2']} ({row['time']})")
+        print(f"점수 없음: {row['day']} {row['team1']} vs {row['team2']} ({row['time']})")
         next_gid += 1
         continue
 
@@ -117,7 +117,6 @@ for _, row in df_filtered.iterrows():
     game_map.setdefault(key, []).append((row, next_gid))
     next_gid += 1
 
-# ✅ 크롬 드라이버 실행 (headless + 전체화면 해상도)
 chrome_options = Options()
 chrome_options.add_argument('--headless')
 chrome_options.add_argument('--disable-gpu')
@@ -142,7 +141,7 @@ with open('data/pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as
             d, t1, t2 = row['day'].replace('.', ''), row['team1'], row['team2']
             t1c, t2c = TEAM_CODE.get(t1, ''), TEAM_CODE.get(t2, '')
             if not t1c or not t2c:
-                print(f"⚠️ 팀 코드 누락: {t1}, {t2}")
+                print(f"팀 코드 누락: {t1}, {t2}")
                 continue
 
             if len(games_sorted) == 1:
@@ -162,7 +161,7 @@ with open('data/pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as
                 rec = get_pitcher_record(d, t1c, t2c, '02025', driver)
 
             if not rec['away'] and not rec['home']:
-                print(f"⚠️ 투수 기록 없음: {d} {t1} vs {t2} ({gcode})")
+                print(f"투수 기록 없음: {d} {t1} vs {t2} ({gcode})")
                 continue
 
             for team in ['away', 'home']:
@@ -177,8 +176,8 @@ with open('data/pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as
                         r.get('NP', ''), pid, team, gid, d
                     ])
 
-            print(f"✅ 저장 완료: {d} {t1} vs {t2} ({gcode}) → game_id={gid}")
+            print(f"저장 완료: {d} {t1} vs {t2} ({gcode}) → game_id={gid}")
             time.sleep(1.5)
 
-print('✅ 모든 투수 기록 저장 완료')
+print('모든 투수 기록 저장 완료')
 driver.quit()
