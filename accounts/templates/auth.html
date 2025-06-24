@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
+
 {% load static %}
 {% load custom_filters1 %}
+
 {% block title %}
     로그인 | 직돌이
 {% endblock %}
+
 {% block styles %}
-<!-- 회원가입/로그인 페이지에 적용될 CSS 불러오기 -->
 <link rel="stylesheet" href="{% static 'auth/css/auth.css' %}">
 {% endblock %}
 
@@ -36,7 +38,7 @@
 				<button type="submit" class="button primary my-1">로그인</button>
             </form>
 
-            <!-- 하단 네비게이션: 아이디/비밀번호 찾기, 회원가입 링크 -->
+            <!-- 아이디, 비밀번호 찾기, 회원가입 링크 -->
             <div class="my-4 text-sm text-center text-gray-600 space-x-4">
                 <a href="#" id="find-id-link" class="hover:underline">아이디 찾기</a>
                 <span>|</span>
@@ -47,7 +49,7 @@
         </div>
     </div>
 
-	<!-- 회원가입 -->
+	<!-- 회원가입 폼 -->
 	<div class="signup-wrapper form {% if mode == 'signup' %}active{% endif %}">
 		<div class="form-wrapper">
 			<h5>회원가입</h5>
@@ -212,57 +214,19 @@
 </div>
 
 <script>
+	// 이미지 파일 선택 시 파일명 표시
 	document.getElementById('imageUpload').addEventListener('change', function (e) {
 		const fileName = e.target.files[0]?.name || '선택된 파일 없음';
 		document.getElementById('selectedFileName').textContent = fileName;
 	});
-	// 🔹 각 폼 요소 DOM 참조
+
+	// 주요 wrapper 요소들 정의
 	const signinWrapper = document.querySelector('.signin-wrapper');
 	const signupWrapper = document.querySelector('.signup-wrapper');
 	const findIdWrapper = document.querySelector('.find-id-wrapper');
 	const findPasswordWrapper = document.querySelector('.find-password-wrapper');
 
-	// 🔹 폼 전환 함수
-	const switchForm = (targetWrapper) => {
-		[signinWrapper, signupWrapper, findIdWrapper, findPasswordWrapper].forEach(wrapper => {
-			wrapper.classList.remove('active');
-		});
-		targetWrapper.classList.add('active');
-	};
-
-	// 🔹 로그인 폼 → 아이디/비번/회원가입
-	document.getElementById('find-id-link').addEventListener('click', e => {
-		e.preventDefault();
-		switchForm(findIdWrapper);
-	});
-
-	document.getElementById('find-password-link').addEventListener('click', e => {
-		e.preventDefault();
-		switchForm(findPasswordWrapper);
-	});
-
-	document.getElementById('signup-link').addEventListener('click', e => {
-		e.preventDefault();
-		switchForm(signupWrapper);
-	});
-
-	// 🔹 기타 폼 → 로그인 복귀
-	document.getElementById('signin-link-from-signup').addEventListener('click', e => {
-		e.preventDefault();
-		switchForm(signinWrapper);
-	});
-
-	document.getElementById('signin-link-from-others').addEventListener('click', e => {
-		e.preventDefault();
-		switchForm(signinWrapper);
-	});
-
-	document.getElementById('signin-link-from-password').addEventListener('click', e => {
-		e.preventDefault();
-		switchForm(signinWrapper);
-	});
-
-	// 🔹 아이디 찾기 - 이메일 전송
+	// 아이디 찾기 - 이메일 전송
 	document.getElementById('find-id-form').addEventListener('submit', function (e) {
 		e.preventDefault();
 
@@ -284,7 +248,7 @@
 			});
 	});
 
-	// 🔹 fade 전환 애니메이션
+	// 전환 애니메이션
 	function fadeSwitch(fromEl, toEl) {
 		fromEl.classList.add('fade-out');
 		setTimeout(() => {
@@ -296,10 +260,10 @@
 		}, 300);
 	}
 
-	// 🔹 비밀번호 찾기: 3단계 전역 변수
+	// 비밀번호 찾기 3단계
 	let tempUsername = "";
 
-	// 🔹 step 1: 인증 요청
+	// 1: 인증 요청
 	document.getElementById('find-password-form').addEventListener('submit', function (e) {
 		e.preventDefault();
 
@@ -316,22 +280,22 @@
 			},
 			body: JSON.stringify({ email, username })
 		})
-			.then(res => res.json())
-			.then(data => {
-				resultEl.textContent = data.message;
-				if (data.success) {
-					resultEl.classList.remove('text-red-600');
-					resultEl.classList.add('text-green-600');
-					tempUsername = username;
-					fadeSwitch(this, document.getElementById('verify-code-form'));
-				} else {
-					resultEl.classList.remove('text-green-600');
-					resultEl.classList.add('text-red-600');
-				}
-			});
+		.then(res => res.json())
+		.then(data => {
+			resultEl.textContent = data.message;
+			if (data.success) {
+				resultEl.classList.remove('text-red-600');
+				resultEl.classList.add('text-green-600');
+				tempUsername = username;
+				fadeSwitch(this, document.getElementById('verify-code-form'));
+			} else {
+				resultEl.classList.remove('text-green-600');
+				resultEl.classList.add('text-red-600');
+			}
+		});
 	});
 
-	// 🔹 step 2: 인증번호 확인
+	// 2: 인증번호 확인
 	document.getElementById('verify-code-form').addEventListener('submit', function (e) {
 		e.preventDefault();
 
@@ -347,21 +311,21 @@
 			},
 			body: JSON.stringify({ username: tempUsername, code })
 		})
-			.then(res => res.json())
-			.then(data => {
-				resultEl.textContent = data.message;
-				if (data.success) {
-					resultEl.classList.remove('text-red-600');
-					resultEl.classList.add('text-green-600');
-					fadeSwitch(this, document.getElementById('reset-password-form'));
-				} else {
-					resultEl.classList.remove('text-green-600');
-					resultEl.classList.add('text-red-600');
-				}
-			});
+		.then(res => res.json())
+		.then(data => {
+			resultEl.textContent = data.message;
+			if (data.success) {
+				resultEl.classList.remove('text-red-600');
+				resultEl.classList.add('text-green-600');
+				fadeSwitch(this, document.getElementById('reset-password-form'));
+			} else {
+				resultEl.classList.remove('text-green-600');
+				resultEl.classList.add('text-red-600');
+			}
+		});
 	});
 
-	// 🔹 step 3: 비밀번호 재설정
+	// 3: 비밀번호 재설정
 	document.getElementById('reset-password-form').addEventListener('submit', function (e) {
 		e.preventDefault();
 
@@ -385,20 +349,20 @@
 			},
 			body: JSON.stringify({ username: tempUsername, new_password })
 		})
-			.then(res => res.json())
-			.then(data => {
-				resultEl.textContent = data.message;
-				if (data.success) {
-					resultEl.classList.remove('text-red-600');
-					resultEl.classList.add('text-green-600');
-				} else {
-					resultEl.classList.remove('text-green-600');
-					resultEl.classList.add('text-red-600');
-				}
-			});
+		.then(res => res.json())
+		.then(data => {
+			resultEl.textContent = data.message;
+			if (data.success) {
+				resultEl.classList.remove('text-red-600');
+				resultEl.classList.add('text-green-600');
+			} else {
+				resultEl.classList.remove('text-green-600');
+				resultEl.classList.add('text-red-600');
+			}
+		});
 	});
 
-	// 🔹 회원가입 중복확인 (username, nickname)
+	// 회원가입 중복확인 (username, nickname)
 	function checkDuplicate(field) {
 		const signupForm = document.querySelector('.signup-wrapper.form');
 		if (!signupForm.classList.contains('active')) return;
@@ -421,11 +385,11 @@
 			},
 			body: JSON.stringify({ field, value: input.value.trim() })
 		})
-			.then(res => res.json())
-			.then(data => {
-				resultBox.textContent = data.message;
-				resultBox.className = 'text-sm my-1 ' + (data.success ? 'text-green-600' : 'text-red-600');
-			});
+		.then(res => res.json())
+		.then(data => {
+			resultBox.textContent = data.message;
+			resultBox.className = 'text-sm my-1 ' + (data.success ? 'text-green-600' : 'text-red-600');
+		});
 	}
 
 	document.addEventListener('DOMContentLoaded', function () {

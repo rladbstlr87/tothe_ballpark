@@ -9,8 +9,6 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 import os
 
-
-# 이미지 gif는 그대로, 이미지는 크기 조절
 def handle_uploaded_image(file):
     ext = os.path.splitext(file.name)[-1].lower()
 
@@ -18,33 +16,25 @@ def handle_uploaded_image(file):
     if ext == '.gif':
         return file
 
-    try:
-        file.seek(0)  # 파일 커서 초기화
-        img = Image.open(file)
+    file.seek(0)  # 파일 커서 초기화
+    img = Image.open(file)
 
-        
+    # 최대 크기 제한 (비율 유지)
+    img.thumbnail((500, 500))
 
-        # 최대 크기 제한 (비율 유지)
-        img.thumbnail((500, 500))
+    buffer = BytesIO()
 
-        buffer = BytesIO()
+    format_map = {
+        '.jpg': 'JPEG',
+        '.jpeg': 'JPEG',
+        '.png': 'PNG',
+        '.webp': 'WEBP',
+    }
+    save_format = format_map.get(ext, 'PNG')
 
-        # 확장자 → Pillow 포맷 매핑
-        format_map = {
-            '.jpg': 'JPEG',
-            '.jpeg': 'JPEG',
-            '.png': 'PNG',
-            '.webp': 'WEBP',
-        }
-        save_format = format_map.get(ext, 'PNG')
+    img.save(buffer, format=save_format)
 
-        img.save(buffer, format=save_format)
-
-        return ContentFile(buffer.getvalue(), name=file.name)
-
-    except Exception as e:
-        print(f"❌ 이미지 처리 에러: {file.name} - {e}")
-        return None  # 처리 실패한 건 건너뜀
+    return ContentFile(buffer.getvalue(), name=file.name)
 
 
 # 게시글 리스트
@@ -63,6 +53,7 @@ def post_index(request):
         'page_obj': page_obj,
     }
     return render(request, 'post_index.html', context)
+
 
 # 게시글 작성
 @login_required
@@ -102,7 +93,6 @@ def detail(request, id):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
-
     comments = post.comment_set.all().order_by('-created_at')
 
     # 게시글 수정 여부
@@ -123,6 +113,7 @@ def detail(request, id):
         'total':total,
     }
     return render(request, 'detail.html', context)
+
 
 # 게시글 수정
 @login_required
@@ -163,6 +154,7 @@ def update(request, id):
         'existing_images': post.images.all()
     })
 
+
 # 게시글 삭제
 @login_required
 def delete(request, id):
@@ -170,6 +162,7 @@ def delete(request, id):
     if request.user == post.user:
         post.delete()
     return redirect('posts:post_index')
+
 
 # 댓글 작성
 @login_required
@@ -181,6 +174,7 @@ def comment_create(request, post_id):
         comment.user = request.user
         comment.save()
     return redirect('posts:detail', id=post_id)
+
 
 # 댓글 수정
 @login_required
@@ -209,6 +203,7 @@ def comment_update(request, post_id, comment_id):
     }
     return render(request, 'detail.html', context)
 
+
 # 댓글 삭제
 @login_required
 def comment_delete(request, post_id, comment_id):
@@ -216,6 +211,7 @@ def comment_delete(request, post_id, comment_id):
     if request.user == comment.user:
         comment.delete()
     return redirect('posts:detail', id=post_id)
+
 
 # 게시글 좋아요 기능
 @login_required
@@ -226,6 +222,7 @@ def post_like(request, post_id):
     else:
         post.like_users.add(user)
     return redirect('posts:detail', id=post_id)
+
 
 # 댓글 좋아요 기능
 @login_required
@@ -260,6 +257,7 @@ def like_async(request, id):
     }
     return JsonResponse(context)
 
+
 # 댓글 좋아요 js 기능
 @login_required
 def comment_like_async(request, comment_id):
@@ -278,13 +276,7 @@ def comment_like_async(request, comment_id):
         'count': comment.like_users.count(),
     })
 
-# 직돌이 테스트 
-def test_start(request):
-    participant_count = TestResult.objects.count()
-    return render(request, 'start.html', {
-        'participant_count': participant_count,
-    })
-    
+
 # 직돌이 테스트 질문들
 QUESTIONS = [
     {
@@ -336,33 +328,35 @@ QUESTIONS = [
         "choices": ["“스코어링과 데이터 분석”", "“치어리더 응원, 관중 반응 구경”"]
     },
     ]
-# 직돌이 점수
+
+# 직돌이 테스트 점수
 SCORE_TABLE = [
-                        ['A,B,D,E', 'C'],
-                        ['A,D', 'B,C,E'],
-                        ['A,D', 'E'],
-                        ['A,D', 'E'],
-                        ['D', 'B,E'],
-                        ['A,C,D', 'B,E'],
-                        ['A,D', 'B,C,E'],
-                        ['A,D', 'B,E'],
-                        ['A,D', 'B,C,E'],
-                        ['A,C,D,E', 'B'],
-                        ['A,D', 'B,E'],
-                        ['A,C,D', 'B'],
-                        ['A,D', 'B,E'],
-                        ['A', 'B,E'], ]
+    ['A,B,D,E', 'C'],
+    ['A,D', 'B,C,E'],
+    ['A,D', 'E'],
+    ['A,D', 'E'],
+    ['D', 'B,E'],
+    ['A,C,D', 'B,E'],
+    ['A,D', 'B,C,E'],
+    ['A,D', 'B,E'],
+    ['A,D', 'B,C,E'],
+    ['A,C,D,E', 'B'],
+    ['A,D', 'B,E'],
+    ['A,C,D', 'B'],
+    ['A,D', 'B,E'],
+    ['A', 'B,E'], 
+]
+
 # 테스트 질문 처리 
 def test_question(request, step):
     if step > len(QUESTIONS):
         return redirect('posts:test_result')
 
-    # 세션 초기화 (처음 시작할 때만)
     if step == 1 and request.method == 'GET':
         request.session['type_scores'] = {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0}
 
     if request.method == 'POST':
-        choice = int(request.POST.get('choice'))  # 0 또는 1
+        choice = int(request.POST.get('choice'))
         # 선택된 보기에서 점수 가져오기
         type_code = SCORE_TABLE[step - 1][choice]
 
@@ -370,7 +364,7 @@ def test_question(request, step):
         type_scores = request.session.get('type_scores', {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0})
         for code in type_code.split(','):
             code = code.strip()
-            if code:  # 빈 문자열 무시
+            if code:
                 type_scores[code] += 1
         request.session['type_scores'] = type_scores
 
@@ -384,8 +378,9 @@ def test_question(request, step):
         'choices': q['choices'],
         'progress': int((step / len(QUESTIONS)) * 100),
     })
-    
-# 사용자의 실제 테스트 결과 
+
+
+# 사용자의 테스트 결과 
 def test_result(request):
     type_scores = request.session.get('type_scores', {})
     if not type_scores:
@@ -418,6 +413,7 @@ def test_result(request):
     template_name = f'result{best_type}.html'
 
     return render(request, template_name, {'result': result})
+
 
 # 공유 링크로 접근했을 때
 def result_share(request, type_code):

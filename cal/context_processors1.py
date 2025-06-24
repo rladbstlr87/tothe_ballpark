@@ -23,4 +23,3 @@ def random_backgrounds(request):
     return {
         'random_background': random.choice(team_icons)
     }
-    

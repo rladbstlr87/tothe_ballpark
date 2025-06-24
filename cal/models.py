@@ -56,7 +56,7 @@ class Hitter(models.Model):
     style = models.IntegerField()  # 선수 스타일 (ex: contact hitter 등)
 
 class Pitcher(models.Model):
-    player_id = models.CharField(max_length=50, unique=True, primary_key=True, blank=True)
+    player_id = models.CharField(max_length=50, unique=True, primary_key=True, blank=True) # KBO 등록번호 5자리
     player_name = models.CharField(max_length=100)  # 선수명
     team_name = models.CharField(max_length=100)  # 팀명
     ERA = models.FloatField()  # 평균 자책점

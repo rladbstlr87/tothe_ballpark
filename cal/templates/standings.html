@@ -401,33 +401,65 @@
   let sortStates = {};
 
   function sortTable(tableId, colIndex) {
-    const table = document.getElementById(tableId);
-    const tbody = table.querySelector("tbody");
-    const rows = Array.from(tbody.querySelectorAll("tr"));
+    const rightTable = document.getElementById(tableId);
+    const rightTbody = rightTable.querySelector("tbody");
 
-    const currentState = sortStates[colIndex] || "none";
-    let newState = currentState === "asc" ? "desc" : "asc";
-    sortStates[colIndex] = newState;
+    const fixedTableId = (tableId === 'hitter-table') ? 'hitter-fixed' : 'pitcher-fixed';
+    const leftTable = document.getElementById(fixedTableId);
+    const leftTbody = leftTable.querySelector('tbody');
 
-    rows.sort((a, b) => {
-      const valA = a.children[colIndex].innerText.trim();
-      const valB = b.children[colIndex].innerText.trim();
+    const rightRows = Array.from(rightTbody.querySelectorAll('tr'));
+    const leftRows = Array.from(leftTbody.querySelectorAll('tr'));
 
-      const numA = parseFloat(valA.replace('%', ''));
-      const numB = parseFloat(valB.replace('%', ''));
+    if (rightRows.length !== leftRows.length) {
+      console.error("왼쪽/오른쪽 행 수 다름");
+      return;
+    }
 
-      const isNumber = !isNaN(numA) && !isNaN(numB);
+    const stateKey = tableId + '-' + colIndex;
+    const currentState = sortStates[stateKey] || 'desc';
+    const newState = currentState === 'asc' ? 'desc' : 'asc';
+    sortStates[stateKey] = newState;
+
+    const combined = rightRows.map((row, idx) => {
+      const value = row.children[colIndex].innerText.trim();
+      return {
+        value,
+        rightRow: row,
+        leftRow: leftRows[idx]
+      };
+    });
+
+    combined.sort((a, b) => {
+      const aVal = a.value;
+      const bVal = b.value;
+
+      const aNum = parseFloat(aVal.replace('%', ''));
+      const bNum = parseFloat(bVal.replace('%', ''));
+
+      const isNumber = !isNaN(aNum) && !isNaN(bNum);
+
       if (isNumber) {
-        return newState === "asc" ? numA - numB : numB - numA;
+        return newState === 'asc' ? aNum - bNum : bNum - aNum;
       } else {
-        return newState === "asc"
-          ? valA.localeCompare(valB)
-          : valB.localeCompare(valA);
+        return newState === 'asc'
+          ? aVal.localeCompare(bVal)
+          : bVal.localeCompare(aVal);
       }
     });
 
-    rows.forEach(row => tbody.appendChild(row));
+    combined.forEach((pair, idx) => {
+      // 왼쪽 이름 줄은 순서대로 옮기되, 번호 셀은 그대로 유지
+      const leftCells = pair.leftRow.querySelectorAll('td');
+      if (leftCells.length >= 2) {
+        leftCells[0].innerText = idx + 1;  // 순위 다시 부여
+      }
+
+      rightTbody.appendChild(pair.rightRow);
+      leftTbody.appendChild(pair.leftRow);
+    });
   }
+
 
   function showTab(tabId) {
     // 모든 탭 콘텐츠 숨김
