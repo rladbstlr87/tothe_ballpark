@@ -1,5 +1,3 @@
-#!/bin/bash
-
 CSV_PATH="/mnt/c/Users/seong/KBO/kbo_schedule.csv"
 SCRIPT_PATH="/mnt/c/Users/seong/KBO/before_game.sh"
 LOG_PATH="/mnt/c/Users/seong/KBO/schedule_checker.log"
