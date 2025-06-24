@@ -46,7 +46,7 @@ def get_item(dictionary, key):
 @register.filter
 def style_description(obj):
     style_value = str(getattr(obj, 'style', ''))
-    is_pitcher = hasattr(obj, 'ERA') or hasattr(obj, 'IP')  # 투수만 가질 만한 필드
+    is_pitcher = hasattr(obj, 'ERA') or hasattr(obj, 'IP')
 
     if is_pitcher:
         pitcher_styles = {

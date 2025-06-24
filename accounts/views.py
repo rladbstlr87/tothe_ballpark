@@ -7,11 +7,57 @@ from django.core.mail import send_mail
 from .forms import *
 from .models import User
 
-from django.contrib import messages
-
 import json
 import string
 import random
+
+# 홈 접근 시 달력으로 리디렉션
+def home(request):
+    return redirect('/')
+
+
+# 회원가입, 로그인 처리
+def auth_view(request):
+    mode = request.GET.get('mode', 'login')
+
+    # POST 요청 처리
+    if request.method == 'POST':
+        if mode == 'signup':
+            signup_form = CustomUserCreationForm(request.POST, request.FILES)
+            login_form = CustomAuthenticationForm(request)  # 비워진 로그인 폼
+
+            if signup_form.is_valid():
+                user = signup_form.save()
+                auth_login(request, user)
+                return redirect('cal:calendar')
+
+        else:  # mode == 'login'
+            login_form = CustomAuthenticationForm(request, data=request.POST)
+            signup_form = CustomUserCreationForm()  # 비워진 회원가입 폼
+
+            if login_form.is_valid():
+                user = login_form.get_user()
+                auth_login(request, user)
+                return redirect('cal:calendar')
+
+    else:
+        signup_form = CustomUserCreationForm()
+        login_form = CustomAuthenticationForm(request)
+
+    context = {
+        'mode': mode,
+        'signup_form': signup_form,
+        'login_form': login_form,
+    }
+    return render(request, 'auth.html', context)
+
+
+# 로그아웃 처리
+@login_required
+def logout(request):
+    auth_logout(request)
+    return redirect('/')
+
 
 # 아이디 찾기
 @csrf_exempt
@@ -40,7 +86,7 @@ def find_id_view(request):
 
 
 # 인증번호 저장용 변수
-VERIFICATION_CODES = {}   # username: code
+VERIFICATION_CODES = {}   # username: code 형식으로 저장
 VERIFIED_USERS = set()    # 인증 완료된 username 저장
 
 # 인증번호 생성 함수
@@ -120,62 +166,12 @@ def set_new_password(request):
             return JsonResponse({"success": False, "message": "사용자를 찾을 수 없습니다."})
 
 
-# 로그아웃 처리
-@login_required
-def logout(request):
-    auth_logout(request)  # 세션에서 로그아웃
-    return redirect('/')  # 홈으로 리디렉션
-
-
-# 홈 접근 시 달력으로 리디렉션
-def home(request):
-    return redirect('/')
-
-
-# 회원가입 / 로그인 처리
-def auth_view(request):
-    mode = request.GET.get('mode', 'login')
-
-    # POST 요청 처리
-    if request.method == 'POST':
-        if mode == 'signup':
-            signup_form = CustomUserCreationForm(request.POST, request.FILES)
-            login_form = CustomAuthenticationForm(request)  # 비워진 로그인 폼
-
-            if signup_form.is_valid():
-                user = signup_form.save()
-                auth_login(request, user)
-                return redirect('cal:calendar')
-
-        else:  # mode == 'login'
-            login_form = CustomAuthenticationForm(request, data=request.POST)
-            signup_form = CustomUserCreationForm()  # 비워진 회원가입 폼
-
-            if login_form.is_valid():
-                user = login_form.get_user()
-                auth_login(request, user)
-                return redirect('cal:calendar')
-
-    else:
-        # GET 요청일 경우
-        signup_form = CustomUserCreationForm()
-        login_form = CustomAuthenticationForm(request)
-
-    # context에 올바른 폼 전달
-    context = {
-        'mode': mode,
-        'signup_form': signup_form,
-        'login_form': login_form,
-    }
-    return render(request, 'auth.html', context)
-
-
-# 사용자명/닉네임 중복 확인
+# 아이디,닉네임 중복 확인
 @csrf_exempt
 def check_duplicate(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        field = data.get("field")  # username 또는 nickname
+        field = data.get("field")
         value = data.get("value")
 
         if field not in ["username", "nickname"]:
@@ -189,6 +185,7 @@ def check_duplicate(request):
         else:
             return JsonResponse({"success": True, "message": f"{field}은(는) 사용 가능합니다."})
 
+# 마이페이지
 @login_required
 def mypage(request):
     user = request.user
@@ -203,24 +200,21 @@ def mypage(request):
             password_form = PasswordChangeCustomForm(user, request.POST)
             if password_form.is_valid():
                 password_form.save()
-                messages.success(request, '비밀번호가 변경되었습니다.')
                 return redirect('accounts:mypage')
         elif mode == 'nickname':
             nickname_form = NicknameChangeForm(request.POST, instance=user)
             if nickname_form.is_valid():
                 nickname_form.save()
-                messages.success(request, '닉네임이 변경되었습니다.')
                 return redirect('accounts:mypage')
         elif mode == 'team':
-            # 팀 변경 시 직관한 경기 초기화
             old_team = user.team
             team_form = TeamChangeForm(request.POST, instance=user)
             if team_form.is_valid():
+
                 # 새로운 팀으로 변경
                 team_form.save()
-                messages.success(request, '응원팀이 변경되었습니다.')
 
-                # 직관한 경기에서 기존 응원팀을 제외시킴
+                # 직관한 경기에서 기존 응원팀 경기를 제외시킴
                 attended_games = user.attendance_game.all()
                 for game in attended_games:
                     if game.team1 == old_team:
@@ -236,25 +230,14 @@ def mypage(request):
     }
     return render(request, 'mypage.html', context)
 
+# 프로필 이미지 변경
 @login_required
 def update_profile_image(request):
-    # 디버깅을 위해 request.FILES 출력
-    print("request.FILES:", request.FILES)
-
     if request.method == 'POST' and request.FILES.get('profile_image'):
         profile_image = request.FILES['profile_image']
         user = request.user
-        
-        # 디버깅: 프로필 이미지 파일 확인
-        print("프로필 이미지 파일:", profile_image)
-
         user.profile_image = profile_image
         user.save()
-
-        messages.success(request, '프로필 이미지가 업데이트되었습니다.')
         return redirect('accounts:mypage')
-    
-    # 요청에 파일이 없을 때 디버깅
-    print("파일이 업로드되지 않았습니다.")
-    messages.error(request, '이미지 업로드에 실패했습니다.')
+
     return redirect('accounts:mypage')

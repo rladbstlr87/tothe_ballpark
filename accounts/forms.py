@@ -117,7 +117,7 @@ class TeamChangeForm(forms.ModelForm):
 class ProfileImageForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['profile_image']  # profile_image 필드만 처리
+        fields = ['profile_image']
 
     def save(self, commit=True):
         # 프로필 이미지를 변경할 때, 기존 이미지를 삭제하는 로직
