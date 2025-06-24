@@ -60,7 +60,7 @@
         {% if user.profile_image %}
           <img id="profile-img" src="{{ user.profile_image.url }}" alt="프로필 이미지" class="object-cover w-full h-full">
         {% else %}
-          <img id="profile-img" src="{% static 'images/default_profile.png' %}" alt="기본 이미지" class="object-cover w-full h-full">
+          <img id="profile-img" src="{% static 'posts/images/detail/'|add:user.team|add:'.png' %}" alt="기본 이미지" class="object-cover w-full h-full">
         {% endif %}
         <!-- 수정 버튼 아이콘 -->
         <label for="id_profile_image" class="profile-image-label">
