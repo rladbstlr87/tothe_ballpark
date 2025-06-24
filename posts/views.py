@@ -278,12 +278,6 @@ def comment_like_async(request, comment_id):
         'count': comment.like_users.count(),
     })
 
-# 직돌이 테스트 
-def test_start(request):
-    participant_count = TestResult.objects.count()
-    return render(request, 'start.html', {
-        'participant_count': participant_count,
-    })
     
 # 직돌이 테스트 질문들
 QUESTIONS = [

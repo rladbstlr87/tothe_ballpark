@@ -78,7 +78,3 @@ class PostImage(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='posts/images/')
 
-class TestResult(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
-    score = models.IntegerField()
-    result_type = models.CharField(max_length=50)
