@@ -106,8 +106,9 @@
         id="ticketBtnMobile"
         class="w-[140px] h-[120px] cursor-pointer hover:scale-105 transition mt-2 -rotate-12 ml-6">
     <span class="absolute top-[65px] left-[65px] -translate-x-1/2 -translate-y-1/2 text-[14px] scale-50 break-keep font-parkdahyun">
-    티켓팅 일정 확인</span>
-    </button>
+      티켓팅 일정 확인
+    </span>
+  </button>
   <img src="/static/cal/images/icon/bb.png" alt="따봉강아지"
       class="w-[120px] h-[120px] transition mt-10">
   <!-- 순위 버튼 -->
@@ -115,24 +116,24 @@
     <img src="/static/cal/images/icon/speech_bubble2.png" alt="순위 보기"
       class="w-[140px] h-[120px] cursor-pointer hover:scale-105 transition rotate-15 mr-6">
     <span class="absolute top-[60px] left-[50px] -translate-x-1/2 -translate-y-1/2 text-[14px] scale-50 break-keep font-parkdahyun">
-    KBO 순위 확인
+      KBO 순위 확인
     </span>
   </button>
 </div>
 
 <!-- 티켓팅 모달 -->
 <div id="ticketModal" class="fixed inset-0 bg-opacity-10 flex justify-center items-center z-50 hidden">
-  <div class="relative w-[460px] h-[460px] sm:w-[460px] sm:h-[460px] w-[90vw] h-[90vw]">
+  <div class="relative w-[460px] h-[460px]">
     <!-- 배경 종이 -->
     <img src="/static/cal/images/icon/note-paper.png" alt="티켓 팝업 배경"
-        class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0" />
+        class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0"/>
     <!-- 닫기 버튼 -->
     <button id="closeTicketModal"
-      class="absolute top-18 right-10 max-sm:top-22 max-sm:right-10 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
+      class="absolute top-18 right-10 max-sm:top-22 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
       ×
     </button>
     <!-- 내용 -->
-    <div class="absolute top-12 left-16 max-sm:top-18 text-[13px] max-sm:text-[11px] leading-[1.5] text-gray-800 font-medium z-10 whitespace-pre-line">
+    <div class="absolute top-12 left-16 max-sm:top-18 text-[13px] max-sm:text-[11px] leading-[1.5] text-gray-800 z-10 whitespace-pre-line">
 
       <span class="inline-block text-pink-500 font-semibold">📌</span> <span class="font-bold">티켓팅 일정 및 링크</span>
 
@@ -157,37 +158,18 @@
 
 <!-- 순위 모달 -->
 <div id="rankingModal" class="fixed inset-0 flex justify-center items-center z-50 hidden">
-  <div class="relative 
-              w-[90vw] 
-              max-w-[460px] 
-              h-auto 
-              min-h-[75vh] 
-              sm:min-h-0 
-              sm:aspect-square
-              pointer-events-auto">
-
+  <div class="relative w-[460px] h-[460px]">
     <!-- 배경 종이 -->
     <img src="/static/cal/images/icon/note-paper.png" alt="순위 팝업 배경"
-        class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0" />
-
+        class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0"/>
     <!-- 닫기 버튼 -->
     <button id="closeRankingModal"
-      class="absolute top-[150px] sm:top-[20%] right-[10%] max-sm:top-50 translate-x-1/2 -translate-y-1/2
-            text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
+      class="absolute top-18 right-10 max-sm:top-22 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
       ×
     </button>
-
     <!-- 내용 -->
-    <div class="absolute 
-                top-[120px] sm:top-[60px] max-sm:top-34
-                left-[30px]
-                text-[9px] sm:text-[13px] 
-                leading-[1.5] text-gray-800 font-medium z-10 
-                whitespace-pre-line w-[calc(100%-80px)]">
-
-      
-
-      <table class="w-full mt-2 text-[9px] sm:text-xs text-center border-collapse">
+    <div class="w-[75%] h-[60%] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[13px] max-sm:text-[11px] text-gray-800 z-10 whitespace-pre-line">
+      <table class="w-full sm:text-xs text-center border-collapse">
         <thead class="bg-gray-200 text-gray-700">
           <tr>
             <th class="py-1 px-1 sm:px-2">순위</th>
@@ -221,7 +203,7 @@
   </div>
 </div>
 
-<!-- 데스크탑 저니 -->
+<!-- 데스크탑 튜토리얼 -->
 <div id="introOverlay" class="fixed grid inset-0 bg-black/40 z-100 cursor-pointer hidden">
   <div class="text-white pt-24">
     <div id="introSteps" class="flex flex-col flex-row">
