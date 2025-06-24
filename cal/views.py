@@ -610,7 +610,7 @@ def stadium_info(request, stadium):
         'restaurants': restaurants,
         'google_url': f"https://www.google.com/maps/dir/?api=1&destination={lat},{lng}&destination_place_id={place_id}",
         'naver_url': f"nmap://route/public?dlat={lat}&dlng={lng}&dname={encoded_name}",
-        'ticket_url': ticket[stadium],
+        'ticket_url': ticket.get('ticket_url', "#"),
     }
 
     return render(request, 'stadium_info.html', context)
