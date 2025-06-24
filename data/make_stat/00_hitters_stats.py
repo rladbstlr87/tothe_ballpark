@@ -8,7 +8,6 @@ from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
-# ✅ Headless 크롬 드라이버 설정
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-gpu")
@@ -60,7 +59,7 @@ for team in teams:
     # 1페이지 선수 수집
     player_infos = collect_player_infos()
 
-    # 2페이지 버튼 존재 시 → 클릭 후 수집
+    # 2페이지 버튼 존재 시 클릭 후 수집
     try:
         next_btn = driver.find_element(By.ID, "cphContents_cphContents_cphContents_ucPager_btnNo2")
         next_btn.click()
@@ -119,12 +118,12 @@ dummy_row = [
 ]
 final_data.append(dummy_row)
 
-# DataFrame 변환 + SBA 컬럼 추가
+# SBA 컬럼 추가
 df_all = pd.DataFrame(final_data, columns=columns)
 df_all["SBA"] = df_all["SB"].astype(float) + df_all["CS"].astype(float)
 
-# 컬럼 순서 정의 + 저장
+# 저장
 columns_with_sba = columns + ["SBA"]
-df_all.to_csv("data/all_hitter_stats.csv", index=False, encoding="utf-8-sig", columns=columns_with_sba)
+df_all.to_csv("/mnt/c/Users/seong/KBO/data/all_hitter_stats.csv", index=False, encoding="utf-8-sig", columns=columns_with_sba)
 
 print("🎯 임시 선수 포함 + SBA 컬럼 포함 최종 저장 완료: all_hitter_stats.csv")

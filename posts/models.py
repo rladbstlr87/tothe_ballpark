@@ -2,10 +2,6 @@ from django.db import models
 from django_resized import ResizedImageField
 from django.conf import settings
 
-
-
-# Create your models here.
-
 class Post(models.Model):
     KBO_TEAMS = [
         ('HH', '한화'),
@@ -86,7 +82,3 @@ class TestResult(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     score = models.IntegerField()
     result_type = models.CharField(max_length=50)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user} - {self.result_type} ({self.score})"

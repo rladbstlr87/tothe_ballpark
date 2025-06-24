@@ -55,7 +55,7 @@ def get_lineup(today, team1_code, team2_code, game_id, driver):
 # 오늘 날짜
 today = datetime.date.today()
 
-# 📁 기존 lineups.csv 파일에서 마지막 저장된 날짜와 최대 game_id 파악
+# 기존 lineups.csv 파일에서 마지막 저장된 날짜와 game_id 파악
 last_date = None
 max_game_id = 0
 try:
@@ -97,8 +97,6 @@ with open('data/kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
         game_info_map[key] = {'stadium': stadium, 'game_id': game_id_counter}
         game_id_counter += 1
 
-
-# Selenium 크롬 드라이버를 백그라운드(headless) 모드로 실행
 options = Options()
 options.add_argument('--headless')
 options.add_argument('--disable-gpu')
@@ -111,7 +109,6 @@ driver = webdriver.Chrome(options=options)
 with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
     writer = csv.writer(outfile)
     if last_date is None:
-        # 첫 실행 시 헤더 작성
         writer.writerow(['date', 'batting_order', 'game_id', 'hitter_id', 'pitcher_id', 'stadium'])
 
     for key, games in game_map.items():
@@ -166,7 +163,6 @@ with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
                 if len(team2_lineup) == 9 and first_game_lineup2:
                     team2_lineup.insert(0, first_game_lineup2[0])
 
-            # 라인업 CSV로 저장
             for i, (player_name, player_id) in enumerate(team1_lineup):
                 if i == 0:
                     writer.writerow([date_str, 1, game_id, 1, player_id, stadium])
