@@ -99,26 +99,16 @@
 </div>
 
 <!-- 모바일 전용 버튼 영역 -->
-<div class="block lg:hidden w-full mt-6 flex justify-center gap-4">
+<div class="block lg:hidden w-full flex justify-center gap-4 relative pb-32">
   <!-- 티켓 버튼 -->
-  <button type="button" id="ticketBtnMobile" class="relative flex flex-col items-center bg-transparent border-none p-0 m-0">
-    <img src="/static/cal/images/icon/speech_bubble.png" alt="티켓 메모"
+  <img src="/static/cal/images/icon/speech_bubble.png" alt="티켓 메모"
         id="ticketBtnMobile"
-        class="w-[140px] h-[120px] cursor-pointer hover:scale-105 transition mt-2 -rotate-12 ml-6">
-    <span class="absolute top-[65px] left-[65px] -translate-x-1/2 -translate-y-1/2 text-[14px] scale-50 break-keep font-parkdahyun">
-      티켓팅 일정 확인
-    </span>
-  </button>
+        class="w-[140px] h-[120px] cursor-pointer hover:scale-105 transition absolute left-1 bottom-7 -rotate-12 ">
   <img src="/static/cal/images/icon/bb.png" alt="따봉강아지"
-      class="w-[120px] h-[120px] transition mt-10">
+      class="w-[120px] h-[120px] absolute left-1/2 -translate-x-1/2 ">
   <!-- 순위 버튼 -->
-  <button type="button" id="rankingBtnMobile" class="relative flex flex-col items-center bg-transparent border-none p-0 m-0">
-    <img src="/static/cal/images/icon/speech_bubble2.png" alt="순위 보기"
-      class="w-[140px] h-[120px] cursor-pointer hover:scale-105 transition rotate-15 mr-6">
-    <span class="absolute top-[60px] left-[50px] -translate-x-1/2 -translate-y-1/2 text-[14px] scale-50 break-keep font-parkdahyun">
-      KBO 순위 확인
-    </span>
-  </button>
+  <img src="/static/cal/images/icon/speech_bubble2.png" alt="순위 보기" id="rankingBtnMobile"
+      class="w-[130px] h-[120px] cursor-pointer hover:scale-105 transition absolute bottom-8 rotate-20 right-1">
 </div>
 
 <!-- 티켓팅 모달 -->
