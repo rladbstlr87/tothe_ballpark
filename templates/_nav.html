@@ -155,13 +155,10 @@
     <div class="hidden" id="mobile-menu">
         <div class="space-y-1 p-2 text-xl text-stroke">
             {% if user.is_authenticated %}
-                <a href="{% url 'accounts:mypage' %}" class="block rounded-md px-3 py-1 active:bg-[#FFFFFF] mask-linear-50 mask-direction-right mask-linear-from-20% mask-linear-to-100%">
-                    {{user.nickname}}
+                <a href="{% url 'accounts:mypage' %}" class="text-white bg-gray-900/50 block rounded-md px-3 py-1 mask-linear-50 mask-direction-right mask-linear-from-20% mask-linear-to-100%">
+                    마이페이지
                 </a>
             {% endif %}
-            <a href="{% url 'index' %}" class="text-white block rounded-md px-3 py-1 bg-gray-900/50 mask-linear-50 mask-direction-right mask-linear-from-20% mask-linear-to-100%">
-                홈
-            </a>
             <a href="{% url 'cal:calendar' %}" class="block rounded-md px-3 py-1 active:bg-[#FFFFFF] mask-linear-50 mask-direction-right mask-linear-from-20% mask-linear-to-100%">
                 캘린더
             </a>
