@@ -13,8 +13,6 @@ import calendar
 import random
 import urllib.parse
 
-server_datetime = timezone.localtime().date()
-
 # 배경 이미지 랜덤 적용
 def index(request):
     backgrounds = [
@@ -415,9 +413,9 @@ def lineup(request, game_id):
 
     # 구장별 예매 가능 날짜 계산
     stadium_info = ticket.get(game.stadium, {})
+    server_datetime = timezone.localtime().date()
     days_before = stadium_info['days_before']
-    booking_time = stadium_info['time']
-    
+
     booking_dates = []
     for i in range(days_before + 1):
         booking_date = server_datetime + timedelta(days=i)

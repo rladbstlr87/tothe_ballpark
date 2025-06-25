@@ -77,22 +77,22 @@
     </div>
 </section>
 <script>
-        // 드롭다운 스크립트
-        document.addEventListener('DOMContentLoaded', () => {
-        const toggleButton = document.getElementById('dropdownToggle');
-        const menu = document.getElementById('dropdownMenu');
+    // 드롭다운 스크립트
+    document.addEventListener('DOMContentLoaded', () => {
+    const toggleButton = document.getElementById('dropdownToggle');
+    const menu = document.getElementById('dropdownMenu');
 
-        if (toggleButton && menu) {
-            toggleButton.addEventListener('click', () => {
+    if (toggleButton && menu) {
+        toggleButton.addEventListener('click', () => {
             menu.classList.toggle('hidden');
-            });
+        });
 
-            document.addEventListener('click', (e) => {
+        document.addEventListener('click', (e) => {
             const dropdown = document.getElementById('ticket-dropdown');
             if (dropdown && !dropdown.contains(e.target)) {
                 menu.classList.add('hidden');
             }
-            });
-        }
+        });
+    }
     });
 </script>
