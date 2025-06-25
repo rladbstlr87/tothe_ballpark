@@ -16,19 +16,19 @@ import urllib.parse
 # 배경 이미지 랜덤 적용
 def index(request):
     backgrounds = [
-        'cal/images/bg/home0.png',
-        'cal/images/bg/home1.png',
-        'cal/images/bg/home2.png',
+        'cal/images/bg/HH.png',
+        'cal/images/bg/LT.png',
+        'cal/images/bg/SK.png',
+        'cal/images/bg/HT.png',
+        'cal/images/bg/OB.png',
+        'cal/images/bg/SS.png',
+        'cal/images/bg/WO.png',
+        'cal/images/bg/LG.png',
+        'cal/images/bg/NC.png',
+        'cal/images/bg/KT.png',
     ]
-    mobile_backgrounds = [
-        'cal/images/bg/mobile0.png',
-        'cal/images/bg/mobile1.png',
-        'cal/images/bg/mobile2.png',
-    ]
-    
     context = {
         'random_bg': random.choice(backgrounds),
-        'random_mobile_bg': random.choice(mobile_backgrounds),
         
     }
     return render(request, 'index.html', context)
