@@ -17,9 +17,9 @@
 {% if user.is_authenticated %}
     <a href="{% url 'posts:test_start' %}">   
     <img src="{% static 'cal/images/bg/테스트.png' %}" alt="직돌이 테스트 하러가기"
-        class=" ml-10 w-80 h-80 hidden sm:block"> </a>
+        class=" ml-10 w-80 h-80 hidden sm:block hover:scale-105 transition duration-500 ease-in-out"> </a>
     <img src="{% static 'cal/images/bg/' %}{{ user.team }}.png"
-        class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 hidden sm:block hover:scale-105 transition duration-500 ease-in-out ">
+        class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 hidden sm:block">
 {% else %}
     <a href="{% url 'posts:test_start' %}">
     <img src="{% static 'cal/images/bg/테스트.png' %}" alt="직돌이 테스트 하러가기"
