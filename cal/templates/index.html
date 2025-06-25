@@ -1,11 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
-
-
 {% block title %}
 홈 | 직돌이
 {% endblock %}
-
 {% block body %}
 <style>
 @media (min-width: 640px) {
@@ -15,7 +12,7 @@
 }
 </style>
 {% if user.is_authenticated %}
-    <a href="{% url 'posts:test_start' %}">   
+    <a href="{% url 'posts:test_start' %}">
     <img src="{% static 'cal/images/bg/테스트.png' %}" alt="직돌이 테스트 하러가기"
         class="fixed top-1/2 left-1/2 -translate-x-[360px] -translate-y-[210px] w-[210px] h-[180px] hidden sm:block hover:scale-105 transition duration-500 ease-in-out"> </a>
     <img src="{% static 'cal/images/bg/' %}{{ user.team }}.png"
@@ -35,63 +32,86 @@
     <a href="{% url 'cal:calendar' %}">
         <div class="relative  w-72 h-44 bg-[url('/static/cal/images/icon/bg-memo.png')] bg-contain bg-no-repeat bg-center rotate-[-2deg] ">
             <p class="absolute top-16 left-21 text-[17px] text-gray-700 font-bold leading-relaxed">
-                🗓️ 직관 캘린더<br>
+                :일력: 직관 캘린더<br>
             </p>
             <span class="absolute text-[16px] top-22 left-10">
                 내가 좋아하는 팀의 경기 일정만 쏙!<br>
-                그날의 라인업까지 한눈에 확인 가능 ✨
+                그날의 라인업까지 한눈에 확인 가능 :반짝임:
             </span>
         </div>
-    </div>
-    <!-- 테스트 시작하기 스티커 -->
-    <a href="{% url 'posts:test_start' %}" class="absolute top-[320px] right-[0%] md:hidden">
-        <img src="{% static 'cal/images/icon/test.png' %}" 
-            alt="직돌이 테스트 하러가기" 
-            class="w-30">
     </a>
-
-    <!-- 데스크탑 튜토리얼 -->
-    <div id="introOverlay" class="fixed grid inset-0 bg-black/40 z-100 cursor-pointer hidden">
-        <div class="text-white pt-24">
-            <div id="introSteps" class="flex flex-col md:flex-row gap-6 px-4">
-                <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:translate-y-1/2 hidden select-none">
-                    <strong class="text-2xl">직돌이 캘린더</strong>에 오신 여러분을 환영합니다!<br>
-                    준비된 가이드를 보시고 모든 기능을 활용해보세요!
-                </p>
-                <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-2/7 top-[100px] md:-translate-x-1/2 hidden select-none">
-                    <strong class="text-2xl">캘린더</strong>에서는<br>
-                    가입할 때 선택한 <strong>응원팀 기준으로 경기 일정</strong>을 확인할 수 있어요.<br>
-                    어느 팀과 경기를 하는지 한눈에 볼 수 있답니다!
-                </p>
-                <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-4/13 top-[100px] md:-translate-x-1/2 hidden select-none">
-                    <strong class="text-2xl">응원석</strong>은<br>
-                    자유롭게 <strong>응원글, 질문, 이야기를 나누는 공간</strong>이에요.
-                </p>
-                <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-5/13 top-[100px] md:-translate-x-1/2 hidden select-none">
-                    <strong class="text-2xl">순위</strong>에서는<br>
-                    KBO <strong>전체 팀 순위</strong>는 물론,<br>
-                    <strong>내가 응원하는 팀 내에서 타자/투수 순위</strong>도 확인할 수 있어요.<br>
-                    우리 팀에서 누가 잘하고 있는지도 알 수 있죠!
-                </p>
-                <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-4/9 top-[100px] md:-translate-x-1/2 hidden select-none">
-                    <strong class="text-2xl">경기장</strong>에서는<br>
-                    각 구장의 <strong>예매 정보, 위치 안내, 맛집 정보</strong>를 볼 수 있어요.<br>
-                    현재 위치에서 <strong>야구장까지 가는 길</strong>도 네이버 지도로 안내해드려요.
-                </p>
-                <p class="p-2 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-2/3 top-[100px] hidden select-none">
-                    <strong class="text-2xl">회원가입 후, </strong>나만의 팀을 선택하고 다양한 정보를 받아보세요.
-                </p>
-            </div>
-        </div>
-
-        <!-- 마지막 안내 박스 -->
-        <div id="finalMessage" class="bg-white/70 backdrop-blur-sm p-6 rounded-lg text-center max-w-md shadow-xl absolute left-1/2 top-[300px] -translate-x-1/2 hidden select-none">
-            <p class="p-2">
-                주요 기능들을 모두 살펴보셨어요!
+    <!-- 스티커 2-->
+    <a href="{% url 'posts:post_index' %}">
+        <div class="relative w-72 h-44 bg-[url('/static/cal/images/icon/bg-memo.png')] bg-contain bg-no-repeat bg-center rotate-[1.5deg] ">
+            <p class="absolute top-16 left-20 text-[17px] text-gray-700 font-bold leading-relaxed">
+                :연필2: 직돌이네 응원석<br>
             </p>
-            <button onclick="closeIntro()" class="mt-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700">
-                다시 보지 않기
-            </button>
+            <span class="absolute text-[16px] top-22 left-9">
+                자유롭게 글 쓰고, 선수 자랑도 하고<br>
+                맛집 추천, 질문, 하찮은 야구 잡담도 환영:풍선:
+            </span>
+        </div>
+    </a>
+    <!-- 스티커 3 -->
+    <div class="relative w-72 h-44 bg-[url('/static/cal/images/icon/bg-memo.png')] bg-contain bg-no-repeat bg-center rotate-[-1deg] ">
+        <a href="{% url 'cal:standings'%}">
+            <p class="absolute top-16 left-20 text-[17px] text-gray-700 font-bold leading-relaxed">
+                :막대_차트: 직관 전 순위 보기<br>
+            </p>
+            <span class="absolute text-[16px] top-22 left-8">
+                우리 팀 요즘 어때? 타자·투수 순위 한눈에!<br>
+                KBO 전체 순위까지, 직관 전 필수 체크 :다트:
+            </span>
+        </a>
+    </div>
+</div>
+<!-- 테스트 시작하기 스티커 -->
+<a href="{% url 'posts:test_start' %}" class="absolute top-[320px] right-[0%] sm:hidden">
+    <img src="{% static 'cal/images/icon/test.png' %}"
+        alt="직돌이 테스트 하러가기"
+        class="w-30">
+</a>
+<!-- 데스크탑 튜토리얼 -->
+<div id="introOverlay" class="fixed grid inset-0 bg-black/40 z-100 cursor-pointer hidden">
+    <div class="text-white pt-24">
+        <div id="introSteps" class="flex flex-col md:flex-row gap-6 px-4">
+            <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:translate-y-1/2 hidden select-none">
+                <strong class="text-2xl">직돌이 캘린더</strong>에 오신 여러분을 환영합니다!<br>
+                준비된 가이드를 보시고 모든 기능을 활용해보세요!
+            </p>
+            <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-2/7 top-[100px] md:-translate-x-1/2 hidden select-none">
+                <strong class="text-2xl">캘린더</strong>에서는<br>
+                가입할 때 선택한 <strong>응원팀 기준으로 경기 일정</strong>을 확인할 수 있어요.<br>
+                어느 팀과 경기를 하는지 한눈에 볼 수 있답니다!
+            </p>
+            <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-4/13 top-[100px] md:-translate-x-1/2 hidden select-none">
+                <strong class="text-2xl">응원석</strong>은<br>
+                자유롭게 <strong>응원글, 질문, 이야기를 나누는 공간</strong>이에요.
+            </p>
+            <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-5/13 top-[100px] md:-translate-x-1/2 hidden select-none">
+                <strong class="text-2xl">순위</strong>에서는<br>
+                KBO <strong>전체 팀 순위</strong>는 물론,<br>
+                <strong>내가 응원하는 팀 내에서 타자/투수 순위</strong>도 확인할 수 있어요.<br>
+                우리 팀에서 누가 잘하고 있는지도 알 수 있죠!
+            </p>
+            <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-4/9 top-[100px] md:-translate-x-1/2 hidden select-none">
+                <strong class="text-2xl">경기장</strong>에서는<br>
+                각 구장의 <strong>예매 정보, 위치 안내, 맛집 정보</strong>를 볼 수 있어요.<br>
+                현재 위치에서 <strong>야구장까지 가는 길</strong>도 네이버 지도로 안내해드려요.
+            </p>
+            <p class="p-2 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-2/3 top-[100px] hidden select-none">
+                <strong class="text-2xl">회원가입 후, </strong>나만의 팀을 선택하고 다양한 정보를 받아보세요.
+            </p>
         </div>
     </div>
+    <!-- 마지막 안내 박스 -->
+    <div id="finalMessage" class="bg-white/70 backdrop-blur-sm p-6 rounded-lg text-center max-w-md shadow-xl absolute left-1/2 top-[300px] -translate-x-1/2 hidden select-none">
+        <p class="p-2">
+            주요 기능들을 모두 살펴보셨어요!
+        </p>
+        <button onclick="closeIntro()" class="mt-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700">
+            다시 보지 않기
+        </button>
+    </div>
+</div>
 {% endblock %}
