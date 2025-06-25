@@ -10,7 +10,7 @@
 {% endblock %}
   
 {% block body %}
-<div class="pt-[60px] max-md:pt-[20px]">
+<div class="pt-[50px] max-md:pt-[20px]">
   <!-- 위에 배경 스티커 -->
   <img src="{% static 'posts/images/detail/pinkhitter.png' %}" alt="스티커" class="w-36 absolute top-4 left-4 z-0 mt-50">
   <img src="{% static 'posts/images/detail/bluehitter.png' %}" alt="스티커" class="w-36 absolute top-4 right-4 z-0 mt-90 max-md:hidden">
@@ -35,7 +35,7 @@
       </div>
     </div>
     <!-- 게시글 제목 및 메타 -->
-    <div class="border-b pb-4 mb-4">
+    <div class="border-b py-4">
       <h1 class="text-2xl font-bold text-gray-800 text-center">{{post.title }}</h1>
       <div class="flex items-center text-sm text-gray-500 mt-1 whitespace-nowrap">
         {% if post.user.profile_image %} 
@@ -122,7 +122,6 @@
       {% for comment in comments %}
         <li id="comment-{{ comment.id }}" class="border-b pb-4">
           <div class="flex justify-between text-sm text-gray-600 mb-2">
-            <!-- 이미지 + 닉네임 묶기 -->
             <div class="flex items-center space-x-1">
               {% if comment.user.profile_image %} 
                 <img src="{{ comment.user.profile_image.url }}" alt="프로필 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
@@ -148,7 +147,6 @@
               {% endif %}
             </span>
           </div>
-
           <p class="text-gray-800 whitespace-pre-line mb-2">{{ comment.content }}</p>
 
           {% if comment.image %}
@@ -193,7 +191,6 @@
               {% endif %}
               
               <input type="file" name="image" class="block w-full text-sm">
-
               <div class="flex justify-end gap-2">
                 <button type="submit" class="px-3 py-1 bg-blue-500 text-white rounded text-sm">저장</button>
                 <a href="{% url 'posts:detail' post.id %}#comment-{{ comment.id }}" class="px-3 py-1 bg-gray-200 rounded text-sm">취소</a>
@@ -220,48 +217,47 @@
       {% endfor %}
     </ul>
 
-    <!-- 다른 질문 목록 -->
-    <hr class="my-12 border-t-2 border-dashed border-gray-300">
-    <div class="mt-4">
-      <a href="{% url 'posts:post_index' %}" class="text-xl font-bold text-gray-700 mb-4 px-2">다른 응원글 보기</a>
-      <div class="bg-neutral-50 rounded-xl shadow-sm overflow-hidden">
-        <!-- 헤더 -->
-        <div class="grid grid-cols-10 py-3 px-4 text-sm font-bold text-gray-600 bg-white text-center border-b border-sky-300 whitespace-nowrap max-md:text-xs">
-          <div class="col-span-1">번호</div>
-          <div class="col-span-5 text-left pl-2 max-md:col-span-5">제목</div>
-          <div class="col-span-1 text-xs">분류</div>
-          <div class="col-span-2 max-md:col-span-2">닉네임</div>
-          <div class="col-span-1 max-md:col-span-1">작성일</div>
-        </div>
-
-        <!-- 질문 목록 -->
-        <ul>
-          {% for number, post in page_obj %}
-            <li class="grid grid-cols-10 py-3 px-4 text-sm items-center text-center border-b bg-white border-sky-200 hover:bg-sky-100 transition max-md:text-xs">
-              <div class="col-span-1 text-gray-600 font-mono">{{ number }}</div>
-              <div class="col-span-5 text-left pl-2 max-md:col-span-5">
-                <a href="{% url 'posts:detail' post.id %}"
-                  class="block truncate max-w-full md:max-w-[500px] text-black font-semibold hover:underline underline-offset-4 decoration-wavy">
-                  {{ post.title }}
-                </a>
-              </div>
-              <div class="col-span-1 text-gray-700 text-xs">{{ post.get_category_display }}</div>
-              <div class="col-span-2 text-gray-600 max-md:col-span-2">{{ post.user.nickname }}</div>
-              <div class="col-span-1 text-gray-500 text-xs max-md:col-span-1 max-md:text-right">
-                {{ post.created_at|date:"m.d" }}
-              </div>
-            </li>
-          {% empty %}
-            <li class="text-center py-10 text-gray-400">등록된 질문이 없습니다 🥲</li>
-          {% endfor %}
-        </ul>
+    <!-- post_index로 -->
+    <div class="my-2 md:my-4">
+      <hr class="my-8 border-t-2 border-dashed border-gray-300">
+      <a href="{% url 'posts:post_index' %}" class="text-xl font-bold text-gray-700 px-2">다른 응원글 보기</a>
+    </div>
+    <div class="bg-neutral-50 rounded-xl shadow-sm overflow-hidden">
+      <!-- 헤더 -->
+      <div class="grid grid-cols-10 px-4 py-2 text-sm font-bold text-gray-600 bg-white text-center border-b border-sky-300 whitespace-nowrap max-md:text-xs">
+        <div class="col-span-1">번호</div>
+        <div class="col-span-5 text-left pl-2 max-md:col-span-5">제목</div>
+        <div class="col-span-1 text-xs">분류</div>
+        <div class="col-span-2 max-md:col-span-2">닉네임</div>
+        <div class="col-span-1 max-md:col-span-1">작성일</div>
       </div>
+
+      <!-- 질문 목록 -->
+      <ul>
+        {% for number, post in page_obj %}
+          <li class="grid grid-cols-10 px-4 py-2 text-sm items-center text-center border-b bg-white border-sky-200 hover:bg-sky-100 transition max-md:text-xs">
+            <div class="col-span-1 text-gray-600 font-mono">{{ number }}</div>
+            <div class="col-span-5 text-left pl-2 max-md:col-span-5">
+              <a href="{% url 'posts:detail' post.id %}"
+                class="block truncate max-w-full md:max-w-[500px] text-black font-semibold hover:underline underline-offset-4 decoration-wavy">
+                {{ post.title }}
+              </a>
+            </div>
+            <div class="col-span-1 text-gray-700 text-xs">{{ post.get_category_display }}</div>
+            <div class="col-span-2 text-gray-600 max-md:col-span-2 truncate">{{ post.user.nickname }}</div>
+            <div class="col-span-1 text-gray-500 text-xs max-md:col-span-1 max-md:text-right">
+              {{ post.created_at|date:"m.d" }}
+            </div>
+          </li>
+        {% empty %}
+          <li class="text-center py-10 text-gray-400">등록된 질문이 없습니다 🥲</li>
+        {% endfor %}
+      </ul>
     </div>
 
     <!-- 페이지네이션 -->
     <div class="flex items-center justify-center space-x-2 my-8 text-sm text-gray-600">
 
-      <!-- 이전 버튼 -->
       {% if page_obj.has_previous %}
         <a href="?page={{ page_obj.previous_page_number }}"
           class="px-2 py-1 rounded hover:bg-gray-100">&lt;</a>
@@ -269,7 +265,6 @@
         <span class="px-2 py-1 text-gray-300">&lt;</span>
       {% endif %}
 
-      <!-- 페이지 숫자 목록 -->
       {% for num in page_obj.paginator.page_range %}
         {% if num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
           {% if num == page_obj.number %}
@@ -284,7 +279,6 @@
         {% endif %}
       {% endfor %}
 
-      <!-- 다음 버튼 -->
       {% if page_obj.has_next %}
         <a href="?page={{ page_obj.next_page_number }}"
           class="px-2 py-1 rounded hover:bg-gray-100">&gt;</a>
@@ -292,7 +286,6 @@
         <span class="px-2 py-1 text-gray-300">&gt;</span>
       {% endif %}
     </div>
-
   </div>
 </div>
 
