@@ -6,13 +6,12 @@
 {% endblock %}
 
 {% block body %}
-<div class="max-sm:pt-[10px] flex items-center justify-center py-12 px-4 font-handdrawn max-sm:mx-0 max-sm:px-0">
+<div class="max-md:pt-[20px] flex items-center justify-center py-12 px-4 max-md:mx-0 max-md:px-0">
   <img src="{% static 'posts/images/detail/pinkhitter.png' %}" alt="스티커" class="w-36 absolute top-4 left-4 z-0 mt-50">
-  <img src="{% static 'posts/images/detail/bluehitter.png' %}" alt="스티커" class="w-36 absolute top-4 right-4 z-0 mt-90 max-sm:hidden">
+  <img src="{% static 'posts/images/detail/bluehitter.png' %}" alt="스티커" class="w-36 absolute top-4 right-4 z-0 mt-90 max-md:hidden">
 
-  <div class="bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl z-10 relative ">
+  <div class="relative bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl z-10">
     <h1 class="text-3xl font-extrabold text-center text-black mb-10 tracking-wider">게시글 작성</h1>
-
     <form action="" method="POST" enctype="multipart/form-data" class="space-y-6 text-gray-800">
       {% csrf_token %}
       <div>{{ form.category }}</div>
@@ -23,14 +22,14 @@
       <div id="preview-container" class="flex gap-4 flex-wrap"></div>
 
       <!-- 이미지 업로드 -->
-      <label for="image-input" class="inline-block px-4 py-2 bg-gray-300 text-white rounded cursor-pointer">
-        이미지 선택
+      <label for="image-input" class="inline-block px-4 py-1 bg-gray-300 text-white rounded cursor-pointer">
+        파일 선택
       </label>
       <small class="ml-2 text-gray-500" id="file-count-label">0개 파일 선택됨 </small>
       <input type="file" name="images" id="image-input" multiple hidden>
 
       <div class="text-center mt-8">
-        <button type="submit" class="rounded-full px-8 py-3 bg-[#9AA6B2] text-white text-lg font-semibold hover:bg-[#BCCCDC] transition duration-200 shadow-md">
+        <button type="submit" class="rounded-full px-4 py-1 bg-[#9AA6B2] text-white text-lg font-semibold hover:bg-[#BCCCDC] transition duration-200 shadow-md">
           작성 완료
         </button>
       </div>

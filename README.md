@@ -87,7 +87,7 @@ python manage.py runserver
 - SQLite3
 - Selenium
 - TailwindCSS
-- HTML / JS / Jinja2 Template
+- HTML / JS
 
 ---
 
