@@ -357,57 +357,46 @@ def lineup(request, game_id):
         "대전(신)": {
             "ticket_url": "https://www.ticketlink.co.kr/sports/137/63",
             "days_before": 7,
-            "time": time(11, 0)
         },
         "수원": {
             "ticket_url": "https://www.ticketlink.co.kr/sports/137/62",
             "days_before": 7,
-            "time": time(14, 0)
         },
         "광주": {
             "ticket_url": "https://www.ticketlink.co.kr/sports/137/58",
             "days_before": 7,
-            "time": time(11, 0)
         },
         "대구": {
             "ticket_url": "https://www.ticketlink.co.kr/sports/137/57",
             "days_before": 7,
-            "time": time(11, 0)
         },
         '포항': {
             "ticket_url": "https://www.ticketlink.co.kr/sports/137/57",
             "days_before": 7,
-            "time": time(11, 0)
         },
         "문학": {
             "ticket_url": "https://www.ticketlink.co.kr/sports/137/476",
             "days_before": 4,
-            "time": time(11, 0)
         },
         "고척": {
             "ticket_url": "https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB003",
             "days_before": 7,
-            "time": time(14, 0)
         },
         "사직": {
             "ticket_url": "https://ticket.giantsclub.com/loginForm.do",
             "days_before": 7,
-            "time": time(14, 0)
         },
         "창원": {
             "ticket_url": "https://ticket.ncdinos.com/games",
             "days_before": 6,
-            "time": time(11, 0)
         },
         '울산': {
             "ticket_url": "https://ticket.ncdinos.com/games",
             "days_before": 6,
-            "time": time(11, 0)
         },
         '잠실': {
             "ticket_url": "#",
             "days_before": 7,
-            "time": time(11, 0)
         }
     }
 
