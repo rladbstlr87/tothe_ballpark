@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'cal',
     'accounts',
     'posts',
+    'jikdoltest'
     
 ]
 
