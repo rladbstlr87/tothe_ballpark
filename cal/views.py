@@ -353,7 +353,7 @@ def lineup(request, game_id):
     is_after_game = (game.team1_score is not None) and (game.team2_score is not None)
     show_best_player = is_after_game and (user_score > opponent_score)
 
-    ticket = {
+    booking_info = {
         "대전(신)": {
             "ticket_url": "https://www.ticketlink.co.kr/sports/137/63",
             "days_before": 7,
@@ -412,7 +412,7 @@ def lineup(request, game_id):
     }
 
     # 구장별 예매 가능 날짜 계산
-    stadium_info = ticket.get(game.stadium, {})
+    stadium_info = booking_info.get(game.stadium, {})
     server_datetime = timezone.localtime().date()
     days_before = stadium_info['days_before']
 
@@ -453,7 +453,7 @@ def lineup(request, game_id):
         'user_score': user_score,
         'opponent_score': opponent_score,
         'is_after_game': is_after_game,
-        'ticket_url': stadium_info.get('ticket_url', "#"),
+        'booking_url': stadium_info.get('ticket_url', "#"),
         'best_player': best_player,
         'best_player_name': best_player_name,
         'player_type': player_type,
@@ -608,7 +608,7 @@ def stadium_info(request, stadium):
         'restaurants': restaurants,
         'google_url': f"https://www.google.com/maps/dir/?api=1&destination={lat},{lng}&destination_place_id={place_id}",
         'naver_url': f"nmap://route/public?dlat={lat}&dlng={lng}&dname={encoded_name}",
-        'ticket_url': ticket.get('ticket_url', "#"),
+        'ticket_url': ticket.get(stadium, "#"),
     }
 
     return render(request, 'stadium_info.html', context)
