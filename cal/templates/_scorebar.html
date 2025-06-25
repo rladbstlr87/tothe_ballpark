@@ -1,63 +1,96 @@
 {% load static %}
 <section class="w-full max-w-xl grid grid-cols-1 p-4 sm:p-8 md:p-8 mx-auto"
         style="background-image: url({% static 'cal/images/team/' %}{{ user.team }}-box.svg);
-              background-size: 100% 100%;
-              background-position: center;
-              background-repeat: no-repeat;">
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;">
 
-  <div class="p-2 grid grid-cols-5 gap-4 items-center overflow-hidden text-xs sm:text-sm">
-    
-    <!-- 내 팀 이미지 -->
-    <div class="flex justify-end items-center w-full">
-      <img src="{% static 'cal/images/team/' %}{{ user.team }}.svg"
-          alt="우리팀 라인업"
-          class="h-20 w-20 sm:h-24 sm:w-24 object-contain">
+    <div class="p-2 grid grid-cols-5 gap-4 items-center text-xs sm:text-sm">
+        <!-- 내 팀 -->
+        <div class="flex justify-end items-center w-full">
+            <img src="{% static 'cal/images/team/' %}{{ user.team }}.svg" alt="우리팀 라인업" class="h-20 w-20 sm:h-24 sm:w-24 object-contain">
+        </div>
+        <div class="w-fit text-2xl sm:text-4xl font-extrabold text-white self-center justify-self-start">
+            {% if user_score is not None %}{{ user_score }}{% else %}0{% endif %}
+        </div>
+        <!-- 중앙 정보 -->
+        <div class="flex flex-col items-center text-center place-self-center">
+            {% if not is_after_game %}
+                <section class="text-center p-2">
+                    {% if game.stadium == "잠실" %}
+                        <div id="ticket-dropdown" class="inline-block relative h-auto">
+                            <button id="dropdownToggle"
+                                    class="block mx-auto px-2 py-1 mb-1 rounded-md shadow-md bg-slate-600 text-white text-xs sm:text-base transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
+                                경기 전<br>예매하기
+                            </button>
+                            <ul id="dropdownMenu"
+                                class="absolute left-1/2 -translate-x-1/2 mt-2 w-40 bg-white border rounded shadow-lg z-50 text-xs md:text-sm hidden">
+                                <li>
+                                    <a href="https://www.ticketlink.co.kr/sports/137/59"
+                                    target="_blank"
+                                    class="block px-3 py-1.5 hover:bg-gray-100">
+                                    LG 트윈스 예매
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB004"
+                                    target="_blank"
+                                    class="block px-3 py-1.5 hover:bg-gray-100">
+                                    두산 베어스 예매
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{{ booking_url }}" target="_blank" class="grid-span-3">
+                            <button class="block mx-auto px-2 py-1 mb-1 rounded-md shadow-md bg-slate-600 text-white text-xs sm:text-base transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
+                                경기 전<br>예매하기
+                            </button>
+                        </a>
+                    {% endif %}
+                </section>
+            {% endif %}
+                <a href="{% url 'cal:stadium_info' game.stadium %}?ticket_url={{ ticket_url|urlencode }}"
+                    class="text-white text-xs sm:text-lg">
+                    {{ game.stadium }}
+                </a>
+            <!-- 날짜 및 이동 -->
+            <div class="flex items-center justify-center mt-2 sm:mt-0 space-x-2 text-xs sm:text-sm">
+                {% if prev_game_id %}
+                    <a href="/cal/calendar/{{ prev_game_id }}/" class="text-white">&lt;&lt;</a>
+                {% endif %}
+                <span class="text-gray-300">{{ gameday|date:"y.m.d" }}</span>
+                {% if next_game_id %}
+                    <a href="/cal/calendar/{{ next_game_id }}/" class="text-white">&gt;&gt;</a>
+                {% endif %}
+            </div>
+        </div>
+        <!-- 상대 팀 -->
+        <div class="w-fit text-2xl sm:text-4xl font-extrabold text-white self-center justify-self-end">
+            {% if opponent_score is not None %}{{ opponent_score }}{% else %}0{% endif %}
+        </div>
+        <div class="h-fit w-fit place-self-center flex justify-center">
+            <img src="{% static 'cal/images/team/' %}{{ opponent_team }}.svg" alt="상대팀 라인업" class="h-20 w-20 sm:h-24 sm:w-24 object-contain">
+        </div>
     </div>
-
-    <!-- 내 팀 점수 -->
-    <div class="w-fit text-2xl sm:text-4xl font-extrabold text-white self-center justify-self-start">
-      {% if user_score is not None %}{{ user_score }}{% else %}0{% endif %}
-    </div>
-
-    <!-- 중앙 정보 -->
-    <div class="flex flex-col items-center text-center place-self-center">
-      
-      {% if not is_after_game %}
-      <a href="{{ ticket_url }}" target="_blank" class="grid-span-3">
-        <button class="block mx-auto px-2 py-1 mb-1 rounded-md shadow-md bg-slate-600 text-white text-xs sm:text-base transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
-          경기 전<br>예매하기
-        </button>
-      </a>
-      {% endif %}
-      
-      <a href="{% url 'cal:stadium_info' game.stadium %}?ticket_url={{ ticket_url|urlencode }}"
-        class="text-white text-xs sm:text-lg">
-        {{ game.stadium }}
-      </a>
-
-      <!-- 날짜 및 이동 -->
-      <div class="flex items-center justify-center mt-2 sm:mt-0 space-x-2 text-xs sm:text-sm">
-        {% if prev_game_id %}
-          <a href="/cal/calendar/{{ prev_game_id }}/" class="text-white">&lt;&lt;</a>
-        {% endif %}
-        <span class="text-gray-300">{{ today|date:"y.m.d" }}</span>
-        {% if next_game_id %}
-          <a href="/cal/calendar/{{ next_game_id }}/" class="text-white">&gt;&gt;</a>
-        {% endif %}
-      </div>
-    </div>
-
-    <!-- 상대 팀 점수 -->
-    <div class="w-fit text-2xl sm:text-4xl font-extrabold text-white self-center justify-self-end">
-      {% if opponent_score is not None %}{{ opponent_score }}{% else %}0{% endif %}
-    </div>
-
-    <!-- 상대 팀 이미지 -->
-    <div class="h-fit w-fit place-self-center flex justify-center">
-      <img src="{% static 'cal/images/team/' %}{{ opponent_team }}.svg"
-          alt="상대팀 라인업"
-          class="h-20 w-20 sm:h-24 sm:w-24 object-contain">
-    </div>
-
-  </div>
 </section>
+<script>
+    // 드롭다운 스크립트
+    document.addEventListener('DOMContentLoaded', () => {
+    const toggleButton = document.getElementById('dropdownToggle');
+    const menu = document.getElementById('dropdownMenu');
+
+    if (toggleButton && menu) {
+        toggleButton.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('ticket-dropdown');
+            if (dropdown && !dropdown.contains(e.target)) {
+                menu.classList.add('hidden');
+            }
+        });
+    }
+    });
+</script>

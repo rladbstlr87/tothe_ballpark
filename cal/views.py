@@ -3,14 +3,14 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.db.models import Q
-from datetime import datetime, timedelta, date
+from accounts.models import User
+from django.utils import timezone
+from datetime import datetime, timedelta, date, time
 from collections import defaultdict
 from .models import *
-from accounts.models import User
 from .utils import Calendar
 import calendar
 import random
-from collections import defaultdict
 import urllib.parse
 
 # 배경 이미지 랜덤 적용
@@ -32,7 +32,6 @@ def index(request):
         
     }
     return render(request, 'index.html', context)
-
 
 def calculate_team_standings():
     HOME_STADIUMS = {
@@ -354,19 +353,63 @@ def lineup(request, game_id):
     is_after_game = (game.team1_score is not None) and (game.team2_score is not None)
     show_best_player = is_after_game and (user_score > opponent_score)
 
-    ticket = {
-        "대전(신)": "https://www.ticketlink.co.kr/sports/137/63",
-        "수원": "https://www.ticketlink.co.kr/sports/137/62",
-        "광주": "https://www.ticketlink.co.kr/sports/137/58",
-        "대구": "https://www.ticketlink.co.kr/sports/137/57",
-        '포항': "https://www.ticketlink.co.kr/sports/137/57",
-        "문학": "https://www.ticketlink.co.kr/sports/137/476",
-        "고척": "https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB003",
-        "사직": "https://ticket.giantsclub.com/loginForm.do",
-        "창원": "https://ticket.ncdinos.com/games",
-        '울산': "https://ticket.ncdinos.com/games",
+    booking_info = {
+        "대전(신)": {
+            "ticket_url": "https://www.ticketlink.co.kr/sports/137/63",
+            "days_before": 7,
+        },
+        "수원": {
+            "ticket_url": "https://www.ticketlink.co.kr/sports/137/62",
+            "days_before": 7,
+        },
+        "광주": {
+            "ticket_url": "https://www.ticketlink.co.kr/sports/137/58",
+            "days_before": 7,
+        },
+        "대구": {
+            "ticket_url": "https://www.ticketlink.co.kr/sports/137/57",
+            "days_before": 7,
+        },
+        '포항': {
+            "ticket_url": "https://www.ticketlink.co.kr/sports/137/57",
+            "days_before": 7,
+        },
+        "문학": {
+            "ticket_url": "https://www.ticketlink.co.kr/sports/137/476",
+            "days_before": 4,
+        },
+        "고척": {
+            "ticket_url": "https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB003",
+            "days_before": 7,
+        },
+        "사직": {
+            "ticket_url": "https://ticket.giantsclub.com/loginForm.do",
+            "days_before": 7,
+        },
+        "창원": {
+            "ticket_url": "https://ticket.ncdinos.com/games",
+            "days_before": 6,
+        },
+        '울산': {
+            "ticket_url": "https://ticket.ncdinos.com/games",
+            "days_before": 6,
+        },
+        '잠실': {
+            "ticket_url": "#",
+            "days_before": 7,
+        }
     }
 
+    # 구장별 예매 가능 날짜 계산
+    stadium_info = booking_info.get(game.stadium, {})
+    server_datetime = timezone.localtime().date()
+    days_before = stadium_info['days_before']
+
+    booking_dates = []
+    for i in range(days_before + 1):
+        booking_date = server_datetime + timedelta(days=i)
+        booking_dates.append(booking_date)
+    
     # 이전/다음 경기 버튼
     team_games = Game.objects.filter(
         Q(team1=user_team) | Q(team2=user_team)
@@ -386,7 +429,6 @@ def lineup(request, game_id):
         prev_game_id = None
         next_game_id = None
 
-
     context = {
         'game': game,
         'user_lineup': user_lineup,
@@ -396,11 +438,11 @@ def lineup(request, game_id):
         'has_lineup': has_lineup,
         'latest_daily_stats': latest_daily_stats,
         'latest_pitcher_stats': latest_pitcher_stats,
-        'today': game.date,
+        'gameday': game.date,
         'user_score': user_score,
         'opponent_score': opponent_score,
         'is_after_game': is_after_game,
-        'ticket_url': ticket[game.stadium],
+        'booking_url': stadium_info.get('ticket_url', "#"),
         'best_player': best_player,
         'best_player_name': best_player_name,
         'player_type': player_type,
@@ -409,6 +451,7 @@ def lineup(request, game_id):
         'show_best_player': show_best_player,
         'prev_game_id': prev_game_id,
         'next_game_id': next_game_id,
+        'booking_dates': booking_dates,
     }
 
     return render(request, 'lineup.html', context)
@@ -554,7 +597,7 @@ def stadium_info(request, stadium):
         'restaurants': restaurants,
         'google_url': f"https://www.google.com/maps/dir/?api=1&destination={lat},{lng}&destination_place_id={place_id}",
         'naver_url': f"nmap://route/public?dlat={lat}&dlng={lng}&dname={encoded_name}",
-        'ticket_url': ticket[stadium],
+        'ticket_url': ticket.get(stadium, "#"),
     }
 
     return render(request, 'stadium_info.html', context)

@@ -1,4 +1,5 @@
 from pathlib import Path
+from decouple import config
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -15,8 +16,6 @@ SECRET_KEY = 'django-insecure-ff-1#^^0futq9$%ou3+n8)1p)*pq#r&e4mb41393ax1yo+t30v
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
-from decouple import config
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.naver.com'

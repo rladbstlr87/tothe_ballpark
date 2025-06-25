@@ -132,6 +132,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
+/airvenv
 .env
 .venv
 env/
@@ -325,3 +326,8 @@ ready_develop.sh
 create_users.py
 /tmp
 baseball.pid
+
+after_game.sh
+before_game.sh
+before_game_schedule.sh
+before_game_schedule.py

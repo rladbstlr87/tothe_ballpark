@@ -8,7 +8,7 @@ def percent(value):
         return round(float(value) * 100)
     except (ValueError, TypeError):
         return ''
-    
+
 @register.filter
 def speed_percent(value):
     try:
@@ -65,3 +65,12 @@ def style_description(obj):
             '4': '노멀형',
         }
         return hitter_styles.get(style_value, '알 수 없는 유형')
+
+@register.filter
+def get_ticket_url(ticket_dict, stadium):
+
+    if isinstance(ticket_dict, dict) and stadium in ticket_dict:
+        stadium_info = ticket_dict[stadium]
+        if isinstance(stadium_info, dict):
+            return stadium_info.get('ticket_url', '')
+    return ''
