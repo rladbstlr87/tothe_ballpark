@@ -17,17 +17,17 @@
 {% if user.is_authenticated %}
     <a href="{% url 'posts:test_start' %}">   
     <img src="{% static 'cal/images/bg/테스트.png' %}" alt="직돌이 테스트 하러가기"
-        class=" ml-10 w-80 h-80 hidden sm:block hover:scale-105 transition duration-500 ease-in-out"> </a>
+        class="fixed top-1/2 left-1/2 -translate-x-[360px] -translate-y-[210px] w-[210px] h-[180px] hidden sm:block hover:scale-105 transition duration-500 ease-in-out"> </a>
     <img src="{% static 'cal/images/bg/' %}{{ user.team }}.png"
         class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 hidden sm:block">
 {% else %}
     <a href="{% url 'posts:test_start' %}">
     <img src="{% static 'cal/images/bg/테스트.png' %}" alt="직돌이 테스트 하러가기"
-        class="fixed top-1/2 left-1/2 -translate-x-[360px] -translate-y-[210px] w-[210px] h-[180px] hidden sm:block hover:scale-105 transition duration-500 ease-in-out "></a>
+        class="fixed top-1/2 left-1/2 -translate-x-[360px] -translate-y-[210px] w-[210px] h-[180px] hidden sm:block hover:scale-105 transition duration-500 ease-in-out"></a>
     <img src="{% static random_bg %}" alt="랜덤 팀 스티커"
         class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 hidden sm:block">
 {% endif %}
-<div class="fixed bottom-0 w-full pb-4 text-xs text-gray-400 sm:text-sm select-none text-center">
+<div class="fixed bottom-0 w-full pb-4 text-xs text-gray-400 sm:text-sm select-none text-center hidden sm:block">
     © 2025 직돌이. 응원하는 마음, 함께합니다!
 </div>
 <div class="flex flex-col items-center sm:hidden pt-10 font-parkdahyun overflow-hidden">
