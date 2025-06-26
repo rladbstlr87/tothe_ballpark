@@ -120,10 +120,8 @@
 
     <!-- 테이블 전체 박스 -->
     <div class="relative w-full flex rounded-[15px] overflow-hidden border border-gray-300">
-      
-      <!-- 📌 고정 열 -->
       <div class="w-[180px] overflow-hidden border-r border-gray-300 bg-white/90">
-        <table class="table-fixed border-collapse w-full sticky" id="hitter-fixed">
+        <table id="hitter-fixed" class="table-fixed border-collapse w-full sticky">
           <thead class="bg-blue-100">
             <tr>
               <th class="px-1 py-1"></th>
@@ -141,7 +139,7 @@
         </table>
       </div>
 
-      <!-- 📌 스크롤 열 -->
+      <!-- 스크롤 열 -->
       <div id="hitter-scroll-wrapper" class="overflow-x-auto scroll-smooth w-full hide-scrollbar">
         <table id="hitter-table" class="table-fixed border-collapse w-full bg-white">
           <thead class="bg-blue-100">
@@ -220,14 +218,16 @@
 <div id="pitchers" class="tab-content hidden">
     <div class="standing-box bg-white shadow p-6 mb-8 text-xs sm:text-sm">
 
+      <!-- 스크롤 버튼 -->
       <div class="flex justify-end mb-2">
         <button onclick="scrollPitcher(-1)" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition">⬅</button>
         <button onclick="scrollPitcher(1)" class="text-sm bg-blue-100 px-3 py-1 rounded shadow hover:bg-gray-300 transition ml-2">➡</button>
       </div>
 
-      <div class="flex w-full relative rounded-[15px] overflow-hidden border border-gray-300">
-        <div class="sticky left-0 z-20 w-[180px] bg-white/90 border-r border-gray-300">
-          <table class="table-fixed border-collapse w-full">
+      <!-- 테이블 전체 박스 -->
+      <div class="relative w-full flex rounded-[15px] overflow-hidden border border-gray-300">
+        <div class="w-[180px] overflow-hidden border-r border-gray-300 bg-white/90">
+          <table id="pitcher-fixed" class="table-fixed border-collapse w-full sticky">
             <thead class="bg-blue-100">
               <tr>
                 <th class="px-1 py-1"></th>
@@ -244,7 +244,8 @@
             </tbody>
           </table>
         </div>
-
+        
+        <!-- 스크롤 열 -->
         <div id="pitcher-scroll-wrapper" class="overflow-x-auto scroll-smooth w-full hide-scrollbar">
           <table id="pitcher-table" class="table-fixed border-collapse w-full sticky bg-white">
             <thead class="bg-blue-100">
