@@ -8,22 +8,20 @@ html, body {
   width: 100%;
   min-height: 100vh;
 
-  background-image: url('/static/cal/images/bg/cal-paper.jpg');
+  background-image: url('/static/cal/images/bg/cal-paper.png');
   background-size: cover;
   background-position: center;
   background-repeat: repeat;
-  background-color: rgba(255, 255, 255, 0.726);
-  background-blend-mode: lighten;
 }
 
 .calendar-table {
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  table-layout: fixed;
-  border-collapse: separate;
-  border-spacing: 10px 10px;
-  background: transparent;
+  max-width: 900px;      /* 캘린더 전체 최대 너비 */
+  margin: 0 auto;        /* 가운데 정렬 */
+  table-layout: fixed;   /* 셀 너비 고정 */
+  border-collapse: separate; /* 셀 간격 유지 */
+  border-spacing: 10px 10px; /* 셀 사이 간격(가로, 세로) */
+  background: transparent;      /* 배경 흰색 */
 }
 
 /* 모든 th, td 기본 스타일 */

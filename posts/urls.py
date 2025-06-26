@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
-from django.views.generic import TemplateView
+
 app_name = 'posts'
 
 urlpatterns = [
@@ -19,11 +19,6 @@ urlpatterns = [
     path('<int:id>/like-async/', views.like_async, name='like_async'),
     path('comments/<int:comment_id>/like-async/', views.comment_like_async, name='comment_like_async'),
     
-    # 직돌이 테스트
-    path('test/start/', TemplateView.as_view(template_name='start.html'), name='test_start'),
-    path('test/question/<int:step>', views.test_question, name='test_question'),
-    path('test/result/', views.test_result, name='test_result'),  
-    path('test/result/<str:type_code>/', views.result_share, name='result_share'),  
 ]
 
 

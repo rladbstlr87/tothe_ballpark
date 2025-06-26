@@ -1,4 +1,11 @@
 @font-face {
+    font-family: 'Thesignature';
+    src: url('/static/fonts/Thesignature.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
     font-family: 'IncheonJaram';
     src: url('/static/fonts/incheonedu_jaram.woff2') format('woff2');
     font-weight: normal;
@@ -27,10 +34,6 @@
 }
 
 /* Tailwind용 클래스 정의 */
-.font-parkdahyun {
-    font-family: 'Ownglyph_ParkDaHyun', cursive;
-    font-size: 26px;
-}
 
 .font-jaram {
     font-family: 'IncheonJaram', sans-serif;
@@ -53,14 +56,19 @@
     font-style: normal;
 }
 
-.cal-title {
-    font-family: 'YdestreetB', sans-serif;
+.font-parkdahyun {
+    font-family: 'Ownglyph_ParkDaHyun', cursive;
     font-size: 30px;
 }
 
 .font-nav {
     font-family: 'Ownglyph_ParkDaHyun', cursive;
     font-size: 26px;
+}
+
+.cal-title {
+    font-family: 'YdestreetB', sans-serif;
+    font-size: 30px;
 }
 
 @media (min-width: 600px) {

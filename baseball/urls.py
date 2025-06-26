@@ -9,7 +9,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('cal/', include('cal.urls')),
     path('accounts/', include('accounts.urls')),  # accounts 앱의 URL 포함
-    path('posts/', include('posts.urls')),  
+    path('posts/', include('posts.urls')), 
+    path('jikdoltest/', include('jikdoltest.urls')),  # jikdoltest 앱의 URL 포함
 ]
 
 if settings.DEBUG:
