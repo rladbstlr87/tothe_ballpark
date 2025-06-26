@@ -11,8 +11,6 @@ import os
 
 def handle_uploaded_image(file):
     ext = os.path.splitext(file.name)[-1].lower()
-
-    # GIF는 원본 그대로 저장
     if ext == '.gif':
         return file
 
@@ -21,9 +19,7 @@ def handle_uploaded_image(file):
 
     # 최대 크기 제한 (비율 유지)
     img.thumbnail((500, 500))
-
     buffer = BytesIO()
-
     format_map = {
         '.jpg': 'JPEG',
         '.jpeg': 'JPEG',
@@ -31,11 +27,9 @@ def handle_uploaded_image(file):
         '.webp': 'WEBP',
     }
     save_format = format_map.get(ext, 'PNG')
-
     img.save(buffer, format=save_format)
 
     return ContentFile(buffer.getvalue(), name=file.name)
-
 
 # 게시글 리스트
 def post_index(request):
@@ -53,7 +47,6 @@ def post_index(request):
         'page_obj': page_obj,
     }
     return render(request, 'post_index.html', context)
-
 
 # 게시글 작성
 @login_required
@@ -76,12 +69,10 @@ def create(request):
                     
                 
             return redirect('posts:detail', id=post.id)
-      
+
     else:
         form = PostForm()
     return render(request, 'create.html', {'form': form})
-            
-            
 
 # 게시글 상세
 def detail(request, id):
@@ -113,7 +104,6 @@ def detail(request, id):
         'total':total,
     }
     return render(request, 'detail.html', context)
-
 
 # 게시글 수정
 @login_required
@@ -154,7 +144,6 @@ def update(request, id):
         'existing_images': post.images.all()
     })
 
-
 # 게시글 삭제
 @login_required
 def delete(request, id):
@@ -162,7 +151,6 @@ def delete(request, id):
     if request.user == post.user:
         post.delete()
     return redirect('posts:post_index')
-
 
 # 댓글 작성
 @login_required
@@ -174,7 +162,6 @@ def comment_create(request, post_id):
         comment.user = request.user
         comment.save()
     return redirect('posts:detail', id=post_id)
-
 
 # 댓글 수정
 @login_required
@@ -203,7 +190,6 @@ def comment_update(request, post_id, comment_id):
     }
     return render(request, 'detail.html', context)
 
-
 # 댓글 삭제
 @login_required
 def comment_delete(request, post_id, comment_id):
@@ -211,7 +197,6 @@ def comment_delete(request, post_id, comment_id):
     if request.user == comment.user:
         comment.delete()
     return redirect('posts:detail', id=post_id)
-
 
 # 게시글 좋아요 기능
 @login_required
@@ -222,7 +207,6 @@ def post_like(request, post_id):
     else:
         post.like_users.add(user)
     return redirect('posts:detail', id=post_id)
-
 
 # 댓글 좋아요 기능
 @login_required
@@ -235,7 +219,6 @@ def comment_like(request, comment_id):
     else:
         comment.like_users.add(user)
     return redirect('posts:detail', id=comment.post.id)
-
 
 # 게시물 좋아요 js 기능
 @login_required
@@ -256,7 +239,6 @@ def like_async(request, id):
         'count': len(post.like_users.all())
     }
     return JsonResponse(context)
-
 
 # 댓글 좋아요 js 기능
 @login_required

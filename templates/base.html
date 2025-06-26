@@ -1,125 +1,125 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ko">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta property="og:title" content="야구 직관가는 직돌이"/>
-        <meta property="og:description" content="프로야구 일정에 따른 직관 예매와 선수 정보들을 제공해드립니다!"/>
-        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'favicon_high.png' %}" />
-        <title>
-            {% block title %}
-            {% endblock %}
-        </title>
-        {% load static %}
-        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-        <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
-        <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
-        <link rel="stylesheet" href="{% static 'cal/css/calendar.css' %}">
-        <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap">
-        {% block styles %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="야구 직관가는 직돌이"/>
+    <meta property="og:description" content="프로야구 일정에 따른 직관 예매와 선수 정보들을 제공해드립니다!"/>
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'favicon_high.png' %}" />
+    <title>
+        {% block title %}
         {% endblock %}
+    </title>
+    {% load static %}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <link rel="stylesheet" href="{% static 'cal/css/calendar.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap">
+    {% block styles %}
+    {% endblock %}
 </head>
 <body x-data="{ mobileMenuOpen: false }" class="min-h-screen max-w-screen relative font-ydestreetl bg-paper overflow-x-hidden">
     {% include '_nav.html' %}
     {% block body %}
     {% endblock %}
-<footer>
-    {% block footer %}
-        <div class="text-center  pt-6 pb-4 text-xs text-gray-400 sm:text-sm select-none">
-            © 2025 직돌이. 응원하는 마음, 함께합니다!
-        </div>
-    {% endblock %}
-</footer>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const toggleBtn = document.querySelector('button[aria-controls="mobile-menu"]');
-        const openIcon = toggleBtn.querySelectorAll('svg')[0];
-        const closeIcon = toggleBtn.querySelectorAll('svg')[1];
-        const mobileMenu = document.getElementById('mobile-menu');
+    <footer>
+        {% block footer %}
+            <div class="text-center  pt-6 pb-4 text-xs text-gray-400 sm:text-sm select-none">
+                © 2025 직돌이. 응원하는 마음, 함께합니다!
+            </div>
+        {% endblock %}
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleBtn = document.querySelector('button[aria-controls="mobile-menu"]');
+            const openIcon = toggleBtn.querySelectorAll('svg')[0];
+            const closeIcon = toggleBtn.querySelectorAll('svg')[1];
+            const mobileMenu = document.getElementById('mobile-menu');
 
-        toggleBtn.addEventListener('click', () => {
-        const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+            toggleBtn.addEventListener('click', () => {
+            const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
 
-        toggleBtn.setAttribute('aria-expanded', !isExpanded);
-        openIcon.classList.toggle('hidden', !isExpanded);
-        closeIcon.classList.toggle('hidden', isExpanded);
-        mobileMenu.classList.toggle('hidden');
+            toggleBtn.setAttribute('aria-expanded', !isExpanded);
+            openIcon.classList.toggle('hidden', !isExpanded);
+            closeIcon.classList.toggle('hidden', isExpanded);
+            mobileMenu.classList.toggle('hidden');
+            });
+            // 화면 리사이즈 시 메뉴 닫기
+            window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                // md 이상일 경우 메뉴 닫힘 상태로 초기화
+                toggleBtn.setAttribute('aria-expanded', 'false');
+                openIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+                mobileMenu.classList.add('hidden');
+            }
+            });
         });
-        // 화면 리사이즈 시 메뉴 닫기
-        window.addEventListener('resize', () => {
-        if (window.innerWidth >= 768) {
-            // md 이상일 경우 메뉴 닫힘 상태로 초기화
-            toggleBtn.setAttribute('aria-expanded', 'false');
-            openIcon.classList.remove('hidden');
-            closeIcon.classList.add('hidden');
-            mobileMenu.classList.add('hidden');
-        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const path = window.location.pathname;
+            let pageKey = '';
+
+            if (/^\/cal\/calendar\/\d+\/?$/.test(path)) {
+                // 모든 숫자 경기 페이지는 공통 키 사용
+                pageKey = 'visited_cal_calendar';
+            } else if (/^\/cal\/[^\/]+\/stadium_info$/.test(path)) {
+                // 경기장 정보 페이지는 경기장 이름 달라도 공통 키 사용
+                pageKey = 'visited_stadium_info';
+            } else {
+                // 그 외 경로는 고유하게 처리
+                pageKey = `visited_${path}`;
+            }
+
+            const overlay = document.getElementById('introOverlay');
+            const steps = document.querySelectorAll('#introSteps p');
+            const finalMessage = document.getElementById('finalMessage');
+            const closeButton = document.querySelector('#finalMessage button');
+            let currentStep = 0;
+
+            if (!localStorage.getItem(pageKey)) {
+            overlay.classList.remove('hidden');
+            steps[0].classList.remove('hidden');
+
+            overlay.addEventListener('click', () => {
+                // 현재 p 숨기기
+                steps[currentStep].classList.add('hidden');
+
+                // 스크롤 이동 처리
+                switch(currentStep) {
+                case 2:
+                    const elementA = document.getElementById('keyplayer');
+                    if (elementA) elementA.scrollIntoView({ behavior: 'smooth' });
+                    break;
+                case 5:
+                    const elementB = document.getElementById('legend-text');
+                    if (elementB) elementB.scrollIntoView({ behavior: 'smooth' });
+                    break;
+                default:
+                    break;
+                }
+
+                currentStep++;
+
+                if (currentStep < steps.length) {
+                // 다음 p 보이기
+                steps[currentStep].classList.remove('hidden');
+                } else {
+                // 모든 설명 끝나면 안내 박스 표시
+                finalMessage.classList.remove('hidden');
+                }
+            });
+            }
+
+            window.closeIntro = () => {
+                overlay.classList.add('hidden');
+                localStorage.setItem(pageKey, 'true');
+            };
         });
-    });
-
-document.addEventListener('DOMContentLoaded', () => {
-    const path = window.location.pathname;
-    let pageKey = '';
-
-    if (/^\/cal\/calendar\/\d+\/?$/.test(path)) {
-        // 모든 숫자 경기 페이지는 공통 키 사용
-        pageKey = 'visited_cal_calendar';
-    } else if (/^\/cal\/[^\/]+\/stadium_info$/.test(path)) {
-        // 경기장 정보 페이지는 경기장 이름 달라도 공통 키 사용
-        pageKey = 'visited_stadium_info';
-    } else {
-        // 그 외 경로는 고유하게 처리
-        pageKey = `visited_${path}`;
-    }
-
-    const overlay = document.getElementById('introOverlay');
-    const steps = document.querySelectorAll('#introSteps p');
-    const finalMessage = document.getElementById('finalMessage');
-    const closeButton = document.querySelector('#finalMessage button');
-    let currentStep = 0;
-
-    if (!localStorage.getItem(pageKey)) {
-    overlay.classList.remove('hidden');
-    steps[0].classList.remove('hidden');
-
-    overlay.addEventListener('click', () => {
-        // 현재 p 숨기기
-        steps[currentStep].classList.add('hidden');
-
-        // 스크롤 이동 처리
-        switch(currentStep) {
-        case 2:
-            const elementA = document.getElementById('keyplayer');
-            if (elementA) elementA.scrollIntoView({ behavior: 'smooth' });
-            break;
-        case 5:
-            const elementB = document.getElementById('legend-text');
-            if (elementB) elementB.scrollIntoView({ behavior: 'smooth' });
-            break;
-        default:
-            break;
-        }
-
-        currentStep++;
-
-        if (currentStep < steps.length) {
-        // 다음 p 보이기
-        steps[currentStep].classList.remove('hidden');
-        } else {
-        // 모든 설명 끝나면 안내 박스 표시
-        finalMessage.classList.remove('hidden');
-        }
-    });
-    }
-
-    window.closeIntro = () => {
-        overlay.classList.add('hidden');
-        localStorage.setItem(pageKey, 'true');
-    };
-});
-</script>
+    </script>
 </body>
 </html>
