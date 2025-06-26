@@ -1,61 +1,62 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}테스트 질문 | 직돌이{% endblock %}
+{% block title %}
+  테스트 질문 | 직돌이
+{% endblock %}
 
 {% block body %}
-<div class="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#f3e7ff] via-[#ffeef2] to-[#d5f3ff]">
-  <!-- 질문 카드 전체 영역: 배경이미지 + 내용 -->
-  <div class="w-full sm:max-w-[450px] max-sm:min-h-screen aspect-[9/16] sm:rounded-2xl overflow-hidden shadow-lg bg-cover bg-center relative px-4 "
-       style="background-image: url('{% static 'posts/images/배경.png' %}'); background-size: cover; background-position: center;">
-    <!-- 진행바 전체 컨테이너 -->
-    <div class="relative w-full max-sm:max-w-[320px] max-w-[400px] h-6 mt-6 mb-8 mx-auto">
+  <div class="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#f3e7ff] via-[#ffeef2] to-[#d5f3ff]">
+    <!-- 질문 카드 전체 영역: 배경이미지 + 내용 -->
+    <div class="w-full sm:max-w-[450px] max-sm:min-h-screen aspect-[9/16] sm:rounded-2xl overflow-hidden shadow-lg bg-cover bg-center relative px-4 "
+        style="background-image: url('{% static 'posts/images/배경.png' %}'); background-size: cover; background-position: center;">
+      <!-- 진행바 전체 컨테이너 -->
+      <div class="relative w-full max-sm:max-w-[320px] max-w-[400px] h-6 mt-6 mb-8 mx-auto">
 
-      <!-- 배경 바 -->
-      <div class="absolute top-1/2 left-0 w-full h-3 -translate-y-1/2 bg-white border-2 border-[#cbddfe] rounded-full z-0"></div>
+        <!-- 배경 바 -->
+        <div class="absolute top-1/2 left-0 w-full h-3 -translate-y-1/2 bg-white border-2 border-[#cbddfe] rounded-full z-0"></div>
 
-      <!--  진행 채워지는 바 -->
-      <div class="absolute top-1/2 left-0 h-3 bg-[#84bbe3] rounded-full z-10 transition-all duration-500 ease-in-out progress-bar-ani"
-          style="width: {{ progress }}%; transform: translateY(-50%);"></div>
+        <!--  진행 채워지는 바 -->
+        <div class="absolute top-1/2 left-0 h-3 bg-[#84bbe3] rounded-full z-10 transition-all duration-500 ease-in-out progress-bar-ani"
+            style="width: {{ progress }}%; transform: translateY(-50%);"></div>
 
-      <!-- 별 아이콘 -->
-      <img src="{% static 'posts/images/star.png' %}" alt="별"
-          class="absolute top-1/2 w-13 h-10 -translate-y-1/2 z-20 transition-all duration-500 ease-in-out"
-          style="left: calc({{ progress }}% - 14px);">
-    </div>
-
-    <!-- 질문 박스 -->
-    <div class="w-full flex justify-center "> 
-      <div class="bg-white rounded-[40px] border-3 border-[#84bbe3] px-10 py-10 text-center  w-full max-w-[400px] mt-10 mb-15 mx-auto font-parkdahyun">
-        <p class="text-sm text-gray-500 font-semibold mb-2">{{ step }}/{{ total }}</p>
-        <h2 class="text-[30px] font-semibold text-gray-700 break-keep">{{ question }}</h2>
+        <!-- 별 아이콘 -->
+        <img src="{% static 'posts/images/star.png' %}" alt="별"
+            class="absolute top-1/2 w-13 h-10 -translate-y-1/2 z-20 transition-all duration-500 ease-in-out"
+            style="left: calc({{ progress }}% - 14px);">
       </div>
+
+      <!-- 질문 박스 -->
+      <div class="w-full flex justify-center "> 
+        <div class="bg-white rounded-[40px] border-3 border-[#84bbe3] px-10 py-10 text-center  w-full max-w-[400px] mt-10 mb-15 mx-auto font-parkdahyun">
+          <p class="text-sm text-gray-500 font-semibold mb-2">{{ step }}/{{ total }}</p>
+          <h2 class="text-[30px] font-semibold text-gray-700 break-keep">{{ question }}</h2>
+        </div>
+      </div>
+
+      <!--  선택지 버튼 -->
+      <form method="POST" class="w-full max-w-[500px] space-y-4 mx-auto px-4 py-12 -mt-10">
+        {% csrf_token %}
+        {% for choice in choices %}
+          <button type="submit" name="choice" value="{{ forloop.counter0 }}"
+                  class="w-full mb-5 py-4 bg-white border-2 border-[#84bbe3] font-parkdahyun text-[#7fbbec]  text-[20px] rounded-full hover:bg-[#f3ecff] transition break-keep">
+            {{ choice }}
+          </button>
+        {% endfor %}
+      </form>
     </div>
-
-    <!--  선택지 버튼 -->
-    <form method="POST" class="w-full max-w-[500px] space-y-4 mx-auto px-4 py-12 -mt-10">
-      {% csrf_token %}
-      {% for choice in choices %}
-        <button type="submit" name="choice" value="{{ forloop.counter0 }}"
-                class="w-full mb-5 py-4 bg-white border-2 border-[#84bbe3] font-parkdahyun text-[#7fbbec]  text-[20px] rounded-full hover:bg-[#f3ecff] transition break-keep">
-          {{ choice }}
-        </button>
-      {% endfor %}
-    </form>
-
   </div>
-</div>
-<script>
-  // 페이지가 로드될 때 진행바에 애니메이션 효과 적용
-  document.addEventListener('DOMContentLoaded', function() {
-    const bar = document.querySelector('.progress-bar-ani');
-    if (bar) {
-      // width를 0으로 초기화했다가, 실제 width로 트리거
-      bar.style.width = '0%';
-      setTimeout(() => {
-        bar.style.width = '{{ progress }}%';
-      }, 50); // 약간의 딜레이로 트랜지션 트리거
-    }
-  });
-</script>
+  <script>
+    // 페이지가 로드될 때 진행바에 애니메이션 효과 적용
+    document.addEventListener('DOMContentLoaded', function() {
+      const bar = document.querySelector('.progress-bar-ani');
+      if (bar) {
+        // width를 0으로 초기화했다가, 실제 width로 트리거
+        bar.style.width = '0%';
+        setTimeout(() => {
+          bar.style.width = '{{ progress }}%';
+        }, 50); // 약간의 딜레이로 트랜지션 트리거
+      }
+    });
+  </script>
 {% endblock %}
