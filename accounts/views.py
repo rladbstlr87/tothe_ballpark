@@ -77,7 +77,7 @@ def find_id_view(request):
             send_mail(
                 subject="아이디 찾기 결과입니다",
                 message=f"해당 이메일로 등록된 아이디 목록입니다:\n\n{username_list}",
-                from_email="직돌이 운영팀 <seongjin5743@naver.com>",
+                from_email="직돌이 운영팀 <yerinmin@naver.com>",
                 recipient_list=[email],
             )
             return JsonResponse({"success": True, "message": "아이디 목록이 이메일로 전송되었습니다."})
