@@ -3,6 +3,7 @@ from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 from django.core.mail import send_mail
 from .forms import *
 from .models import User
@@ -192,41 +193,46 @@ def mypage(request):
     password_form = PasswordChangeCustomForm(user)
     nickname_form = NicknameChangeForm(instance=user)
     team_form = TeamChangeForm(instance=user)
+    current_mode = None  # 어떤 폼을 보여줘야 할지 판단하기 위해
 
     if request.method == 'POST':
         mode = request.POST.get('mode')
-        print(mode)
+        current_mode = mode  # 어떤 폼이 다시 열려야 하는지 JS에 넘기기 위해 저장
+
         if mode == 'password':
             password_form = PasswordChangeCustomForm(user, request.POST)
             if password_form.is_valid():
                 password_form.save()
+                messages.success(request, '비밀번호가 성공적으로 변경되었습니다.')
                 return redirect('accounts:mypage')
         elif mode == 'nickname':
             nickname_form = NicknameChangeForm(request.POST, instance=user)
             if nickname_form.is_valid():
                 nickname_form.save()
+                messages.success(request, '닉네임이 성공적으로 변경되었습니다.')
                 return redirect('accounts:mypage')
+            else:
+                messages.error(request, '닉네임이 중복되어 변경에 실패했습니다.')
+                user.refresh_from_db()
         elif mode == 'team':
             old_team = user.team
             team_form = TeamChangeForm(request.POST, instance=user)
             if team_form.is_valid():
-
-                # 새로운 팀으로 변경
                 team_form.save()
-
-                # 직관한 경기에서 기존 응원팀 경기를 제외시킴
                 attended_games = user.attendance_game.all()
                 for game in attended_games:
-                    if game.team1 == old_team:
+                    if game.team1 == old_team or game.team2 == old_team:
                         game.attendance_users.remove(user)
-                    elif game.team2 == old_team:
-                        game.attendance_users.remove(user)
+                messages.success(request, '응원팀이 성공적으로 변경되었습니다.')
                 return redirect('accounts:mypage')
+            else:
+                messages.error(request, '응원팀 변경에 실패했습니다. 입력값을 확인해주세요.')
 
     context = {
         'password_form': password_form,
         'nickname_form': nickname_form,
         'team_form': team_form,
+        'current_mode': current_mode,
     }
     return render(request, 'mypage.html', context)
 
@@ -238,6 +244,8 @@ def update_profile_image(request):
         user = request.user
         user.profile_image = profile_image
         user.save()
+        messages.success(request, '프로필 이미지가 성공적으로 변경되었습니다.')
         return redirect('accounts:mypage')
 
+    messages.error(request, '프로필 이미지 변경에 실패했습니다.')
     return redirect('accounts:mypage')

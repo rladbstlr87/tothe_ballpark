@@ -113,7 +113,13 @@ class TeamChangeForm(forms.ModelForm):
                 'style': 'border-color: #dce9f9;',
             })
         }
-
+    def clean(self):
+        cleaned_data = super().clean()
+        team = cleaned_data.get('team')
+        if not team:
+            self.add_error('team', "응원팀을 반드시 선택해주세요.")
+  
+    
 class ProfileImageForm(forms.ModelForm):
     class Meta:
         model = User
