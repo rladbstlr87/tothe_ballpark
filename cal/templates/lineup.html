@@ -10,7 +10,6 @@
     <div class="flex justify-center flex-col lg:flex-row">
         <div class="bg-[url('/static/cal/images/bg/peeledpaper1.png')] bg-repeat-y bg-contain w-[30px] lg:w-[50px] translate-x-0 lg:translate-x-8 min-h-full rotate-180"></div>
             {% if has_lineup and game and user_lineup|length >= 3 and opponent_lineup|length >= 3 %}
-
                 {% if game %}
                     <div class="flex flex-col items-center w-full max-w-7xl p-4 sm:px-6 lg:px-8 bg-white">
                         <div id="top" class="w-full py-4 flex flex-col sm:flex-row items-center justify-between">
@@ -132,7 +131,8 @@
                                 </ul>
                             </div>
                         </div>
-                        
+
+                        <!-- 라인업 -->
                         <div id="lineups" class="w-full grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div class="pr-2">
                                 {% for lineup in user_lineup %}
@@ -199,6 +199,8 @@
                                 {% endfor %}
                             </div>
                         </div>
+
+                        <!-- 선수별 상세정보 모달 -->
                         <div id="modal-face" class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center">
                             <div class="bg-white rounded-lg p-6 w-[320px] shadow-lg relative">
                                 <button id="modal-close" class="absolute top-2 right-2 text-gray-500 hover:text-black text-xl">&times;</button>
@@ -258,6 +260,7 @@
             <div class="bg-[url('/static/cal/images/bg/peeledpaper1.png')] bg-repeat-y bg-contain w-[30px] lg:w-[50px] -translate-x-0 lg:-translate-x-8 min-h-full"></div>
         </div>
     </div>
+
     <!-- 데스크탑 튜토리얼 -->
     <div id="introOverlay" class="fixed grid inset-0 bg-black/40 z-100 cursor-pointer hidden">
         <div class="text-white pt-24">
@@ -302,8 +305,6 @@
                 </p>
             </div>
         </div>
-
-        <!-- 마지막 안내 박스 -->
         <div id="finalMessage" class="bg-white/70 backdrop-blur-sm p-6 rounded-lg text-center max-w-md shadow-xl absolute left-1/2 top-[300px] -translate-x-1/2 hidden select-none">
             <p class="p-2">
                 주요 기능들을 모두 살펴보셨어요!
@@ -355,13 +356,11 @@
     document.getElementById('modal-face').addEventListener('click', () => {
         document.getElementById('modal-face').classList.add('hidden');
     });
-
-    // 모달 내부 클릭 시 닫히지 않게 함
     document.querySelector('#modal-face .rounded-lg').addEventListener('click', (event) => {
         event.stopPropagation();
     });
 
-    // 출석 버튼 클릭
+    // 직관출석 버튼
     document.getElementById('attendance-btn').addEventListener('click', () => {
         fetch("{% url 'cal:attendance' game.id %}", {
             method: 'POST',
@@ -384,7 +383,7 @@
         });
     });
 
-    // 범례 토글 기능
+    // 범례 토글
     const legendBtn = document.getElementById('toggle-legend-btn');
     const legendBox = document.getElementById('legend-box');
     const legendText = document.getElementById('legend-text');

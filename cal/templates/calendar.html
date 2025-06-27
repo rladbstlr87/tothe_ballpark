@@ -1,291 +1,281 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}
-캘린더 | 직돌이
-{% endblock %}
-
 {% load custom_filters %}
 
-{% block body %}
-<!-- 달력 테이블 -->
-<div class="w-full flex justify-center relative z-0">
-  <table class="calendar-table">
-    <thead>
-      <tr>
-        <th colspan="7" class="month-header">
-          <div class="flex justify-around items-center">
-            <!-- 이전 달 버튼 -->
-            <a href="?{{ prev_month }}" class="nav-link">
-              <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Prev" class="w-16 h-16 rotate-90 inline">
-            </a>
-            <span class="cal-title">{{ cal_data.year }}년 {{ cal_data.month }}월</span>
-            <!-- 다음 달 버튼 -->
-            <a href="?{{ next_month }}" class="nav-link">
-              <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Next" class="w-16 h-16 -rotate-90 inline">
-            </a>
-          </div>
-        </th>
-      </tr>
-      <!-- 요일 헤더 -->
-      <tr>
-        {% for day_name in cal_data.week_header %}
-          <th class="{% if forloop.counter0 == 0 %}relative mon overflow-visible{% endif %} text-center w-12 h-12">
-            {% if forloop.counter0 == 0 %}
-              <!-- 왼쪽 배경 -->
-              <div class="absolute top-1/2 left-1/2 -translate-x-6/7 -translate-y-3/7 z-0 w-[300px] h-[300px] max-lg:hidden">
-                <img src="/static/cal/images/bg/mon_alert.svg" alt="동그라미" class="w-full h-full pointer-events-none">
-                <img src="/static/cal/images/icon/ticket.png" alt="티켓 메모" id="ticketBtn"
-                    class="hidden sm:block w-[200px] h-[200px] z-0 transform -translate-x-10 cursor-pointer hover:scale-105 transition">
-                <img src="{% static 'cal/images/team/' %}{{ user.team }}-yeah.png" alt="동그라미"
-                    class="mt-20 w-[220px] h-[80px] -rotate-15 z-0 pointer-events-none" />
-              </div>
-            {% endif %}
-            {% if forloop.counter0 == 6 %}
-              <!-- 오른쪽 배경 -->
-              <div class="absolute top-1/2 left-1/2 translate-x-120 -translate-y-1/2 z-10 max-lg:hidden">
-                <img src="{% static 'cal/images/icon/rank.png' %}" alt="순위 보기"
-                    id="rankingBtn"
-                    class="w-[200px] h-[200px] cursor-pointer hover:scale-105 transition" />
-              </div>
-            {% endif %}
+{% block title %}
+  캘린더 | 직돌이
+{% endblock %}
 
-            <span class="relative z-10">{{ day_name }}</span>
+{% block body %}
+  <!-- 달력 테이블 -->
+  <div class="w-full flex justify-center relative z-0">
+    <table class="calendar-table">
+      <thead>
+        <tr>
+          <th colspan="7" class="month-header">
+            <div class="flex justify-around items-center">
+              <!-- 이전 달 -->
+              <a href="?{{ prev_month }}" class="nav-link">
+                <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Prev" class="w-16 h-16 rotate-90 inline">
+              </a>
+              <span class="cal-title">{{ cal_data.year }}년 {{ cal_data.month }}월</span>
+              <!-- 다음 달 -->
+              <a href="?{{ next_month }}" class="nav-link">
+                <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Next" class="w-16 h-16 -rotate-90 inline">
+              </a>
+            </div>
           </th>
-        {% endfor %}
-      </tr>
-    </thead>
-    <tbody>
-      {% for week in cal_data.weeks %}
-        <tr class="z-10 relative">
-          {% for day in week %}
-            {% if day.day == 0 %}
-              <td></td>
-            {% else %}
-              <td class="day-cell rounded-t-md">
-                <span class="day-number relative z-10">{{ day.day }}</span>
-                {% for game in day.games %}
-                  {% if game.result == '취소' %}
-                    <div class="game-info{% if game.id in user_attendance_game_ids %} highlight-{{ user.team }}{% endif %}">
-                      <div class="relative inline-block">
-                        <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}" class="cancel-game-img">
-                      </div>
-                      <span class="game-time">{{ game.time }}</span>
-                      <span class="game-result cancel">{{ game.result }}</span>
-                    </div>
-                  {% else %}
-                    <a href="{% url 'cal:lineup' game.id %}">
-                      <div class="game-info{% if game.id in user_attendance_game_ids %} highlight-{{ user.team }}{% endif %}">
-                        <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}">
-                        <span class="game-time">{{ game.time }}</span>
-                        {% if game.result %}
-                          <span class="game-result
-                            {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% elif game.result == '취소' %}cancel{% endif %}">
-                            {{ game.result }}
-                          </span>
-                        {% endif %}
-                      </div>
-                    </a>
-                  {% endif %}
-                {% endfor %}
-              </td>
-            {% endif %}
+        </tr>
+        <!-- 요일 헤더 -->
+        <tr>
+          {% for day_name in cal_data.week_header %}
+            <th class="{% if forloop.counter0 == 0 %}relative mon overflow-visible{% endif %} text-center w-12 h-12">
+              {% if forloop.counter0 == 0 %}
+                <!-- 왼쪽 배경 -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-6/7 -translate-y-3/7 z-0 w-[300px] h-[300px] max-lg:hidden">
+                  <img src="/static/cal/images/bg/mon_alert.svg" alt="동그라미" class="w-full h-full pointer-events-none">
+                  <img src="/static/cal/images/icon/ticket.png" alt="티켓 메모" id="ticketBtn"
+                      class="hidden sm:block w-[200px] h-[200px] z-0 transform -translate-x-10 cursor-pointer hover:scale-105 transition">
+                  <img src="{% static 'cal/images/team/' %}{{ user.team }}-yeah.png" alt="동그라미"
+                      class="mt-20 w-[220px] h-[80px] -rotate-15 z-0 pointer-events-none" />
+                </div>
+              {% endif %}
+              {% if forloop.counter0 == 6 %}
+                <!-- 오른쪽 배경 -->
+                <div class="absolute top-1/2 left-1/2 translate-x-120 -translate-y-1/2 z-10 max-lg:hidden">
+                  <img src="{% static 'cal/images/icon/rank.png' %}" alt="순위 보기"
+                      id="rankingBtn"
+                      class="w-[200px] h-[200px] cursor-pointer hover:scale-105 transition" />
+                </div>
+              {% endif %}
+              <span class="relative z-10">{{ day_name }}</span>
+            </th>
           {% endfor %}
         </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  
-</div>
-
-<!-- 모바일 전용 버튼 영역 -->
-<div class="block lg:hidden w-full flex justify-center gap-4 relative pb-32">
-  <!-- 티켓 버튼 -->
-  <img src="/static/cal/images/icon/speech_bubble.png" alt="티켓 메모"
-        id="ticketBtnMobile"
-        class="w-[140px] h-[120px] cursor-pointer hover:scale-105 transition absolute left-1 bottom-7 -rotate-12 ">
-  <img src="/static/cal/images/icon/bb.png" alt="따봉강아지"
-      class="w-[120px] h-[120px] absolute left-1/2 -translate-x-1/2 ">
-  <!-- 순위 버튼 -->
-  <img src="/static/cal/images/icon/speech_bubble2.png" alt="순위 보기" id="rankingBtnMobile"
-      class="w-[130px] h-[120px] cursor-pointer hover:scale-105 transition absolute bottom-8 rotate-20 right-1">
-</div>
-
-<!-- 티켓팅 모달 -->
-<div id="ticketModal" class="fixed inset-0 bg-black/50 flex justify-center items-center z-50 hidden">
-  <div class="relative w-[460px] h-[460px]">
-    <!-- 배경 종이 -->
-    <img src="/static/cal/images/icon/note-paper.png" alt="티켓 팝업 배경"
-        class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0"/>
-    <!-- 닫기 버튼 -->
-    <button id="closeTicketModal"
-      class="absolute top-18 right-12 max-sm:top-22 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
-      ×
-    </button>
-    <!-- 내용 -->
-    <div class="absolute top-12 left-16 max-sm:top-18 text-[13px] max-sm:text-[11px] leading-[1.5] text-gray-800 z-10 whitespace-pre-line">
-
-      <span class="inline-block text-pink-500 font-semibold">📌</span> <span class="font-bold">티켓팅 일정 및 링크</span>
-
-      <span class="font-semibold">티켓링크</span>  
-      ・ <a href="https://www.ticketlink.co.kr/sports/137/63" class="text-blue-600 underline" target="_blank">한화</a>: 7일 전 오전 11시  
-      ・ <a href="https://www.ticketlink.co.kr/sports/137/62" class="text-blue-600 underline" target="_blank">KT</a>: 7일 전 오후 2시  
-      ・ <a href="https://www.ticketlink.co.kr/sports/137/58" class="text-blue-600 underline" target="_blank">기아</a>: 7일 전 오전 11시  
-      ・ <a href="https://www.ticketlink.co.kr/sports/137/57" class="text-blue-600 underline" target="_blank">삼성</a>: 7일 전 오전 11시 (3연전의 첫 경기 기준)  
-      ・ <a href="https://www.ticketlink.co.kr/sports/137/59" class="text-blue-600 underline" target="_blank">엘지</a>: 7일 전 오전 11시  
-      ・ <a href="https://www.ticketlink.co.kr/sports/137/476" class="text-blue-600 underline" target="_blank">SSG</a>: 4일 전 오전 11시  
-
-      <span class="font-semibold">인터파크</span>  
-      ・ <a href="https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB003" class="text-blue-600 underline" target="_blank">키움</a>: 7일 전 오후 2시  
-      ・ <a href="https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB004" class="text-blue-600 underline" target="_blank">두산</a>: 7일 전 오전 11시  
-
-      <span class="font-semibold">홈페이지 예매</span>  
-      ・ <a href="https://ticket.giantsclub.com/loginForm.do" class="text-blue-600 underline" target="_blank">롯데</a>: 7일 전 오후 2시 (3연전의 첫 경기 기준)  
-      ・ <a href="https://www.ncdinos.com/" class="text-blue-600 underline" target="_blank">NC</a>: 6일 전 오전 11시  
-    </div>
-  </div>
-</div>
-
-<!-- 순위 모달 -->
-<div id="rankingModal" class="fixed inset-0 bg-black/50 flex justify-center items-center z-100 hidden">
-  <div class="relative w-[460px] h-[460px]">
-    <!-- 배경 종이 -->
-    <img src="/static/cal/images/icon/note-paper.png" alt="순위 팝업 배경"
-        class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0"/>
-    <!-- 닫기 버튼 -->
-    <button id="closeRankingModal"
-      class="absolute top-18 right-12 max-sm:top-22 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
-      ×
-    </button>
-    <!-- 내용 -->
-    <div class="w-[75%] h-[60%] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[13px] max-sm:text-[11px] text-gray-800 z-10 whitespace-pre-line">
-      <table class="w-full sm:text-xs text-center border-collapse">
-        <thead class="bg-gray-200 text-gray-700">
-          <tr>
-            <th class="py-1 px-1 sm:px-2">순위</th>
-            <th class="py-1 px-1 sm:px-2">팀</th>
-            <th class="py-1 px-1 sm:px-2">경기</th>
-            <th class="py-1 px-1 sm:px-2">승</th>
-            <th class="py-1 px-1 sm:px-2">패</th>
-            <th class="py-1 px-1 sm:px-2">무</th>
-            <th class="py-1 px-1 sm:px-2">승률</th>
-            <th class="py-1 px-1 sm:px-2">게임차</th>
-            <th class="py-1 px-1 sm:px-2">연속</th>
+      </thead>
+      <tbody>
+        {% for week in cal_data.weeks %}
+          <tr class="z-10 relative">
+            {% for day in week %}
+              {% if day.day == 0 %}
+                <td></td>
+              {% else %}
+                <td class="day-cell rounded-t-md">
+                  <span class="day-number relative z-10">{{ day.day }}</span>
+                  {% for game in day.games %}
+                    {% if game.result == '취소' %}
+                      <div class="game-info{% if game.id in user_attendance_game_ids %} highlight-{{ user.team }}{% endif %}">
+                        <div class="relative inline-block">
+                          <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}" class="cancel-game-img">
+                        </div>
+                        <span class="game-time">{{ game.time }}</span>
+                        <span class="game-result cancel">{{ game.result }}</span>
+                      </div>
+                    {% else %}
+                      <a href="{% url 'cal:lineup' game.id %}">
+                        <div class="game-info{% if game.id in user_attendance_game_ids %} highlight-{{ user.team }}{% endif %}">
+                          <img src="{{ game.img_url }}" alt="{{ game.opponent }}" title="{{ game.opponent }}">
+                          <span class="game-time">{{ game.time }}</span>
+                          {% if game.result %}
+                            <span class="game-result
+                              {% if game.result == '승' %}win{% elif game.result == '패' %}lose{% elif game.result == '취소' %}cancel{% endif %}">
+                              {{ game.result }}
+                            </span>
+                          {% endif %}
+                        </div>
+                      </a>
+                    {% endif %}
+                  {% endfor %}
+                </td>
+              {% endif %}
+            {% endfor %}
           </tr>
-        </thead>
-        <tbody>
-          {% for team in standing %}
-          <tr class="border-b border-gray-200 hover:bg-gray-100 {% if team.team == user.team %}bg-yellow-100 font-bold text-black{% endif %}">
-            <td class="py-1">{{ forloop.counter }}</td>
-            <td class="py-1">{{ team.team|team_name }}</td>
-            <td class="py-1">{{ team.G }}</td>
-            <td class="py-1">{{ team.W }}</td>
-            <td class="py-1">{{ team.L }}</td>
-            <td class="py-1">{{ team.D }}</td>
-            <td class="py-1">{{ team.win_percent }}</td>
-            <td class="py-1">{{ team.games_behind }}</td>
-            <td class="py-1">{{ team.streak }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+        {% endfor %}
+      </tbody>
+    </table>
+    
   </div>
-</div>
 
-<!-- 데스크탑 튜토리얼 -->
-<div id="introOverlay" class="fixed grid inset-0 bg-black/40 z-100 cursor-pointer hidden">
-  <div class="text-white pt-24">
-    <div id="introSteps" class="flex flex-col flex-row">
-      <p class="p-4 mx-auto w-fit bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-2/3 top-[100px] hidden select-none">
-        <strong class="text-2xl">승리요정</strong>을 소개합니다! 👉<br><br>
-        여기 보이는 귀여운 마스코트는, 바로<br>
-        당신의 직관 승률을 보여주는 승리요정입니다.<br>
-        직관을 간 경기 중에서 승률이<br>
-        50% 이상이면 승리요정이 기쁘게 응원하고,<br>
-        50% 미만이면 승리요정이 슬퍼해요ㅠ<br><br>
-        이미지를 <strong>클릭</strong>하면,<br>
-        - 지금까지의 <strong>직관 전적</strong><br>
-        - <strong>전체 유저 중 나의 순위</strong><br>
-        등을 확인할 수 있어요!
-      </p>
-      <p class="p-4 mx-auto w-fit bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-1/2 top-[270px] md:-translate-x-1/2 hidden select-none">
-        캘린더에서 원하는 <strong class="text-2xl">경기 일정</strong>을 <strong>클릭</strong>하면,<br>
-        해당 경기의 <strong>자세한 정보</strong>를 확인할 수 있어요.
-      </p>
-      <p class="p-4 mx-auto w-fit bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-1/2 top-[270px] md:-translate-x-1/2 hidden select-none">
-      경기가 <strong class="text-2xl">끝난 날</strong>이라면,<br>
-        점수, 선발 라인업, 각 선수들의 <strong>성적과 능력치</strong>까지 볼 수 있고요.
-      </p>
-      <p class="p-4 mx-auto w-fit bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-1/2 top-[270px] md:-translate-x-1/2 hidden select-none">
-        <strong class="text-2xl">앞으로 열릴 경기</strong>를 누르면 <strong>예매 버튼</strong>도 함께 제공돼요!<br>
-        바로 연결해서 티켓을 예매할 수 있답니다<br>
-      </p>
-      <p class="p-4 mx-auto w-fit bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-2/7 top-[500px] md:top-[400px] md:-translate-x-1/2 hidden select-none">
-        <strong class="text-2xl">왼쪽 포스트잇</strong>에서는<br>
-        <strong>각 팀의 예매 일정</strong>을 확인할 수 있고,<br>
-      </p>
-      <p class="p-4 mx-auto w-fit text-end bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-5/7 top-[500px] md:top-[400px] md:-translate-x-1/2 hidden select-none">
-        <strong class="text-2xl">오른쪽 포스트잇</strong>에서는<br>
-        <strong>이번 시즌 KBO 팀 순위</strong>를 한눈에 볼 수 있어요!
-      </p>
+  <!-- 모바일 전용 버튼 영역(캘린더 하단) -->
+  <div class="block lg:hidden w-full flex justify-center gap-4 relative pb-32">
+    <!-- 티켓 버튼 -->
+    <img src="/static/cal/images/icon/speech_bubble.png" alt="티켓 메모"
+          id="ticketBtnMobile"
+          class="w-[140px] h-[120px] cursor-pointer hover:scale-105 transition absolute left-1 bottom-7 -rotate-12 ">
+    <img src="/static/cal/images/icon/bb.png" alt="따봉강아지"
+        class="w-[120px] h-[120px] absolute left-1/2 -translate-x-1/2 ">
+    <!-- 순위 버튼 -->
+    <img src="/static/cal/images/icon/speech_bubble2.png" alt="순위 보기" id="rankingBtnMobile"
+        class="w-[130px] h-[120px] cursor-pointer hover:scale-105 transition absolute bottom-8 rotate-20 right-1">
+  </div>
+
+  <!-- 티켓 모달 -->
+  <div id="ticketModal" class="fixed inset-0 bg-black/50 flex justify-center items-center z-50 hidden">
+    <div class="relative w-[460px] h-[460px]">
+      <img src="/static/cal/images/icon/note-paper.png" alt="티켓 팝업 배경"
+          class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0"/>
+      <button id="closeTicketModal"
+        class="absolute top-18 right-12 max-sm:top-22 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
+        ×
+      </button>
+      <!-- 내용 -->
+      <div class="absolute top-12 left-16 max-sm:top-18 text-[13px] max-sm:text-[11px] leading-[1.5] text-gray-800 z-10 whitespace-pre-line">
+
+        <span class="inline-block text-pink-500 font-semibold">📌</span> <span class="font-bold">티켓팅 일정 및 링크</span>
+
+        <span class="font-semibold">티켓링크</span>  
+        ・ <a href="https://www.ticketlink.co.kr/sports/137/63" class="text-blue-600 underline" target="_blank">한화</a>: 7일 전 오전 11시  
+        ・ <a href="https://www.ticketlink.co.kr/sports/137/62" class="text-blue-600 underline" target="_blank">KT</a>: 7일 전 오후 2시  
+        ・ <a href="https://www.ticketlink.co.kr/sports/137/58" class="text-blue-600 underline" target="_blank">기아</a>: 7일 전 오전 11시  
+        ・ <a href="https://www.ticketlink.co.kr/sports/137/57" class="text-blue-600 underline" target="_blank">삼성</a>: 7일 전 오전 11시 (3연전의 첫 경기 기준)  
+        ・ <a href="https://www.ticketlink.co.kr/sports/137/59" class="text-blue-600 underline" target="_blank">엘지</a>: 7일 전 오전 11시  
+        ・ <a href="https://www.ticketlink.co.kr/sports/137/476" class="text-blue-600 underline" target="_blank">SSG</a>: 4일 전 오전 11시  
+
+        <span class="font-semibold">인터파크</span>  
+        ・ <a href="https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB003" class="text-blue-600 underline" target="_blank">키움</a>: 7일 전 오후 2시  
+        ・ <a href="https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB004" class="text-blue-600 underline" target="_blank">두산</a>: 7일 전 오전 11시  
+
+        <span class="font-semibold">홈페이지 예매</span>  
+        ・ <a href="https://ticket.giantsclub.com/loginForm.do" class="text-blue-600 underline" target="_blank">롯데</a>: 7일 전 오후 2시 (3연전의 첫 경기 기준)  
+        ・ <a href="https://www.ncdinos.com/" class="text-blue-600 underline" target="_blank">NC</a>: 6일 전 오전 11시  
+      </div>
     </div>
   </div>
 
-  <!-- 마지막 안내 박스 -->
-  <div id="finalMessage" class="bg-white/70 backdrop-blur-sm p-6 rounded-lg text-center max-w-md shadow-xl absolute left-1/2 top-[300px] -translate-x-1/2 hidden select-none">
-    <p class="p-2">
-        주요 기능들을 모두 살펴보셨어요!
-    </p>
-    <button onclick="closeIntro()" class="mt-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700">
-        다시 보지 않기
-    </button>
+  <!-- 순위 모달 -->
+  <div id="rankingModal" class="fixed inset-0 bg-black/50 flex justify-center items-center z-100 hidden">
+    <div class="relative w-[460px] h-[460px]">
+      <img src="/static/cal/images/icon/note-paper.png" alt="순위 팝업 배경"
+          class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0"/>
+      <button id="closeRankingModal"
+        class="absolute top-18 right-12 max-sm:top-22 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
+        ×
+      </button>
+      <!-- 내용 -->
+      <div class="w-[75%] h-[60%] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[13px] max-sm:text-[11px] text-gray-800 z-10 whitespace-pre-line">
+        <table class="w-full sm:text-xs text-center border-collapse">
+          <thead class="bg-gray-200 text-gray-700">
+            <tr>
+              <th class="py-1 px-1 sm:px-2">순위</th>
+              <th class="py-1 px-1 sm:px-2">팀</th>
+              <th class="py-1 px-1 sm:px-2">경기</th>
+              <th class="py-1 px-1 sm:px-2">승</th>
+              <th class="py-1 px-1 sm:px-2">패</th>
+              <th class="py-1 px-1 sm:px-2">무</th>
+              <th class="py-1 px-1 sm:px-2">승률</th>
+              <th class="py-1 px-1 sm:px-2">게임차</th>
+              <th class="py-1 px-1 sm:px-2">연속</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for team in standing %}
+            <tr class="border-b border-gray-200 hover:bg-gray-100 {% if team.team == user.team %}bg-yellow-100 font-bold text-black{% endif %}">
+              <td class="py-1">{{ forloop.counter }}</td>
+              <td class="py-1">{{ team.team|team_name }}</td>
+              <td class="py-1">{{ team.G }}</td>
+              <td class="py-1">{{ team.W }}</td>
+              <td class="py-1">{{ team.L }}</td>
+              <td class="py-1">{{ team.D }}</td>
+              <td class="py-1">{{ team.win_percent }}</td>
+              <td class="py-1">{{ team.games_behind }}</td>
+              <td class="py-1">{{ team.streak }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
-</div>
 
-<!-- 스크립트 -->
-<script>
-  const ticketBtn = document.getElementById("ticketBtn");
-  const ticketBtnMobile = document.getElementById("ticketBtnMobile");
-  const ticketModal = document.getElementById("ticketModal");
-  const closeTicketModal = document.getElementById("closeTicketModal");
+  <!-- 데스크탑 튜토리얼 -->
+  <div id="introOverlay" class="fixed grid inset-0 bg-black/40 z-100 cursor-pointer hidden">
+    <div class="text-white pt-24">
+      <div id="introSteps" class="flex flex-col flex-row">
+        <p class="p-4 mx-auto w-fit bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-2/3 top-[100px] hidden select-none">
+          <strong class="text-2xl">승리요정</strong>을 소개합니다! 👉<br><br>
+          여기 보이는 귀여운 마스코트는, 바로<br>
+          당신의 직관 승률을 보여주는 승리요정입니다.<br>
+          직관을 간 경기 중에서 승률이<br>
+          50% 이상이면 승리요정이 기쁘게 응원하고,<br>
+          50% 미만이면 승리요정이 슬퍼해요ㅠ<br><br>
+          이미지를 <strong>클릭</strong>하면,<br>
+          - 지금까지의 <strong>직관 전적</strong><br>
+          - <strong>전체 유저 중 나의 순위</strong><br>
+          등을 확인할 수 있어요!
+        </p>
+        <p class="p-4 mx-auto w-fit bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-1/2 top-[270px] md:-translate-x-1/2 hidden select-none">
+          캘린더에서 원하는 <strong class="text-2xl">경기 일정</strong>을 <strong>클릭</strong>하면,<br>
+          해당 경기의 <strong>자세한 정보</strong>를 확인할 수 있어요.
+        </p>
+        <p class="p-4 mx-auto w-fit bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-1/2 top-[270px] md:-translate-x-1/2 hidden select-none">
+        경기가 <strong class="text-2xl">끝난 날</strong>이라면,<br>
+          점수, 선발 라인업, 각 선수들의 <strong>성적과 능력치</strong>까지 볼 수 있고요.
+        </p>
+        <p class="p-4 mx-auto w-fit bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-1/2 top-[270px] md:-translate-x-1/2 hidden select-none">
+          <strong class="text-2xl">앞으로 열릴 경기</strong>를 누르면 <strong>예매 버튼</strong>도 함께 제공돼요!<br>
+          바로 연결해서 티켓을 예매할 수 있답니다<br>
+        </p>
+        <p class="p-4 mx-auto w-fit bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-2/7 top-[500px] md:top-[400px] md:-translate-x-1/2 hidden select-none">
+          <strong class="text-2xl">왼쪽 포스트잇</strong>에서는<br>
+          <strong>각 팀의 예매 일정</strong>을 확인할 수 있고,<br>
+        </p>
+        <p class="p-4 mx-auto w-fit text-end bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-5/7 top-[500px] md:top-[400px] md:-translate-x-1/2 hidden select-none">
+          <strong class="text-2xl">오른쪽 포스트잇</strong>에서는<br>
+          <strong>이번 시즌 KBO 팀 순위</strong>를 한눈에 볼 수 있어요!
+        </p>
+      </div>
+    </div>
+    <div id="finalMessage" class="bg-white/70 backdrop-blur-sm p-6 rounded-lg text-center max-w-md shadow-xl absolute left-1/2 top-[300px] -translate-x-1/2 hidden select-none">
+      <p class="p-2">
+          주요 기능들을 모두 살펴보셨어요!
+      </p>
+      <button onclick="closeIntro()" class="mt-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700">
+          다시 보지 않기
+      </button>
+    </div>
+  </div>
 
-  [ticketBtn, ticketBtnMobile].forEach(btn => {
-    btn?.addEventListener("click", () => {
-      ticketModal?.classList.remove("hidden");
+  <script>
+    const ticketBtn = document.getElementById("ticketBtn");
+    const ticketBtnMobile = document.getElementById("ticketBtnMobile");
+    const ticketModal = document.getElementById("ticketModal");
+    const closeTicketModal = document.getElementById("closeTicketModal");
+
+    [ticketBtn, ticketBtnMobile].forEach(btn => {
+      btn?.addEventListener("click", () => {
+        ticketModal?.classList.remove("hidden");
+      });
     });
-  });
 
-  closeTicketModal?.addEventListener("click", () => {
-    ticketModal.classList.add("hidden");
-  });
-
-  ticketModal?.addEventListener("click", (e) => {
-    if (e.target === ticketModal) {
+    closeTicketModal?.addEventListener("click", () => {
       ticketModal.classList.add("hidden");
-    }
-  });
-
-  const rankingBtn = document.getElementById("rankingBtn");
-  const rankingBtnMobile = document.getElementById("rankingBtnMobile");
-  const rankingModal = document.getElementById("rankingModal");
-  const closeRankingModal = document.getElementById("closeRankingModal");
-
-  [rankingBtn, rankingBtnMobile].forEach(btn => {
-    btn?.addEventListener("click", () => {
-      rankingModal?.classList.remove("hidden");
     });
-  });
 
-  closeRankingModal?.addEventListener("click", () => {
-    rankingModal.classList.add("hidden");
-  });
+    ticketModal?.addEventListener("click", (e) => {
+      if (e.target === ticketModal) {
+        ticketModal.classList.add("hidden");
+      }
+    });
 
-  rankingModal?.addEventListener("click", (e) => {
-    if (e.target === rankingModal) {
+    const rankingBtn = document.getElementById("rankingBtn");
+    const rankingBtnMobile = document.getElementById("rankingBtnMobile");
+    const rankingModal = document.getElementById("rankingModal");
+    const closeRankingModal = document.getElementById("closeRankingModal");
+
+    [rankingBtn, rankingBtnMobile].forEach(btn => {
+      btn?.addEventListener("click", () => {
+        rankingModal?.classList.remove("hidden");
+      });
+    });
+
+    closeRankingModal?.addEventListener("click", () => {
       rankingModal.classList.add("hidden");
-    }
-  });
+    });
 
-</script>
+    rankingModal?.addEventListener("click", (e) => {
+      if (e.target === rankingModal) {
+        rankingModal.classList.add("hidden");
+      }
+    });
+  </script>
 {% endblock %}

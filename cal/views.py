@@ -5,7 +5,7 @@ from django.views.decorators.cache import never_cache
 from django.db.models import Q
 from accounts.models import User
 from django.utils import timezone
-from datetime import datetime, timedelta, date, time
+from datetime import datetime, timedelta, date
 from collections import defaultdict
 from .models import *
 from .utils import Calendar
@@ -135,7 +135,7 @@ def calculate_team_standings():
     # 순위 정렬
     team_data.sort(key=lambda x: x['win_percent'], reverse=True)
 
-    # 게임차 계산
+    # 게임차
     first = team_data[0]
     for team in team_data:
         if team == first:
@@ -163,7 +163,6 @@ def standings(request):
     }
     return render(request, 'standings.html', context)
 
-
 # 캘린더 메인 뷰
 @never_cache
 @login_required
@@ -188,8 +187,7 @@ def calendar_view(request):
     }
     return render(request, 'calendar.html', context)
 
-
-# 날짜 유틸 함수
+# 날짜 유틸
 def get_date(req_day):
     try:
         if req_day:
@@ -209,7 +207,6 @@ def next_month(d):
     last = d.replace(day=days_in_month)
     next_ = last + timedelta(days=1)
     return f'day={next_.year}-{next_.month}-{next_.day}'
-
 
 # 수훈선수 함수
 def calculate_hitter_score(h):
@@ -233,7 +230,6 @@ def calculate_pitcher_score(p):
         p.R * 1.0 +
         p.SO * 1.0
     )
-
 
 # 라인업 뷰
 @never_cache
@@ -493,7 +489,7 @@ def user_games(request, user_id):
         elif game.team2 == user_team:
             result = game.team2_result
         else:
-            continue  # 예외적인 경우 방지
+            continue
 
         raw_stats[stadium]['total'] += 1
         if result == '승':
@@ -547,7 +543,6 @@ def user_games(request, user_id):
         'user_team_fullname': TEAM_NAME.get(user.team, user.team),
     }
     return render(request, 'user_games.html', context)
-
 
 # 경기장 정보(좌석, 주차, 식당)
 def stadium_info(request, stadium):

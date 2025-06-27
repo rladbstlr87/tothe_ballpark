@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="{% static 'auth/css/auth.css' %}">
+	<link rel="stylesheet" href="{% static 'auth/css/auth.css' %}">
 {% endblock %}
 
 {% block body %}
@@ -55,6 +55,7 @@
 			<h5>회원가입</h5>
 			<form method="post" action="?mode=signup" enctype="multipart/form-data">
 				{% csrf_token %}
+
 				<!-- 아이디 -->
 				<div class="flex flex-col">
 					<div class="flex items-center mt-2">
@@ -83,14 +84,11 @@
 								class="rounded-md text-sm px-2 whitespace-nowrap"
 								onclick="checkDuplicate('nickname')">중복확인</button>
 					</div>
-					<!-- 중복확인 결과 메시지 박스 -->
 					<p id="nickname-check-result" class="text-sm"></p>
-
 					{% for error in signup_form.nickname.errors %}
 						<p class="text-sm text-red-500 my-1">{{ error }}</p>
 					{% endfor %}
 				</div>
-
 
 				<!-- 이메일 -->
 				<div class="mb-1">
@@ -103,31 +101,27 @@
 					{% endfor %}
 				</div>
 
-				<!-- 프로필 이미지 업로드 -->
+				<!-- 프로필 이미지 -->
 				<div class="flex justify-between">
-					<!-- 커스텀 파일 선택 레이아웃 -->
 					<div class="items-center flex-wrap my-1">
 						<label class="block text-sm text-gray-700">프로필 이미지</label>
-						<!-- 선택된 파일명 표시 영역 -->
-						<span id="selectedFileName" class="mr-2 text-sm text-gray-600 truncate max-w-[200px]">선택된 파일 없음</span>
-
+						<span id="selectedFileName" class="mr-2 text-sm text-gray-600 truncate max-w-[200px]">
+							선택된 파일 없음
+						</span>
 						<!-- 실제 파일 input (숨김 처리) -->
 						<input type="file" id="imageUpload" name="profile_image" accept="image/*"
 						class="hidden">
 					</div>
-					<!-- 파일 선택 버튼 -->
 					<label for="imageUpload" class="my-3 px-2 py-1 primary cursor-pointer justify-center rounded-md text-sm transition">
 						파일선택
 					</label>
-
-					<!-- 에러 메시지 -->
 					{% for error in signup_form.profile_image.errors %}
 						<p class="text-sm text-red-500 my-1">{{ error }}</p>
 					{% endfor %}
 				</div>
 
+				<!-- 팀 선택 -->
 				<div class="mb-1">
-					<!-- 팀 선택 -->
 					{{ signup_form.team }}
 					{% for error in signup_form.team.errors %}
 					<p class="text-sm text-red-500 my-1">{{ error }}</p>
@@ -139,19 +133,16 @@
 				{% for error in signup_form.password1.errors %}
 					<p class="text-sm text-red-500 my-1">{{ error }}</p>
 				{% endfor %}
-
 				<input type="password" name="password2" class="form-field" placeholder="비밀번호 확인">
 				{% for error in signup_form.password2.errors %}
 					<p class="text-sm text-red-500 my-1">{{ error }}</p>
 				{% endfor %}
-
 				{% for error in signup_form.non_field_errors %}
 					<p class="text-sm text-red-500 my-1">{{ error }}</p>
 				{% endfor %}
 
 				<button type="submit" class="button primary my-3">회원가입</button>
 			</form>
-
 			<div class="text-sm text-center text-gray-600">
 				<a href="#" id="signin-link-from-signup" class="hover:underline">로그인</a>
 			</div>
@@ -220,7 +211,6 @@
 		document.getElementById('selectedFileName').textContent = fileName;
 	});
 
-	// 주요 wrapper 요소들 정의
 	const signinWrapper = document.querySelector('.signin-wrapper');
 	const signupWrapper = document.querySelector('.signup-wrapper');
 	const findIdWrapper = document.querySelector('.find-id-wrapper');
@@ -393,7 +383,6 @@
 	}
 
 	document.addEventListener('DOMContentLoaded', function () {
-		// 제목 설정 함수
 		function setPageTitle(title) {
 			document.title = title;
 		}

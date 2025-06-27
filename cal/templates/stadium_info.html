@@ -2,190 +2,187 @@
 {% load static %}
 
 {% block title %}
-{{ stadium.stadium }} | 직돌이
+  {{ stadium.stadium }} | 직돌이
 {% endblock %}
 
 {% block body %}
-<main class="max-w-5xl mx-auto text-xs md:text-sm">
-  <!-- 경기장 이름 -->
-  <div class="text-center p-8">
-    <h1 class="text-xl md:text-3xl font-bold">{{ stadium.stadium }}</h1>
-  </div>
+  <main class="max-w-5xl mx-auto text-xs md:text-sm">
+    <div class="text-center p-8">
+      <h1 class="text-xl md:text-3xl font-bold">{{ stadium.stadium }}</h1>
+    </div>
 
-  <!-- 예매 버튼 -->
-  <section class="text-center p-2">
-    {% if stadium.stadium == "잠실" %}
-      <div id="ticket-dropdown" class="inline-block relative">
-        <button id="dropdownToggle"
-                class="w-32 px-3 py-1.5 text-xs md:text-sm rounded-md bg-slate-600 text-white font-semibold shadow-md hover:shadow-lg focus:outline-none">
-          예매하기
-        </button>
-        <ul id="dropdownMenu"
-            class="absolute left-0 mt-2 w-32 bg-white border rounded shadow-lg z-50 text-xs md:text-sm hidden">
-          <li>
-            <a href="https://www.ticketlink.co.kr/sports/137/59"
-              target="_blank"
-              class="block px-3 py-1.5 hover:bg-gray-100">
-              LG 트윈스 예매
-            </a>
-          </li>
-          <li>
-            <a href="https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB004"
-              target="_blank"
-              class="block px-3 py-1.5 hover:bg-gray-100">
-              두산 베어스 예매
-            </a>
-          </li>
-        </ul>
-      </div>
-    {% else %}
-      <a href="{{ ticket_url }}" target="_blank">
+    <!-- 예매 버튼 -->
+    <section class="text-center p-2">
+      {% if stadium.stadium == "잠실" %}
+        <div id="ticket-dropdown" class="inline-block relative">
+          <button id="dropdownToggle"
+                  class="w-32 px-3 py-1.5 text-xs md:text-sm rounded-md bg-slate-600 text-white font-semibold shadow-md hover:shadow-lg focus:outline-none">
+            예매하기
+          </button>
+          <ul id="dropdownMenu"
+              class="absolute left-0 mt-2 w-32 bg-white border rounded shadow-lg z-50 text-xs md:text-sm hidden">
+            <li>
+              <a href="https://www.ticketlink.co.kr/sports/137/59"
+                target="_blank"
+                class="block px-3 py-1.5 hover:bg-gray-100">
+                LG 트윈스 예매
+              </a>
+            </li>
+            <li>
+              <a href="https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB004"
+                target="_blank"
+                class="block px-3 py-1.5 hover:bg-gray-100">
+                두산 베어스 예매
+              </a>
+            </li>
+          </ul>
+        </div>
+      {% else %}
+        <a href="{{ ticket_url }}" target="_blank">
+          <button
+            class="w-32 px-3 py-1.5 text-xs md:text-sm rounded-md bg-slate-600 text-white font-semibold shadow-md transition-transform hover:-translate-y-1 hover:shadow-lg">
+            예매하기
+          </button>
+        </a>
+      {% endif %}
+    </section>
+
+    <!-- 길찾기 버튼 -->
+    <section class="text-center p-2">
+      <a id="direction-link" href="{{ google_url }}" target="_blank" rel="noopener noreferrer">
         <button
-          class="w-32 px-3 py-1.5 text-xs md:text-sm rounded-md bg-slate-600 text-white font-semibold shadow-md transition-transform hover:-translate-y-1 hover:shadow-lg">
-          예매하기
+          class="w-32 px-3 py-1.5 text-xs md:text-sm rounded-md bg-blue-600 text-white font-semibold shadow-md transition-transform hover:-translate-y-1 hover:shadow-lg">
+          구장까지 길찾기
         </button>
       </a>
-    {% endif %}
-  </section>
+    </section>
 
-  <!-- 길찾기 버튼 -->
-  <section class="text-center p-2">
-    <a id="direction-link" href="{{ google_url }}" target="_blank" rel="noopener noreferrer">
-      <button
-        class="w-32 px-3 py-1.5 text-xs md:text-sm rounded-md bg-blue-600 text-white font-semibold shadow-md transition-transform hover:-translate-y-1 hover:shadow-lg">
-        구장까지 길찾기
+    <!-- 좌석 정보 -->
+    <section id="seat_info" class="p-4">
+      <h2 class="text-lg md:text-2xl font-semibold p-4">🔹 좌석 정보</h2>
+      <div class="w-full mb-6">
+        <img src="{% static 'cal/images/stadium/' %}{{ stadium.stadium }}.png"
+            alt="{{ stadium.stadium }} 좌석표"
+            class="w-full h-auto rounded-lg shadow-md">
+      </div>
+      <div class="grid gap-4 md:grid-cols-2">
+        {% for seat in seats %}
+          <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
+            <h3 class="text-base md:text-lg font-medium">{{ seat.seat_name }}</h3>
+            <p class="text-xs md:text-sm text-gray-600 mt-1">{{ seat.note }}</p>
+          </div>
+        {% empty %}
+          <p class="text-gray-500 text-xs md:text-sm">등록된 좌석 정보가 없습니다.</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- 주차장 정보 -->
+    <section id="parkinglot_info" class="p-4">
+      <h2 class="text-lg md:text-2xl font-semibold mb-4">🅿️ 근처 주차장 정보</h2>
+      <div class="grid gap-4 md:grid-cols-2">
+        {% for parking in parkings %}
+          <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
+            <h3 class="text-base md:text-lg font-medium">{{ parking.parking_name }}</h3>
+            <p class="text-xs md:text-sm text-gray-600">{{ parking.adress }}</p>
+            <p class="text-xs md:text-sm text-gray-600 mt-1">{{ parking.note }}</p>
+          </div>
+        {% empty %}
+          <p class="text-gray-500 text-xs md:text-sm">등록된 주차장 정보가 없습니다.</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- 식당 정보 -->
+    <section id="restaurant_info" class="p-4">
+      <h2 class="text-lg md:text-2xl font-semibold mb-4">🍽 식당 정보</h2>
+      <div class="grid gap-4 md:grid-cols-2">
+        {% for restaurant in restaurants %}
+          <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
+            <h3 class="text-base md:text-lg font-medium">{{ restaurant.restaurant_name }}</h3>
+            <p class="text-xs md:text-sm text-gray-600">
+              <a href="https://map.naver.com/v5/search/{{ restaurant.adress|add:' ' }}{{ restaurant.restaurant_name|urlencode }}" 
+                target="_blank" 
+                class="text-blue-600 hover:underline">
+                {{ restaurant.adress }}
+              </a>
+            </p>
+            <p class="text-xs md:text-sm text-gray-600 mt-1">{{ restaurant.note }}</p>
+          </div>
+        {% empty %}
+          <p class="text-gray-500 text-xs md:text-sm">등록된 식당 정보가 없습니다.</p>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+
+  <!-- 데스크탑 튜토리얼 -->
+  <div id="introOverlay" class="fixed grid inset-0 bg-black/40 z-100 cursor-pointer hidden">
+    <div class="text-white pt-24">
+      <div id="introSteps" class="flex flex-col md:flex-row gap-6 px-4">
+        <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-1/2 top-[270px] md:-translate-x-1/2 hidden select-none">
+          <strong class="text-2xl">구장 정보</strong>를 안내드립니다.<br><br>
+          프로야구가 진행되는 각 구장의 정보를 확인해보세요!<br>
+        </p>
+        <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-5/7 top-[180px] md:-translate-x-1/2 hidden select-none">
+          <strong class="text-xl">예매</strong>를 클릭하면 구장의 예매 페이지로 이동되구요<br><br>
+          <strong class="text-xl">구장까지 길찾기</strong>는 네이버지도에서 경로 도착지를 구장으로 설정해드려요!<br>
+        </p>
+        <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-3/7 md:-translate-x-1/3 hidden select-none">
+          <strong class="text-2xl">좌석정보</strong>는 예매 전 참고할 수 있는 좌석 위치와 종류를 알 수 있어요.<br>
+          <strong>좌석</strong>별로 살펴보시고 어떤 좌석이 좋을지 구경해보세요!
+        </p>
+        <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-1/2 top-[100px] md:-translate-x-1/2 hidden select-none">
+          <strong class="text-2xl">주차장 정보</strong>는 구장의 주차장을 이용하지 않을 경우,<br>
+          인근의 가까운 <strong>주차장</strong>의 정보를 확인해보세요!
+        </p>
+        <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-1/2 top-[200px] md:-translate-x-1/2 hidden select-none">
+          <strong class="text-2xl">식당 정보</strong>는 야구 관람 전후로 이용할 수 있는<br>
+          맛집들을 확인할 수 있어요.<br>
+          실제 야구 선수들이 종종 찾아가는 맛집도 있으니,<br>
+          야구 관람과 관계없이 평소에 가보시면<br>
+          응원하는 선수를 발견(?)하실 수도 있어요!
+        </p>
+      </div>
+    </div>
+    <div id="finalMessage" class="bg-white/70 backdrop-blur-sm p-6 rounded-lg text-center max-w-md shadow-xl absolute left-1/2 top-[300px] -translate-x-1/2 hidden select-none">
+      <p class="p-2">
+          주요 기능들을 모두 살펴보셨어요!
+      </p>
+      <button onclick="closeIntro()" class="mt-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700">
+          다시 보지 않기
       </button>
-    </a>
-  </section>
-
-  <!-- 좌석 정보 -->
-  <section id="seat_info" class="p-4">
-    <h2 class="text-lg md:text-2xl font-semibold p-4">🔹 좌석 정보</h2>
-    <div class="w-full mb-6">
-      <img src="{% static 'cal/images/stadium/' %}{{ stadium.stadium }}.png"
-          alt="{{ stadium.stadium }} 좌석표"
-          class="w-full h-auto rounded-lg shadow-md">
-    </div>
-    <div class="grid gap-4 md:grid-cols-2">
-      {% for seat in seats %}
-        <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
-          <h3 class="text-base md:text-lg font-medium">{{ seat.seat_name }}</h3>
-          <p class="text-xs md:text-sm text-gray-600 mt-1">{{ seat.note }}</p>
-        </div>
-      {% empty %}
-        <p class="text-gray-500 text-xs md:text-sm">등록된 좌석 정보가 없습니다.</p>
-      {% endfor %}
-    </div>
-  </section>
-
-  <!-- 주차장 정보 -->
-  <section id="parkinglot_info" class="p-4">
-    <h2 class="text-lg md:text-2xl font-semibold mb-4">🅿️ 근처 주차장 정보</h2>
-    <div class="grid gap-4 md:grid-cols-2">
-      {% for parking in parkings %}
-        <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
-          <h3 class="text-base md:text-lg font-medium">{{ parking.parking_name }}</h3>
-          <p class="text-xs md:text-sm text-gray-600">{{ parking.adress }}</p>
-          <p class="text-xs md:text-sm text-gray-600 mt-1">{{ parking.note }}</p>
-        </div>
-      {% empty %}
-        <p class="text-gray-500 text-xs md:text-sm">등록된 주차장 정보가 없습니다.</p>
-      {% endfor %}
-    </div>
-  </section>
-
-  <!-- 식당 정보 -->
-  <section id="restaurant_info" class="p-4">
-    <h2 class="text-lg md:text-2xl font-semibold mb-4">🍽 식당 정보</h2>
-    <div class="grid gap-4 md:grid-cols-2">
-      {% for restaurant in restaurants %}
-        <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
-          <h3 class="text-base md:text-lg font-medium">{{ restaurant.restaurant_name }}</h3>
-          <p class="text-xs md:text-sm text-gray-600">
-            <a href="https://map.naver.com/v5/search/{{ restaurant.adress|add:' ' }}{{ restaurant.restaurant_name|urlencode }}" 
-              target="_blank" 
-              class="text-blue-600 hover:underline">
-              {{ restaurant.adress }}
-            </a>
-          </p>
-          <p class="text-xs md:text-sm text-gray-600 mt-1">{{ restaurant.note }}</p>
-        </div>
-      {% empty %}
-        <p class="text-gray-500 text-xs md:text-sm">등록된 식당 정보가 없습니다.</p>
-      {% endfor %}
-    </div>
-  </section>
-</main>
-
-<!-- 데스크탑 튜토리얼 -->
-<div id="introOverlay" class="fixed grid inset-0 bg-black/40 z-100 cursor-pointer hidden">
-  <div class="text-white pt-24">
-    <div id="introSteps" class="flex flex-col md:flex-row gap-6 px-4">
-      <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-1/2 top-[270px] md:-translate-x-1/2 hidden select-none">
-        <strong class="text-2xl">구장 정보</strong>를 안내드립니다.<br><br>
-        프로야구가 진행되는 각 구장의 정보를 확인해보세요!<br>
-      </p>
-      <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-5/7 top-[180px] md:-translate-x-1/2 hidden select-none">
-        <strong class="text-xl">예매</strong>를 클릭하면 구장의 예매 페이지로 이동되구요<br><br>
-        <strong class="text-xl">구장까지 길찾기</strong>는 네이버지도에서 경로 도착지를 구장으로 설정해드려요!<br>
-      </p>
-      <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-3/7 md:-translate-x-1/3 hidden select-none">
-        <strong class="text-2xl">좌석정보</strong>는 예매 전 참고할 수 있는 좌석 위치와 종류를 알 수 있어요.<br>
-        <strong>좌석</strong>별로 살펴보시고 어떤 좌석이 좋을지 구경해보세요!
-      </p>
-      <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-1/2 top-[100px] md:-translate-x-1/2 hidden select-none">
-        <strong class="text-2xl">주차장 정보</strong>는 구장의 주차장을 이용하지 않을 경우,<br>
-        인근의 가까운 <strong>주차장</strong>의 정보를 확인해보세요!
-      </p>
-      <p class="p-4 mx-auto bg-white/30 backdrop-blur-sm rounded-lg md:absolute md:left-1/2 top-[200px] md:-translate-x-1/2 hidden select-none">
-        <strong class="text-2xl">식당 정보</strong>는 야구 관람 전후로 이용할 수 있는<br>
-        맛집들을 확인할 수 있어요.<br>
-        실제 야구 선수들이 종종 찾아가는 맛집도 있으니,<br>
-        야구 관람과 관계없이 평소에 가보시면<br>
-        응원하는 선수를 발견(?)하실 수도 있어요!
-      </p>
     </div>
   </div>
 
-  <!-- 마지막 안내 박스 -->
-  <div id="finalMessage" class="bg-white/70 backdrop-blur-sm p-6 rounded-lg text-center max-w-md shadow-xl absolute left-1/2 top-[300px] -translate-x-1/2 hidden select-none">
-    <p class="p-2">
-        주요 기능들을 모두 살펴보셨어요!
-    </p>
-    <button onclick="closeIntro()" class="mt-2 px-4 py-2 bg-gray-600 text-white rounded hover:bg-blue-700">
-        다시 보지 않기
-    </button>
-  </div>
-</div>
+  <!-- 드롭다운 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggleButton = document.getElementById('dropdownToggle');
+      const menu = document.getElementById('dropdownMenu');
 
-<!-- 드롭다운 스크립트 -->
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const toggleButton = document.getElementById('dropdownToggle');
-    const menu = document.getElementById('dropdownMenu');
+      if (toggleButton && menu) {
+        toggleButton.addEventListener('click', () => {
+          menu.classList.toggle('hidden');
+        });
 
-    if (toggleButton && menu) {
-      toggleButton.addEventListener('click', () => {
-        menu.classList.toggle('hidden');
-      });
+        document.addEventListener('click', (e) => {
+          const dropdown = document.getElementById('ticket-dropdown');
+          if (dropdown && !dropdown.contains(e.target)) {
+            menu.classList.add('hidden');
+          }
+        });
+      }
+    });
+    const isMobile = /iPhone|Android|iPad|iPod/i.test(navigator.userAgent);
 
-      document.addEventListener('click', (e) => {
-        const dropdown = document.getElementById('ticket-dropdown');
-        if (dropdown && !dropdown.contains(e.target)) {
-          menu.classList.add('hidden');
-        }
-      });
+    // 모바일이라면 href를 네이버 지도 링크로 변경
+    if (isMobile) {
+      const naverUrl = "{{ naver_url|safe }}";
+      const link = document.getElementById('direction-link');
+      if (naverUrl && link) {
+        link.href = naverUrl;
+      }
     }
-  });
-  const isMobile = /iPhone|Android|iPad|iPod/i.test(navigator.userAgent);
-
-  // 모바일이라면 href를 네이버 지도 링크로 변경
-  if (isMobile) {
-    const naverUrl = "{{ naver_url|safe }}";
-    const link = document.getElementById('direction-link');
-    if (naverUrl && link) {
-      link.href = naverUrl;
-    }
-  }
-</script>
+  </script>
 {% endblock %}
