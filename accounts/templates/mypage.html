@@ -5,36 +5,23 @@
 
 {% block body %}
 
-<!--  스타일 정의  -->
 <style>
-  .fade-in {
-    animation: fadeIn 0.3s ease-in forwards;
-  }
-
-  .fade-out {
-    animation: fadeOut 0.3s ease-out forwards;
-  }
-
+  .fade-in { animation: fadeIn 0.3s ease-in forwards; }
+  .fade-out { animation: fadeOut 0.3s ease-out forwards; }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-
   @keyframes fadeOut {
     from { opacity: 1; transform: translateY(0); }
     to   { opacity: 0; transform: translateY(10px); }
   }
-
   .btn-sky {
     background-color: #dce9f9;
     color: #333;
     transition: background-color 0.2s;
   }
-
-  .btn-sky:hover {
-    background-color: #c9dff6;
-  }
-
+  .btn-sky:hover { background-color: #c9dff6; }
   .profile-image-label {
     position: absolute;
     bottom: 0;
@@ -47,17 +34,13 @@
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   }
-
-  .profile-image-label i {
-    color: #3490dc;
-    font-size: 16px;
-  }
+  .profile-image-label i { color: #3490dc; font-size: 16px; }
 </style>
 
 <div class="root py-10">
   <div class="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md">
 
-    <!-- 프로필 이미지 영역 -->
+    <!-- 프로필 이미지 -->
     <div class="flex flex-col items-center mb-6">
       <div class="relative w-24 h-24 bg-gray-200 border-gray-500 rounded-full overflow-hidden shadow">
         {% if user.profile_image %}
@@ -65,34 +48,26 @@
         {% else %}
           <img id="profile-img" src="{% static 'posts/images/detail/'|add:user.team|add:'.png' %}" alt="기본 이미지" class="object-cover w-full h-full">
         {% endif %}
-
-        <!-- 프로필 이미지 수정 버튼 -->
-        <label for="id_profile_image" class="profile-image-label">
-          <i class="fas fa-camera"></i> 수정
-        </label>
+        <label for="id_profile_image" class="profile-image-label"><i class="fas fa-camera"></i> 수정</label>
       </div>
-
-      <!-- 프로필 이미지 업로드 폼 -->
       <form id="profile-image-form" method="POST" enctype="multipart/form-data" action="{% url 'accounts:update_profile_image' %}">
         {% csrf_token %}
         <input type="file" name="profile_image" id="id_profile_image" class="hidden" accept="image/*" onchange="submitForm(event)">
         <button type="submit" class="hidden">업로드</button>
       </form>
-
-      <!-- 유저 정보 -->
-      <div class="my-2 text-lg text-gray-500">{{ user.username }}</div>
-      <div class="font-semibold text-lg">{{ user.nickname }}</div>
-      <div class="my-2 text-sm text-gray-500">{{ user.email }}</div>
+      <div class="my-2 text-lg text-gray-500">{{ request.user.username }}</div>
+      <div class="font-semibold text-lg">{{ request.user.nickname }}</div>
+      <div class="my-2 text-sm text-gray-500">{{ request.user.email }}</div>
     </div>
 
-    <!--  메인 메뉴 버튼  -->
+    <!-- 메뉴 -->
     <div id="main-menu" class="space-y-4 sm:flex sm:space-y-0 sm:space-x-20 sm:justify-center fade-in">
       <button onclick="switchForm('password-form')" class="w-full sm:w-auto px-4 py-2 rounded btn-sky">비밀번호 변경</button>
       <button onclick="switchForm('nickname-form')" class="w-full sm:w-auto px-4 py-2 rounded btn-sky">닉네임 변경</button>
       <button onclick="switchForm('team-form')" class="w-full sm:w-auto px-4 py-2 rounded btn-sky">응원팀 변경</button>
     </div>
 
-    <!--  비밀번호 변경 폼  -->
+    <!-- 비밀번호 변경 -->
     <div id="password-form" class="hidden mt-4">
       <form method="post">
         {% csrf_token %}
@@ -100,6 +75,18 @@
         {{ password_form.old_password }}
         {{ password_form.new_password1 }}
         {{ password_form.new_password2 }}
+        {% if password_form.errors %}
+          <ul class="text-sm text-red-500 mt-2 space-y-1">
+            {% for field in password_form %}
+              {% for error in field.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+            {% for error in password_form.non_field_errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
         <div class="flex justify-between mt-4">
           <button type="submit" class="px-4 py-1 rounded btn-sky">변경</button>
           <button type="button" onclick="goBack('password-form')" class="text-sm text-gray-500 hover:underline">← 돌아가기</button>
@@ -107,7 +94,7 @@
       </form>
     </div>
 
-    <!-- 닉네임 변경 폼 -->
+    <!-- 닉네임 변경 -->
     <div id="nickname-form" class="hidden mt-4">
       <form method="post">
         {% csrf_token %}
@@ -120,7 +107,7 @@
       </form>
     </div>
 
-    <!-- 응원팀 변경 폼 -->
+    <!-- 응원팀 변경 -->
     <div id="team-form" class="hidden mt-4">
       <form method="post">
         {% csrf_token %}
@@ -138,7 +125,7 @@
       </form>
     </div>
 
-    <!-- 메시지 출력 영역 -->
+    <!-- 메시지 -->
     {% if messages %}
       <div id="message-box" class="mt-4 text-sm text-center transition-opacity duration-500">
         {% for message in messages %}
@@ -152,43 +139,36 @@
 </div>
 
 <script>
-  // 프로필 이미지 선택 시 자동 제출
   function submitForm(event) {
-    const form = document.getElementById('profile-image-form');
-    form.submit();
+    document.getElementById('profile-image-form').submit();
   }
 
-  // 전환 애니메이션 함수
   function fadeSwitch(fromEl, toEl) {
     fromEl.classList.add('fade-out');
     setTimeout(() => {
       fromEl.classList.add('hidden');
       fromEl.style.display = 'none';
       fromEl.classList.remove('fade-out');
-
       toEl.classList.remove('hidden');
       toEl.style.display = '';
       toEl.classList.add('fade-in');
-
       setTimeout(() => toEl.classList.remove('fade-in'), 300);
     }, 300);
   }
 
-  // 메인 메뉴 → 폼 전환
   function switchForm(formId) {
     const mainMenu = document.getElementById('main-menu');
     const targetForm = document.getElementById(formId);
     fadeSwitch(mainMenu, targetForm);
   }
 
-  // 폼 → 메인 메뉴로 돌아가기
   function goBack(currentFormId) {
     const currentForm = document.getElementById(currentFormId);
     const mainMenu = document.getElementById('main-menu');
     fadeSwitch(currentForm, mainMenu);
   }
 
-  // 메시지 자동 사라짐 처리
+  // 메시지 & 폼 자동 전환
   window.addEventListener('DOMContentLoaded', () => {
     const msgBox = document.getElementById('message-box');
     if (msgBox) {
@@ -200,6 +180,15 @@
 
     const mainMenu = document.getElementById('main-menu');
     if (mainMenu) mainMenu.style.display = '';
+
+    const currentMode = "{{ current_mode }}";
+    if (currentMode === 'password') {
+      switchForm('password-form');
+    } else if (currentMode === 'nickname') {
+      switchForm('nickname-form');
+    } else if (currentMode === 'team') {
+      switchForm('team-form');
+    }
   });
 </script>
 
