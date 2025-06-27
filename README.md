@@ -11,7 +11,8 @@
 KBO/
 ├── cal/           
 ├── accounts/      
-├── posts/         
+├── posts/     
+├── jikdoltest/  
 ├── data/          
 ├── templates/      
 ├── static/         
