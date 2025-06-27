@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}테스트 결과 | 직돌이{% endblock %}
+{% block title %}
+  테스트 결과 | 직돌이
+{% endblock %}
+{% block styles %}
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js" integrity="sha384-dok87au0gKqJdxs7msEdBPNnKSRT+/mhTVzq+qOhcL464zXwvcrpjeWvyj1kCdq6" crossorigin="anonymous"></script>
+{% endblock %}
 
 {% block body %}
   <div class="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#f3e7ff] via-[#ffeef2] to-[#d5f3ff]">
-    <!-- 질문 카드 전체 영역: 배경이미지 + 내용 -->
     <div class="w-full sm:max-w-[450px] max-sm:h-screen aspect-[9/16] sm:rounded-2xl overflow-hidden shadow-lg bg-cover bg-center relative px-4"
         style="background-image: url('{% static 'posts/images/관망형직돌이.png' %}'); background-size: cover; background-position: center;">
 
@@ -19,14 +23,9 @@
 
         <!-- SNS 공유 버튼들 -->
         <div class="absolute bottom-8 w-full flex justify-center items-center gap-4">
-
-          <!-- 트위터 공유 버튼 -->
-          <a href="https://twitter.com/intent/tweet?url=http://ec2-54-180-135-148.ap-northeast-2.compute.amazonaws.com/jikdoltest/result/D/&text=직돌이%20테스트%20결과" target="_blank"
-            class="">
+          <a href="https://twitter.com/intent/tweet?url=http://ec2-54-180-135-148.ap-northeast-2.compute.amazonaws.com/jikdoltest/result/D/&text=직돌이%20테스트%20결과" target="_blank">
             <img src="{% static 'posts/images/x.png' %}" alt="트위터 공유" class="w-8 h-8">
           </a>
-
-          <!-- 카카오톡 공유 버튼 -->
           <a id="kakaotalk-sharing-btn" href="javascript:shareMessage()">
             <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
               alt="카카오톡 공유 보내기 버튼" class="w-8 h-8" />
@@ -34,16 +33,11 @@
         </div>  
     </div>
   </div>
-
-  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js" integrity="sha384-dok87au0gKqJdxs7msEdBPNnKSRT+/mhTVzq+qOhcL464zXwvcrpjeWvyj1kCdq6" crossorigin="anonymous"></script>
-
   <script>
-    Kakao.init('1c62050d52e114ddafc59708fd10d1e6');  // 사용하려는 앱의 JavaScript 키 입력
-  </script>
-  <script>
+    Kakao.init('1c62050d52e114ddafc59708fd10d1e6');
     function shareMessage() {
       Kakao.Share.sendCustom({
-        templateId: 121738,  // 공유 할 메시지 템플릿 ID 입력
+        templateId: 121738,
       });
     }
   </script>

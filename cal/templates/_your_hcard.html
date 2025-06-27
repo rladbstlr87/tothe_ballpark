@@ -1,5 +1,6 @@
 {% load static %}
 {% load custom_filters %}
+<!-- 유저 상대팀 타자 카드 -->
 <div id="your_hstat_bar">
     <div class="flex items-center">
         <span class="w-4.5 mr-3">{{ lineup.hitter.power|percent }}</span>
@@ -66,18 +67,18 @@
     </div>
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const bars = document.querySelectorAll('.bar-style');
-    bars.forEach(bar => {
-        const widthPercent = parseFloat(bar.style.width);
-        bar.classList.remove('bg-blue-300', 'bg-blue-500', 'bg-purple-500');
-        if (widthPercent >= 90) {
-            bar.classList.add('bg-purple-500');
-        } else if (widthPercent >= 80) {
-            bar.classList.add('bg-blue-500');
-        } else {
-            bar.classList.add('bg-blue-300');
-        }
+    document.addEventListener('DOMContentLoaded', function () {
+        const bars = document.querySelectorAll('.bar-style');
+        bars.forEach(bar => {
+            const widthPercent = parseFloat(bar.style.width);
+            bar.classList.remove('bg-blue-300', 'bg-blue-500', 'bg-purple-500');
+            if (widthPercent >= 90) {
+                bar.classList.add('bg-purple-500');
+            } else if (widthPercent >= 80) {
+                bar.classList.add('bg-blue-500');
+            } else {
+                bar.classList.add('bg-blue-300');
+            }
+        });
     });
-});
 </script>

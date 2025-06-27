@@ -4,7 +4,6 @@
             background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;">
-
     <div class="p-2 grid grid-cols-5 gap-4 items-center text-xs sm:text-sm">
         <!-- 내 팀 -->
         <div class="flex justify-end items-center w-full">
@@ -54,7 +53,7 @@
                     class="text-white text-xs sm:text-lg">
                     {{ game.stadium }}
                 </a>
-            <!-- 날짜 및 이동 -->
+            <!-- 날짜 이동 -->
             <div class="flex items-center justify-center mt-2 sm:mt-0 space-x-2 text-xs sm:text-sm">
                 {% if prev_game_id %}
                     <a href="/cal/calendar/{{ prev_game_id }}/" class="text-white">&lt;&lt;</a>
@@ -75,7 +74,6 @@
     </div>
 </section>
 <script>
-    // 드롭다운 스크립트
     document.addEventListener('DOMContentLoaded', () => {
     const toggleButton = document.getElementById('dropdownToggle');
     const menu = document.getElementById('dropdownMenu');

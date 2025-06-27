@@ -7,7 +7,8 @@ def stadium_list(request):
             '고척', '사직', '대구', '수원', '울산', '포항'
         ]
 }
-def random_backgrounds(request):
+
+def random_changes(request):
     team_icons = [
         'cal/images/mascots/HHline.svg',
         'cal/images/mascots/LTline.svg',
@@ -21,5 +22,5 @@ def random_backgrounds(request):
         'cal/images/mascots/WOline.svg',
     ]
     return {
-        'random_background': random.choice(team_icons)
+        'random_change': random.choice(team_icons)
     }

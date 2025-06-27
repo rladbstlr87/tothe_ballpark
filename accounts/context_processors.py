@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 
 def win_count_total(request):
     if not request.user.is_authenticated:
-        return {}  # 비로그인 상태에서는 아무것도 반환하지 않음
+        return {}
 
     win_count = 0
     user_team = request.user.team
@@ -26,18 +26,15 @@ def all_users_winning_percent(request):
     User = get_user_model()
     all_users = User.objects.all()
     user_win_data = []
-
     for user in all_users:
         games = user.attendance_game.all()
         total_games = games.count()
         win_count = 0
-
         for game in games:
             user_team = user.team
             game_result = game.team1_result if game.team1 == user_team else game.team2_result
             if game_result == '승':
                 win_count += 1
-
         winning_percent = round((win_count / total_games) * 100, 2) if total_games > 0 else 0
         user_win_data.append({
             'username': user.username,

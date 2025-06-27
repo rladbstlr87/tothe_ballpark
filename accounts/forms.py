@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, Pass
 from .models import User
 import os
 
-# 사용자 정의 회원가입 폼
+# 회원가입 폼
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
@@ -50,24 +50,22 @@ class CustomUserCreationForm(UserCreationForm):
         return user
 
 
-# 사용자 정의 로그인 폼
+# 로그인 폼
 class CustomAuthenticationForm(AuthenticationForm):
     def __init__(self, request=None, *args, **kwargs):
         super().__init__(request, *args, **kwargs)
 
-        # 아이디 입력 필드 커스터마이징
         self.fields['username'].widget.attrs.update({
             'class': 'form-field',
             'placeholder': '아이디'
         })
 
-        # 비밀번호 입력 필드 커스터마이징
         self.fields['password'].widget.attrs.update({
             'class': 'form-field',
             'placeholder': '비밀번호'
         })
 
-
+# 변경 폼들
 class PasswordChangeCustomForm(PasswordChangeForm):
     old_password = forms.CharField(
         widget=forms.PasswordInput(attrs={
@@ -120,14 +118,10 @@ class ProfileImageForm(forms.ModelForm):
         fields = ['profile_image']
 
     def save(self, commit=True):
-        # 프로필 이미지를 변경할 때, 기존 이미지를 삭제하는 로직
         instance = super().save(commit=False)
-        
-        # 기존 이미지가 있다면 삭제
-        if instance.pk:  # 기존 인스턴스가 있다면
+        if instance.pk:
             old_instance = User.objects.get(pk=instance.pk)
             if old_instance.profile_image and old_instance.profile_image != instance.profile_image:
-                # 기존 이미지를 삭제
                 if os.path.isfile(old_instance.profile_image.path):
                     os.remove(old_instance.profile_image.path)
 
