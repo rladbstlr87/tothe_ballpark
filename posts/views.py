@@ -186,9 +186,10 @@ def comment_delete(request, post_id, comment_id):
 
 @login_required
 def post_like(request, post_id):
+    user = request.user
     post = get_object_or_404(Post, id=post_id)
     if request.user in post.like_users.all():
-        post.like_users.remove(request.user)
+        post.like_users.remove(user)
     else:
         post.like_users.add(user)
     return redirect('posts:detail', id=post_id)
