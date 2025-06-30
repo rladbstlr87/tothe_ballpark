@@ -54,21 +54,19 @@ QUESTIONS = [
     ]
 
 # 직돌이 테스트 점수
-SCORE_TABLE = [
+SCORE_TABLE = [ 
     ['A,B,D,E', 'C'],
     ['A,D', 'B,C,E'],
     ['A,D', 'E'],
-    ['A,D', 'E'],
+    ['A,C,D', 'D,E'],
     ['D', 'B,E'],
     ['A,C,D', 'B,E'],
     ['A,D', 'B,C,E'],
-    ['A,D', 'B,E'],
+    ['A,C,D', 'B,E'],
     ['A,D', 'B,C,E'],
     ['A,C,D,E', 'B'],
-    ['A,D', 'B,E'],
-    ['A,C,D', 'B'],
-    ['A,D', 'B,E'],
-    ['A', 'B,E'], 
+    ['A,D', 'B,C,E'],
+    ['A,C,D', 'B']
 ]
 
 # 테스트 질문 처리 
