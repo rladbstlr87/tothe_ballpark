@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
 
-# 팀 코드 매핑 (네이버 URL 구성용)
+# KBO 팀 코드 매핑
 TEAM_CODE = {
     'LT': 'LT', 'HT': 'HT', 'LG': 'LG', 'OB': 'OB', 'SK': 'SK',
     'WO': 'WO', 'SS': 'SS', 'HH': 'HH', 'KT': 'KT', 'NC': 'NC',
@@ -57,8 +57,9 @@ def get_record(date, team1_code, team2_code, game_id, driver):
 
     return data
 
-# 오늘 날짜 및 마지막 저장된 날짜 확인
 today = datetime.date.today()
+
+# 기존 파일에서 마지막 저장된 날짜와 game_id 파악
 last_date = None
 max_game_id = 0
 
@@ -71,7 +72,6 @@ try:
 except FileNotFoundError:
     pass
 
-# 경기 일정 CSV 읽기
 df = pd.read_csv('data/kbo_schedule.csv')
 game_map = {}
 next_gid = max_game_id + 1
@@ -86,11 +86,9 @@ if last_date:
 # 유효한 경기만 game_map에 정리
 for _, row in df_filtered.iterrows():
     if str(row.get('canceled', '')).strip() == '취소':
-        print(f"취소된 경기: {row['day']} {row['team1']} vs {row['team2']} ({row['time']})")
         next_gid += 1
         continue
     if pd.isna(row['team1_score']) or pd.isna(row['team2_score']):
-        print(f"점수 없음: {row['day']} {row['team1']} vs {row['team2']} ({row['time']})")
         next_gid += 1
         continue
 
@@ -122,10 +120,9 @@ with open('data/hitters_records.csv', 'a', newline='', encoding='utf-8-sig') as 
             d, t1, t2 = row['day'].replace('.', ''), row['team1'], row['team2']
             t1c, t2c = TEAM_CODE.get(t1, ''), TEAM_CODE.get(t2, '')
             if not t1c or not t2c:
-                print(f"팀 코드 누락: {t1}, {t2}")
                 continue
 
-            # 더블헤더 처리
+            # 네이버 경기 ID 결정 (일반, 더블헤더 1/2차전 등)
             if len(games_sorted) == 1:
                 gcode = '02025'
             elif idx == 0:
@@ -141,11 +138,9 @@ with open('data/hitters_records.csv', 'a', newline='', encoding='utf-8-sig') as 
 
             # 2차 더블헤더 실패 시, 일반 코드로 재시도
             if len(games_sorted) > 1 and idx == 1 and not rec['away'] and not rec['home'] and gcode == '22025':
-                print(f"🔁 {d} {t1} vs {t2} 2차 기록 없음, 02025로 재시도")
                 rec = get_record(d, t1c, t2c, '02025', driver)
 
             if not rec['away'] and not rec['home']:
-                print(f"⚠️ 기록 없음: {d} {t1} vs {t2} ({gcode})")
                 continue
 
             # 기록 저장
@@ -155,9 +150,6 @@ with open('data/hitters_records.csv', 'a', newline='', encoding='utf-8-sig') as 
                         continue
                     rw.writerow([r.get(k, '') for k in ['AB','R','H','RBI','HR','BB','SO','SB']] + [r['player_id'], team, gid, d])
 
-            print(f"저장 완료: {d} {t1} vs {t2} ({gcode}) → game_id={gid}, 선수 수: {len(rec['away']) + len(rec['home'])}")
             time.sleep(1.5)
 
-# 종료 처리
-print('기록 저장 완료')
 driver.quit()

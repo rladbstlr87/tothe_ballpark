@@ -29,12 +29,17 @@ def format_date(day_str, year=2025):
     month, day = day_clean.split('.')
     return f"{year}.{month.zfill(2)}.{day.zfill(2)}"
 
-# Selenium 설정
 url = 'https://www.koreabaseball.com/Schedule/Schedule.aspx'
-options = Options()
-options.add_argument('--headless')
-options.add_argument('--no-sandbox')
-driver = webdriver.Chrome(options=options)
+
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--window-size=1920,1080")
+chrome_options.add_argument("--disable-dev-shm-usage")
+
+driver = webdriver.Chrome(options=chrome_options)
+
 driver.get(url)
 
 all_schedules = []
@@ -156,7 +161,7 @@ for month in range(3, 10):  # 3월부터 9월까지
         all_schedules.append(df)
 
     except Exception as e:
-        print(f"[{month_str}월] 크롤링 실패: {e}")
+        pass
 
 # 저장
 if all_schedules:

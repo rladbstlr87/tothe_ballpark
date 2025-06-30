@@ -4,12 +4,14 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import time
 
-options = Options()
-options.add_argument('--headless')
-options.add_argument('--no-sandbox')
-options.add_argument('--disable-dev-shm-usage')
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--window-size=1920,1080")
+chrome_options.add_argument("--disable-dev-shm-usage")
 
-driver = webdriver.Chrome(options=options)
+driver = webdriver.Chrome(options=chrome_options)
 
 df = pd.read_csv('data/all_pitcher_stats.csv')
 player_ids = df['player_id'].dropna().astype(int).tolist()
@@ -37,24 +39,20 @@ for pid in player_ids:
             for idx, th in enumerate(ths):
                 if '투심' in th.text:
                     fastball_idx = idx + 1
-                    print(f"[{pid}] 직구 없음, 투심 사용")
                     break
 
         # 둘 다 없으면 None 처리
         if fastball_idx is None:
-            print(f"[{pid}] 직구, 투심 모두 없음")
             results.append({'player_id': pid, 'speed': None})
             continue
 
-        # 값 추출
+        # 속도 추출
         value_xpath = f'//*[@id="record_04"]/div/div/table/tbody/tr[1]/td[{fastball_idx}]'
         value = driver.find_element(By.XPATH, value_xpath).text.strip()
         value = value.split('k')[0]
-        print(f"[{pid}] speed 수치: {value}")
         results.append({'player_id': pid, 'speed': value})
 
     except Exception as e:
-        print(f"[{pid}] 오류 발생: {e}")
         results.append({'player_id': pid, 'speed': None})
 
 driver.quit()
@@ -63,5 +61,3 @@ driver.quit()
 speed_df = pd.DataFrame(results)
 df_merged = pd.merge(df, speed_df, on='player_id', how='left')
 df_merged.to_csv('data/all_pitcher_stats.csv', index=False)
-
-print("✅ speed 컬럼 추가 및 저장 완료: data/all_pitcher_stats.csv")

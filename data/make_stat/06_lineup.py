@@ -49,13 +49,11 @@ def get_lineup(today, team1_code, team2_code, game_id, driver):
 
         return team1, team2
     except Exception as e:
-        print(f"라인업 크롤링 실패: {e}")
         return [], []
 
-# 오늘 날짜
 today = datetime.date.today()
 
-# 기존 lineups.csv 파일에서 마지막 저장된 날짜와 game_id 파악
+# 기존 파일에서 마지막 저장된 날짜와 game_id 파악
 last_date = None
 max_game_id = 0
 try:
@@ -67,8 +65,6 @@ try:
             max_game_id = max(int(row['game_id']) for row in reader if row['game_id'].isdigit())
 except FileNotFoundError:
     pass
-
-print(f"마지막 저장된 날짜: {last_date}, 마지막 game_id: {max_game_id}")
 
 # kbo_schedule.csv에서 오늘까지의 경기만 필터링하고 game_id 부여
 with open('data/kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
@@ -97,13 +93,14 @@ with open('data/kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
         game_info_map[key] = {'stadium': stadium, 'game_id': game_id_counter}
         game_id_counter += 1
 
-options = Options()
-options.add_argument('--headless')
-options.add_argument('--disable-gpu')
-options.add_argument('--no-sandbox')
-options.add_argument('--window-size=1920x1080')
-options.add_argument('--disable-dev-shm-usage')
-driver = webdriver.Chrome(options=options)
+chrome_options = Options()
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--window-size=1920,1080")
+chrome_options.add_argument("--disable-dev-shm-usage")
+
+driver = webdriver.Chrome(options=chrome_options)
 
 # lineups.csv 파일에 이어서 저장
 with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
@@ -126,7 +123,6 @@ with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
             team2_code = TEAM_CODE.get(team2, '')
 
             if not team1_code or not team2_code:
-                print(f"팀 코드 없음: {team1}, {team2}")
                 continue
 
             game_id = game_id_lookup.get((date_str, team1, team2, time_str))
@@ -153,7 +149,6 @@ with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
 
             # 더블헤더 두 번째 경기 재시도
             if len(games_sorted) > 1 and idx == 1 and not team1_lineup and not team2_lineup and naver_game_id == '22025':
-                print("22025 라인업 없음, 02025로 재시도")
                 team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, '02025', driver)
 
             # 더블헤더 두 번째 경기: 첫 타자 삽입
@@ -175,8 +170,7 @@ with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
                 else:
                     writer.writerow([date_str, i + 1, game_id, player_id, 1, stadium])
 
-            time.sleep(1.5)  # 요청 간 딜레이
+            time.sleep(1.5)
 
 # 브라우저 종료
 driver.quit()
-print("✅ 오늘까지의 라인업 저장 완료")
