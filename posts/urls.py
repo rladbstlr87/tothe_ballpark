@@ -18,7 +18,6 @@ urlpatterns = [
     path('<int:post_id>/like', views.post_like, name='post_like'),
     path('<int:id>/like-async/', views.like_async, name='like_async'),
     path('comments/<int:comment_id>/like-async/', views.comment_like_async, name='comment_like_async'),
-    
 ]
 
 

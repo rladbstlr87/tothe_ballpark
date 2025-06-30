@@ -33,8 +33,6 @@
     font-style: normal;
 }
 
-/* Tailwind용 클래스 정의 */
-
 .font-jaram {
     font-family: 'IncheonJaram', sans-serif;
     font-size: 26px;
