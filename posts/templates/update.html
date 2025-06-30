@@ -6,133 +6,151 @@
 {% endblock %}
 
 {% block body %}
-  <div class="max-md:pt-[20px] flex items-center justify-center py-12 px-4 max-md:mx-0 max-md:px-0">
-    <img src="{% static 'posts/images/detail/pinkhitter.png' %}" alt="스티커"
-        class="w-36 absolute top-4 left-4 z-0 mt-50">
-    <img src="{% static 'posts/images/detail/bluehitter.png' %}" alt="스티커"
-        class="w-36 absolute top-4 right-4 z-0 mt-90 max-md:hidden">
-    <div class="bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl z-10 relative ">
-      <h1 class="text-3xl font-extrabold text-center text-black mb-10 tracking-wider">게시글 수정</h1>
-      <form action="" method="POST" enctype="multipart/form-data" class="space-y-6 text-gray-800">
-        {% csrf_token %}
-        <div>{{ form.category }}</div>
-        <div>{{ form.title }}</div>
-        <div>{{ form.content }}</div>
+<div class="max-md:pt-[20px] flex items-center justify-center py-12 px-4 max-md:mx-0 max-md:px-0">
+  <!-- 배경 스티커 이미지들 -->
+  <img src="{% static 'posts/images/detail/pinkhitter.png' %}" alt="스티커"
+      class="w-36 absolute top-4 left-4 z-0 mt-50">
+  <img src="{% static 'posts/images/detail/bluehitter.png' %}" alt="스티커"
+      class="w-36 absolute top-4 right-4 z-0 mt-90 max-md:hidden">
 
-        <!-- 기존 이미지 -->
-        <div id="image-container" class="flex gap-4 flex-wrap mb-6">
-          {% for img in existing_images %}
-            <div class="relative w-24 h-24 image-box">
-              <img src="{{ img.image.url }}" class="w-full h-full object-cover rounded">
-              <input type="checkbox" name="delete_images" value="{{ img.id }}" class="delete-checkbox hidden" id="checkbox-{{ img.id }}">
-              <button type="button" data-id="{{ img.id }}"
-                      class="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full cursor-pointer delete-btn">
-                ✕
-              </button>
-            </div>
-          {% endfor %}
-          <!--  새 이미지 -->
-          <div id="preview-container" class="flex gap-4 flex-wrap"></div>
-        </div>
-        <label for="image-input" class="inline-block px-4 py-1 bg-gray-300 rounded-md text-white cursor-pointer">
-          파일 선택
-        </label>
-        <small class="ml-2 text-gray-500" id="file-count-label">0개 파일 선택됨</small>
-        <input type="file" name="images" id="image-input" multiple hidden>
-        <div class="text-center mt-8">
-          <button type="submit"
-                  class="rounded-full px-4 py-1 bg-[#9AA6B2] text-white text-lg font-semibold hover:bg-[#BCCCDC] transition duration-200 shadow-md">
-            수정 완료
-          </button>
-        </div>
-      </form>
-    </div>
+  <!-- 본문 박스 -->
+  <div class="bg-white rounded-2xl px-12 py-10 shadow-xl w-full max-w-6xl z-10 relative ">
+    <h1 class="text-3xl font-extrabold text-center text-black mb-10 tracking-wider">게시글 수정</h1>
+
+    <form action="" method="POST" enctype="multipart/form-data" class="space-y-6 text-gray-800">
+      {% csrf_token %}
+      <div>{{ form.category }}</div>
+      <div>{{ form.title }}</div>
+      <div>{{ form.content }}</div>
+
+      <!-- 기존 이미지 리스트 -->
+      <div id="image-container" class="flex gap-4 flex-wrap mb-6">
+        {% for img in existing_images %}
+          <div class="relative w-24 h-24 image-box" data-size="{{ img.image.size }}">
+            <img src="{{ img.image.url }}" class="w-full h-full object-cover rounded">
+            <input type="checkbox" name="delete_images" value="{{ img.id }}" class="delete-checkbox hidden" id="checkbox-{{ img.id }}">
+            <button type="button" data-id="{{ img.id }}"
+                    class="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full cursor-pointer delete-btn">
+              ✕
+            </button>
+          </div>
+        {% endfor %}
+
+        <!--  새 이미지 미리보기 영역 -->
+        <div id="preview-container" class="flex gap-4 flex-wrap"></div>
+      </div>
+
+      <!--  이미지 업로드 버튼 -->
+      <label for="image-input" class="inline-block px-4 py-1 bg-gray-300 rounded-md text-white cursor-pointer">
+        파일 선택
+      </label>
+      <small class="ml-2 text-gray-500" id="file-count-label">0개 파일 선택됨</small>
+      <input type="file" id="image-input" multiple hidden>
+
+      <!-- 제출 버튼 -->
+      <div class="text-center mt-8">
+        <button type="button" id="submit-btn"
+                class="rounded-full px-4 py-1 bg-[#9AA6B2] text-white text-lg font-semibold hover:bg-[#BCCCDC] transition duration-200 shadow-md">
+          수정 완료
+        </button>
+      </div>
+    </form>
   </div>
+</div>
+<script>
+  const input = document.getElementById('image-input');
+  const preview = document.getElementById('preview-container');
+  const fileCountLabel = document.getElementById('file-count-label');
+  const form = document.querySelector('form');
+  const submitBtn = document.getElementById('submit-btn');
+  let selectedFiles = [];
+  
+  const MAX_TOTAL_MB = 5;
+  // 기존 이미지 용량 합산 
+  function getExistingImageSizeMB() {
+    let total = 0;
+    document.querySelectorAll('.image-box').forEach(box => {
+      const size = parseInt(box.dataset.size || '0', 10);
+      total += size;
+    });
+    return total / (1024 * 1024);  
+  }
+  // 선택한 파일들의 용량 계산 
+  function getSelectedFileSizeMB() {
+    return selectedFiles.reduce((sum, f) => sum + f.size, 0) / (1024 * 1024);
+  }
+  // 파일 수 + 총 용량 업데이트 
+  const updateCount = () => {
+    const count = document.querySelectorAll('.image-box').length + selectedFiles.length;
+    const totalMB = getExistingImageSizeMB() + getSelectedFileSizeMB();
+    fileCountLabel.textContent = `${count}개 파일 선택됨 (${totalMB.toFixed(1)}MB / 5MB)`;
+  };
+  // 기존 이미지 삭제 처리 
+  document.addEventListener('DOMContentLoaded', () => {
+    updateCount();
 
-  <script>
-    //  새 이미지 업로드 처리
-    const input = document.getElementById('image-input');
-    const preview = document.getElementById('preview-container');
-    const fileCountLabel = document.getElementById('file-count-label');
-    let selectedFiles = [];
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.dataset.id;
+        document.getElementById(`checkbox-${id}`).checked = true;
 
-    // 파일 개수 업데이트
-    function updateTotalFileCount() {
-      const existingImagesCount = document.querySelectorAll('.image-box').length;
-      const newImagesCount = document.querySelectorAll('#preview-container > div').length;
-      const totalCount = existingImagesCount + newImagesCount;
-      fileCountLabel.textContent = `${totalCount}개 파일 선택됨`;
-    }
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'delete_images';
+        input.value = id;
+        form.appendChild(input);
 
-    // 페이지 로드 시 초기 파일 개수 표시
-    document.addEventListener('DOMContentLoaded', function() {
-      const existingImagesCount = document.querySelectorAll('.image-box').length;
-      fileCountLabel.textContent = `${existingImagesCount}개 파일 선택됨`;
-    }); 
+        btn.closest('.image-box')?.remove();
+        updateCount();
+      };
+    });
+  });
+  // 새 이미지 업로드 
+  input.onchange = () => {
+    Array.from(input.files).forEach(file => {
+      const fileSizeMB = file.size / (1024 * 1024);
+      const newTotalMB = getExistingImageSizeMB() + getSelectedFileSizeMB() + fileSizeMB;
+      if (newTotalMB > MAX_TOTAL_MB) {
+        alert(`"${file.name}"을(를) 추가하면 총 ${newTotalMB.toFixed(2)}MB로 5MB를 초과합니다!`);
+        return;
+      }
+      selectedFiles.push(file);
+      const reader = new FileReader();
+      reader.onload = e => {
+        const div = document.createElement('div');
+        div.className = 'relative w-24 h-24';
 
-    // 파일 선택 시 이미지 미리보기 표시
-    input.addEventListener('change', function () {
-      const files = Array.from(this.files);
-      files.forEach(file => {
-        selectedFiles.push(file);
-
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const container = document.createElement('div');
-          container.className = 'relative w-24 h-24';
-
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          img.className = 'w-full h-full object-cover rounded';
-
-          const delBtn = document.createElement('button');
-          delBtn.innerHTML = '✕';
-          delBtn.className = 'absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full cursor-pointer';
-
-          // 미리보기 삭제 처리
-          delBtn.onclick = function (e) {
-            e.preventDefault();
-            container.remove();
-            selectedFiles = selectedFiles.filter(f => f !== file);
-
-            const dt = new DataTransfer();
-            selectedFiles.forEach(f => dt.items.add(f));
-            input.files = dt.files;
-            updateTotalFileCount();
-          };
-
-          container.appendChild(img);
-          container.appendChild(delBtn);
-          preview.appendChild(container);
-          updateTotalFileCount();
+        div.innerHTML = `
+          <img src="${e.target.result}" class="w-full h-full object-cover rounded">
+          <button class="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full cursor-pointer">✕</button>
+        `;
+        div.querySelector('button').onclick = ev => {
+          ev.preventDefault();
+          div.remove();
+          selectedFiles = selectedFiles.filter(f => f !== file);
+          updateCount();
         };
-        reader.readAsDataURL(file);
-      });
-      fileCountLabel.textContent = `${selectedFiles.length}개 파일 선택됨 `;
+
+        preview.appendChild(div);
+        updateCount();
+      };
+      reader.readAsDataURL(file);
     });
-
-    // 기존 이미지 ✕ 버튼 누르면 삭제 체크박스 처리
-    document.addEventListener('DOMContentLoaded', function () {
-      const deleteButtons = document.querySelectorAll('.delete-btn');
-      const form = document.querySelector('form');
-
-      deleteButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const id = btn.dataset.id;
-          const checkbox = document.getElementById(`checkbox-${id}`);
-          if (checkbox) checkbox.checked = true;
-
-          const hiddenInput = document.createElement('input');
-          hiddenInput.type = 'hidden';
-          hiddenInput.name = 'delete_images';
-          hiddenInput.value = id;
-          form.appendChild(hiddenInput);
-
-          const box = btn.closest('.image-box');
-          if (box) { box.remove();
-          updateTotalFileCount();}
-        });
-      });
-    });
-  </script>
+    input.value = "";
+  };
+  // 폼 데이터를 서버로 전송
+  submitBtn.onclick = () => {
+    const formData = new FormData(form);
+    selectedFiles.forEach(f => formData.append('images', f));
+    fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+      }
+    })
+    .then(res => res.redirected ? location.href = res.url : res.text())
+    .catch(err => console.error('업로드 실패:', err));
+  };
+</script>
 {% endblock %}

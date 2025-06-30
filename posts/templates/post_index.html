@@ -31,48 +31,25 @@
               <th class="px-4 py-2 max-md:px-2 max-md:py-1 w-[15%] border-b border-gray-200">닉네임</th>
               <th class="px-4 py-2 max-md:px-2 max-md:py-1 w-[20%] rounded-tr-2xl border-b border-gray-200">작성일</th>
             </tr>
-          </thead>
-          <tbody>
-            {% for number, post in posts_with_number %}
-              <tr class="text-center border-b border-x border-sky-200 last:rounded-b-2xl hover:bg-sky-50">
-                <td class="text-left px-4 py-2  max-md:px-2">{{ number }}</td>
-                <td class="text-left px-4 py-2 max-md:px-2 truncate">
-                  <div class="flex justify-between items-center gap-2">
-                    <a href="{% url 'posts:detail' post.id %}" class="hover:underline truncate max-w-[85%]">
-                      {{ post.title }}
-                    </a>
-                    <div class="flex items-center gap-1 text-gray-500 text-xs min-w-[30px]">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                          d="M16.5 3.75c-1.65 0-3.21.81-4.5 2.1-1.29-1.29-2.85-2.1-4.5-2.1A5.25 5.25 0 0 0 2.25 9c0 6.59 9.75 11.25 9.75 11.25S21.75 15.59 21.75 9A5.25 5.25 0 0 0 16.5 3.75z" />
-                      </svg>
-                      {{ post.like_users.count }}
-                    </div>
-                  </div>
-                </td>
-                <td class="px-4 py-2 max-md:px-2">{{ post.get_category_display }}</td>
-                <td class="px-4 py-2 max-md:px-2 truncate">{{ post.user.nickname }}</td>
-                <td class="px-4 py-2 max-md:px-2 md:table-cell hidden">{{ post.created_at|date:"y.m.d" }}</td>
-                <td class="px-4 py-2 max-md:px-2 md:hidden">{{ post.created_at|date:"m.d" }}</td>
-              </tr>
-            {% empty %}
-              <tr>
-                <td colspan="5" class="text-center text-gray-500 py-4">등록된 질문이 없습니다 🥲</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      <div class="flex justify-end mt-4 max-md:mt-5">
-        <a href="{% url 'posts:create' %}" class=" inline-flex items-center bg-blue-100 text-gray-500 px-1 py-1 max-md:text-[10px] max-md:px-1.5 max-md:py-0.5 rounded-md ">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 max-md:w-3 max-md:h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 20h9" />
-            <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
-          </svg>
-          응원남기기
-        </a>
-      </div>
+          {% empty %}
+            <tr>
+              <td colspan="5" class="text-center text-gray-500 py-4">등록된 질문이 없습니다 🥲</td>
+            </tr>
+          {% endfor %}
+          
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex justify-end mt-4 max-md:mt-5">
+      <a href="{% url 'posts:create' %}" class=" inline-flex items-center bg-blue-100 text-gray-500 px-1 py-1 max-md:text-[10px] max-md:px-1.5 max-md:py-0.5 rounded-md ">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 max-md:w-3 max-md:h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20h9" />
+          <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+        </svg>
+        응원 남기기
+      </a>
     </div>
 
     <!-- 페이지네이션 -->
