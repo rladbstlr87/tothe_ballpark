@@ -5,12 +5,226 @@
 
 ---
 ## 데이터 처리 스크립트
-- [데이터 수집 및 가공](https://github.com/dayofbaseball/KBO/tree/master/data/make_stat)
-- [DB 저장 커맨드](https://github.com/dayofbaseball/KBO/tree/master/cal/management/commands)
-- 스크립트 : `ready_develop.sh`, `before_game.sh`, `after_game.sh`
+- [데이터 수집 및 가공](https://github.com/dayof<project_name>/KBO/tree/master/data/make_stat)
+- [DB 저장 커맨드](https://github.com/dayof<project_name>/KBO/tree/master/cal/management/commands)
+- 스크립트 : `ready_develop.sh`, `local_before_game_schedule.py`, `local_before_game.sh`, `local_after_game.sh`, `server_before_game_schedule.py`, `server_before_game.sh`, `server_after_game.sh`
+- crontab
+    - local
+    - server
+
+### `ready_develop.sh`
 ```bash
+# 첫 사용 때 씀
+python manage.py makemigrations
+python manage.py migrate
+
+python data/make_stat/00_hitters_stats.py 
+python data/make_stat/01_pitchers_stats.py 
+python data/make_stat/02_get_velocity.py 
+python data/make_stat/03_preprocessing.py 
+python data/make_stat/04_player_style.py 
+python data/make_stat/05_kbo_schedule.py 
+python data/make_stat/06_lineup.py 
+python data/make_stat/07_hitters_daily_stat.py 
+python data/make_stat/08_pitchers_daliy_stat.py 
+
+python manage.py stadium
+python manage.py games
+python manage.py hitters
+python manage.py pitchers
+python manage.py lineup
+python manage.py parking
+python manage.py seats
+python manage.py restaurant
+python manage.py daily_hitter_stat
+python manage.py daily_pitcher_stat
+```
+
+### `local_before_game_schedule.py`
+```python
+import csv
+from datetime import datetime, timedelta
+import subprocess
+
+# 파일 경로 설정
+CSV_PATH = "/mnt/c/Users/<username>/KBO/data/kbo_schedule.csv"
+SCRIPT_PATH = "/mnt/c/Users/<username>/KBO/local_before_game.sh"
+LOG_PATH = "/mnt/c/Users/<username>/KBO/schedule_checker.log"
+BEFORE_GAME_LOG = "/mnt/c/Users/<username>/KBO/before_game.log"
+
+# 현재 시간
+now = datetime.now()
+today_str = now.strftime("%Y.%m.%d")
+
+# 로그 기록 함수
+def log(message):
+    with open(LOG_PATH, "a", encoding="utf-8") as f:
+        f.write(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] {message}\n")
+
+log("스케줄 체크 시작")
+
+# CSV 파일 열어서 오늘 날짜에 해당하는 경기 찾기
+with open(CSV_PATH, newline='', encoding='utf-8-sig') as csvfile:
+    reader = csv.reader(csvfile)
+    for row in reader:
+        if len(row) >= 2 and row[0] == today_str:
+            game_time_str = row[1]  # 경기 시간 문자열
+            datetime_str = today_str.replace('.', '-') + " " + game_time_str
+            game_datetime = datetime.strptime(datetime_str, "%Y-%m-%d %H:%M")
+
+            # 경기 시작 55분 전 시간 계산
+            run_time = game_datetime - timedelta(minutes=55)
+            run_time_str = run_time.strftime("%H:%M")
+
+            # at 명령어로 스크립트 예약 실행
+            cmd = f'echo "sh \\"{SCRIPT_PATH}\\" >> \\"{BEFORE_GAME_LOG}\\" 2>&1" | at {run_time_str}'
+            subprocess.run(cmd, shell=True)
+
+            log(f"before_game.sh 예약됨: {run_time_str} (경기시간: {game_time_str})")
+            break
+    else:
+        log(f"오늘 경기 없음 (날짜: {today_str})")
 
 ```
+
+### `local_before_game.sh`
+```bash
+source /mnt/c/Users/<username>/KBO/uvenv/bin/activate
+
+python /mnt/c/Users/<username>/KBO/data/make_stat/06_lineup.py
+
+git add /mnt/c/Users/<username>/KBO/data/lineups.csv
+
+git commit -m '데이터 추가'
+
+git push origin master
+```
+
+### `local_after_game.sh`
+```bash
+source ~/KBO/uvenv/bin/activate
+
+python /mnt/c/Users/<username>/KBO/data/make_stat/00_hitters_stats.py
+python /mnt/c/Users/<username>/KBO/data/make_stat/01_pitchers_stats.py 
+python /mnt/c/Users/<username>/KBO/data/make_stat/02_get_velocity.py 
+python /mnt/c/Users/<username>/KBO/data/make_stat/03_preprocessing.py 
+python /mnt/c/Users/<username>/KBO/data/make_stat/04_player_style.py 
+python /mnt/c/Users/<username>/KBO/data/make_stat/05_kbo_schedule.py 
+python /mnt/c/Users/<username>/KBO/data/make_stat/07_hitters_daily_stat.py 
+python /mnt/c/Users/<username>/KBO/data/make_stat/08_pitchers_daliy_stat.py 
+
+git add /mnt/c/Users/<username>/KBO/data/all_hitter_stats.csv
+git add /mnt/c/Users/<username>/KBO/data/all_pitcher_stats.csv
+git add /mnt/c/Users/<username>/KBO/data/hitters_records.csv
+git add /mnt/c/Users/<username>/KBO/data/kbo_schedule.csv
+git add /mnt/c/Users/<username>/KBO/data/pitchers_records.csv
+
+git commit -m '데이터 추가'
+
+git push origin master
+```
+
+### `server_before_game_schedule.py`
+```python
+import csv
+from datetime import datetime, timedelta
+import subprocess
+
+# 파일 경로 설정
+CSV_PATH = "/home/ubuntu/<project_name>/data/kbo_schedule.csv"
+SCRIPT_PATH = "/home/ubuntu/<project_name>/before_game.sh"
+LOG_PATH = "/home/ubuntu/<project_name>/schedule_checker.log"
+BEFORE_GAME_LOG = "/home/ubuntu/<project_name>/before_game.log"
+
+# 현재 날짜 (형식: 2025.06.27)
+now = datetime.now()
+today_str = now.strftime("%Y.%m.%d")
+
+# 로그 기록 함수
+def log(message):
+    with open(LOG_PATH, "a", encoding="utf-8") as f:
+        f.write(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] {message}\n")
+
+log("스케줄 체크 시작")
+
+# 스케줄 파일 읽기
+with open(CSV_PATH, newline='', encoding='utf-8-sig') as csvfile:
+    reader = csv.reader(csvfile)
+    for row in reader:
+        # 오늘 날짜에 해당하는 경기 정보 찾기
+        if len(row) >= 2 and row[0] == today_str:
+            game_time_str = row[1]  # 경기 시작 시각 (HH:MM)
+            datetime_str = today_str.replace('.', '-') + " " + game_time_str
+            game_datetime = datetime.strptime(datetime_str, "%Y-%m-%d %H:%M")
+
+            # 경기 시작 50분 전으로 예약 시간 계산
+            run_time = game_datetime - timedelta(minutes=50)
+            run_time_str = run_time.strftime("%H:%M")
+
+            # before_game.sh 스크립트를 예약 실행
+            cmd = f'echo "sh \\"{SCRIPT_PATH}\\" >> \\"{BEFORE_GAME_LOG}\\" 2>&1" | at {run_time_str}'
+            subprocess.run(cmd, shell=True)
+
+            log(f"before_game.sh 예약됨: {run_time_str} (경기시간: {game_time_str})")
+            break
+    else:
+        log(f"오늘 경기 없음 (날짜: {today_str})")
+
+```
+
+### `server_before_game.sh`
+```bash
+#!/bin/bash
+
+source /home/ubuntu/<project_name>/venv/bin/activate
+
+cd /home/ubuntu/<project_name>
+
+git pull origin master
+
+python manage.py lineup
+
+sudo systemctl restart nginx
+sudo systemctl restart uwsgi
+
+```
+
+### `server_after_game.sh`
+```bash
+#!/bin/bash
+
+source /home/ubuntu/<project_name>/venv/bin/activate
+
+cd /home/ubuntu/<project_name>
+
+git pull origin master
+
+python /home/ubuntu/<project_name>/manage.py games
+python /home/ubuntu/<project_name>/manage.py hitters
+python /home/ubuntu/<project_name>/manage.py pitchers
+python /home/ubuntu/<project_name>/manage.py daily_hitter_stat
+python /home/ubuntu/<project_name>/manage.py daily_pitcher_stat
+
+sudo systemctl restart nginx
+sudo systemctl restart uwsgi
+
+```
+
+### `local_crontab`
+```bash
+0 0 * * * /bin/bash /mnt/c/Users/<username>/KBO/after_game.sh >> /mnt/c/Users/<username>/KBO/after_game.log 2>&1
+
+
+0 11 * * * /mnt/c/Users/<username>/KBO/uvenv/bin/python3 /mnt/c/Users/<username>/KBO/before_game_schedule.py
+```
+
+### `server_crontab`
+```bash
+30 0 * * * /bin/bash /home/ubuntu/<project_name>/after_game.sh >> /home/ubuntu/<project_name>/after_game.log 2>&1
+
+0 11 * * * /home/ubuntu/.pyenv/shims/python3 /home/ubuntu/<project_name>/before_game_schedule.py
+```
+
 ## 프로젝트 구조
 
 - cal : 경기 일정 및 경기별 상세정보
@@ -70,10 +284,10 @@
 ---
 
 ## 실행 방법
-
 ```bash
 # 1. 가상환경 설정
-python -m venv venv
+python -m venv uvenv # 로컬 WSL 터미널에서 
+python -m venv venv # 로컬 터미널에서
 source venv/Scripts/activate   # Mac/Linux는 source venv/bin/activate
 
 # 2. 패키지 설치
