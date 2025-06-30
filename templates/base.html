@@ -83,17 +83,32 @@
             steps[0].classList.remove('hidden');
             overlay.addEventListener('click', () => {
                 steps[currentStep].classList.add('hidden');
-                switch(currentStep) {
-                case 2:
-                    const elementA = document.getElementById('keyplayer');
-                    if (elementA) elementA.scrollIntoView({ behavior: 'smooth' });
-                    break;
-                case 5:
-                    const elementB = document.getElementById('legend-text');
-                    if (elementB) elementB.scrollIntoView({ behavior: 'smooth' });
-                    break;
-                default:
-                    break;
+                if (pageKey === 'visited_stadium_info') {
+                    switch (currentStep) {
+                        case 1:
+                            const seatInfo = document.getElementById('seat_info');
+                            if (seatInfo) seatInfo.scrollIntoView({ behavior: 'smooth' });
+                            break;
+                        case 2:
+                            const parkingInfo = document.getElementById('parkinglot_info');
+                            if (parkingInfo) parkingInfo.scrollIntoView({ behavior: 'smooth' });
+                            break;
+                        case 3:
+                            const restaurantInfo = document.getElementById('restaurant_info');
+                            if (restaurantInfo) restaurantInfo.scrollIntoView({ behavior: 'smooth' });
+                            break;
+                    }
+                } else if (pageKey === 'visited_cal_calendar') {
+                    switch (currentStep) {
+                        case 2:
+                            const keyPlayer = document.getElementById('keyplayer');
+                            if (keyPlayer) keyPlayer.scrollIntoView({ behavior: 'smooth' });
+                            break;
+                        case 5:
+                            const legendText = document.getElementById('legend-text');
+                            if (legendText) legendText.scrollIntoView({ behavior: 'smooth' });
+                            break;
+                    }
                 }
 
                 currentStep++;
