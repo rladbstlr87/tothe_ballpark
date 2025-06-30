@@ -217,9 +217,9 @@ def comment_like(request, comment_id):
 
 # 게시글 좋아요 비동기 처리
 @login_required
-def like_async(request, post_id):
+def like_async(request, id):
     user = request.user
-    post = Post.objects.get(id=post_id)
+    post = Post.objects.get(id=id)
 
     if user in post.like_users.all():
         post.like_users.remove(user)
