@@ -1,5 +1,6 @@
 {% load static %}
 {% load custom_filters %}
+<!-- 유저 응원팀 타자 카드 -->
 <div class="flex">
     <div class="w-fit cursor-pointer flex flex-col items-center relative" data-modal-target="modal-face"
         data-player-name="{{ lineup.hitter.player_name }}"
@@ -42,7 +43,7 @@
             <div class="bar-style h-full rounded -mask-linear-50 mask-linear-from-20% mask-linear-to-100%"
                 style="width: {{ lineup.hitter.power|percent }}%;"></div>
         </div>
-        <span class="">{{ lineup.hitter.power|percent }}</span>
+        <span>{{ lineup.hitter.power|percent }}</span>
     </div>
     <div class="flex items-center">
         <span class="ml-2 w-13 text-[clamp(0.6rem,2vw,1.0rem)]">컨택</span>
@@ -68,18 +69,18 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const bars = document.querySelectorAll('.bar-style');
-    bars.forEach(bar => {
-        const widthPercent = parseFloat(bar.style.width);
-        bar.classList.remove('bg-blue-300', 'bg-blue-500', 'bg-purple-500');
-        if (widthPercent >= 90) {
-            bar.classList.add('bg-purple-500');
-        } else if (widthPercent >= 80) {
-            bar.classList.add('bg-blue-500');
-        } else {
-            bar.classList.add('bg-blue-300');
-        }
+    document.addEventListener('DOMContentLoaded', function () {
+        const bars = document.querySelectorAll('.bar-style');
+        bars.forEach(bar => {
+            const widthPercent = parseFloat(bar.style.width);
+            bar.classList.remove('bg-blue-300', 'bg-blue-500', 'bg-purple-500');
+            if (widthPercent >= 90) {
+                bar.classList.add('bg-purple-500');
+            } else if (widthPercent >= 80) {
+                bar.classList.add('bg-blue-500');
+            } else {
+                bar.classList.add('bg-blue-300');
+            }
+        });
     });
-});
 </script>

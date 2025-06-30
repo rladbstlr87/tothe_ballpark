@@ -59,8 +59,6 @@ class Calendar(HTMLCalendar):
                     'games': games_by_day.get(day, []) if day != 0 else [],
                 })
             weeks.append(week_data)
-
-        # 요일 헤더
         week_header = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']
 
         return {

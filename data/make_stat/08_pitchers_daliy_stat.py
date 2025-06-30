@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
 
+# KBO 팀 코드 매핑
 TEAM_CODE = {
     'LT': 'LT', 'HT': 'HT', 'LG': 'LG', 'OB': 'OB', 'SK': 'SK',
     'WO': 'WO', 'SS': 'SS', 'HH': 'HH', 'KT': 'KT', 'NC': 'NC',
@@ -21,7 +22,7 @@ def extract_pid(th):
     except:
         return ''
 
-# IP (이닝) 문자열을 실수로 변환
+# IP 문자열을 실수로 변환
 def convert_ip_to_float(ip_str):
     if not ip_str:
         return 0.0
@@ -44,7 +45,7 @@ def convert_ip_to_float(ip_str):
             return 0.0
     return 0.0
 
-# 투수 기록 크롤링
+# 개별 경기 기록 크롤링 함수
 def get_pitcher_record(date, team1_code, team2_code, game_id, driver):
     url = f'https://m.sports.naver.com/game/{date}{team1_code}{team2_code}{game_id}/record'
     driver.get(url)
@@ -80,8 +81,9 @@ def get_pitcher_record(date, team1_code, team2_code, game_id, driver):
 
     return data
 
-# 날짜/게임 ID 초기화
 today = datetime.date.today()
+
+# 기존 파일에서 마지막 저장된 날짜와 game_id 파악
 last_date = None
 max_game_id = 0
 
@@ -98,17 +100,19 @@ df = pd.read_csv('data/kbo_schedule.csv')
 game_map = {}
 next_gid = max_game_id + 1
 
+# 기준일자 이전 경기만 필터링 (이미 끝난 경기들만)
 df_filtered = df[df['day'].apply(lambda x: datetime.datetime.strptime(x.replace('.', ''), '%Y%m%d').date()) <= today]
+
+# 마지막 기록 이후만 추출
 if last_date:
     df_filtered = df_filtered[df_filtered['day'].apply(lambda x: datetime.datetime.strptime(x.replace('.', ''), '%Y%m%d').date()) > last_date]
 
+# 유효한 경기만 game_map에 정리
 for _, row in df_filtered.iterrows():
     if str(row.get('canceled', '')).strip() == '취소':
-        print(f"취소된 경기: {row['day']} {row['team1']} vs {row['team2']} ({row['time']})")
         next_gid += 1
         continue
     if pd.isna(row['team1_score']) or pd.isna(row['team2_score']):
-        print(f"점수 없음: {row['day']} {row['team1']} vs {row['team2']} ({row['time']})")
         next_gid += 1
         continue
 
@@ -126,7 +130,7 @@ chrome_options.add_argument('--disable-dev-shm-usage')
 
 driver = webdriver.Chrome(options=chrome_options)
 
-# 기록 저장
+# 기록 파일 열기 (없으면 헤더 작성)
 with open('data/pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as prout:
     pw = csv.writer(prout)
 
@@ -141,9 +145,9 @@ with open('data/pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as
             d, t1, t2 = row['day'].replace('.', ''), row['team1'], row['team2']
             t1c, t2c = TEAM_CODE.get(t1, ''), TEAM_CODE.get(t2, '')
             if not t1c or not t2c:
-                print(f"팀 코드 누락: {t1}, {t2}")
                 continue
 
+            # 네이버 경기 ID 결정 (일반, 더블헤더 1/2차전 등)
             if len(games_sorted) == 1:
                 gcode = '02025'
             elif idx == 0:
@@ -153,17 +157,18 @@ with open('data/pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as
 
             rec = get_pitcher_record(d, t1c, t2c, gcode, driver)
 
+            # 1차 더블헤더 실패 시, 재시도 여부 판단
             if len(games_sorted) > 1 and idx == 0 and not rec['away'] and not rec['home']:
                 double_header_failed = True
 
+            # 2차 더블헤더 실패 시, 일반 코드로 재시도
             if len(games_sorted) > 1 and idx == 1 and not rec['away'] and not rec['home'] and gcode == '22025':
-                print(f"🔁 {d} {t1} vs {t2} 2차 기록 없음, 02025로 재시도")
                 rec = get_pitcher_record(d, t1c, t2c, '02025', driver)
 
             if not rec['away'] and not rec['home']:
-                print(f"투수 기록 없음: {d} {t1} vs {t2} ({gcode})")
                 continue
 
+            # 기록 저장
             for team in ['away', 'home']:
                 for r in rec[team]:
                     pid = r.get('player_id', '').strip()
@@ -176,8 +181,6 @@ with open('data/pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as
                         r.get('NP', ''), pid, team, gid, d
                     ])
 
-            print(f"저장 완료: {d} {t1} vs {t2} ({gcode}) → game_id={gid}")
             time.sleep(1.5)
 
-print('모든 투수 기록 저장 완료')
 driver.quit()

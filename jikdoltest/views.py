@@ -1,6 +1,5 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 
-# Create your views here.
 # 직돌이 테스트 질문들
 QUESTIONS = [
     {
@@ -93,25 +92,24 @@ def test_question(request, step):
         return redirect('jikdoltest:test_question', step=step + 1)
 
     q = QUESTIONS[step - 1]
-    return render(request, 'test_question.html', {
+
+    context = {
         'step': step,
         'total': len(QUESTIONS),
         'question': q['question'],
         'choices': q['choices'],
         'progress': int((step / len(QUESTIONS)) * 100),
-    })
+    }
 
+    return render(request, 'test_question.html', context)
 
 # 사용자의 테스트 결과 
 def test_result(request):
     type_scores = request.session.get('type_scores', {})
     if not type_scores:
         return redirect('start')
-
-    # 가장 높은 점수의 유형 찾기
     best_type = max(type_scores, key=type_scores.get)
 
-    # 결과 정보 매핑
     results = {
         'A': {
             'tag': '데이터형직돌이',
@@ -131,13 +129,14 @@ def test_result(request):
     }
 
     result = results.get(best_type)
-    # 유형별 템플릿 파일명 지정
     template_name = f'result{best_type}.html'
+    context = {
+        'result': result,
+    }
+    
+    return render(request, template_name, context)
 
-    return render(request, template_name, {'result': result})
-
-
-# 공유 링크로 접근했을 때
+# 공유 링크
 def result_share(request, type_code):
     type_code = type_code
     results = {
@@ -147,7 +146,7 @@ def result_share(request, type_code):
         'D': {'tag': '관망형직돌이'},
         'E': {'tag': '리액션형직돌이'},
     }
-    
+
     result = results[type_code]
     template_name = f'result{type_code}.html'
     return render(request, template_name, {'result': result})

@@ -1,6 +1,6 @@
 {% load static %}
 {% load custom_filters %}
-
+<!-- 유저 상대팀 투수 카드 -->
 <div class="w-56 p-2">
     <div class="flex justify-center">
     <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ lineup.pitcher.player_id }}.png?type=w150"
@@ -49,7 +49,7 @@
                 <polygon class="fill-current" points="0,0 127.5,127.5 255,0"/>
             </svg>
         </div>
-        <p class="">{{ lineup.pitcher.player_name }}</p>
+        <p>{{ lineup.pitcher.player_name }}</p>
     </div>
     <div id="my_pstat_bar" class="w-52">
         <div class="flex items-center">
@@ -93,4 +93,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-

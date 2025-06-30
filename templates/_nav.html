@@ -4,7 +4,7 @@
     style="{% if user.team == none %}background-image: url('{% static 'nav/nav-' %}nothing.png');{% else %}background-image: url('{% static 'nav/nav-' %}{{ user.team }}.png');{% endif %}">
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 ">
         <div class="relative flex h-16">
-            <!-- Mobile menu button -->
+            <!-- Mobile 메뉴 -->
             <div class="absolute inset-y-0 left-0 flex md:hidden">
                 <button type="button"
                         @click="mobileMenuOpen = !mobileMenuOpen"
@@ -12,6 +12,7 @@
                         class="inline-flex items-center rounded-md m-2 p-4 text-white active:bg-gray-500 active:ring-2 active:ring-white active:outline-hidden active:ring-inset"
                         aria-controls="mobile-menu">
                     <span class="absolute -inset-0.5"></span>
+
                     <!-- 메뉴 닫힌 상태 -->
                     <svg :class="{ 'hidden': mobileMenuOpen, 'block': !mobileMenuOpen }"
                         class="size-6"
@@ -19,6 +20,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
+
                     <!-- 메뉴 열린 상태 -->
                     <svg :class="{ 'block': mobileMenuOpen, 'hidden': !mobileMenuOpen }"
                         class="size-6"
@@ -28,18 +30,20 @@
                     </svg>
                 </button>
             </div>
-            <!-- 중앙에 '직돌이' 타이틀 추가 -->
+
+            <!-- Mobile 중앙 -->
             <a href="{% url 'index' %}">
                 <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl font-bold text-white block md:hidden" 
                     style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">
                     직돌이
                 </div>
             </a>
+
             <div class="flex flex-1 justify-center">
                 <div id="menu" class="absolute z-30 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 justify-between w-full items-center text-shadows md:flex hidden">
                     <!-- 왼쪽 메뉴 -->
                     <div class="flex items-center">
-                        <!-- 일부러 둔 빈div박스 -->
+                        <!-- 일부러 둔 빈 div -->
                         <span class="p-3 w-15 text-center text-gray-700"></span>
                     </div>
                     <div class="flex flex-1 items-center gap-x-6">
@@ -61,15 +65,14 @@
                                 <span>순위</span>
                             </span>
                         </a>
+
+                        <!-- 드롭다운 -->
                         <div x-data="{ open: false }">
-                            <!-- 드롭다운 트리거 -->
                             <span @click="open = !open"
                                     class="relative tracking-widest cursor-pointer">
                                 <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-[#52734D] -z-10"></span>
                                 <span class="hover:text-blue-500">경기장</span>
                             </span>
-
-                            <!-- 드롭다운 메뉴 -->
                             <div x-show="open"
                                 @click.outside="open = false"
                                 x-transition
@@ -84,14 +87,14 @@
                         </div>
                     </div>
 
-                    <!-- 가운데 홈버튼 -->
+                    <!-- 데스크탑 중앙 -->
                     <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                         <a href="{% url 'index' %}" class="flex items-center {% if user.is_authenticated %}-rotate-8{% endif %}">
                             <img 
                             src="{% if user.is_authenticated %}
                                         {% static 'cal/images/mascots/' %}{{ user.team }}line.svg
                                     {% else %}
-                                        {% static random_background %}
+                                        {% static random_change %}
                                     {% endif %}"
                             alt="Mascot"
                             class="h-24"
@@ -108,7 +111,6 @@
                                     <span class="relative z-20">{{ user.nickname }}</span>
                                 </span>
                             </a>
-
                             <a href="{% url 'accounts:logout' %}" class="text-black hover:text-blue-500">
                                 <span class="relative tracking-widest">
                                     <span class="absolute inset-x-0 bottom-1 h-4 rounded-md bg-red-400 z-0"></span>
@@ -125,11 +127,12 @@
                         {% endif %}
                     </div>
                     <div class="flex items-center">
-                        <!-- 일부러 둔 빈div박스 -->
+                        <!-- 일부러 둔 빈 div -->
                         <span class="relative -z-10 w-32 text-center text-gray-700"></span>
                     </div>
                 </div>
             </div>
+
             <!-- 승리요정 -->
             {% if user.is_authenticated %}
                 <div class="relative z-0 h-auto grid grid-cols-1 justify-end items-end" style="width: clamp(90px, 20vw, 160px);" x-show="!mobileMenuOpen" x-transition.opacity>
@@ -151,6 +154,7 @@
             {% endif %}
         </div>
     </div>
+
     <!-- Mobile 메뉴 -->
     <div class="hidden" id="mobile-menu">
         <div class="space-y-1 p-2 text-xl text-stroke">
@@ -168,7 +172,6 @@
             <a href="{% url 'cal:standings'%}" class="block rounded-md px-3 py-1 active:bg-[#FFFFFF] mask-linear-50 mask-direction-right mask-linear-from-20% mask-linear-to-100%">
                 순위
             </a>
-
             <div x-data="{ open: false }" class="relative">
                 <button @click="open = !open"
                         class="w-full flex justify-between items-center rounded-md px-3 py-2 active:bg-[#FFFFFF] mask-linear-50 mask-direction-right mask-linear-from-20% mask-linear-to-100%">
@@ -180,8 +183,7 @@
                             d="M19 9l-7 7-7-7"/>
                     </svg>
                 </button>
-
-                <!-- 드롭다운 목록 -->
+                <!-- 경기장 드롭다운 목록 -->
                 <div x-show="open" @click.outside="open = false" x-transition
                     class="mt-1 space-y-1 rounded-md bg-[#FFFBEB] py-2 px-2 shadow-lg z-50">
                     {% for stadium in stadiums %}

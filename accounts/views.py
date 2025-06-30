@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
@@ -15,31 +16,25 @@ import random
 def home(request):
     return redirect('/')
 
-
-# 회원가입, 로그인 처리
+# 회원가입, 로그인
 def auth_view(request):
     mode = request.GET.get('mode', 'login')
 
-    # POST 요청 처리
     if request.method == 'POST':
         if mode == 'signup':
             signup_form = CustomUserCreationForm(request.POST, request.FILES)
             login_form = CustomAuthenticationForm(request)  # 비워진 로그인 폼
-
             if signup_form.is_valid():
                 user = signup_form.save()
                 auth_login(request, user)
                 return redirect('cal:calendar')
-
         else:  # mode == 'login'
             login_form = CustomAuthenticationForm(request, data=request.POST)
             signup_form = CustomUserCreationForm()  # 비워진 회원가입 폼
-
             if login_form.is_valid():
                 user = login_form.get_user()
                 auth_login(request, user)
                 return redirect('cal:calendar')
-
     else:
         signup_form = CustomUserCreationForm()
         login_form = CustomAuthenticationForm(request)
@@ -52,7 +47,7 @@ def auth_view(request):
     return render(request, 'auth.html', context)
 
 
-# 로그아웃 처리
+# 로그아웃
 @login_required
 def logout(request):
     auth_logout(request)
@@ -65,12 +60,9 @@ def find_id_view(request):
     if request.method == "POST":
         data = json.loads(request.body)
         email = data.get("email")
-
-        # 이메일로 등록된 모든 사용자 검색
         users = User.objects.filter(email=email)
 
         if users.exists():
-            # 해당 이메일로 등록된 모든 username 목록 전송
             usernames = [user.username for user in users]
             username_list = "\n".join(usernames)
 
@@ -89,10 +81,9 @@ def find_id_view(request):
 VERIFICATION_CODES = {}   # username: code 형식으로 저장
 VERIFIED_USERS = set()    # 인증 완료된 username 저장
 
-# 인증번호 생성 함수
+# 인증번호 생성
 def generate_code(length=6):
     return ''.join(random.choices(string.digits, k=length))
-
 
 # 비밀번호 재설정: 인증번호 요청
 @csrf_exempt
@@ -104,24 +95,19 @@ def reset_password_view(request):
 
         try:
             # username + email 조합으로 사용자 조회
-            user = User.objects.get(username=username, email=email)
-            
-            # 인증번호 생성 및 저장
+            # user = User.objects.get(username=username, email=email)
             code = generate_code(6)
             VERIFICATION_CODES[username] = code
 
-            # 이메일 발송
             send_mail(
                 subject="비밀번호 재설정 인증번호",
                 message=f"비밀번호 재설정을 위한 인증번호는 {code} 입니다.",
                 from_email="직돌이 운영팀 <seongjin5743@naver.com>",
                 recipient_list=[email],
             )
-
             return JsonResponse({"success": True, "message": "인증번호가 이메일로 전송되었습니다."})
         except User.DoesNotExist:
             return JsonResponse({"success": False, "message": "아이디 또는 이메일이 올바르지 않습니다."})
-
 
 # 인증번호 확인
 @csrf_exempt
@@ -132,13 +118,11 @@ def confirm_verification_code(request):
         code = data.get("code")
 
         saved_code = VERIFICATION_CODES.get(username)
-
         if saved_code == code:
             VERIFIED_USERS.add(username)
             return JsonResponse({"success": True, "message": "인증에 성공했습니다."})
         else:
             return JsonResponse({"success": False, "message": "인증번호가 일치하지 않습니다."})
-
 
 # 새 비밀번호 설정
 @csrf_exempt
@@ -148,7 +132,7 @@ def set_new_password(request):
         username = data.get("username")
         new_password = data.get("new_password")
 
-        # 인증된 사용자만 비밀번호 재설정 가능
+        # 인증된 사용자만
         if username not in VERIFIED_USERS:
             return JsonResponse({"success": False, "message": "인증되지 않은 사용자입니다."})
 
@@ -156,15 +140,12 @@ def set_new_password(request):
             user = User.objects.get(username=username)
             user.set_password(new_password)
             user.save()
-
-            # 인증 데이터 정리
             VERIFIED_USERS.discard(username)
             VERIFICATION_CODES.pop(username, None)
 
             return JsonResponse({"success": True, "message": "비밀번호가 성공적으로 변경되었습니다."})
         except User.DoesNotExist:
             return JsonResponse({"success": False, "message": "사용자를 찾을 수 없습니다."})
-
 
 # 아이디,닉네임 중복 확인
 @csrf_exempt
@@ -176,8 +157,6 @@ def check_duplicate(request):
 
         if field not in ["username", "nickname"]:
             return JsonResponse({"success": False, "message": "유효하지 않은 필드입니다."})
-
-        # 중복 여부 확인
         exists = User.objects.filter(**{field: value}).exists()
 
         if exists:
@@ -192,41 +171,46 @@ def mypage(request):
     password_form = PasswordChangeCustomForm(user)
     nickname_form = NicknameChangeForm(instance=user)
     team_form = TeamChangeForm(instance=user)
+    current_mode = None  # 어떤 폼을 보여줘야 할지 판단하기 위해
 
     if request.method == 'POST':
         mode = request.POST.get('mode')
-        print(mode)
+        current_mode = mode  # 어떤 폼이 다시 열려야 하는지 JS에 넘기기 위해 저장
+
         if mode == 'password':
             password_form = PasswordChangeCustomForm(user, request.POST)
             if password_form.is_valid():
                 password_form.save()
+                messages.success(request, '비밀번호가 성공적으로 변경되었습니다.')
                 return redirect('accounts:mypage')
         elif mode == 'nickname':
             nickname_form = NicknameChangeForm(request.POST, instance=user)
             if nickname_form.is_valid():
                 nickname_form.save()
+                messages.success(request, '닉네임이 성공적으로 변경되었습니다.')
                 return redirect('accounts:mypage')
+            else:
+                messages.error(request, '닉네임이 중복되어 변경에 실패했습니다.')
+                user.refresh_from_db()
         elif mode == 'team':
             old_team = user.team
             team_form = TeamChangeForm(request.POST, instance=user)
             if team_form.is_valid():
-
-                # 새로운 팀으로 변경
                 team_form.save()
-
-                # 직관한 경기에서 기존 응원팀 경기를 제외시킴
                 attended_games = user.attendance_game.all()
                 for game in attended_games:
-                    if game.team1 == old_team:
+                    if game.team1 == old_team or game.team2 == old_team:
                         game.attendance_users.remove(user)
-                    elif game.team2 == old_team:
-                        game.attendance_users.remove(user)
+                messages.success(request, '응원팀이 성공적으로 변경되었습니다.')
                 return redirect('accounts:mypage')
+            else:
+                messages.error(request, '응원팀 변경에 실패했습니다. 입력값을 확인해주세요.')
 
     context = {
         'password_form': password_form,
         'nickname_form': nickname_form,
         'team_form': team_form,
+        'current_mode': current_mode,
     }
     return render(request, 'mypage.html', context)
 
@@ -238,6 +222,8 @@ def update_profile_image(request):
         user = request.user
         user.profile_image = profile_image
         user.save()
+        messages.success(request, '프로필 이미지가 성공적으로 변경되었습니다.')
         return redirect('accounts:mypage')
 
+    messages.error(request, '프로필 이미지 변경에 실패했습니다.')
     return redirect('accounts:mypage')

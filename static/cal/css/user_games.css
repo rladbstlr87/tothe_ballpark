@@ -1,3 +1,28 @@
+/* 닉네임 셀 스타일 */
+.scroll-cell {
+  max-width: 120px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* 스크롤바 스타일 */
+.scroll-cell::-webkit-scrollbar {
+  height: 4px;
+}
+
+.scroll-cell::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-cell::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+.scroll-cell::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
 /* LG 트윈스 */
 .high-LG {
   color: #C60C30;
@@ -46,45 +71,4 @@
 /* 키움 히어로즈 */
 .high-WO {
   color: #6F263D;
-}
-
-/* 테이블 보더 스타일 - 위아래만 */
-.table-row-border {
-  border-top: 1px solid white;
-  border-bottom: 1px solid white;
-}
-
-/* 테이블 헤더 배경색 */
-.table-header {
-  background-color: #FFDCDC;
-}
-
-/* 테이블 바디 배경색 */
-.table-body {
-  background-color: #FFF2EB;
-}
-
-/* 닉네임 셀 스타일 */
-.scroll-cell {
-  max-width: 120px;
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
-/* 스크롤바 스타일 */
-.scroll-cell::-webkit-scrollbar {
-  height: 4px;
-}
-
-.scroll-cell::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.scroll-cell::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 2px;
-}
-
-.scroll-cell::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
 }

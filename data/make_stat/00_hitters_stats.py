@@ -35,8 +35,8 @@ columns = [
 
 driver.get(base_url)
 
+# 각 팀별로 반복
 for team in teams:
-    print(f"\n📦 팀 선택 중: {team}")
 
     # 팀 선택
     select_element = WebDriverWait(driver, 10).until(
@@ -59,7 +59,7 @@ for team in teams:
     # 1페이지 선수 수집
     player_infos = collect_player_infos()
 
-    # 2페이지 버튼 존재 시 클릭 후 수집
+    # 2페이지가 있다면 수집
     try:
         next_btn = driver.find_element(By.ID, "cphContents_cphContents_cphContents_ucPager_btnNo2")
         next_btn.click()
@@ -72,9 +72,8 @@ for team in teams:
         prev_btn.click()
         time.sleep(2)
     except:
-        print("➡️ 2페이지 없음")
+        pass
 
-    print(f"🔎 총 {len(player_infos)}명 선수 발견")
 
     team_data = []
 
@@ -85,7 +84,7 @@ for team in teams:
 
         try:
             table1 = soup.select_one("div.tbl-type02.mb10 > table > tbody")
-            data1 = [td.text.strip() for td in table1.select("td")][1:]  # 첫 번째 팀명 제외
+            data1 = [td.text.strip() for td in table1.select("td")][1:]
         except:
             data1 = []
 
@@ -99,16 +98,12 @@ for team in teams:
         if data1 and data2:
             row = [team, player_id, player_name] + data1 + data2
             team_data.append(row)
-            print("✅ 저장될 데이터:", row)
-        else:
-            print(f"⚠️ 누락됨: {team} / {player_id} / {player_name}")
 
         time.sleep(0.3)
 
     final_data.extend(team_data)
 
 driver.quit()
-print("\n🎉 모든 팀 데이터 저장 완료!")
 
 # 임시 선수 추가
 dummy_row = [
@@ -124,6 +119,4 @@ df_all["SBA"] = df_all["SB"].astype(float) + df_all["CS"].astype(float)
 
 # 저장
 columns_with_sba = columns + ["SBA"]
-df_all.to_csv("/mnt/c/Users/seong/KBO/data/all_hitter_stats.csv", index=False, encoding="utf-8-sig", columns=columns_with_sba)
-
-print("🎯 임시 선수 포함 + SBA 컬럼 포함 최종 저장 완료: all_hitter_stats.csv")
+df_all.to_csv("data/all_hitter_stats.csv", index=False, encoding="utf-8-sig", columns=columns_with_sba)

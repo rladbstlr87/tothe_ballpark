@@ -56,17 +56,17 @@ ROOT_URLCONF = 'baseball.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/ 'accounts', 'templates'], # accounts/templates 경로 추가 
+        'DIRS': [BASE_DIR/ 'accounts', 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'accounts.context_processors.win_count_total', # 사용자 승리 횟수 계산을 위한 컨텍스트 프로세서 추가
-                'accounts.context_processors.all_users_winning_percent', # 전체 사용자 승률 계산을 위한 컨텍스트 프로세서 추가
+                'accounts.context_processors.win_count_total', # 사용자 승리 횟수 계산
+                'accounts.context_processors.all_users_winning_percent', # 전체 사용자 승률 계산
                 'cal.context_processors1.stadium_list',
-                'cal.context_processors1.random_backgrounds'
+                'cal.context_processors1.random_changes'
             ],
         },
     },

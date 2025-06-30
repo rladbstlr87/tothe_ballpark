@@ -34,6 +34,7 @@
         {% endblock %}
     </footer>
     <script>
+        // Mobile 드롭다운
         document.addEventListener('DOMContentLoaded', function () {
             const toggleBtn = document.querySelector('button[aria-controls="mobile-menu"]');
             const openIcon = toggleBtn.querySelectorAll('svg')[0];
@@ -48,10 +49,9 @@
             closeIcon.classList.toggle('hidden', isExpanded);
             mobileMenu.classList.toggle('hidden');
             });
-            // 화면 리사이즈 시 메뉴 닫기
+
             window.addEventListener('resize', () => {
             if (window.innerWidth >= 768) {
-                // md 이상일 경우 메뉴 닫힘 상태로 초기화
                 toggleBtn.setAttribute('aria-expanded', 'false');
                 openIcon.classList.remove('hidden');
                 closeIcon.classList.add('hidden');
@@ -60,18 +60,15 @@
             });
         });
 
+        // p태그 기반 튜토리얼 
         document.addEventListener('DOMContentLoaded', () => {
             const path = window.location.pathname;
             let pageKey = '';
-
             if (/^\/cal\/calendar\/\d+\/?$/.test(path)) {
-                // 모든 숫자 경기 페이지는 공통 키 사용
                 pageKey = 'visited_cal_calendar';
             } else if (/^\/cal\/[^\/]+\/stadium_info$/.test(path)) {
-                // 경기장 정보 페이지는 경기장 이름 달라도 공통 키 사용
                 pageKey = 'visited_stadium_info';
             } else {
-                // 그 외 경로는 고유하게 처리
                 pageKey = `visited_${path}`;
             }
 
@@ -84,32 +81,40 @@
             if (!localStorage.getItem(pageKey)) {
             overlay.classList.remove('hidden');
             steps[0].classList.remove('hidden');
-
             overlay.addEventListener('click', () => {
-                // 현재 p 숨기기
                 steps[currentStep].classList.add('hidden');
-
-                // 스크롤 이동 처리
-                switch(currentStep) {
-                case 2:
-                    const elementA = document.getElementById('keyplayer');
-                    if (elementA) elementA.scrollIntoView({ behavior: 'smooth' });
-                    break;
-                case 5:
-                    const elementB = document.getElementById('legend-text');
-                    if (elementB) elementB.scrollIntoView({ behavior: 'smooth' });
-                    break;
-                default:
-                    break;
+                if (pageKey === 'visited_stadium_info') {
+                    switch (currentStep) {
+                        case 1:
+                            const seatInfo = document.getElementById('seat_info');
+                            if (seatInfo) seatInfo.scrollIntoView({ behavior: 'smooth' });
+                            break;
+                        case 2:
+                            const parkingInfo = document.getElementById('parkinglot_info');
+                            if (parkingInfo) parkingInfo.scrollIntoView({ behavior: 'smooth' });
+                            break;
+                        case 3:
+                            const restaurantInfo = document.getElementById('restaurant_info');
+                            if (restaurantInfo) restaurantInfo.scrollIntoView({ behavior: 'smooth' });
+                            break;
+                    }
+                } else if (pageKey === 'visited_cal_calendar') {
+                    switch (currentStep) {
+                        case 2:
+                            const keyPlayer = document.getElementById('keyplayer');
+                            if (keyPlayer) keyPlayer.scrollIntoView({ behavior: 'smooth' });
+                            break;
+                        case 5:
+                            const legendText = document.getElementById('legend-text');
+                            if (legendText) legendText.scrollIntoView({ behavior: 'smooth' });
+                            break;
+                    }
                 }
 
                 currentStep++;
-
                 if (currentStep < steps.length) {
-                // 다음 p 보이기
                 steps[currentStep].classList.remove('hidden');
                 } else {
-                // 모든 설명 끝나면 안내 박스 표시
                 finalMessage.classList.remove('hidden');
                 }
             });

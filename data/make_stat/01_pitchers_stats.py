@@ -22,6 +22,7 @@ headers = {
 }
 
 teams = ["LG", "HH", "LT", "SS", "SK", "NC", "OB", "HT", "KT", "WO"]
+
 base_url = "https://www.koreabaseball.com/Record/Player/PitcherBasic/Basic1.aspx"
 detail_url = "https://www.koreabaseball.com/Record/Player/PitcherDetail/Basic.aspx?playerId={}"
 
@@ -35,9 +36,10 @@ columns = [
 
 driver.get(base_url)
 
+# 각 팀별로 반복
 for team in teams:
-    print(f"\n팀 선택 중: {team}")
 
+    # 팀 선택
     select_element = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.ID, "cphContents_cphContents_cphContents_ddlTeam_ddlTeam"))
     )
@@ -45,6 +47,7 @@ for team in teams:
     select.select_by_value(team)
     time.sleep(2)
 
+    # 선수 정보 수집 함수
     def collect_player_infos():
         players = driver.find_elements(By.CSS_SELECTOR,
             "#cphContents_cphContents_cphContents_udpContent > div.record_result > table > tbody > tr > td:nth-child(2) > a"
@@ -54,8 +57,10 @@ for team in teams:
             for a in players
         ]
 
+    # 1페이지 선수 수집
     player_infos = collect_player_infos()
 
+    # 2페이지가 있다면 수집
     try:
         next_btn = driver.find_element(By.ID, "cphContents_cphContents_cphContents_ucPager_btnNo2")
         next_btn.click()
@@ -63,51 +68,52 @@ for team in teams:
 
         player_infos += collect_player_infos()
 
+        # 1페이지로 복귀
         prev_btn = driver.find_element(By.ID, "cphContents_cphContents_cphContents_ucPager_btnNo1")
         prev_btn.click()
         time.sleep(2)
     except:
-        print("2페이지 없음")
+        pass
 
-    print(f"총 {len(player_infos)}명 선수 발견")
-
+    # 팀별 데이터 저장 리스트
     team_data = []
 
+    # 각 선수 상세 페이지 접속 및 데이터 수집
     for player_id, player_name in player_infos:
         url = detail_url.format(player_id)
         res = requests.get(url, headers=headers)
         soup = BeautifulSoup(res.content, "html.parser")
 
-        # 첫 번째 테이블 (팀명 제외)
+        # 첫 번째 테이블 (요약 정보, 팀명 제외)
         try:
             table1 = soup.select_one("div.tbl-type02.tbl-type02-pd0.mb35 > table > tbody")
             data1 = [td.text.strip() for td in table1.select("td")][1:]
         except:
             data1 = []
 
-        # 두 번째 테이블
+        # 두 번째 테이블 (세부 성적)
         try:
             table2 = soup.select_one("div.player_records > div:nth-child(4) > table > tbody")
             data2 = [td.text.strip() for td in table2.select("td")]
         except:
             data2 = []
 
+        # 두 테이블 모두 있는 경우에만 저장
         if data1 and data2:
             row = [team, player_id, player_name] + data1 + data2
             team_data.append(row)
-            print("✅ 저장될 데이터:", row)
-        else:
-            print(f"⚠️ 누락됨: {team} / {player_id} / {player_name}")
 
         time.sleep(0.3)
 
+    # 팀 데이터 누적
     final_data.extend(team_data)
+
+    # 중간 저장
     df_all = pd.DataFrame(final_data, columns=columns)
     df_all.to_csv("data/all_pitcher_stats.csv", index=False, encoding="utf-8-sig")
-    print(f"💾 누적 저장 완료: all_pitcher_stats.csv")
 
+# 드라이버 종료
 driver.quit()
-print("\n모든 투수 데이터 저장 완료!")
 
 # 임시 선수 추가
 dummy_row = [
@@ -117,6 +123,6 @@ dummy_row = [
 ]
 final_data.append(dummy_row)
 
+# 최종 저장
 df_all = pd.DataFrame(final_data, columns=columns)
 df_all.to_csv("data/all_pitcher_stats.csv", index=False, encoding="utf-8-sig")
-print("임시 선수 포함 최종 저장 완료: all_pitcher_stats.csv")
