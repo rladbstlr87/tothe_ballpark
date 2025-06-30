@@ -12,7 +12,7 @@ import os
 # 업로드된 이미지 처리 함수
 def handle_uploaded_image(file):
     ext = os.path.splitext(file.name)[-1].lower()
-    if ext == ['.gif','.svg']: # gif는 원본 유지
+    if ext in ['.gif','.svg']: # gif는 원본 유지
         return file
 
     file.seek(0)
