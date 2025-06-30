@@ -9,14 +9,15 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 import os
 
+# 업로드된 이미지 처리 함수
 def handle_uploaded_image(file):
     ext = os.path.splitext(file.name)[-1].lower()
-    if ext == '.gif':
+    if ext == '.gif': # gif는 원본 유지
         return file
 
     file.seek(0)
     img = Image.open(file)
-    img.thumbnail((500, 500))
+    img.thumbnail((500, 500)) # 500x500 이하로 리사이징 후 저장
     buffer = BytesIO()
     format_map = {
         '.jpg': 'JPEG',
@@ -36,7 +37,7 @@ def post_index(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     total = posts.count()
-    start_index = total - ((page_obj.number-1) * paginator.per_page)  # 시작 인덱스 계산  (역순으로 1번 글이 가장 마지막 번호)
+    start_index = total - ((page_obj.number-1) * paginator.per_page)  # 역순으로 1번 글이 가장 마지막 번호
     posts_with_number = [(start_index - idx, post) for idx, post in enumerate(page_obj)]
 
     context = {
@@ -48,6 +49,7 @@ def post_index(request):
 
     return render(request, 'post_index.html', context)
 
+# 게시글 생성
 @login_required
 def create(request):
     if request.method == 'POST':
@@ -69,6 +71,7 @@ def create(request):
         form = PostForm()
     return render(request, 'create.html', {'form': form})
 
+# 게시글 상세페이지
 def detail(request, id):
     post = get_object_or_404(Post, id=id)
     posts = Post.objects.all().order_by('-created_at')
@@ -96,6 +99,7 @@ def detail(request, id):
 
     return render(request, 'detail.html', context)
 
+# 게시글 수정
 @login_required
 def update(request, id):
     post = get_object_or_404(Post, id=id)
@@ -133,6 +137,7 @@ def update(request, id):
 
     return render(request, 'update.html', context)
 
+# 게시글 삭제
 @login_required
 def delete(request, id):
     post = get_object_or_404(Post, id=id)
@@ -140,6 +145,7 @@ def delete(request, id):
         post.delete()
     return redirect('posts:post_index')
 
+# 댓글 생성
 @login_required
 def comment_create(request, post_id):
     form = CommentForm(request.POST, request.FILES)
@@ -150,6 +156,7 @@ def comment_create(request, post_id):
         comment.save()
     return redirect('posts:detail', id=post_id)
 
+# 댓글 수정
 @login_required
 def comment_update(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
@@ -177,6 +184,7 @@ def comment_update(request, comment_id):
 
     return render(request, 'detail.html', context)
 
+# 댓글 삭제
 @login_required
 def comment_delete(request, post_id, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
@@ -184,6 +192,7 @@ def comment_delete(request, post_id, comment_id):
         comment.delete()
     return redirect('posts:detail', id=post_id)
 
+# 게시글 좋아요
 @login_required
 def post_like(request, post_id):
     user = request.user
@@ -194,6 +203,7 @@ def post_like(request, post_id):
         post.like_users.add(user)
     return redirect('posts:detail', id=post_id)
 
+# 댓글 좋아요
 @login_required
 def comment_like(request, comment_id):
     user = request.user
@@ -205,10 +215,11 @@ def comment_like(request, comment_id):
         comment.like_users.add(user)
     return redirect('posts:detail', id=comment.post.id)
 
+# 게시글 좋아요 비동기 처리
 @login_required
-def like_async(request, id):
+def like_async(request, post_id):
     user = request.user
-    post = Post.objects.get(id=id)
+    post = Post.objects.get(id=post_id)
 
     if user in post.like_users.all():
         post.like_users.remove(user)
@@ -225,6 +236,7 @@ def like_async(request, id):
 
     return JsonResponse(context)
 
+# 댓글 좋아요 비동기 처리
 @login_required
 def comment_like_async(request, comment_id):
     comment = Comment.objects.get(id=comment_id)

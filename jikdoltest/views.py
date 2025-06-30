@@ -1,6 +1,5 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 
-# Create your views here.
 # 직돌이 테스트 질문들
 QUESTIONS = [
     {
@@ -113,7 +112,6 @@ def test_result(request):
         return redirect('start')
     best_type = max(type_scores, key=type_scores.get)
 
-    # 결과 정보 매핑
     results = {
         'A': {
             'tag': '데이터형직돌이',
