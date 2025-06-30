@@ -12,7 +12,7 @@ import os
 # 업로드된 이미지 처리 함수
 def handle_uploaded_image(file):
     ext = os.path.splitext(file.name)[-1].lower()
-    if ext == '.gif': # gif는 원본 유지
+    if ext == ['.gif','.svg']: # gif는 원본 유지
         return file
 
     file.seek(0)
@@ -158,7 +158,7 @@ def comment_create(request, post_id):
 
 # 댓글 수정
 @login_required
-def comment_update(request, comment_id):
+def comment_update(request, post_id, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     post = comment.post
 
