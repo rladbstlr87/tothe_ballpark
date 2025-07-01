@@ -144,4 +144,7 @@ def result_share(request, type_code):
 
     result = results[type_code]
     template_name = f'result{type_code}.html'
-    return render(request, template_name, {'result': result})
+    context = {
+        'result': result,
+    }
+    return render(request, template_name, context)
