@@ -9,28 +9,7 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 import os
 
-# 업로드된 이미지 처리 함수
-def handle_uploaded_image(file):
-    ext = os.path.splitext(file.name)[-1].lower()
-    if ext in ['.gif','.svg']: # gif는 원본 유지
-        return file
-
-    file.seek(0)
-    img = Image.open(file)
-    img.thumbnail((500, 500)) # 500x500 이하로 리사이징 후 저장
-    buffer = BytesIO()
-    format_map = {
-        '.jpg': 'JPEG',
-        '.jpeg': 'JPEG',
-        '.png': 'PNG',
-        '.webp': 'WEBP',
-    }
-    save_format = format_map.get(ext, 'PNG')
-    img.save(buffer, format=save_format)
-
-    return ContentFile(buffer.getvalue(), name=file.name)
-
-# 게시글 리스트
+# 게시글 목록
 def post_index(request):
     posts = Post.objects.all().order_by('-created_at')
     paginator = Paginator(posts, 10)
@@ -49,7 +28,7 @@ def post_index(request):
 
     return render(request, 'post_index.html', context)
 
-# 게시글 생성
+# 게시글 작성
 @login_required
 def create(request):
     if request.method == 'POST':
@@ -59,7 +38,6 @@ def create(request):
             post.user = request.user
             post.save()
             
-            # 이미지 여러 장 저장 
             images = request.FILES.getlist('images')
             for image in images:
                 processed = handle_uploaded_image(image)
@@ -110,7 +88,6 @@ def update(request, id):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
-            # 폼 저장 전에 이미지 삭제 처리
             delete_ids = request.POST.getlist('delete_images')
             if delete_ids:
                 images_to_delete = PostImage.objects.filter(id__in=delete_ids, post=post)
@@ -137,6 +114,27 @@ def update(request, id):
 
     return render(request, 'update.html', context)
 
+# 업로드된 이미지 처리 함수
+def handle_uploaded_image(file):
+    ext = os.path.splitext(file.name)[-1].lower()
+    if ext in ['.gif','.svg']:
+        return file
+
+    file.seek(0)
+    img = Image.open(file)
+    img.thumbnail((500, 500))
+    buffer = BytesIO()
+    format_map = {
+        '.jpg': 'JPEG',
+        '.jpeg': 'JPEG',
+        '.png': 'PNG',
+        '.webp': 'WEBP',
+    }
+    save_format = format_map.get(ext, 'PNG')
+    img.save(buffer, format=save_format)
+
+    return ContentFile(buffer.getvalue(), name=file.name)
+
 # 게시글 삭제
 @login_required
 def delete(request, id):
@@ -145,7 +143,7 @@ def delete(request, id):
         post.delete()
     return redirect('posts:post_index')
 
-# 댓글 생성
+# 댓글 작성
 @login_required
 def comment_create(request, post_id):
     form = CommentForm(request.POST, request.FILES)
