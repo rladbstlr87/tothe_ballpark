@@ -1,0 +1,16 @@
+.standing-box {
+    border-radius: 15px;
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-btn.active {
+    filter: brightness(70%);
+}
