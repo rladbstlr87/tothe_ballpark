@@ -4,7 +4,7 @@
     style="{% if user.team == none %}background-image: url('{% static 'nav/nav-' %}nothing.png');{% else %}background-image: url('{% static 'nav/nav-' %}{{ user.team }}.png');{% endif %}">
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 ">
         <div class="relative flex h-16">
-            <!-- Mobile 메뉴 -->
+            <!-- Mobile 구조 -->
             <div class="absolute inset-y-0 left-0 flex md:hidden">
                 <button type="button"
                         @click="mobileMenuOpen = !mobileMenuOpen"
@@ -12,7 +12,6 @@
                         class="inline-flex items-center rounded-md m-2 p-4 text-white active:bg-gray-500 active:ring-2 active:ring-white active:outline-hidden active:ring-inset"
                         aria-controls="mobile-menu">
                     <span class="absolute -inset-0.5"></span>
-
                     <!-- 메뉴 닫힌 상태 -->
                     <svg :class="{ 'hidden': mobileMenuOpen, 'block': !mobileMenuOpen }"
                         class="size-6"
@@ -20,7 +19,6 @@
                     <path stroke-linecap="round" stroke-linejoin="round"
                             d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
-
                     <!-- 메뉴 열린 상태 -->
                     <svg :class="{ 'block': mobileMenuOpen, 'hidden': !mobileMenuOpen }"
                         class="size-6"
@@ -30,7 +28,6 @@
                     </svg>
                 </button>
             </div>
-
             <!-- Mobile 중앙 -->
             <a href="{% url 'index' %}">
                 <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl font-bold text-white block md:hidden" 
@@ -38,7 +35,6 @@
                     직돌이
                 </div>
             </a>
-
             <div class="flex flex-1 justify-center">
                 <div id="menu" class="absolute z-30 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 justify-between w-full items-center text-shadows md:flex hidden">
                     <!-- 왼쪽 메뉴 -->
@@ -65,7 +61,6 @@
                                 <span>순위</span>
                             </span>
                         </a>
-
                         <!-- 드롭다운 -->
                         <div x-data="{ open: false }">
                             <span @click="open = !open"

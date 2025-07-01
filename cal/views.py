@@ -13,7 +13,7 @@ import calendar
 import random
 import urllib.parse
 
-# 배경 이미지 랜덤 적용
+# 홈 배경 이미지 랜덤
 def index(request):
     backgrounds = [
         'cal/images/bg/HH.png',
@@ -67,7 +67,6 @@ def calculate_team_standings():
             t1_home = stadium in HOME_STADIUMS.get(t1, [])
             t2_home = stadium in HOME_STADIUMS.get(t2, [])
 
-        # 각 팀 경기 결과 기록
         if r1 in ['승', '패', '무']:
             standings[t1]['games'].append((date_played, r1))
         if r2 in ['승', '패', '무']:
@@ -553,7 +552,6 @@ def stadium_info(request, stadium):
     parkings = Parking.objects.filter(stadium=stadium_obj)
     restaurants = Restaurant.objects.filter(stadium=stadium_obj)
 
-    # 경기장 좌표 및 지도 링크 정보
     team_info = {
         '광주': '35.168275,126.888934,광주기아챔피언스필드,19909618',
         '잠실': '37.512898,127.071107,잠실종합운동장 잠실야구장,13202577',

@@ -14,12 +14,10 @@
         <tr>
           <th colspan="7" class="month-header">
             <div class="flex justify-around items-center">
-              <!-- 이전 달 -->
               <a href="?{{ prev_month }}" class="nav-link">
                 <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Prev" class="w-16 h-16 rotate-90 inline">
               </a>
               <span class="cal-title">{{ cal_data.year }}년 {{ cal_data.month }}월</span>
-              <!-- 다음 달 -->
               <a href="?{{ next_month }}" class="nav-link">
                 <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Next" class="w-16 h-16 -rotate-90 inline">
               </a>
@@ -32,7 +30,7 @@
             <th class="{% if forloop.counter0 == 0 %}relative mon overflow-visible{% endif %} text-center w-12 h-12">
               {% if forloop.counter0 == 0 %}
                 <!-- 왼쪽 배경 -->
-                <div class="absolute top-1/2 left-1/2 -translate-x-6/7 -translate-y-3/7 z-0 w-[300px] h-[300px] max-lg:hidden">
+                <div class="absolute top-1/2 left-1/2 -translate-x-6/7 -translate-y-3/7 -z-10 w-[300px] h-[300px] max-lg:hidden">
                   <img src="/static/cal/images/bg/mon_alert.svg" alt="동그라미" class="w-full h-full pointer-events-none">
                   <img src="/static/cal/images/icon/ticket.png" alt="티켓 메모" id="ticketBtn"
                       class="hidden sm:block w-[200px] h-[200px] z-0 transform -translate-x-10 cursor-pointer hover:scale-105 transition">
@@ -118,7 +116,6 @@
         class="absolute top-18 right-12 max-sm:top-22 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
         ×
       </button>
-      <!-- 내용 -->
       <div class="absolute top-12 left-16 max-sm:top-18 text-[13px] max-sm:text-[11px] leading-[1.5] text-gray-800 z-10 whitespace-pre-line">
         <span class="inline-block text-pink-500 font-semibold">📌</span> <span class="font-bold">티켓팅 일정 및 링크</span>
         <span class="font-semibold">티켓링크</span>  
@@ -149,7 +146,6 @@
         class="absolute top-18 right-12 max-sm:top-22 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
         ×
       </button>
-      <!-- 내용 -->
       <div class="w-[75%] h-[60%] absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-[13px] max-sm:text-[11px] text-gray-800 z-10 whitespace-pre-line">
         <table class="w-full sm:text-xs text-center border-collapse">
           <thead class="bg-gray-200 text-gray-700">
