@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 
-# 직돌이 테스트 질문들
 QUESTIONS = [
     {
         "question": "경기 당일 아침, 비 소식 있다면?",
@@ -68,7 +67,6 @@ SCORE_TABLE = [
     ['A,C,D', 'B']
 ]
 
-# 테스트 질문 처리 
 def test_question(request, step):
     if step > len(QUESTIONS):
         return redirect('jikdoltest:test_result')
@@ -78,7 +76,6 @@ def test_question(request, step):
 
     if request.method == 'POST':
         choice = int(request.POST.get('choice'))
-        # 선택된 보기에서 점수 가져오기
         type_code = SCORE_TABLE[step - 1][choice]
 
         # 세션에 유형별 점수 누적
@@ -103,7 +100,6 @@ def test_question(request, step):
 
     return render(request, 'test_question.html', context)
 
-# 사용자의 테스트 결과 
 def test_result(request):
     type_scores = request.session.get('type_scores', {})
     if not type_scores:
@@ -136,7 +132,6 @@ def test_result(request):
     
     return render(request, template_name, context)
 
-# 공유 링크
 def result_share(request, type_code):
     type_code = type_code
     results = {
