@@ -147,4 +147,5 @@ def result_share(request, type_code):
     context = {
         'result': result,
     }
+    
     return render(request, template_name, context)
