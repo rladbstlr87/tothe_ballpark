@@ -62,7 +62,6 @@ def hitter_style(row):
         if row['AVG'] > 0.245:
             return 2  # 컨택 타입
         else:
-            secondary_stat = max(row['power'], row['speed'], row['batting_eye'])
             if row['power'] > 0.6:
                 return 0  # 홈런 타입
             elif row['speed'] > 0.6:
