@@ -5,8 +5,8 @@
 
 ---
 ## 데이터 처리 스크립트
-- [데이터 수집 및 가공](https://github.com/dayof<project_name>/KBO/tree/master/data/make_stat)
-- [DB 저장 커맨드](https://github.com/dayof<project_name>/KBO/tree/master/cal/management/commands)
+- [데이터 수집 및 가공](https://github.com/dayofbaseball/KBO/tree/master/data/make_stat)
+- [DB 저장 커맨드](https://github.com/dayofbaseball/KBO/tree/master/cal/management/commands)
 - 스크립트 : `ready_develop.sh`, `local_before_game_schedule.py`, `local_before_game.sh`, `local_after_game.sh`, `server_before_game_schedule.py`, `server_before_game.sh`, `server_after_game.sh`
 - crontab
     - local
