@@ -5,8 +5,6 @@ from cal.models import Game
 from django.conf import settings
 
 class Command(BaseCommand):
-    help = 'Import all KBO games from CSV file into DB (update if exists)'
-
     def handle(self, *args, **kwargs):
         csv_file_path = settings.BASE_DIR / 'data' / 'kbo_schedule.csv'
         with open(csv_file_path, newline='', encoding='utf-8-sig') as csvfile:

@@ -4,8 +4,6 @@ from cal.models import Lineup, Game, Hitter, Pitcher, Stadium  # Stadium import 
 from django.conf import settings
 
 class Command(BaseCommand):
-    help = 'Import or update lineups from CSV'
-
     def handle(self, *args, **kwargs):
         csv_file_path = settings.BASE_DIR / 'data' / 'lineups.csv'
         with open(csv_file_path, encoding='utf-8-sig', newline='') as f:
