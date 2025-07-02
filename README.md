@@ -321,10 +321,3 @@ python manage.py runserver
 - HTML / JS
 
 ---
-
-## 데이터 구성 및 전처리
-
-- 경기 일정, 선발 라인업, 타자/투수 기록 등 전처리
-- 데이터들을 Django Command로 DB 저장
-
----
