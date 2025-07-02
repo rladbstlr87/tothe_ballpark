@@ -84,7 +84,13 @@
         {% for parking in parkings %}
           <div class="bg-white border rounded-lg p-4 shadow hover:shadow-md transition">
             <h3 class="text-base md:text-lg font-medium">{{ parking.parking_name }}</h3>
-            <p class="text-xs md:text-sm text-gray-600">{{ parking.adress }}</p>
+            <p class="text-xs md:text-sm text-gray-600">
+              <a href="https://map.naver.com/v5/search/{{ parking.adress|add:' ' }}{{ parking.parking_name|urlencode }}" 
+                target="_blank" 
+                class="text-blue-600 hover:underline">
+                {{ parking.adress }}
+              </a>
+            </p>
             <p class="text-xs md:text-sm text-gray-600 mt-1">{{ parking.note }}</p>
           </div>
         {% empty %}
