@@ -6,15 +6,11 @@ from pathlib import Path
 from cal.models import Stadium
 
 class Command(BaseCommand):
-    help = 'Import seat data from CSV file into the database'
-
     def handle(self, *args, **kwargs):
         csv_path = settings.BASE_DIR / 'data' / 'seats.csv'
-
         if not csv_path.exists():
             self.stdout.write(self.style.ERROR(f"CSV 파일이 존재하지 않습니다: {csv_path}"))
             return
-
         with open(csv_path, newline='', encoding='utf-8-sig') as csvfile:
             reader = csv.DictReader(csvfile)
             count = 0

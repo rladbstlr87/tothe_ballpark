@@ -2,8 +2,6 @@ from django.core.management.base import BaseCommand
 from cal.models import Stadium
 
 class Command(BaseCommand):
-    help = '경기장(stadium) 이름 리스트를 cal_stadium 테이블에 직접 저장합니다.'
-
     def handle(self, *args, **kwargs):
         stadium_names = [
             '광주',
