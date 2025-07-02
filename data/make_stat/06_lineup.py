@@ -136,8 +136,6 @@ with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
             else:
                 naver_game_id = '22025' if not double_header_failed else '02025'
 
-            print(f"크롤링: {date_str} {team1} vs {team2} ({time_str}) game_id={naver_game_id}")
-
             team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, naver_game_id, driver)
 
             # 더블헤더 첫 경기 실패 시 보정
