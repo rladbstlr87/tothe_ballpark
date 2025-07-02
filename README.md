@@ -248,13 +248,13 @@ sudo systemctl restart uwsgi
 ## 경기 기능
 
 ### 경기 일정 캘린더
-![alt text](image-1.png)
+![alt text](static/readme/image-1.png)
 - 월별 달력에서 응원 팀 경기만 필터링
 - 직관 여부 표시
 - 경기결과 표시
 
 ### 경기 상세정보
-![alt text](image-3.png)
+![alt text](static/readme/image-3.png)
 - 선발 라인업 표시
 - 직관 여부 버튼을 통해 유저 DB에 직관 여부 저장
 - 선수별 자체 스탯 & 플레이 스타일 표기
@@ -262,13 +262,13 @@ sudo systemctl restart uwsgi
 - 경기 전이면 경기 예매 버튼 & 예매 가능일자 표시
 
 ### 직관 전적
-![alt text](image-7.png)
+![alt text](static/readme/image-7.png)
 - 유저의 전체 직관 전적 표시
 - 사이트에 등록된 모든 유저들의 직관 승률을 기반으로 랭킹 표시 
 - 구장별 직관 승률 표시 
 
 ### 구장 정보
-![alt text](image-4.png)
+![alt text](static/readme/image-4.png)
 - 구장 예매 링크
 - 경기장까지의 길찾기 링크
 - 경기장 좌석 추천 정보, 위치 이미지
@@ -277,26 +277,26 @@ sudo systemctl restart uwsgi
 ---
 
 ## 응원글 게시판
-![alt text](image-6.png)
+![alt text](static/readme/image-6.png)
 - 게시글 CRUD (이미지 첨부 가능) & 좋아요 기능
 - 댓글 CRUD (이미지 첨부 가능) & 좋아요 기능
 
 ---
 
 ## 순위
-![alt text](image-5.png)
+![alt text](static/readme/image-5.png)
 - KBO 순위
 - 응원팀 기준 타자, 투수 순위
 
 ---
 
 ## 직돌이 테스트
-![alt text](<스크린샷 2025-06-27 191619.png>)
+![alt text](static/readme/image-8.png)
 - 테스트를 통해 유저의 성향에 맞는 직관 캐릭터 추천 
 
 ---
 
-## 실행 방법
+## 의존성 관리
 ```bash
 # 1. 가상환경 설정
 python -m venv uvenv # 로컬 WSL 터미널에서 
@@ -306,18 +306,20 @@ source venv/Scripts/activate   # Mac/Linux는 source venv/bin/activate
 # 2. 패키지 설치
 pip install -r requirements.txt
 
-# 3. 서버 실행
-python manage.py runserver
 ```
 
 ---
 
 ## 기술 스택
-
-- Python / Django
-- SQLite3
-- Selenium
-- TailwindCSS
-- HTML / JS
+### Front
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white) ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+### Backend
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)
+### DB
+![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)
+### Crawling
+![Selenium](https://img.shields.io/badge/-selenium-%43B02A?style=for-the-badge&logo=selenium&logoColor=white)
+### DevOps
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white) ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white)
 
 ---
