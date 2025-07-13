@@ -16,7 +16,6 @@ import random
 def home(request):
     return redirect('/')
 
-# 회원가입, 로그인
 def auth_view(request):
     mode = request.GET.get('mode', 'login')
 
@@ -46,15 +45,11 @@ def auth_view(request):
     }
     return render(request, 'auth.html', context)
 
-
-# 로그아웃
 @login_required
 def logout(request):
     auth_logout(request)
     return redirect('/')
 
-
-# 아이디 찾기
 @csrf_exempt
 def find_id_view(request):
     if request.method == "POST":
@@ -76,16 +71,13 @@ def find_id_view(request):
         else:
             return JsonResponse({"success": False, "message": "해당 이메일로 등록된 계정을 찾을 수 없습니다."})
 
-
 # 인증번호 저장용 변수
-VERIFICATION_CODES = {}   # username: code 형식으로 저장
-VERIFIED_USERS = set()    # 인증 완료된 username 저장
+VERIFICATION_CODES = {}
+VERIFIED_USERS = set()
 
-# 인증번호 생성
 def generate_code(length=6):
     return ''.join(random.choices(string.digits, k=length))
 
-# 비밀번호 재설정: 인증번호 요청
 @csrf_exempt
 def reset_password_view(request):
     if request.method == "POST":
@@ -171,11 +163,11 @@ def mypage(request):
     password_form = PasswordChangeCustomForm(user)
     nickname_form = NicknameChangeForm(instance=user)
     team_form = TeamChangeForm(instance=user)
-    current_mode = None  # 어떤 폼을 보여줘야 할지 판단하기 위해
+    current_mode = None
 
     if request.method == 'POST':
         mode = request.POST.get('mode')
-        current_mode = mode  # 어떤 폼이 다시 열려야 하는지 JS에 넘기기 위해 저장
+        current_mode = mode
 
         if mode == 'password':
             password_form = PasswordChangeCustomForm(user, request.POST)
@@ -214,7 +206,6 @@ def mypage(request):
     }
     return render(request, 'mypage.html', context)
 
-# 프로필 이미지 변경
 @login_required
 def update_profile_image(request):
     if request.method == 'POST' and request.FILES.get('profile_image'):
