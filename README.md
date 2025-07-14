@@ -54,12 +54,12 @@ BEFORE_GAME_LOG = "/mnt/c/Users/<username>/KBO/before_game.log"
 
 # 현재 시간
 now = datetime.now()
-today_str = now.strftime("%Y.%m.%d")
+today_str = now.strftime("%y.%m.%d")
 
 # 로그 기록 함수
 def log(message):
     with open(LOG_PATH, "a", encoding="utf-8") as f:
-        f.write(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] {message}\n")
+        f.write(f"[{now.strftime('y%-%m-%d %H:%M:%S')}] {message}\n")
 
 log("스케줄 체크 시작")
 
@@ -70,7 +70,7 @@ with open(CSV_PATH, newline='', encoding='utf-8-sig') as csvfile:
         if len(row) >= 2 and row[0] == today_str:
             game_time_str = row[1]  # 경기 시간 문자열
             datetime_str = today_str.replace('.', '-') + " " + game_time_str
-            game_datetime = datetime.strptime(datetime_str, "%Y-%m-%d %H:%M")
+            game_datetime = datetime.strptime(datetime_str, "%y-%m-%d %H:%M")
 
             # 경기 시작 55분 전 시간 계산
             run_time = game_datetime - timedelta(minutes=55)
@@ -96,7 +96,6 @@ python /mnt/c/Users/<username>/KBO/data/make_stat/06_lineup.py
 git add /mnt/c/Users/<username>/KBO/data/lineups.csv
 
 git commit -m '데이터 추가'
-
 git push origin master
 ```
 
@@ -120,7 +119,6 @@ git add /mnt/c/Users/<username>/KBO/data/kbo_schedule.csv
 git add /mnt/c/Users/<username>/KBO/data/pitchers_records.csv
 
 git commit -m '데이터 추가'
-
 git push origin master
 ```
 
@@ -143,7 +141,7 @@ today_str = now.strftime("%Y.%m.%d")
 # 로그 기록 함수
 def log(message):
     with open(LOG_PATH, "a", encoding="utf-8") as f:
-        f.write(f"[{now.strftime('%Y-%m-%d %H:%M:%S')}] {message}\n")
+        f.write(f"[{now.strftime('%y-%m-%d %H:%M:%S')}] {message}\n")
 
 log("스케줄 체크 시작")
 
@@ -155,7 +153,7 @@ with open(CSV_PATH, newline='', encoding='utf-8-sig') as csvfile:
         if len(row) >= 2 and row[0] == today_str:
             game_time_str = row[1]  # 경기 시작 시각 (HH:MM)
             datetime_str = today_str.replace('.', '-') + " " + game_time_str
-            game_datetime = datetime.strptime(datetime_str, "%Y-%m-%d %H:%M")
+            game_datetime = datetime.strptime(datetime_str, "%y-%m-%d %H:%M")
 
             # 경기 시작 50분 전으로 예약 시간 계산
             run_time = game_datetime - timedelta(minutes=50)
