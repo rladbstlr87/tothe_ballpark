@@ -4,60 +4,55 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import pandas as pd
 import time
 import re
 import datetime
+import os
+import sys
+import django
 
-# 팀 코드 매핑
+# Django 환경 설정
+sys.path.append('/Users/m2/Desktop/tothe_ballpark')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'baseball.settings')
+django.setup()
+
+from cal.models import Game
+
+# --- 팀 코드 매핑 ---
 TEAM_CODE = {
-    '롯데': 'LT',
-    'KIA': 'HT',
-    'LG': 'LG',
-    '두산': 'OB',
-    'SSG': 'SK',
-    '키움': 'WO',
-    '삼성': 'SS',
-    '한화': 'HH',
-    'KT': 'KT',
-    'NC': 'NC',
+    '롯데': 'LT', 'KIA': 'HT', 'LG': 'LG', '두산': 'OB', 'SSG': 'SK',
+    '키움': 'WO', '삼성': 'SS', '한화': 'HH', 'KT': 'KT', 'NC': 'NC',
 }
 
-# 날짜 포맷 함수
+# --- 날짜 포맷 함수 ---
 def format_date(day_str, year=2025):
     day_clean = re.sub(r'\(.*\)', '', day_str).strip()
     month, day = day_clean.split('.')
-    return f"{year}.{month.zfill(2)}.{day.zfill(2)}"
+    return f"{year}-{month.zfill(2)}-{day.zfill(2)}"
 
+# --- 스크래핑 설정 ---
 url = 'https://www.koreabaseball.com/Schedule/Schedule.aspx'
-
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--window-size=1920,1080")
 chrome_options.add_argument("--disable-dev-shm-usage")
-
 driver = webdriver.Chrome(options=chrome_options)
-
 driver.get(url)
 
-all_schedules = []
-
-for month in range(3, 10):  # 3월부터 9월까지
+# --- 스크래핑 및 DB 저장 ---
+for month in range(3, 10):
     month_str = str(month).zfill(2)
     select = Select(driver.find_element(By.ID, 'ddlMonth'))
     select.select_by_value(month_str)
+    time.sleep(2)
 
     try:
         wait = WebDriverWait(driver, 10)
         wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'tbl-type06')))
         tbody = driver.find_element(By.CSS_SELECTOR, '#tblScheduleList > tbody')
         rows = tbody.find_elements(By.TAG_NAME, 'tr')
-
-        days, times, plays, stadiums, notes = [], [], [], [], []
-        team1s, team1_scores, team1_results = [], [], []
-        team2s, team2_scores, team2_results = [], [], []
         current_day = None
 
         for row in rows:
@@ -67,105 +62,66 @@ for month in range(3, 10):  # 3월부터 9월까지
             except:
                 pass
 
-            time_td = row.find_element(By.CSS_SELECTOR, 'td.time')
-            time = time_td.text.strip()
-            day = format_date(current_day)
+            try:
+                time_str = row.find_element(By.CSS_SELECTOR, 'td.time').text.strip()
+            except:
+                continue
+            game_date = format_date(current_day)
 
             play_cell = row.find_element(By.CLASS_NAME, 'play')
             spans = play_cell.find_elements(By.TAG_NAME, 'span')
-            em = play_cell.find_element(By.TAG_NAME, 'em')
-
-            # 팀 이름 필터링
             team_names = [span.text.strip() for span in spans if span.text.strip() not in ['vs', ''] and span.get_attribute('class') not in ['win', 'lose', 'same']]
-            scores = em.text.strip().split('vs')
-            scores = [s.strip() for s in scores] if len(scores) == 2 else ['', '']
+            
+            if len(team_names) != 2:
+                continue
 
-            # play 문자열 생성
-            if len(team_names) == 2:
-                if scores[0] and scores[1]:
-                    play = f"{team_names[0]} {scores[0]} vs {scores[1]} {team_names[1]}"
-                else:
-                    play = f"{team_names[0]} vs {team_names[1]}"
-            else:
-                play = em.text.strip()
+            scores_text = play_cell.find_element(By.TAG_NAME, 'em').text.strip()
+            scores = [s.strip() for s in scores_text.split('vs')] if 'vs' in scores_text else [None, None]
 
-            # 승/패/무 계산
-            t1 = team_names[0] if len(team_names) > 0 else ''
-            t2 = team_names[1] if len(team_names) > 1 else ''
-            s1 = scores[0] if scores[0].isdigit() else ''
-            s2 = scores[1] if scores[1].isdigit() else ''
+            t1_code = TEAM_CODE.get(team_names[0], team_names[0])
+            t2_code = TEAM_CODE.get(team_names[1], team_names[1])
+            s1 = int(scores[0]) if scores[0] and scores[0].isdigit() else None
+            s2 = int(scores[1]) if scores[1] and scores[1].isdigit() else None
 
-            today = datetime.datetime.today().date()
-            try:
-                game_date = datetime.datetime.strptime(day, "%Y.%m.%d").date()
-            except Exception:
-                game_date = today
+            r1, r2 = '', ''
+            today = datetime.date.today()
+            game_datetime = datetime.datetime.strptime(game_date, "%Y-%m-%d").date()
 
-            if s1 and s2:
-                try:
-                    s1_i = int(s1)
-                    s2_i = int(s2)
-                    if s1_i > s2_i:
-                        r1, r2 = '승', '패'
-                    elif s1_i < s2_i:
-                        r1, r2 = '패', '승'
-                    else:
-                        r1 = r2 = '무'
-                except ValueError:
-                    r1 = r2 = ''
-            else:
-                if game_date < today:
-                    r1 = r2 = '취소'
-                else:
-                    r1 = r2 = ''
+            if s1 is not None and s2 is not None:
+                if s1 > s2: r1, r2 = '승', '패'
+                elif s1 < s2: r1, r2 = '패', '승'
+                else: r1, r2 = '무', '무'
+            elif game_datetime < today:
+                r1, r2 = '취소', '취소'
 
-            # 경기장 및 비고
             tds = row.find_elements(By.TAG_NAME, 'td')
             stadium = tds[6].text.strip()
             note = tds[7].text.strip()
-            if not stadium and note:
-                stadium = note
-                note = '-'
-            if note and note != '-':
-                r1 = r2 = '취소'
+            if not stadium and note: stadium, note = note, '-'
+            if note and note != '-': r1, r2 = '취소', '취소'
 
-            # 팀 이름을 팀 코드로 변환
-            t1_code = TEAM_CODE.get(t1, t1)
-            t2_code = TEAM_CODE.get(t2, t2)
+            game_data = {
+                'time': time_str,
+                'team1': t1_code,
+                'team2': t2_code,
+                'team1_score': s1,
+                'team2_score': s2,
+                'team1_result': r1,
+                'team2_result': r2,
+                'stadium': stadium,
+                'note': note,
+            }
 
-            # 데이터 저장
-            days.append(day)
-            times.append(time)
-            team1s.append(t1_code)
-            team1_scores.append(s1)
-            team1_results.append(r1)
-            team2s.append(t2_code)
-            team2_scores.append(s2)
-            team2_results.append(r2)
-            stadiums.append(stadium)
-            notes.append(note)
-
-        df = pd.DataFrame({
-            'day': days,
-            'time': times,
-            'team1': team1s,
-            'team1_score': team1_scores,
-            'team1_result': team1_results,
-            'team2': team2s,
-            'team2_score': team2_scores,
-            'team2_result': team2_results,
-            'stadium': stadiums,
-            'note': notes,
-        })
-
-        all_schedules.append(df)
+            Game.objects.update_or_create(
+                date=game_date,
+                time=time_str,
+                team1=t1_code,
+                team2=t2_code,
+                defaults=game_data
+            )
 
     except Exception as e:
-        pass
-
-# 저장
-if all_schedules:
-    final_df = pd.concat(all_schedules, ignore_index=True)
-    final_df.to_csv("data/kbo_schedule.csv", index=False, encoding='utf-8-sig')
+        print(f"Error processing month {month}: {e}")
 
 driver.quit()
+print("KBO schedule updated successfully.")

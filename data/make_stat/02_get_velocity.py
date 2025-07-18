@@ -1,9 +1,23 @@
-import pandas as pd
+import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-import time
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import UnexpectedAlertPresentException
+from django.db import transaction
+import os
+import sys
+import django
 
+# Django 환경 설정
+sys.path.append('/Users/m2/Desktop/tothe_ballpark')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'baseball.settings')
+django.setup()
+from cal.models import Pitcher
+
+
+# --- 스크래핑 설정 ---
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-gpu")
@@ -13,51 +27,62 @@ chrome_options.add_argument("--disable-dev-shm-usage")
 
 driver = webdriver.Chrome(options=chrome_options)
 
-df = pd.read_csv('data/all_pitcher_stats.csv')
-player_ids = df['player_id'].dropna().astype(int).tolist()
+# --- 데이터베이스에서 선수 ID 가져오기 ---
+pitchers = list(Pitcher.objects.all())
+pitcher_map = {p.player_id: p for p in pitchers}
 
-results = []
-
-for pid in player_ids:
+# --- 스크래핑 및 DB 업데이트 ---
+updated_pitchers = []
+for pid in pitcher_map.keys():
+    # if pid == 1:
+    #     continue
     url = f"https://m.sports.naver.com/player/index?from=sports&playerId={pid}&category=kbo&tab=record"
     driver.get(url)
-    time.sleep(2.5)
-
+    wait = WebDriverWait(driver, 10)
     try:
-        # 테이블 헤더들 찾기
-        ths = driver.find_elements(By.CSS_SELECTOR, '#record_04 > div > div > table > thead > tr > th')
+        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '#record_04 > div > div > table > thead > tr > th:nth-child(2)')))
 
-        # 직구 위치 찾기
-        fastball_idx = None
-        for idx, th in enumerate(ths):
-            if '직구' in th.text:
-                fastball_idx = idx + 1
-                break
+        speed_value = 0
+        try:
+            ths = driver.find_elements(By.CSS_SELECTOR, '#record_04 > div > div > table > thead > tr > th')
 
-        # 직구 없으면 투심 위치 찾기
-        if fastball_idx is None:
+            fastball_idx = None
             for idx, th in enumerate(ths):
-                if '투심' in th.text:
+                if '직구' in th.text:
                     fastball_idx = idx + 1
                     break
 
-        # 둘 다 없으면 None 처리
-        if fastball_idx is None:
-            results.append({'player_id': pid, 'speed': None})
-            continue
+            if fastball_idx is None:
+                for idx, th in enumerate(ths):
+                    if '투심' in th.text:
+                        fastball_idx = idx + 1
+                        break
 
-        # 속도 추출
-        value_xpath = f'//*[@id="record_04"]/div/div/table/tbody/tr[1]/td[{fastball_idx}]'
-        value = driver.find_element(By.XPATH, value_xpath).text.strip()
-        value = value.split('k')[0]
-        results.append({'player_id': pid, 'speed': value})
+            if fastball_idx is not None:
+                value_xpath = f'//*[@id="record_04"]/div/div/table/tbody/tr[1]/td[{fastball_idx}]'
+                value = driver.find_element(By.XPATH, value_xpath).text.strip()
+                speed_value = value.split('k')[0]
 
-    except Exception as e:
-        results.append({'player_id': pid, 'speed': None})
+        except Exception as e:
+            Pitcher.objects.filter(player_id=pid).update(speed=130)
+    except UnexpectedAlertPresentException:
+        alert = driver.switch_to.alert
+        alert.accept()
+
+    if speed_value:
+        try:
+            speed_value = int(float(speed_value))
+        except (ValueError, TypeError):
+            speed_value = 130
+            print(f"Could not convert speed '{speed_value}' to int for player {pid}")
+
+    pitcher = pitcher_map[pid]
+    pitcher.speed = speed_value
+    updated_pitchers.append(pitcher)
 
 driver.quit()
 
-# 결과 병합 및 저장
-speed_df = pd.DataFrame(results)
-df_merged = pd.merge(df, speed_df, on='player_id', how='left')
-df_merged.to_csv('data/all_pitcher_stats.csv', index=False)
+with transaction.atomic():
+    Pitcher.objects.bulk_update(updated_pitchers, ['speed'])
+
+print("Pitcher velocity update completed.")
