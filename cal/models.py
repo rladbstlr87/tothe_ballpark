@@ -90,7 +90,7 @@ class Pitcher(models.Model):
     WP = models.PositiveIntegerField()  # 폭투
     BK = models.PositiveIntegerField()  # 보크
     speed = models.IntegerField()  # 구속
-    stamina = models.FloatField()  # 체력
+    stamina = models.FloatField(default=0)  # 체력
     control = models.FloatField()  # 제구력
     fireball = models.FloatField()  # 파이어볼러 수치 (또는 fastball strength 등)
     style = models.IntegerField()  # 투수 스타일
