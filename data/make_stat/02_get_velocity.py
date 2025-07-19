@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import UnexpectedAlertPresentException
+from selenium.common.exceptions import UnexpectedAlertPresentException, NoAlertPresentException
 from django.db import transaction
 import os
 import sys
@@ -39,10 +39,10 @@ for pid in pitcher_map.keys():
     url = f"https://m.sports.naver.com/player/index?from=sports&playerId={pid}&category=kbo&tab=record"
     driver.get(url)
     wait = WebDriverWait(driver, 10)
+    speed_value = 0
     try:
         wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '#record_04 > div > div > table > thead > tr > th:nth-child(2)')))
 
-        speed_value = 0
         try:
             ths = driver.find_elements(By.CSS_SELECTOR, '#record_04 > div > div > table > thead > tr > th')
 
@@ -64,11 +64,14 @@ for pid in pitcher_map.keys():
                 speed_value = value.split('k')[0]
 
         except Exception as e:
-            Pitcher.objects.filter(player_id=pid).update(speed=130)
+            speed_value = 130
     except UnexpectedAlertPresentException:
-        alert = driver.switch_to.alert
-        alert.accept()
-
+        try:
+            alert = driver.switch_to.alert
+            alert.accept()
+        except NoAlertPresentException:
+            print(f'[Alert] Alert already gone for player {pid}, continuing.')
+        continue
     if speed_value:
         try:
             speed_value = int(float(speed_value))
