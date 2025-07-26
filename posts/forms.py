@@ -30,12 +30,4 @@ class CommentForm(ModelForm):
                 'class': 'w-full border border-gray-300 p-3 rounded resize-none '
                         'focus:outline-none focus:ring-2 focus:ring-sky-200'
             }),
-            'image': forms.ClearableFileInput(attrs={
-                'class': 'mt-2 text-sm text-gray-700'
-                'block w-full text-sm text-gray-700 '
-                'file:mr-4 file:py-2 file:px-4 '
-                'file:rounded-md file:border-0 '
-                'file:bg-gray-100 file:text-gray-800 '
-                'hover:file:bg-gray-200'
-            }),
         }

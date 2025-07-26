@@ -122,18 +122,10 @@ def handle_uploaded_image(file):
 
     file.seek(0)
     img = Image.open(file)
-    img.thumbnail((500, 500))
     buffer = BytesIO()
-    format_map = {
-        '.jpg': 'JPEG',
-        '.jpeg': 'JPEG',
-        '.png': 'PNG',
-        '.webp': 'WEBP',
-    }
-    save_format = format_map.get(ext, 'PNG')
-    img.save(buffer, format=save_format)
+    img.save(buffer, format='webp')
 
-    return ContentFile(buffer.getvalue(), name=file.name)
+    return ContentFile(buffer.getvalue(), name=file.name + '.webp')
 
 # 게시글 삭제
 @login_required
@@ -151,6 +143,8 @@ def comment_create(request, post_id):
         comment = form.save(commit=False)
         comment.post_id = post_id
         comment.user = request.user
+        if 'image' in request.FILES:
+            comment.image = handle_uploaded_image(request.FILES['image'])
         comment.save()
     return redirect('posts:detail', id=post_id)
 
@@ -166,6 +160,8 @@ def comment_update(request, post_id, comment_id):
     if request.method == 'POST':
         edit_form = CommentForm(request.POST, request.FILES, instance=comment)
         if edit_form.is_valid():
+            if 'image' in request.FILES:
+                comment.image = handle_uploaded_image(request.FILES['image'])
             edit_form.save()
             return redirect('posts:detail', id=post.id)
     else:
