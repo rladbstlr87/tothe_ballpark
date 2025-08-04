@@ -36,7 +36,7 @@ def index(request):
 def calculate_team_standings():
     HOME_STADIUMS = {
         'HT': ['광주'], 'LG': ['잠실'], 'OB': ['잠실'], 'SK': ['문학'],
-        'NC': ['창원', '울산'], 'HH': ['대전(신)'], 'WO': ['고척'],
+        'NC': ['창원', '울산'], 'HH': ['대전'], 'WO': ['고척'],
         'LT': ['사직'], 'SS': ['대구', '포항'], 'KT': ['수원'],
     }
 
@@ -349,7 +349,7 @@ def lineup(request, game_id):
     show_best_player = is_after_game and (user_score > opponent_score)
 
     booking_info = {
-        "대전(신)": {
+        "대전": {
             "ticket_url": "https://www.ticketlink.co.kr/sports/137/63",
             "days_before": 7,
         },
@@ -557,7 +557,7 @@ def stadium_info(request, stadium):
         '잠실': '37.512898,127.071107,잠실종합운동장 잠실야구장,13202577',
         '문학': '37.435123,126.693024,인천SSG 랜더스필드,13202558',
         '창원': '35.222571,128.582776,NC 다이노스,36046999',
-        '대전(신)': '36.317056,127.428072, 한화생명이글스파크,11831114',
+        '대전': '36.317056,127.428072, 한화생명이글스파크,11831114',
         '고척': '37.498184,126.867129,고척스카이돔,18967604',
         '사직': '35.194956,129.060426,부산사직종합운동장 사직야구장,13202715',
         '대구': '35.841965,128.681198,대구삼성라이온즈파크,19909612',
@@ -570,7 +570,7 @@ def stadium_info(request, stadium):
     encoded_name = urllib.parse.quote(name)
 
     ticket = {
-        "대전(신)": "https://www.ticketlink.co.kr/sports/137/63",
+        "대전": "https://www.ticketlink.co.kr/sports/137/63",
         "수원": "https://www.ticketlink.co.kr/sports/137/62",
         "광주": "https://www.ticketlink.co.kr/sports/137/58",
         "대구": "https://www.ticketlink.co.kr/sports/137/57",
