@@ -1,0 +1,5 @@
+# Run after_game.sh daily at midnight and log output
+0 0 * * * /bin/bash /Users/m2/Desktop/tothe_ballpark/after_game.sh >> /Users/m2/Desktop/tothe_ballpark/after_game.log 2>&1
+
+# Run before_game_schedule.py daily at 11:00 AM using the project's virtual environment
+0 11 * * * /Users/m2/Desktop/tothe_ballpark/.venv/bin/python /Users/m2/Desktop/tothe_ballpark/data/crawling_local/before_game_schedule.py

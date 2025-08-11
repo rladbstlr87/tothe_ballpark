@@ -40,7 +40,7 @@ driver.get(base_url)
 for team in teams:
 
     # 팀 선택
-    select_element = WebDriverWait(driver, 10).until(
+    select_element = WebDriverWait(driver, 20).until(
         EC.presence_of_element_located((By.ID, "cphContents_cphContents_cphContents_ddlTeam_ddlTeam"))
     )
     select = Select(select_element)

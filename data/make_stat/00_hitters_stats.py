@@ -50,14 +50,23 @@ for team in teams:
         EC.presence_of_element_located((By.CSS_SELECTOR, "#cphContents_cphContents_cphContents_udpContent > div.record_result > table"))
     )
 
-    # 선수 정보 수집 함수
+    # 선수 정보 수집 함수 (execute_script 사용으로 안정성 강화)
     def collect_player_infos():
-        players = driver.find_elements(By.CSS_SELECTOR,
-            "#cphContents_cphContents_cphContents_udpContent > div.record_result > table > tbody > tr > td:nth-child(2) > a"
-        )
+        js_script = """
+        var players = document.querySelectorAll('#cphContents_cphContents_cphContents_udpContent > div.record_result > table > tbody > tr > td:nth-child(2) > a');
+        var player_data = [];
+        for (var i = 0; i < players.length; i++) {
+            player_data.push({
+                'href': players[i].getAttribute('href'),
+                'name': players[i].innerText.trim()
+            });
+        }
+        return player_data;
+        """
+        player_list = driver.execute_script(js_script)
         return [
-            (a.get_attribute("href").split("playerId=")[-1], a.text.strip())
-            for a in players
+            (player['href'].split("playerId=")[-1], player['name'])
+            for player in player_list if player['href'] and player['name']
         ]
 
     # 1페이지 선수 수집
