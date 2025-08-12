@@ -20,8 +20,8 @@ ALLOWED_HOSTS = [
     '125.243.101.110',   # 공인 IP
 ]
 
-# Django 4+ : 스킴까지 필요
 CSRF_TRUSTED_ORIGINS = [
+    'http://192.168.219.115:8081',
     'http://125.243.101.110:8081',
 ]
 
@@ -128,12 +128,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-
-STATIC_ROOT = 'staticfiles/'
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static'),
+# ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
