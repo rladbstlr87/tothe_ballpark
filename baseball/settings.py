@@ -22,7 +22,7 @@ ALLOWED_HOSTS = [
 
 CSRF_TRUSTED_ORIGINS = [
     'http://192.168.219.115:8081',
-    'http://125.243.101.110:8081',
+    'http://125.243.101.110',
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
