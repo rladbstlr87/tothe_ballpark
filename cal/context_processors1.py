@@ -10,16 +10,16 @@ def stadium_list(request):
 
 def random_changes(request):
     team_icons = [
-        'cal/images/mascots/HHline.svg',
-        'cal/images/mascots/LTline.svg',
-        'cal/images/mascots/HTline.svg',
-        'cal/images/mascots/LGline.svg',
-        'cal/images/mascots/OBline.svg',
-        'cal/images/mascots/SKline.svg',
-        'cal/images/mascots/NCline.svg',
-        'cal/images/mascots/SSline.svg',
-        'cal/images/mascots/KTline.svg',
-        'cal/images/mascots/WOline.svg',
+        'cal/images/mascots/HH.svg',
+        'cal/images/mascots/LT.svg',
+        'cal/images/mascots/HT.svg',
+        'cal/images/mascots/LG.svg',
+        'cal/images/mascots/OB.svg',
+        'cal/images/mascots/SK.svg',
+        'cal/images/mascots/NC.svg',
+        'cal/images/mascots/SS.svg',
+        'cal/images/mascots/KT.svg',
+        'cal/images/mascots/WO.svg',
     ]
     return {
         'random_change': random.choice(team_icons)

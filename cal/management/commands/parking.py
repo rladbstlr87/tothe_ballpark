@@ -23,7 +23,7 @@ class Command(BaseCommand):
                     stadium=stadium_obj,
                     parking_name=row['parking_name'].strip(),
                     defaults={
-                        'adress': row['adress'].strip(),
+                        'address': row['address'].strip(),
                         'note': row['note'].strip()
                     }
                 )

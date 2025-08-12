@@ -172,7 +172,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('restaurant_name', models.CharField(max_length=50)),
-                ('adress', models.CharField(max_length=100)),
+                ('address', models.CharField(max_length=100)),
                 ('note', models.CharField(max_length=200)),
                 ('stadium', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cal.stadium')),
             ],
@@ -182,7 +182,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('parking_name', models.CharField(max_length=50)),
-                ('adress', models.CharField(max_length=100)),
+                ('address', models.CharField(max_length=100)),
                 ('note', models.CharField(max_length=200)),
                 ('stadium', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cal.stadium')),
             ],

@@ -16,16 +16,16 @@ import urllib.parse
 # 홈 배경 이미지 랜덤
 def index(request):
     backgrounds = [
-        'cal/images/bg/HH.png',
-        'cal/images/bg/LT.png',
-        'cal/images/bg/SK.png',
-        'cal/images/bg/HT.png',
-        'cal/images/bg/OB.png',
-        'cal/images/bg/SS.png',
-        'cal/images/bg/WO.png',
-        'cal/images/bg/LG.png',
-        'cal/images/bg/NC.png',
-        'cal/images/bg/KT.png',
+        'cal/images/mascots/HH.png',
+        'cal/images/mascots/LT.png',
+        'cal/images/mascots/SK.png',
+        'cal/images/mascots/HT.png',
+        'cal/images/mascots/OB.png',
+        'cal/images/mascots/SS.png',
+        'cal/images/mascots/WO.png',
+        'cal/images/mascots/LG.png',
+        'cal/images/mascots/NC.png',
+        'cal/images/mascots/KT.png',
     ]
     context = {
         'random_bg': random.choice(backgrounds),

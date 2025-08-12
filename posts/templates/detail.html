@@ -39,7 +39,7 @@
           {% if post.user.profile_image %} 
             <img src="{{ post.user.profile_image.url }}" alt="프로필 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
           {% elif post.user.team %}
-            <img src="{% static 'posts/images/detail/'|add:post.user.team|add:'.png' %}" alt="기본 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
+            <img src="{% static 'cal/images/mascots/'|add:post.user.team|add:'.png' %}" alt="기본 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
           {% else %}
             <svg xmlns="http://www.w3.org/2000/svg"
                 class="w-8 h-8 text-gray-400 mr-2"
@@ -123,7 +123,7 @@
                 {% if comment.user.profile_image %} 
                   <img src="{{ comment.user.profile_image.url }}" alt="프로필 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
                 {% elif post.user.team %}
-                  <img src="{% static 'posts/images/detail/'|add:comment.user.team|add:'.png' %}" alt="기본 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
+                  <img src="{% static 'cal/images/mascots/'|add:comment.user.team|add:'.png' %}" alt="기본 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
                 {% else %}
                   <svg xmlns="http://www.w3.org/2000/svg"
                       class="w-8 h-8 text-gray-400 mr-2"

@@ -13,7 +13,7 @@ class Command(BaseCommand):
                 total += 1
                 stadium_name = row['stadium'].strip()
                 restaurant_name = row['restaurant_name'].strip()
-                adress = row['address'].strip()
+                address = row['address'].strip()
                 note = row['note'].strip()
                 try:
                     stadium_obj = Stadium.objects.get(stadium=stadium_name)
@@ -25,7 +25,7 @@ class Command(BaseCommand):
                     stadium=stadium_obj,
                     restaurant_name=restaurant_name,
                     defaults={
-                        'adress': adress,
+                        'address': address,
                         'note': note[:200],
                     }
                 )

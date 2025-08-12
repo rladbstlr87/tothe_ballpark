@@ -46,7 +46,7 @@
         {% if user.profile_image %}
           <img id="profile-img" src="{{ user.profile_image.url }}" alt="프로필 이미지" class="object-cover w-full h-full">
         {% else %}
-          <img id="profile-img" src="{% static 'posts/images/detail/'|add:user.team|add:'.png' %}" alt="기본 이미지" class="object-cover w-full h-full">
+          <img id="profile-img" src="{% static 'cal/images/mascots/'|add:user.team|add:'.png' %}" alt="기본 이미지" class="object-cover w-full h-full">
         {% endif %}
         <label for="id_profile_image" class="profile-image-label"><i class="fas fa-camera"></i> 수정</label>
       </div>

@@ -87,7 +87,7 @@
                         <a href="{% url 'index' %}" class="flex items-center {% if user.is_authenticated %}-rotate-8{% endif %}">
                             <img 
                             src="{% if user.is_authenticated %}
-                                        {% static 'cal/images/mascots/' %}{{ user.team }}line.svg
+                                        {% static 'cal/images/mascots/' %}{{ user.team }}.svg
                                     {% else %}
                                         {% static random_change %}
                                     {% endif %}"
