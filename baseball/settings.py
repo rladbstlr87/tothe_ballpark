@@ -22,7 +22,7 @@ ALLOWED_HOSTS = [
 
 # Django 4+ : 스킴까지 필요
 CSRF_TRUSTED_ORIGINS = [
-    'http://125.243.101.110',
+    'http://125.243.101.110:8081',
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
