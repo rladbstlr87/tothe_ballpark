@@ -16,6 +16,7 @@ SECRET_KEY = 'django-insecure-ff-1#^^0futq9$%ou3+n8)1p)*pq#r&e4mb41393ax1yo+t30v
 DEBUG = False
 
 ALLOWED_HOSTS = [
+    '192.168.219.115',   # 내부 IP
     '125.243.101.110',   # 공인 IP
 ]
 
