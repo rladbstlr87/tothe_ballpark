@@ -15,7 +15,14 @@ SECRET_KEY = 'django-insecure-ff-1#^^0futq9$%ou3+n8)1p)*pq#r&e4mb41393ax1yo+t30v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = [
+    '125.243.101.110',   # 공인 IP
+]
+
+# Django 4+ : 스킴까지 필요
+CSRF_TRUSTED_ORIGINS = [
+    'http://125.243.101.110',
+]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.naver.com'
