@@ -18,15 +18,33 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
 ]
+# ===== 보안 강화 시작(배포용) =====
 
+# 1) HTTPS 강제
+SECURE_SSL_REDIRECT = True
+
+# 2) HSTS — 처음엔 1일(86400초)로 시작하고 안정 확인 후 1년(31536000)으로 올리기
+SECURE_HSTS_SECONDS = 86400
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = False  # 수 주 안정 확인 뒤 True로 전환 권장
+
+# 3) 쿠키 보안
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+# 필요 시 명시
+# CSRF_COOKIE_SAMESITE = 'Lax'
+# SESSION_COOKIE_SAMESITE = 'Lax'
+# SESSION_COOKIE_HTTPONLY = True
+
+# 4) 프록시 뒤 HTTPS 인지
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# 5) CSRF 신뢰 출처 — https만
 CSRF_TRUSTED_ORIGINS = [
     'https://totheballpark.info',
     'https://www.totheballpark.info',
 ]
-
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# ===== 보안 강화 끝(배포용) =====
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.naver.com'
