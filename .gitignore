@@ -290,8 +290,6 @@ Temporary Items
 ### Python Patch ###
 # Poetry local configuration file - https://python-poetry.org/docs/configuration/#local-configuration
 poetry.toml
-pyproject.toml
-uv.lock
 
 # ruff
 .ruff_cache/
