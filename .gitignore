@@ -143,6 +143,7 @@ uvenv/
 ENV/
 env.bak/
 venv.bak/
+venv-py310/
 
 # Spyder project settings
 .spyderproject
@@ -289,6 +290,8 @@ Temporary Items
 ### Python Patch ###
 # Poetry local configuration file - https://python-poetry.org/docs/configuration/#local-configuration
 poetry.toml
+pyproject.toml
+uv.lock
 
 # ruff
 .ruff_cache/
