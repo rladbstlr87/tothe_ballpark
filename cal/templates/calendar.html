@@ -15,11 +15,11 @@
           <th colspan="7" class="month-header">
             <div class="flex justify-around items-center">
               <a href="?{{ prev_month }}" class="nav-link">
-                <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Prev" class="w-16 h-16 rotate-90 inline">
+                <img src="{% static 'cal/images/icon/arrow.webp' %}" alt="Prev" class="w-16 h-16 rotate-90 inline">
               </a>
               <span class="cal-title">{{ cal_data.year }}년 {{ cal_data.month }}월</span>
               <a href="?{{ next_month }}" class="nav-link">
-                <img src="{% static 'cal/images/icon/arrow.png' %}" alt="Next" class="w-16 h-16 -rotate-90 inline">
+                <img src="{% static 'cal/images/icon/arrow.webp' %}" alt="Next" class="w-16 h-16 -rotate-90 inline">
               </a>
             </div>
           </th>
@@ -32,16 +32,16 @@
                 <!-- 왼쪽 배경 -->
                 <div class="absolute top-1/2 left-1/2 -translate-x-6/7 -translate-y-3/7 -z-10 w-[300px] h-[300px] max-lg:hidden">
                   <img src="/static/cal/images/bg/mon_alert.svg" alt="동그라미" class="w-full h-full pointer-events-none">
-                  <img src="/static/cal/images/icon/ticket.png" alt="티켓 메모" id="ticketBtn"
+                  <img src="/static/cal/images/icon/ticket.webp" alt="티켓 메모" id="ticketBtn"
                       class="hidden sm:block w-[200px] h-[200px] z-0 transform -translate-x-10 cursor-pointer hover:scale-105 transition">
-                  <img src="{% static 'cal/images/team/' %}{{ user.team }}-yeah.png" alt="동그라미"
+                  <img src="{% static 'cal/images/team/' %}{{ user.team }}-yeah.webp" alt="동그라미"
                       class="mt-20 w-[220px] h-[80px] -rotate-15 z-0 pointer-events-none" />
                 </div>
               {% endif %}
               {% if forloop.counter0 == 6 %}
                 <!-- 오른쪽 배경 -->
                 <div class="absolute top-1/2 left-1/2 translate-x-120 -translate-y-1/2 z-10 max-lg:hidden">
-                  <img src="{% static 'cal/images/icon/rank.png' %}" alt="순위 보기"
+                  <img src="{% static 'cal/images/icon/rank.webp' %}" alt="순위 보기"
                       id="rankingBtn"
                       class="w-[200px] h-[200px] cursor-pointer hover:scale-105 transition" />
                 </div>
@@ -97,20 +97,20 @@
   <!-- 모바일 전용 버튼 영역(캘린더 하단) -->
   <div class="block lg:hidden w-full flex justify-center gap-4 relative pb-32">
     <!-- 티켓 버튼 -->
-    <img src="/static/cal/images/icon/speech_bubble.png" alt="티켓 메모"
+    <img src="/static/cal/images/icon/speech_bubble.webp" alt="티켓 메모"
           id="ticketBtnMobile"
           class="w-[140px] h-[120px] cursor-pointer hover:scale-105 transition absolute left-1 bottom-7 -rotate-12 ">
-    <img src="/static/cal/images/icon/bb.png" alt="따봉강아지"
+    <img src="/static/cal/images/icon/bb.webp" alt="따봉강아지"
         class="w-[120px] h-[120px] absolute left-1/2 -translate-x-1/2 ">
     <!-- 순위 버튼 -->
-    <img src="/static/cal/images/icon/speech_bubble2.png" alt="순위 보기" id="rankingBtnMobile"
+    <img src="/static/cal/images/icon/speech_bubble2.webp" alt="순위 보기" id="rankingBtnMobile"
         class="w-[130px] h-[120px] cursor-pointer hover:scale-105 transition absolute bottom-8 rotate-20 right-1">
   </div>
 
   <!-- 티켓 모달 -->
   <div id="ticketModal" class="fixed inset-0 bg-black/50 flex justify-center items-center z-100 hidden">
     <div class="relative w-[460px] h-[460px]">
-      <img src="/static/cal/images/icon/note-paper.png" alt="티켓 팝업 배경"
+      <img src="/static/cal/images/icon/note-paper.webp" alt="티켓 팝업 배경"
           class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0"/>
       <button id="closeTicketModal"
         class="absolute top-18 right-12 max-sm:top-22 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">
@@ -140,7 +140,7 @@
   <!-- 순위 모달 -->
   <div id="rankingModal" class="fixed inset-0 bg-black/50 flex justify-center items-center z-100 hidden">
     <div class="relative w-[460px] h-[460px]">
-      <img src="/static/cal/images/icon/note-paper.png" alt="순위 팝업 배경"
+      <img src="/static/cal/images/icon/note-paper.webp" alt="순위 팝업 배경"
           class="absolute top-0 left-0 w-full h-full object-contain pointer-events-none z-0"/>
       <button id="closeRankingModal"
         class="absolute top-18 right-12 max-sm:top-22 text-gray-700 hover:text-black text-xl font-bold z-20 cursor-pointer">

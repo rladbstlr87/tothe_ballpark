@@ -11,10 +11,10 @@
 {% block body %}
   <div class="pt-[50px] max-md:pt-[20px]">
     <!-- 배경 스티커 -->
-    <img src="{% static 'posts/images/detail/pinkhitter.png' %}" alt="상단 스티커" class="w-36 absolute top-4 left-4 z-0 mt-50">
-    <img src="{% static 'posts/images/detail/bluehitter.png' %}" alt="상단 스티커" class="w-36 absolute top-4 right-4 z-0 mt-90 max-md:hidden">
-    <img id="scrollSticker" src="{% static 'posts/images/detail/yellowhitter.png' %}" alt="하단 스크롤 스티커" class="fixed right-4 top-1/2 w-30 opacity-0 scale-90 z-10 pointer-events-none transition-all duration-500 transform -translate-y-1/2"/>
-    <img id="scrollStickerLeft" src="{% static 'posts/images/detail/fan.png' %}" alt="왼쪽하단 스크롤 스티커" class="fixed left-4 top-1/3 w-30 opacity-0 scale-90 z-10 pointer-events-none transition-all duration-500 transform -translate-y-1/2"/>
+    <img src="{% static 'posts/images/detail/pinkhitter.webp' %}" alt="상단 스티커" class="w-36 absolute top-4 left-4 z-0 mt-50">
+    <img src="{% static 'posts/images/detail/bluehitter.webp' %}" alt="상단 스티커" class="w-36 absolute top-4 right-4 z-0 mt-90 max-md:hidden">
+    <img id="scrollSticker" src="{% static 'posts/images/detail/yellowhitter.webp' %}" alt="하단 스크롤 스티커" class="fixed right-4 top-1/2 w-30 opacity-0 scale-90 z-10 pointer-events-none transition-all duration-500 transform -translate-y-1/2"/>
+    <img id="scrollStickerLeft" src="{% static 'posts/images/detail/fan.webp' %}" alt="왼쪽하단 스크롤 스티커" class="fixed left-4 top-1/3 w-30 opacity-0 scale-90 z-10 pointer-events-none transition-all duration-500 transform -translate-y-1/2"/>
 
     <div class="mx-auto bg-white rounded-2xl px-6 py-10 shadow-xl w-full max-w-6xl z-10 relative md:px-12">
       <div class="flex justify-between items-center gap-2 ml-auto text-gray-500">
@@ -39,7 +39,7 @@
           {% if post.user.profile_image %} 
             <img src="{{ post.user.profile_image.url }}" alt="프로필 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
           {% elif post.user.team %}
-            <img src="{% static 'cal/images/mascots/'|add:post.user.team|add:'.png' %}" alt="기본 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
+            <img src="{% static 'cal/images/mascots/'|add:post.user.team|add:'.webp' %}" alt="기본 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
           {% else %}
             <svg xmlns="http://www.w3.org/2000/svg"
                 class="w-8 h-8 text-gray-400 mr-2"
@@ -123,7 +123,7 @@
                 {% if comment.user.profile_image %} 
                   <img src="{{ comment.user.profile_image.url }}" alt="프로필 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
                 {% elif post.user.team %}
-                  <img src="{% static 'cal/images/mascots/'|add:comment.user.team|add:'.png' %}" alt="기본 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
+                  <img src="{% static 'cal/images/mascots/'|add:comment.user.team|add:'.webp' %}" alt="기본 이미지" class="w-8 h-8 rounded-full object-cover mr-2">
                 {% else %}
                   <svg xmlns="http://www.w3.org/2000/svg"
                       class="w-8 h-8 text-gray-400 mr-2"

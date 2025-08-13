@@ -1,62 +1,24 @@
+# baseball/settings/base.py
 from pathlib import Path
 from decouple import config
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+BASE_DIR = Path(__file__).resolve().parents[2]
 
 SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = [
-    'totheballpark.info',
-    'www.totheballpark.info',
-    '127.0.0.1',
-    'localhost',
-]
-# ===== 보안 강화 시작(배포용) =====
+# 공통 기본값: DEBUG는 하위(dev/prod)에서 설정
+DEBUG = False
 
-# 1) HTTPS 강제
-SECURE_SSL_REDIRECT = True
-
-# 2) HSTS — 처음엔 1일(86400초)로 시작하고 안정 확인 후 1년(31536000)으로 올리기
-SECURE_HSTS_SECONDS = 86400
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = False  # 수 주 안정 확인 뒤 True로 전환 권장
-
-# 3) 쿠키 보안
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-# 필요 시 명시
-# CSRF_COOKIE_SAMESITE = 'Lax'
-# SESSION_COOKIE_SAMESITE = 'Lax'
-# SESSION_COOKIE_HTTPONLY = True
-
-# 4) 프록시 뒤 HTTPS 인지
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-# 5) CSRF 신뢰 출처 — https만
-CSRF_TRUSTED_ORIGINS = [
-    'https://totheballpark.info',
-    'https://www.totheballpark.info',
-    'https://totheballpark.info:8443',
-    'https://www.totheballpark.info:8443',
-]
-# ===== 보안 강화 끝(배포용) =====
+ALLOWED_HOSTS = []  # dev/prod에서 각각 설정
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.naver.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -68,7 +30,7 @@ INSTALLED_APPS = [
     'cal',
     'accounts',
     'posts',
-    'jikdoltest'
+    'jikdoltest',
 ]
 
 MIDDLEWARE = [
@@ -86,27 +48,23 @@ ROOT_URLCONF = 'baseball.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/ 'accounts', 'templates'],
+        'DIRS': [BASE_DIR / 'accounts', BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'accounts.context_processors.win_count_total', # 사용자 승리 횟수 계산
-                'accounts.context_processors.all_users_winning_percent', # 전체 사용자 승률 계산
+                'accounts.context_processors.win_count_total',
+                'accounts.context_processors.all_users_winning_percent',
                 'cal.context_processors1.stadium_list',
-                'cal.context_processors1.random_changes'
+                'cal.context_processors1.random_changes',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'baseball.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -115,59 +73,24 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
 LANGUAGE_CODE = 'ko'
-
 TIME_ZONE = 'Asia/Seoul'
-
 USE_I18N = True
-
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static'),
-# ]
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 AUTH_USER_MODEL = 'accounts.User'
-
 LOGIN_URL = '/accounts/auth/?mode=login'
 
-# 업로드한 사진을 저장한 위치 (실제 폴더 경로)
 MEDIA_ROOT = BASE_DIR / 'media'
-
-# 미디어 경로를 처리할 URL
 MEDIA_URL = '/media/'

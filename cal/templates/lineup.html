@@ -8,7 +8,7 @@
 
 {% block body %}
     <div class="flex justify-center flex-col lg:flex-row">
-        <div class="bg-[url('/static/cal/images/bg/peeledpaper1.png')] bg-repeat-y bg-contain w-[30px] lg:w-[50px] translate-x-0 lg:translate-x-8 min-h-full rotate-180"></div>
+        <div class="bg-[url('/static/cal/images/bg/peeledpaper1.webp')] bg-repeat-y bg-contain w-[30px] lg:w-[50px] translate-x-0 lg:translate-x-8 min-h-full rotate-180"></div>
             {% if has_lineup and game and user_lineup|length >= 3 and opponent_lineup|length >= 3 %}
                 {% if game %}
                     <div class="flex flex-col items-center w-full max-w-7xl p-4 sm:px-6 lg:px-8 bg-white">
@@ -18,9 +18,9 @@
                             </div>
                             <button id="attendance-btn" type="button" style="background: none; border: none; padding: 0;">
                                 {% if request.user in game.attendance_users.all %}
-                                    <img id="attendance-icon" src="{% static 'cal/images/icon/watch.png' %}" alt="간 경기" class="w-16 h-16 sm:w-20 sm:h-20 transition-transform hover:scale-110">
+                                    <img id="attendance-icon" src="{% static 'cal/images/icon/watch.webp' %}" alt="간 경기" class="w-16 h-16 sm:w-20 sm:h-20 transition-transform hover:scale-110">
                                 {% else %}
-                                    <img id="attendance-icon" src="{% static 'cal/images/icon/notwatch.png' %}" alt="안간 경기" class="w-16 h-16 sm:w-20 sm:h-20 transition-transform hover:scale-110">
+                                    <img id="attendance-icon" src="{% static 'cal/images/icon/notwatch.webp' %}" alt="안간 경기" class="w-16 h-16 sm:w-20 sm:h-20 transition-transform hover:scale-110">
                                 {% endif %}
                             </button>
                         </div>
@@ -35,7 +35,7 @@
                                         {% endif %}
                                     </p>
                                     <p class="text-xl text-gray-900 mt-2">
-                                        <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ best_player.player_id }}.png?type=w150" class="mx-auto mb-2">
+                                        <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ best_player.player_id }}.webp?type=w150" class="mx-auto mb-2">
                                         <span class="text-lg text-black">{{ best_player_name }}</span>
                                     </p>
                                 </div>
@@ -261,7 +261,7 @@
                     {% endif %}
                 </div>
             {% endif %}
-            <div class="bg-[url('/static/cal/images/bg/peeledpaper1.png')] bg-repeat-y bg-contain w-[30px] lg:w-[50px] -translate-x-0 lg:-translate-x-8 min-h-full"></div>
+            <div class="bg-[url('/static/cal/images/bg/peeledpaper1.webp')] bg-repeat-y bg-contain w-[30px] lg:w-[50px] -translate-x-0 lg:-translate-x-8 min-h-full"></div>
         </div>
     </div>
 
@@ -327,7 +327,7 @@
             const type = el.getAttribute('data-type');
 
             document.getElementById('modal-player-name').textContent = playerName;
-            document.getElementById('modal-player-img').src = `https://sports-phinf.pstatic.net/player/kbo/default/${playerId}.png?type=w150`;
+            document.getElementById('modal-player-img').src = `https://sports-phinf.pstatic.net/player/kbo/default/${playerId}.webp?type=w150`;
 
             if (type === 'pitcher') {
                 document.getElementById('modal-batter-stats').classList.add('hidden');
@@ -378,7 +378,7 @@
         .then(res => res.json())
         .then(data => {
             const icon = document.getElementById('attendance-icon');
-            icon.src = data.attended ? "{% static 'cal/images/icon/watch.png' %}" : "{% static 'cal/images/icon/notwatch.png' %}";
+            icon.src = data.attended ? "{% static 'cal/images/icon/watch.webp' %}" : "{% static 'cal/images/icon/notwatch.webp' %}";
             icon.alt = data.attended ? "간 경기" : "안간 경기";
         })
         .catch(err => {

@@ -62,13 +62,13 @@ graph TD
 
 | **경기 캘린더** | **경기 상세정보** |
 | :---: | :---: |
-| ![캘린더](static/readme/image-1.png)| ![상세정보](static/readme/image-3.png)|
+| ![캘린더](static/readme/image-1.webp)| ![상세정보](static/readme/image-3.webp)|
 | **구장 정보** | **KBO 순위** |
-| ![구장정보](static/readme/image-4.png)| ![순위](static/readme/image-5.png)|
+| ![구장정보](static/readme/image-4.webp)| ![순위](static/readme/image-5.webp)|
 | **응원글 게시판** | **직관 전적** |
-| ![게시판](static/readme/image-6.png)| ![전적](static/readme/image-7.png)|
+| ![게시판](static/readme/image-6.webp)| ![전적](static/readme/image-7.webp)|
 | **직관 유형 테스트** |   |
-| ![테스트](static/readme/image-8.png)|   |
+| ![테스트](static/readme/image-8.webp)|   |
 
 
 ---
