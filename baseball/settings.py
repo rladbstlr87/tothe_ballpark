@@ -9,21 +9,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ff-1#^^0futq9$%ou3+n8)1p)*pq#r&e4mb41393ax1yo+t30v'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
-    '192.168.219.115',   # 내부 IP
-    '125.243.101.110',   # 공인 IP
+    'totheballpark.info',
+    'www.totheballpark.info',
+    '127.0.0.1',
+    'localhost',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://192.168.219.115:8081',
-    'http://125.243.101.110',
+    'https://totheballpark.info',
+    'https://www.totheballpark.info',
 ]
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.naver.com'
