@@ -43,6 +43,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 CSRF_TRUSTED_ORIGINS = [
     'https://totheballpark.info',
     'https://www.totheballpark.info',
+    'https://totheballpark.info:8443',
+    'https://www.totheballpark.info:8443',
 ]
 # ===== 보안 강화 끝(배포용) =====
 
