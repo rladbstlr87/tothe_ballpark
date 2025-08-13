@@ -117,7 +117,7 @@ def update(request, id):
 # 업로드된 이미지 처리 함수
 def handle_uploaded_image(file):
     ext = os.path.splitext(file.name)[-1].lower()
-    if ext in ['.gif','.svg']:
+    if ext in ['.gif','.webp']:
         return file
 
     file.seek(0)

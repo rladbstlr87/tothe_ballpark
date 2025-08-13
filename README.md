@@ -21,11 +21,11 @@ KBO 리그에 대한 관심이 높아지면서 야구장을 직접 찾는 팬들
 
 | Category      | Technologies |
 | :------------ | :--- |
-| **Frontend**  | ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)|
-| **Backend**   | ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)|
-| **Database**  | ![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)|
+| **Frontend**  | ![HTML5](https://img.shields.io/badge/html5-%23E34F26.webp?style=for-the-badge&logo=html5&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.webp?style=for-the-badge&logo=tailwind-css&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.webp?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)|
+| **Backend**   | ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![Django](https://img.shields.io/badge/django-%23092E20.webp?style=for-the-badge&logo=django&logoColor=white)|
+| **Database**  | ![SQLite](https://img.shields.io/badge/sqlite-%2307405e.webp?style=for-the-badge&logo=sqlite&logoColor=white)|
 | **Crawling**  | ![Selenium](https://img.shields.io/badge/-selenium-%43B02A?style=for-the-badge&logo=selenium&logoColor=white)|
-| **DevOps**    | ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white) ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white) ![uWSGI](https://img.shields.io/badge/uWSGI-green?style=for-the-badge)
+| **DevOps**    | ![AWS](https://img.shields.io/badge/AWS-%23FF9900.webp?style=for-the-badge&logo=amazon-aws&logoColor=white) ![Nginx](https://img.shields.io/badge/nginx-%23009639.webp?style=for-the-badge&logo=nginx&logoColor=white) ![uWSGI](https://img.shields.io/badge/uWSGI-green?style=for-the-badge)
 ---
 
 ## 🏗️ 시스템 아키텍처

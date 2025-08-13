@@ -6,6 +6,8 @@ import django
 
 import csv
 
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'baseball.settings.dev')
+
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'baseball.settings')

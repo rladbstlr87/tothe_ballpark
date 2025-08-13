@@ -87,7 +87,7 @@
                         <a href="{% url 'index' %}" class="flex items-center {% if user.is_authenticated %}-rotate-8{% endif %}">
                             <img 
                             src="{% if user.is_authenticated %}
-                                        {% static 'cal/images/mascots/' %}{{ user.team }}.svg
+                                        {% static 'cal/images/mascots/' %}{{ user.team }}.webp
                                     {% else %}
                                         {% static random_change %}
                                     {% endif %}"
@@ -134,15 +134,15 @@
                     {% with winning_percent=winning_percent %}
                     <a id="fairy" href="{% url 'cal:user_games' user.id %}" class="inline-block w-fit">
                         {% if winning_percent >= 50 %}
-                            <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-winning.svg" alt="승리요정"
+                            <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-winning.webp" alt="승리요정"
                                 class="w-full max-w-[100px] md:max-w-[160px] h-auto">
                         {% else %}
-                            <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-losing.svg" alt="패배요정"
+                            <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-losing.webp" alt="패배요정"
                                 class="w-full max-w-[100px] md:max-w-[160px] h-auto">
                         {% endif %}
                     </a>
                     {% if request.resolver_match.url_name == 'calendar' %}
-                        <img src="/static/cal/images/bg/attended_alert.svg" alt="dd" class="py-4 w-28 ml-12 -rotate-15 max-lg:hidden"> 
+                        <img src="/static/cal/images/bg/attended_alert.webp" alt="dd" class="py-4 w-28 ml-12 -rotate-15 max-lg:hidden"> 
                     {% endif %}
                     {% endwith %}
                 </div>
