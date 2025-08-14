@@ -35,7 +35,7 @@
                                         {% endif %}
                                     </p>
                                     <p class="text-xl text-gray-900 mt-2">
-                                        <img src="https://sports-phinf.pstatic.net/player/kbo/default/{{ best_player.player_id }}.webp?type=w150" class="mx-auto mb-2">
+                                        <img src="https://6ptotvmi5753.edge.naverncp.com/KBO_IMAGE/person/middle/2025/{{ best_player.player_id }}.jpg?type=w150" class="mx-auto mb-2">
                                         <span class="text-lg text-black">{{ best_player_name }}</span>
                                     </p>
                                 </div>
@@ -327,7 +327,7 @@
             const type = el.getAttribute('data-type');
 
             document.getElementById('modal-player-name').textContent = playerName;
-            document.getElementById('modal-player-img').src = `https://sports-phinf.pstatic.net/player/kbo/default/${playerId}.webp?type=w150`;
+            document.getElementById('modal-player-img').src = `https://6ptotvmi5753.edge.naverncp.com/KBO_IMAGE/person/middle/2025/${playerId}.jpg?type=w150`;
 
             if (type === 'pitcher') {
                 document.getElementById('modal-batter-stats').classList.add('hidden');
