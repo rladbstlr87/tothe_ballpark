@@ -136,68 +136,64 @@
                         <div id="lineups" class="w-full grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div class="pr-2">
                                 {% for lineup in user_lineup %}
-                                    {% if lineup.hitter %}
-                                        {% with record=latest_daily_stats|get_item:lineup.hitter.player_id %}
-                                            {% if lineup.batting_order == 1 %}
-                                                <div class="flex flex-col items-center">
-                                                    {% include '_my_pcard.html' %}
-                                                    {% with p_record=latest_pitcher_stats|get_item:lineup.pitcher.player_id %}
-                                                        {% if p_record %}
-                                                            <div class="text-xs text-gray-700 mt-1 text-center">
-                                                                {% if p_record.date == gameday %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
-                                                                {{ p_record.IP }}이닝 / {{ p_record.H }}피안타 / {{ p_record.R }}실점 / {{ p_record.ER }}자책 / {{ p_record.BB }}볼넷 / {{ p_record.SO }}삼진 / {{ p_record.HR }}피홈런 / {{ p_record.NP }}투구수
-                                                            </div>
-                                                        {% endif %}
-                                                    {% endwith %}
-                                                </div>
-                                            {% else %}
-                                                <div class="flex flex-col items-start min-w-full">
-                                                    <div class="flex items-center">
-                                                        <span class="text-sm mr-1">{{ lineup.batting_order|add:"-1" }}</span>
-                                                        {% include '_my_hcard.html' %}
+                                    {% if lineup.batting_order == 1 and lineup.pitcher %}
+                                        <div class="flex flex-col items-center">
+                                            {% include '_my_pcard.html' %}
+                                            {% with p_record=latest_pitcher_stats|get_item:lineup.pitcher.player_id %}
+                                                {% if p_record %}
+                                                    <div class="text-xs text-gray-700 mt-1 text-center">
+                                                        {% if p_record.date == gameday %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
+                                                        {{ p_record.IP }}이닝 / {{ p_record.H }}피안타 / {{ p_record.R }}실점 / {{ p_record.ER }}자책 / {{ p_record.BB }}볼넷 / {{ p_record.SO }}삼진 / {{ p_record.HR }}피홈런 / {{ p_record.NP }}투구수
                                                     </div>
-                                                    {% if record %}
-                                                        <div class="text-xs text-gray-700 ml-6">
-                                                            {% if record.date == gameday %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
-                                                            {{record.AB}}타수 / {{record.R}}득점 / {{ record.H }}안타 / {{ record.RBI }}타점 / {{ record.HR }}홈런 / {{ record.BB }}볼넷 / {{ record.SO }}삼진 / {{ record.SB }}도루
-                                                        </div>
-                                                    {% endif %}
+                                                {% endif %}
+                                            {% endwith %}
+                                        </div>
+                                    {% elif lineup.hitter %}
+                                        {% with record=latest_daily_stats|get_item:lineup.hitter.player_id %}
+                                            <div class="flex flex-col items-start min-w-full">
+                                                <div class="flex items-center">
+                                                    <span class="text-sm mr-1">{{ lineup.batting_order|add:"-1" }}</span>
+                                                    {% include '_my_hcard.html' %}
                                                 </div>
-                                            {% endif %}
+                                                {% if record %}
+                                                    <div class="text-xs text-gray-700 ml-6">
+                                                        {% if record.date == gameday %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
+                                                        {{record.AB}}타수 / {{record.R}}득점 / {{ record.H }}안타 / {{ record.RBI }}타점 / {{ record.HR }}홈런 / {{ record.BB }}볼넷 / {{ record.SO }}삼진 / {{ record.SB }}도루
+                                                    </div>
+                                                {% endif %}
+                                            </div>
                                         {% endwith %}
                                     {% endif %}
                                 {% endfor %}
                             </div>
                             <div class="pl-2">
                                 {% for lineup in opponent_lineup %}
-                                    {% if lineup.hitter %}
-                                        {% with record=latest_daily_stats|get_item:lineup.hitter.player_id %}
-                                            {% if lineup.batting_order == 1 %}
-                                                <div class="flex flex-col items-center">
-                                                    {% include '_your_pcard.html' %}
-                                                    {% with p_record=latest_pitcher_stats|get_item:lineup.pitcher.player_id %}
-                                                        {% if p_record %}
-                                                            <div class="text-xs text-gray-700 mt-1 text-center">
-                                                                {% if p_record.date == gameday %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
-                                                                {{ p_record.IP }}이닝 / {{ p_record.H }}피안타 / {{ p_record.R }}실점 / {{ p_record.ER }}자책 / {{ p_record.BB }}볼넷 / {{ p_record.SO }}삼진 / {{ p_record.HR }}피홈런 / {{ p_record.NP }}투구수
-                                                            </div>
-                                                        {% endif %}
-                                                    {% endwith %}
-                                                </div>
-                                            {% else %}
-                                                <div class="flex flex-col items-end min-w-full">
-                                                    <div class="flex items-center justify-end">
-                                                        {% include '_your_hcard.html' %}
-                                                        <span class="text-sm ml-1">{{ lineup.batting_order|add:"-1" }}</span>
+                                    {% if lineup.batting_order == 1 and lineup.pitcher %}
+                                        <div class="flex flex-col items-center">
+                                            {% include '_your_pcard.html' %}
+                                            {% with p_record=latest_pitcher_stats|get_item:lineup.pitcher.player_id %}
+                                                {% if p_record %}
+                                                    <div class="text-xs text-gray-700 mt-1 text-center">
+                                                        {% if p_record.date == gameday %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
+                                                        {{ p_record.IP }}이닝 / {{ p_record.H }}피안타 / {{ p_record.R }}실점 / {{ p_record.ER }}자책 / {{ p_record.BB }}볼넷 / {{ p_record.SO }}삼진 / {{ p_record.HR }}피홈런 / {{ p_record.NP }}투구수
                                                     </div>
-                                                    {% if record %}
-                                                        <div id="today_stats" class="text-xs text-gray-700 mr-6 text-right">
-                                                            {% if record.date == gameday %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
-                                                            {{record.AB}}타수 / {{record.R}}득점 / {{ record.H }}안타 / {{ record.RBI }}타점 / {{ record.HR }}홈런 / {{ record.BB }}볼넷 / {{ record.SO }}삼진 / {{ record.SB }}도루
-                                                        </div>
-                                                    {% endif %}
+                                                {% endif %}
+                                            {% endwith %}
+                                        </div>
+                                    {% elif lineup.hitter %}
+                                        {% with record=latest_daily_stats|get_item:lineup.hitter.player_id %}
+                                            <div class="flex flex-col items-end min-w-full">
+                                                <div class="flex items-center justify-end">
+                                                    {% include '_your_hcard.html' %}
+                                                    <span class="text-sm ml-1">{{ lineup.batting_order|add:"-1" }}</span>
                                                 </div>
-                                            {% endif %}
+                                                {% if record %}
+                                                    <div id="today_stats" class="text-xs text-gray-700 mr-6 text-right">
+                                                        {% if record.date == gameday %}<span class="text-green-600">오늘 기록</span>:{% else %}<span class="text-gray-500">지난 기록</span>:{% endif %}
+                                                        {{record.AB}}타수 / {{record.R}}득점 / {{ record.H }}안타 / {{ record.RBI }}타점 / {{ record.HR }}홈런 / {{ record.BB }}볼넷 / {{ record.SO }}삼진 / {{ record.SB }}도루
+                                                    </div>
+                                                {% endif %}
+                                            </div>
                                         {% endwith %}
                                     {% endif %}
                                 {% endfor %}
