@@ -1,0 +1,75 @@
+
+==== 1) Python/가상환경 (이름 변경/생성 안 함 — 존재하는 것만 사용) ====
+발견된 venv: /root/tothe_ballpark/venv-py310
+python 경로: /root/tothe_ballpark/venv-py310/bin/python
+Python 3.10.18
+
+==== 2) Django 경로/WSGI 모듈 추정 ====
+WSGI_MODULE=baseball.wsgi:application
+
+==== 3) Gunicorn 프로세스/포트 확인 ====
+State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+127.0.0.1:8000 리스닝 없음 → TRY_RESTART=auto
+
+==== 4) Nginx 구성/상태 확인 (8081/8443) ====
+- nginx -t (구문 검사)
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+nginx -t OK
+nginx 프로세스: 미실행
+
+==== 5) 포트 8081 / 8443 리스닝 확인 ====
+State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+
+==== 6) 내부 루프백 헬스체크 ====
+- curl -k --resolve totheballpark.info:8443:127.0.0.1 https://totheballpark.info:8443/ -I
+HTTP/2 200 
+server: nginx/1.24.0 (Ubuntu)
+date: Thu, 14 Aug 2025 09:52:05 GMT
+content-type: text/html; charset=utf-8
+content-length: 27519
+x-frame-options: DENY
+vary: Cookie
+strict-transport-security: max-age=86400; includeSubDomains
+x-content-type-options: nosniff
+referrer-policy: same-origin
+cross-origin-opener-policy: same-origin
+x-frame-options: DENY
+x-content-type-options: nosniff
+referrer-policy: same-origin
+permissions-policy: geolocation=()
+
+- curl http://127.0.0.1:8081/ -I
+HTTP/1.1 301 Moved Permanently
+Server: nginx/1.24.0 (Ubuntu)
+Date: Thu, 14 Aug 2025 09:52:05 GMT
+Content-Type: text/html
+Content-Length: 178
+Connection: keep-alive
+Location: https://127.0.0.1/
+
+
+==== 7) ALLOWED_HOSTS/호스트 헤더 문제 감지 (선택) ====
+- gunicorn 직접 헬스체크 (Host 헤더 도메인 고정)
+HTTP/1.1 301 Moved Permanently
+Server: gunicorn
+Date: Thu, 14 Aug 2025 09:52:05 GMT
+Connection: close
+Content-Type: text/html; charset=utf-8
+Location: https://totheballpark.info/
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+Cross-Origin-Opener-Policy: same-origin
+
+
+==== 8) 요약 ====
+프로젝트: /root/tothe_ballpark
+venv 사용: /root/tothe_ballpark/venv-py310
+WSGI: baseball.wsgi:application
+도메인: totheballpark.info, HTTPS 포트: 8443
+리포트: /root/tothe_ballpark/connectivity_report.txt
+
+다음 단계 권장:
+ - Nginx 8443 리스너 OK & 127.0.0.1:8000 응답 OK ⇒ 외부 접속은 라우터 포워딩(443→8443)만 확인
+ - 응답이 400 Bad Request (Invalid Host header) ⇒ 서버 코드의 ALLOWED_HOSTS 또는 prod 설정 적용 필요
+ - gunicorn 미기동 시: TRY_RESTART=auto(기본)로 자동 기동 시도, 실패하면 로그(/tmp/gunicorn.out) 확인
