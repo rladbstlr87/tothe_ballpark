@@ -452,22 +452,25 @@ def lineup(request, game_id):
     return render(request, 'lineup.html', context)
 
 # 직관 체크
-@never_cache
 @login_required
+@never_cache
 def attendance(request, game_id):
-    user = request.user
-    game = get_object_or_404(Game, id=game_id)
+    from django.http import JsonResponse as _JsonResponse
+    from django.shortcuts import get_object_or_404 as _get
+    from .models import Game
 
-    if user in game.attendance_users.all():
+    user = request.user
+    game = _get(Game, id=game_id)
+
+    if game.attendance_users.filter(pk=user.pk).exists():
         game.attendance_users.remove(user)
         attended = False
     else:
         game.attendance_users.add(user)
         attended = True
 
-    return JsonResponse({'success': True, 'attended': attended})
+    return _JsonResponse({'success': True, 'attended': attended})
 
-# 사용자 직관한 경기 리스트
 @never_cache
 @login_required
 def user_games(request, user_id):
@@ -544,53 +547,99 @@ def user_games(request, user_id):
     return render(request, 'user_games.html', context)
 
 # 경기장 정보(좌석, 주차, 식당)
+@login_required
+@never_cache
 def stadium_info(request, stadium):
+    from django.core.cache import cache as _cache
+    from django.shortcuts import render, get_object_or_404 as _get
+    from .models import Stadium, Seat, Parking, Restaurant
+
     user = request.user
-    stadium_obj = get_object_or_404(Stadium, stadium=stadium)
+    cache_key = f"stadium_info:{stadium}"
+    cached = _cache.get(cache_key)
+    if cached:
+        context = dict(cached)
+        context['user'] = user
+        return render(request, 'stadium_info.html', context)
 
-    seats = Seat.objects.filter(stadium=stadium_obj)
-    parkings = Parking.objects.filter(stadium=stadium_obj)
-    restaurants = Restaurant.objects.filter(stadium=stadium_obj)
+    stadium_obj = _get(Stadium, stadium=stadium)
 
-    team_info = {
-        '광주': '35.168275,126.888934,광주기아챔피언스필드,19909618',
-        '잠실': '37.512898,127.071107,잠실종합운동장 잠실야구장,13202577',
-        '문학': '37.435123,126.693024,인천SSG 랜더스필드,13202558',
-        '창원': '35.222571,128.582776,NC 다이노스,36046999',
-        '대전': '36.317056,127.428072, 한화생명이글스파크,11831114',
-        '고척': '37.498184,126.867129,고척스카이돔,18967604',
-        '사직': '35.194956,129.060426,부산사직종합운동장 사직야구장,13202715',
-        '대구': '35.841965,128.681198,대구삼성라이온즈파크,19909612',
-        '수원': '37.299025,126.974983,수원KT위즈파크,13491582',
-        '울산': '35.532168,129.265575,울산문수야구장,1406092164',
-        '포항': '36.0081953,129.3593993,포항야구장,11830535'
-    }
+    seats = list(Seat.objects.filter(stadium=stadium_obj))
+    parkings = list(Parking.objects.filter(stadium=stadium_obj))
+    restaurants = list(Restaurant.objects.filter(stadium=stadium_obj))
 
-    lat, lng, name, place_id = team_info[stadium].split(',', 3)
-    encoded_name = urllib.parse.quote(name)
+    google_url, naver_url = _build_map_urls(stadium)
+    ticket_url = TICKET_URLS.get(stadium, "#")
 
-    ticket = {
-        "대전": "https://www.ticketlink.co.kr/sports/137/63",
-        "수원": "https://www.ticketlink.co.kr/sports/137/62",
-        "광주": "https://www.ticketlink.co.kr/sports/137/58",
-        "대구": "https://www.ticketlink.co.kr/sports/137/57",
-        '포항': "https://www.ticketlink.co.kr/sports/137/57",
-        "문학": "https://www.ticketlink.co.kr/sports/137/476",
-        "고척": "https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB003",
-        "사직": "https://ticket.giantsclub.com/loginForm.do",
-        "창원": "https://ticket.ncdinos.com/games",
-        '울산': "https://ticket.ncdinos.com/games",
-    }
-
-    context = {
-        'user': user,
+    cached_context = {
         'stadium': stadium_obj,
         'seats': seats,
         'parkings': parkings,
         'restaurants': restaurants,
-        'google_url': f"https://www.google.com/maps/dir/?api=1&destination={lat},{lng}&destination_place_id={place_id}",
-        'naver_url': f"nmap://route/public?dlat={lat}&dlng={lng}&dname={encoded_name}",
-        'ticket_url': ticket.get(stadium, "#"),
+        'google_url': google_url,
+        'naver_url': naver_url,
+        'ticket_url': ticket_url,
     }
+    _cache.set(cache_key, cached_context, 60 * 60 * 12)
 
+    context = dict(cached_context)
+    context['user'] = user
     return render(request, 'stadium_info.html', context)
+
+
+# ====== BEGIN: Optimized constants & helpers (auto-injected) ======
+try:
+    import urllib.parse as _urllib_parse
+except Exception:
+    _urllib_parse = None
+
+STADIUM_COORDS = {
+    '광주': ('35.168275','126.888934','광주기아챔피언스필드','19909618'),
+    '잠실': ('37.512898','127.071107','잠실종합운동장 잠실야구장','13202577'),
+    '문학': ('37.435123','126.693024','인천SSG 랜더스필드','13202558'),
+    '창원': ('35.222571','128.582776','NC 다이노스','36046999'),
+    '대전': ('36.317056','127.428072',' 한화생명이글스파크','11831114'),
+    '고척': ('37.498184','126.867129','고척스카이돔','18967604'),
+    '사직': ('35.194956','129.060426','부산사직종합운동장 사직야구장','13202715'),
+    '대구': ('35.841965','128.681198','대구삼성라이온즈파크','19909612'),
+    '수원': ('37.299025','126.974983','수원KT위즈파크','13491582'),
+    '울산': ('35.532168','129.265575','울산문수야구장','1406092164'),
+    '포항': ('36.0081953','129.3593993','포항야구장','11830535'),
+}
+
+TICKET_URLS = {
+    "대전": "https://www.ticketlink.co.kr/sports/137/63",
+    "수원": "https://www.ticketlink.co.kr/sports/137/62",
+    "광주": "https://www.ticketlink.co.kr/sports/137/58",
+    "대구": "https://www.ticketlink.co.kr/sports/137/57",
+    '포항': "https://www.ticketlink.co.kr/sports/137/57",
+    "문학": "https://www.ticketlink.co.kr/sports/137/476",
+    "고척": "https://ticket.interpark.com/Contents/Sports/GoodsInfo?SportsCode=07001&TeamCode=PB003",
+    "사직": "https://ticket.giantsclub.com/loginForm.do",
+    "창원": "https://ticket.ncdinos.com/games",
+    '울산': "https://ticket.ncdinos.com/games",
+}
+
+def _build_map_urls(stadium: str):
+    lat, lng, name, place_id = STADIUM_COORDS[stadium]
+    if _urllib_parse:
+        encoded_name = _urllib_parse.quote(name)
+    else:
+        encoded_name = name
+    google_url = f"https://www.google.com/maps/dir/?api=1&destination={lat},{lng}&destination_place_id={place_id}"
+    naver_url = f"nmap://route/public?dlat={lat}&dlng={lng}&dname={encoded_name}"
+    return google_url, naver_url
+
+
+def _latest_stats_for_players(model_qs):
+    latest = {}
+    for r in model_qs.order_by("-date", "-id"):
+        pid = getattr(r, "player_id", None)
+        if pid is None:
+            pid = getattr(getattr(r, "player", None), "player_id", None)
+        if pid is None:
+            continue
+        if pid not in latest:
+            latest[pid] = r
+    return latest
+# ====== END: Optimized constants & helpers (auto-injected) ======
