@@ -1,7 +1,6 @@
 # baseball/settings/prod.py
 from .base import *
 
-DEBUG = False
 ALLOWED_HOSTS = [
     'totheballpark.info',
     'www.totheballpark.info',
@@ -32,3 +31,5 @@ CSRF_TRUSTED_ORIGINS = [
     'https://totheballpark.info:8443',
     'https://www.totheballpark.info:8443',
 ]
+
+WHITENOISE_MANIFEST_STRICT = False
