@@ -131,17 +131,20 @@ def calculate_team_standings():
             'games_behind': None,
         })
 
-    # 순위 정렬
-    team_data.sort(key=lambda x: x['win_percent'], reverse=True)
+    # 빈 데이터 방어: 완료된 경기가 없으면 빈 리스트 반환
+    if not team_data:
+        return []
 
-    # 게임차
-    first = team_data[0]
-    for team in team_data:
-        if team == first:
-            team['games_behind'] = "-"
-        else:
-            gb = ((first['W'] - team['W']) + (team['L'] - first['L'])) / 2
-            team['games_behind'] = round(gb, 1)
+    # 순위 정렬 및 게임차 계산 (빈 목록 방어)
+    team_data.sort(key=lambda x: x['win_percent'], reverse=True)
+    if team_data:
+        first = team_data[0]
+        for team in team_data:
+            if team is first:
+                team['games_behind'] = "-"
+            else:
+                gb = ((first['W'] - team['W']) + (team['L'] - first['L'])) / 2
+                team['games_behind'] = round(gb, 1)
 
     return team_data
 
