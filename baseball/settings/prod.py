@@ -32,4 +32,4 @@ CSRF_TRUSTED_ORIGINS = [
     'https://www.totheballpark.info:8443',
 ]
 
-WHITENOISE_MANIFEST_STRICT = False
+WHITENOISE_MANIFEST_STRICT = True
