@@ -1,7 +1,7 @@
 {% load static %}
 <nav x-data="{ mobileMenuOpen: false }"
     class="relative z-90 bg-cover w-full bg-transparent py-1 md:py-3 font-nav [background-position:0%_100%]"
-    style="{% if user.team == none %}background-image: url('{% static 'nav/nav-' %}nothing.webp');{% else %}background-image: url('{% static 'nav/nav-' %}{{ user.team }}.webp');{% endif %}">
+    style="{% with team_slug=user.team|default:'nothing'|slugify %}background-image: url('{% static 'nav/nav-'|add:team_slug|add:'.webp' %}');{% endwith %}">
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 ">
         <div class="relative flex h-16">
             <!-- Mobile 구조 -->
@@ -86,11 +86,7 @@
                     <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                         <a href="{% url 'index' %}" class="flex items-center {% if user.is_authenticated %}-rotate-8{% endif %}">
                             <img 
-                            src="{% if user.is_authenticated %}
-                                        {% static 'cal/images/mascots/' %}{{ user.team }}.webp
-                                    {% else %}
-                                        {% static random_change %}
-                                    {% endif %}"
+                            src="{% if user.is_authenticated %}{% with t=user.team|slugify %}{% static 'cal/images/mascots/'|add:t|add:'.webp' %}{% endwith %}{% else %}{% static random_change %}{% endif %}"
                             alt="Mascot"
                             class="h-24"
                             >
@@ -134,15 +130,15 @@
                     {% with winning_percent=winning_percent %}
                     <a id="fairy" href="{% url 'cal:user_games' user.id %}" class="inline-block w-fit">
                         {% if winning_percent >= 50 %}
-                            <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-winning.webp" alt="승리요정"
+                            <img src="{% with t=user.team|slugify %}{% static 'cal/images/fairy/'|add:t|add:'-winning.webp' %}{% endwith %}" alt="승리요정"
                                 class="w-full max-w-[100px] md:max-w-[160px] h-auto">
                         {% else %}
-                            <img src="{% static 'cal/images/fairy/' %}{{ user.team }}-losing.webp" alt="패배요정"
+                            <img src="{% with t=user.team|slugify %}{% static 'cal/images/fairy/'|add:t|add:'-losing.webp' %}{% endwith %}" alt="패배요정"
                                 class="w-full max-w-[100px] md:max-w-[160px] h-auto">
                         {% endif %}
                     </a>
                     {% if request.resolver_match.url_name == 'calendar' %}
-                        <img src="/static/cal/images/bg/attended_alert.webp" alt="dd" class="py-4 w-28 ml-12 -rotate-15 max-lg:hidden"> 
+                        <img src="{% static 'cal/images/bg/attended_alert.webp' %}" alt="dd" class="py-4 w-28 ml-12 -rotate-15 max-lg:hidden"> 
                     {% endif %}
                     {% endwith %}
                 </div>
