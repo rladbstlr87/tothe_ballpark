@@ -97,3 +97,12 @@ LOGIN_URL = '/accounts/auth/?mode=login'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
+
+
+ALLOWED_HOSTS = [
+    'totheballpark.info',
+    'www.totheballpark.info',
+    'localhost',
+    '127.0.0.1'
+]
+CSRF_TRUSTED_ORIGINS = ['https://totheballpark.info', 'https://www.totheballpark.info']
