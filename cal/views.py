@@ -134,6 +134,7 @@ def calculate_team_standings():
     # 빈 데이터 방어: 완료된 경기가 없으면 빈 리스트 반환
     if not team_data:
         return []
+        return []
 
     # 순위 정렬 및 게임차 계산 (빈 목록 방어)
     team_data.sort(key=lambda x: x['win_percent'], reverse=True)
