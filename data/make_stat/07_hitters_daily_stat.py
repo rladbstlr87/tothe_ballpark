@@ -112,6 +112,7 @@ with open('data/hitters_records.csv', 'a', newline='', encoding='utf-8-sig') as 
     if last_date is None:
         rw.writerow(['AB','R','H','RBI','HR','BB','SO','SB','player_id','team','game_id','date'])
 
+    valid_pids = set(pd.read_csv('data/all_hitter_stats.csv', dtype={'player_id': str})['player_id'].astype(str))
     for key, games in game_map.items():
         games_sorted = sorted(games, key=lambda x: x[0]['time'])
         double_header_failed = False
@@ -146,9 +147,10 @@ with open('data/hitters_records.csv', 'a', newline='', encoding='utf-8-sig') as 
             # 기록 저장
             for team in ['away', 'home']:
                 for r in rec[team]:
-                    if not r['player_id'].strip():
+                    pid = r.get('player_id')
+                    if not pid or pid not in valid_pids:
                         continue
-                    rw.writerow([r.get(k, '') for k in ['AB','R','H','RBI','HR','BB','SO','SB']] + [r['player_id'], team, gid, d])
+                    rw.writerow([r.get(k, '') for k in ['AB','R','H','RBI','HR','BB','SO','SB']] + [pid, team, gid, d])
 
             time.sleep(1.5)
 

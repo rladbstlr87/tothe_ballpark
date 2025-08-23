@@ -14,9 +14,12 @@ class Command(BaseCommand):
                 total += 1
                 try:
                     game = Game.objects.get(id=int(row['game_id']))
-                    player_id = Hitter.objects.get(player_id=row['player_id'])
+                    player_id = Hitter.objects.get(pk=(row['player_id'] or '').strip())
                 except Game.DoesNotExist:
                     self.stdout.write(self.style.WARNING(f"❗ Game ID {row['game_id']} 없음 → 건너뜀"))
+                    failed += 1
+                    continue
+                except Hitter.DoesNotExist:
                     failed += 1
                     continue
                 try:
