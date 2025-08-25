@@ -332,6 +332,9 @@ baseball.pid
 
 after_game.sh
 before_game.sh
-before_game_schedule.sh
+before_game_schedule.py
+after_game.cmd
+before_game.cmd
+
 
 /media/
