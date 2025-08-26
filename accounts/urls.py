@@ -16,6 +16,7 @@ urlpatterns = [
     path('mypage/', views.mypage, name='mypage'),
     path('update_profile_image/', views.update_profile_image, name='update_profile_image'),
 
-    path('api/signup/', views.signup, name='signup_api'),
+    path('api/auth/signup/', views.signup, name='signup_api'),
+    path('api/auth/login', views.login, name='login_api'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
