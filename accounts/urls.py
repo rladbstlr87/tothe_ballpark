@@ -15,4 +15,7 @@ urlpatterns = [
     path('check-duplicate/', views.check_duplicate, name='check_duplicate'),
     path('mypage/', views.mypage, name='mypage'),
     path('update_profile_image/', views.update_profile_image, name='update_profile_image'),
+
+    path('api/signup/', views.signup, name='signup_api'),
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

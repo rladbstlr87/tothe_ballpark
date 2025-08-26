@@ -9,6 +9,9 @@ from datetime import datetime, timedelta, date
 from collections import defaultdict
 from .models import *
 from .utils import Calendar
+
+from rest_framework.decorators import api_view
+
 import calendar
 import random
 import urllib.parse
@@ -598,3 +601,33 @@ def stadium_info(request, stadium):
     }
 
     return render(request, 'stadium_info.html', context)
+
+# DRF 방식
+@api_view()
+def lineup_drf(request, game_id):
+
+    context = {
+        # 'game': game,
+        # 'user_lineup': user_lineup,
+        # 'opponent_lineup': opponent_lineup,
+        # 'user_team': user_team,
+        # 'opponent_team': opponent_team,
+        # 'has_lineup': has_lineup,
+        # 'latest_daily_stats': latest_daily_stats,
+        # 'latest_pitcher_stats': latest_pitcher_stats,
+        # 'gameday': game.date,
+        # 'user_score': user_score,
+        # 'opponent_score': opponent_score,
+        # 'is_after_game': is_after_game,
+        # 'booking_url': stadium_info.get('ticket_url', "#"),
+        # 'best_player': best_player,
+        # 'best_player_name': best_player_name,
+        # 'player_type': player_type,
+        # 'score': round(score, 2),
+        # 'is_today_best': is_today_best,
+        # 'show_best_player': show_best_player,
+        # 'prev_game_id': prev_game_id,
+        # 'next_game_id': next_game_id,
+        # 'booking_dates': booking_dates,
+    }
+    return render(request, 'lingup.html', context)

@@ -8,6 +8,8 @@ from django.core.mail import send_mail
 from .forms import *
 from .models import User
 
+from rest_framework.decorators import api_view
+
 import json
 import string
 import random

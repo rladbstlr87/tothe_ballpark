@@ -11,6 +11,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('posts/', include('posts.urls')), 
     path('jikdoltest/', include('jikdoltest.urls')),
+    path('api-auth', include('rest_framework.urls')),
 ]
 
 if settings.DEBUG:
