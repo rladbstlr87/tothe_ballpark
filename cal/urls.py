@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 app_name = 'cal'
@@ -10,4 +10,5 @@ urlpatterns = [
     path('<int:user_id>/user_games', views.user_games, name='user_games'),
     path('<str:stadium>/stadium_info', views.stadium_info, name='stadium_info'),
     path('standings/',views.standings,name='standings'),
+    # path('api-auth', include('rest_framework.urls')),
 ]
