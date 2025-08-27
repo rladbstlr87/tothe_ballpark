@@ -125,3 +125,43 @@ paths:
                                     detail: "Invalid credentials."
                 "429":
                     description: 레이트 리밋 초과(스로틀 적용 시) # 과도한 시도 방지
+    /api/auth/logout/:
+        post:
+            tags: [Auth]
+            summary: 
+            requestBody:
+                required: true
+                content:
+                    application/json: # json으로 로그인
+                        schema:
+                            type: object
+                            required: [username, password]
+                            properties:
+                                username: { type: string }
+                                password: { type: string, format: password }
+                        examples: # 문서/모킹용 예시 페이로드
+                            ok:
+                                value: {username: "tester1", password: "String!Pass" }
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id: { type: integer }
+                                    username: { type: string }
+                                    email: { type: string, format: email }
+                                    nickname: { type: string, nullable: true }
+                                    team: { type: string, nullable: true }
+                                    profile_image: { type: string, nullable: true}
+                            examples:
+                                ok:
+                                    value:
+    /api/auth/username/find/:
+    /api/mypage/:
+    /api/mypage/password/:
+    /api/mypage/nickname/:
+    /api/mypage/team/:
+    /api/mypage/profile-image/:
+    /api/accounts/check-duplicate/:

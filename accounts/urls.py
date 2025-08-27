@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from . import views, api as api_views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -16,7 +16,7 @@ urlpatterns = [
     path('mypage/', views.mypage, name='mypage'),
     path('update_profile_image/', views.update_profile_image, name='update_profile_image'),
 
-    path('api/auth/signup/', views.signup, name='signup_api'),
-    path('api/auth/login', views.login, name='login_api'),
+    path('api/auth/signup/', api_views.signup, name='signup_api'),
+    # path('api/auth/login', api_views.login, name='login_api'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
