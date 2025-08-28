@@ -5,25 +5,35 @@ info:
     description: "유저 관리는 accounts 앱에서 담당합니다."
 servers:
   - url: https://totheballpark.info/api
-tags: 
-    name: Auth
+
+tags:
+  - name: Auth
     description: Authentication endpoints
 
-    endpoints:
-        path: "/api/accounts/signup/"
-        methods: ["POST"]
-security:
-    authentication_required: false
-    csrf_required: false
-    permissions: []
+components:
+    securitySchemes:
+        cookieAuth:
+            type: apiKey
+            in: cookie
+            name: sessionid
+        csrfToken:
+            type: apiKey
+            in: header
+            name: X-CSRFToken
 paths:
     /auth/signup/:
         post:
             tags: [Auth]
             summary: Sign up and start a session
+            security:
+              - csrfToken: []
             parameters:
               - in: header
-                name: X
+                name: X-CSRFToken
+                description: "CSRF 보호용 토큰 (쿠키 csrftoken 값과 일치)"
+                required: true
+                schema:
+                    type: string
             requestBody:
                 required: true
                 content:
@@ -34,13 +44,19 @@ paths:
                             properties:
                                 username: { type: string }
                                 password: { type: string, format: password }
-                                email: { type: string, format: email }
+                                email:    { type: string, format: email }
                                 nickname: { type: string, nullable: true }
-                                team: { type: string, nullable: true }
+                                team:     { type: string, nullable: true }
                     multipart/form-data:
                         schema:
                             type: object
+                            required: [username, password, email]
                             properties:
+                                username:      { type: string }
+                                password:      { type: string, format: password }
+                                email:         { type: string, format: email }
+                                nickname:      { type: string, nullable: true }
+                                team:          { type: string, nullable: true }
                                 profile_image: { type: string, format: binary }
             responses:
                 "201":
@@ -50,13 +66,25 @@ paths:
                             schema:
                                 type: object
                                 properties:
-                                    id: { type: integer }
-                                    username: { type: string }
-                                    email: { type: string }
-                                    nickname: { type: string, nullable: true }
-                                    team: { type: tring, nullable: true }
+                                    id:            { type: integer }
+                                    username:      { type: string }
+                                    email:         { type: string, format: email }
+                                    nickname:      { type: string, nullable: true }
+                                    team:          { type: string, nullable: true }
                                     profile_image: { type: string, nullable: true }
-                "400": { description: Validation error (field-wise) } # 유효성 오류(필드별 에러)
+                "400":
+                    description: Validation error (field-wise)
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    detail: { type: string }
+                                    errors:
+                                        type: object
+                                        additionalProperties:
+                                            type: array
+                                            items: { type: string }
     /auth/login/:
         post:
             tags: [Auth]
@@ -65,20 +93,29 @@ paths:
                 유효한 자격증명으로 로그인하고 세션을 시작.
                 성공 시 Set-Cookie 헤더로 세션이 설정.
                 (SessionAuthentication+CSRF를 쓰면 POST에 CSRF 토큰 필요)
+            security:
+              - csrfToken: []
+            parameters:
+              - in: header
+                name: X-CSRFToken
+                description: "CSRF 보호용 토큰 (쿠키 csrftoken 값과 일치)"
+                required: true
+                schema:
+                    type: string
             requestBody:
                 required: true
                 content:
-                    application/json: # json으로 로그인
+                    application/json:
                         schema:
                             type: object
                             required: [username, password]
                             properties:
                                 username: { type: string }
                                 password: { type: string, format: password }
-                        examples: # 문서/모킹용 예시 페이로드
+                        examples:
                             ok:
                                 value: {username: "tester1", password: "String!Pass" }
-                    application/x-www-form-urlencoded: # html 폼 전송(format) 지원
+                    application/x-www-form-urlencoded:
                         schema:
                             type: object
                             required: [username, password]
@@ -102,7 +139,7 @@ paths:
                                     email: { type: string, format: email }
                                     nickname: { type: string, nullable: true }
                                     team: { type: string, nullable: true }
-                                    profile_image: { type: string, nullable: true}
+                                    profile_image: { type: string, nullable: true }
                             examples:
                                 ok:
                                     value:
@@ -116,72 +153,66 @@ paths:
                     description: 요청 형식/필드 유효성 오류 (필수 누락 등)
                     content:
                         application/json:
-                        schema:
-                            type: object
-                            properties:
-                                detail: { type: string } # 일반 에러 메시지(상세)
-                                errors:  # 필드별 오류 목록(키=필드명)
-                                    type: object
-                                    additionalProperties: # 어떤 필드명이 와도 허용
-                                        type: array
-                                        items: { type: string }
-                        examples:
-                            missing:
-                                value:
-                                    detail: "Invalid request."
+                            schema:
+                                type: object
+                                properties:
+                                    detail: { type: string }
                                     errors:
-                                        username: ["필드가 누락되었습니다."]
+                                        type: object
+                                        additionalProperties:
+                                            type: array
+                                            items: { type: string }
+                            examples:
+                                missing:
+                                    value:
+                                        detail: "Invalid request."
+                                        errors:
+                                            username: ["필드가 누락되었습니다."]
                 "401":
                     description: Unauthorized 인증 실패(아이디/비밀번호 불일치)
                     content:
                         application/json:
-                        schema:
-                            type: object
-                            properties:
-                                detail: { type: string }
-                        examples:
-                            invalid:
-                                value:
-                                    detail: "Invalid credentials."
+                                schema:
+                                    type: object
+                                    properties:
+                                        detail: { type: string }
+                                examples:
+                                    invalid:
+                                        value:
+                                            detail: "Invalid credentials."
                 "429":
-                    description: 레이트 리밋 초과(스로틀 적용 시) # 과도한 시도 방지
+                    description: 레이트 리밋 초과(스로틀 적용 시)
     /auth/logout/:
         post:
             tags: [Auth]
-            summary: 
-            requestBody:
-                required: true
-                content:
-                    application/json: # json으로 로그인
-                        schema:
-                            type: object
-                            required: [username, password]
-                            properties:
-                                username: { type: string }
-                                password: { type: string, format: password }
-                        examples: # 문서/모킹용 예시 페이로드
-                            ok:
-                                value: {username: "tester1", password: "String!Pass" }
+            summary: Logout (session-based)
+            description: 세션을 종료합니다. 세션 쿠키와 CSRF 토큰이 필요합니다.
+            security:
+              - cookieAuth: []
+              - csrfToken: []
             responses:
-                "200":
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    id: { type: integer }
-                                    username: { type: string }
-                                    email: { type: string, format: email }
-                                    nickname: { type: string, nullable: true }
-                                    team: { type: string, nullable: true }
-                                    profile_image: { type: string, nullable: true}
-                            examples:
-                                ok:
-                                    value:
-    /username/find/:
-    /mypage/:
-    /mypage/password/:
-    /mypage/nickname/:
-    /mypage/team/:
-    /mypage/profile-image/:
-    /accounts/check-duplicate/:
+                "204":
+                    description: No Content (세션 종료)
+    /auth/csrf/:
+        get:
+            tags: [Auth]
+            summary: CSRF 쿠키 발급
+            description: |
+                CSRF 보호를 위한 쿠키(csrftoken)를 발급합니다.
+                본문은 없으며 응답에 Set-Cookie 헤더로 csrftoken 이 설정됩니다.
+            security: []
+            responses:
+                "204":
+                    description: No Content (CSRF 쿠키 발급)
+                    headers:
+                        Set-Cookie:
+                        description: "csrftoken=...; Path=/; SameSite=Lax; Secure (배포 환경)"
+                        schema:
+                            type: string
+#    /username/find/:
+#    /mypage/:
+#    /mypage/password/:
+#    /mypage/nickname/:
+#    /mypage/team/:
+#    /mypage/profile-image/:
+#    /accounts/check-duplicate/:

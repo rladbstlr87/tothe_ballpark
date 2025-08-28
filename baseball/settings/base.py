@@ -99,7 +99,6 @@ LOGIN_URL = '/accounts/auth/?mode=login'
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
-
 ALLOWED_HOSTS = [
     'totheballpark.info',
     'www.totheballpark.info',
