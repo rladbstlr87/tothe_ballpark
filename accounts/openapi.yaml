@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
     title: 직돌이 API
     version: v0.1
-    description: "유저 관리는 accounts 앱에서 담당합니다."
+    description: 유저 관리는 accounts 앱에서 담당합니다.
 servers:
   - url: https://totheballpark.info/api
 
@@ -30,7 +30,7 @@ paths:
             parameters:
               - in: header
                 name: X-CSRFToken
-                description: "CSRF 보호용 토큰 (쿠키 csrftoken 값과 일치)"
+                description: CSRF 보호용 토큰 (쿠키 csrftoken 값과 일치)
                 required: true
                 schema:
                     type: string
@@ -98,7 +98,7 @@ paths:
             parameters:
               - in: header
                 name: X-CSRFToken
-                description: "CSRF 보호용 토큰 (쿠키 csrftoken 값과 일치)"
+                description: CSRF 보호용 토큰 (쿠키 csrftoken 값과 일치)
                 required: true
                 schema:
                     type: string
@@ -127,7 +127,7 @@ paths:
                     description: 로그인 성공 (세션 생성)
                     headers:
                         Set-Cookie:
-                            description: "세션 쿠키(ex. sessionid=...; Path=/; HttpOnly; Secure)"
+                            description: 세션 쿠키(ex. sessionid=...; Path=/; HttpOnly; Secure)
                             schema: { type: string }
                     content:
                         application/json:
@@ -180,8 +180,6 @@ paths:
                                     invalid:
                                         value:
                                             detail: "Invalid credentials."
-                "429":
-                    description: 레이트 리밋 초과(스로틀 적용 시)
     /auth/logout/:
         post:
             tags: [Auth]
@@ -190,9 +188,23 @@ paths:
             security:
               - cookieAuth: []
               - csrfToken: []
+            parameters:
+              - in: header
+                name: X-CSRF 보호용 토큰 (쿠키 csrftoken 값과 일치)
+                required: true
+                schema: { type: string }
             responses:
                 "204":
                     description: No Content (세션 종료)
+                    headers:
+                        Set-Cookie:
+                            description: "선택: sessionid=; Max-Age=0; Path=/; HttpOnly; Secure (서버가 쿠키제거를 내려굴 경우)"
+                            schema: { type: string }
+                "401":
+                    description: Unauthorized (세션 없음/미인증)
+                "403":
+                    description: Forbidden (CSRF 실패 등)
+                            
     /auth/csrf/:
         get:
             tags: [Auth]
@@ -206,9 +218,8 @@ paths:
                     description: No Content (CSRF 쿠키 발급)
                     headers:
                         Set-Cookie:
-                        description: "csrftoken=...; Path=/; SameSite=Lax; Secure (배포 환경)"
-                        schema:
-                            type: string
+                            description: "csrftoken=...; Path=/; SameSite=Lax; Secure (배포 환경)"
+                            schema: { type: string }
 #    /username/find/:
 #    /mypage/:
 #    /mypage/password/:

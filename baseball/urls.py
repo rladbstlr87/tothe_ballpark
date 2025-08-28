@@ -8,10 +8,11 @@ urlpatterns = [
     path('', views.index, name='index'),  # 기본 URL을 cal 앱의 index 뷰로 설정
     path('admin/', admin.site.urls),
     path('cal/', include('cal.urls')),
-    path('accounts/', include('accounts.urls')),
+    path('accounts/', include(('accounts.urls', 'accounts'), namespace='accounts_web')),
     path('posts/', include('posts.urls')), 
     path('jikdoltest/', include('jikdoltest.urls')),
-    path('api-auth', include('rest_framework.urls')),
+    
+    path('api/', include(('accounts.api_urls', 'accounts'), namespace='accounts_api')),
 ]
 
 if settings.DEBUG:

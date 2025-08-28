@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views, api as api_views
+from . import views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -15,8 +15,5 @@ urlpatterns = [
     path('check-duplicate/', views.check_duplicate, name='check_duplicate'),
     path('mypage/', views.mypage, name='mypage'),
     path('update_profile_image/', views.update_profile_image, name='update_profile_image'),
-
-    path('api/auth/signup/', api_views.signup, name='signup_api'),
-    # path('api/auth/login', api_views.login, name='login_api'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -103,6 +103,6 @@ ALLOWED_HOSTS = [
     'totheballpark.info',
     'www.totheballpark.info',
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
 ]
 CSRF_TRUSTED_ORIGINS = ['https://totheballpark.info', 'https://www.totheballpark.info']
