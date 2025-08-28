@@ -1,9 +1,29 @@
-openapi: 0.0.1
+openapi: 3.0.3
+info:
+    title: 직돌이 API
+    version: v0.1
+    description: "유저 관리는 accounts 앱에서 담당합니다."
+servers:
+  - url: https://totheballpark.info/api
+tags: 
+    name: Auth
+    description: Authentication endpoints
+
+    endpoints:
+        path: "/api/accounts/signup/"
+        methods: ["POST"]
+security:
+    authentication_required: false
+    csrf_required: false
+    permissions: []
 paths:
-    /api/auth/signup/:
+    /auth/signup/:
         post:
             tags: [Auth]
             summary: Sign up and start a session
+            parameters:
+              - in: header
+                name: X
             requestBody:
                 required: true
                 content:
@@ -37,7 +57,7 @@ paths:
                                     team: { type: tring, nullable: true }
                                     profile_image: { type: string, nullable: true }
                 "400": { description: Validation error (field-wise) } # 유효성 오류(필드별 에러)
-    /api/auth/login/:
+    /auth/login/:
         post:
             tags: [Auth]
             summary: Login (session-based)
@@ -125,7 +145,7 @@ paths:
                                     detail: "Invalid credentials."
                 "429":
                     description: 레이트 리밋 초과(스로틀 적용 시) # 과도한 시도 방지
-    /api/auth/logout/:
+    /auth/logout/:
         post:
             tags: [Auth]
             summary: 
@@ -158,10 +178,10 @@ paths:
                             examples:
                                 ok:
                                     value:
-    /api/auth/username/find/:
-    /api/mypage/:
-    /api/mypage/password/:
-    /api/mypage/nickname/:
-    /api/mypage/team/:
-    /api/mypage/profile-image/:
-    /api/accounts/check-duplicate/:
+    /username/find/:
+    /mypage/:
+    /mypage/password/:
+    /mypage/nickname/:
+    /mypage/team/:
+    /mypage/profile-image/:
+    /accounts/check-duplicate/:
