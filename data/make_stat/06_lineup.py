@@ -3,6 +3,8 @@ import time
 import datetime
 from urllib.parse import urlparse, parse_qs
 from selenium import webdriver
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 
@@ -14,42 +16,54 @@ TEAM_CODE = {
 
 # 특정 경기의 라인업 페이지에서 선수 이름과 playerId를 가져오는 함수
 def get_lineup(today, team1_code, team2_code, game_id, driver):
-    url = f'https://m.sports.naver.com/game/{today}{team1_code}{team2_code}{game_id}/lineup'
+    url = f"https://m.sports.naver.com/game/{today}{team1_code}{team2_code}{game_id}/lineup"
     driver.get(url)
-    time.sleep(1.5)
 
+    # 1) 라인업의 a[href*="playerId"]가 로드될 때까지 대기 (최대 8초)
     try:
-        # 두 팀의 라인업 박스 선택
-        lineup_boxes = driver.find_elements(By.CSS_SELECTOR, 'div.Lineup_comp_lineup__361i1 > div > div')
+        WebDriverWait(driver, 8).until(
+            lambda d: d.execute_script(
+                'return document.querySelectorAll("ol li a[href*=\'playerId\']").length'
+            ) > 0
+        )
+    except Exception:
+        # 전혀 안 뜨면 실패로 간주
+        return [], []
+
+    # 2) 해시 클래스에 의존하지 않고, ol 기준으로 2개 팀 블록을 잡아 선수 목록만 뽑기
+    teams = driver.execute_script("""
+        const out = [];
+        // 라인업 영역의 ol 중, playerId 링크가 실제로 존재하는 것만 수집
+        const ols = Array.from(document.querySelectorAll('ol'))
+            .filter(ol => ol.querySelector('li a[href*="playerId"]'));
+        for (const ol of ols.slice(0, 2)) {
+          const arr = [];
+          const links = ol.querySelectorAll('li a[href*="playerId"]');
+          for (const a of links) {
+            const nmEl = a.querySelector('strong,em,span');
+            const name = (nmEl ? nmEl.textContent : a.textContent).trim();
+            let pid = "";
+            try {
+              pid = new URL(a.href, location.href).searchParams.get('playerId') || "";
+            } catch(e) {}
+            if (name && pid) arr.push([name, pid]);
+          }
+          out.push(arr);
+        }
+        return out;
+    """)
+
+    team1 = teams[0] if len(teams) > 0 else []
+    team2 = teams[1] if len(teams) > 1 else []
+
+    # 3) 라인업이 '투수만 먼저 뜨는' 경우 방어:
+    #    (목표는 '투수 + 9타자(총 10명)' 또는 '9타자' 형태. 0/1명이면 아직 미노출로 간주)
+    if len(team1) <= 1:
         team1 = []
+    if len(team2) <= 1:
         team2 = []
 
-        # 각 팀 라인업 파싱
-        for idx, team_box in enumerate(lineup_boxes[:2]):
-            players = team_box.find_elements(By.CSS_SELECTOR, 'ol > li > a')
-            player_info = []
-            for player in players:
-                name_elem = player.find_element(By.CSS_SELECTOR, 'div > strong')
-                name = name_elem.text.strip()
-                href = player.get_attribute('href')
-
-                # URL에서 playerId 추출
-                player_id = ''
-                if href:
-                    parsed_url = urlparse(href)
-                    query = parse_qs(parsed_url.query)
-                    player_id = query.get('playerId', [''])[0]
-
-                player_info.append((name, player_id))
-
-            if idx == 0:
-                team1 = player_info
-            else:
-                team2 = player_info
-
-        return team1, team2
-    except Exception as e:
-        return [], []
+    return team1, team2
 
 today = datetime.date.today()
 
