@@ -320,25 +320,44 @@ def lineup(request, game_id):
     
     is_today_best = best_player and best_player.date == game.date
 
-    # 라인업 분기
+# 라인업 분기  (기존 슬라이싱 로직 대체)
     if has_lineup:
-        pitcher_indexes = [i for i, l in enumerate(lineups) if l.batting_order == 1]
-        if len(pitcher_indexes) >= 2:
-            away_lineup = lineups[pitcher_indexes[0]:pitcher_indexes[0]+10]
-            home_lineup = lineups[pitcher_indexes[1]:pitcher_indexes[1]+10]
+        # 선수 → 팀 매핑 준비 (1회 조회)
+        pitcher_team = dict(Pitcher.objects.values_list('player_id', 'team_name'))
+        hitter_team  = dict(Hitter.objects.values_list('player_id', 'team_name'))
 
-            if user_team == game.team1:
-                opponent_team = game.team2
-                user_lineup = away_lineup
-                opponent_lineup = home_lineup
-            else:
-                opponent_team = game.team1
-                user_lineup = home_lineup
-                opponent_lineup = away_lineup
+        team1 = game.team1
+        team2 = game.team2
+
+        def row_team(l):
+            if l.pitcher_id:
+                return pitcher_team.get(l.pitcher_id)
+            if l.hitter_id:
+                return hitter_team.get(l.hitter_id)
+            return None
+
+        # 팀별로 분리
+        team1_rows = [l for l in lineups if row_team(l) == team1]
+        team2_rows = [l for l in lineups if row_team(l) == team2]
+
+        # 투수 먼저(배팅오더 1), 그다음 타자 2~10, 동일 오더면 id로 안정 정렬
+        def sort_key(l):
+            return (0 if l.pitcher_id else 1, l.batting_order or 99, l.id)
+
+        team1_lineup = sorted(team1_rows, key=sort_key)
+        team2_lineup = sorted(team2_rows, key=sort_key)
+
+        if user_team == team1:
+            opponent_team = team2
+            user_lineup = team1_lineup
+            opponent_lineup = team2_lineup
         else:
-            has_lineup = False
+            opponent_team = team1
+            user_lineup = team2_lineup
+            opponent_lineup = team1_lineup
     else:
         opponent_team = game.team2 if user_team == game.team1 else game.team1
+
 
     # 점수 처리
     if request.user.team == game.team1:
