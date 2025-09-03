@@ -4,9 +4,9 @@ import subprocess
 
 # 파일 경로 설정
 CSV_PATH = "/mnt/d/Users/Desktop/tothe_ballpark/data/kbo_schedule.csv"
-SCRIPT_PATH = "/mnt/d/Users/Desktop/tothe_ballpark/before_game.sh"
-LOG_PATH = "/mnt/d/Users/Desktop/tothe_ballpark/data/schedule_checker.log"
-BEFORE_GAME_LOG = "/mnt/d/Users/Desktop/tothe_ballpark/data/before_game.log"
+SCRIPT_PATH = "/mnt/d/Users/Desktop/tothe_ballpark/data/crawling_local/before_game.sh"
+LOG_PATH = "/mnt/d/Users/Desktop/tothe_ballpark/data/crawling_local/schedule_checker.log"
+BEFORE_GAME_LOG = "/mnt/d/Users/Desktop/tothe_ballpark/data/crawling_local/before_game.log"
 
 # 현재 시간
 now = datetime.now()
