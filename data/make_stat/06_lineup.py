@@ -93,7 +93,7 @@ with open('data/kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
         game_date = datetime.datetime.strptime(date_str, '%Y%m%d').date()
 
         # 이미 저장된 날짜 이후의 경기만 처리
-        if game_date > today or (last_date and game_date <= last_date):
+        if game_date > today or (last_date and game_date < last_date):
             continue
 
         team1 = row['team1']
