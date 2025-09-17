@@ -3,10 +3,10 @@ from datetime import datetime, timedelta
 import subprocess
 import os
 
-CSV_PATH = "/tothe_ballpark/data/kbo_schedule.csv"
-SCRIPT_PATH = "/tothe_ballpark/data/crawling_server/before_game.sh"
-LOG_PATH = "/tothe_ballpark/logs/schedule_checker.log"
-BEFORE_GAME_LOG = "/tothe_ballpark/logs/before_game.log"
+CSV_PATH = "/home/ubuntu/appsrc/data/kbo_schedule.csv"
+SCRIPT_PATH = "/home/ubuntu/appsrc/data/crawling_server/before_game.sh"
+LOG_PATH = "/home/ubuntu/appsrc/logs/schedule_checker.log"
+BEFORE_GAME_LOG = "/home/ubuntu/appsrc/logs/before_game.log"
 
 def log(message: str) -> None:
     now = datetime.now()

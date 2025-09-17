@@ -144,6 +144,7 @@ ENV/
 env.bak/
 venv.bak/
 venv-py310/
+/venv-wsl/
 
 # Spyder project settings
 .spyderproject
@@ -338,3 +339,4 @@ before_game.cmd
 
 
 /media/
+/logs/
