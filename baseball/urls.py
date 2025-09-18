@@ -3,6 +3,7 @@ from django.urls import path, include
 from cal import views
 from django.conf import settings
 from django.conf.urls.static import static
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
     path('', views.index, name='index'),  # 기본 URL을 cal 앱의 index 뷰로 설정
@@ -13,6 +14,9 @@ urlpatterns = [
     path('jikdoltest/', include('jikdoltest.urls')),
     
     path('api/', include(('accounts.api_urls', 'accounts'), namespace='accounts_api')),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs', SpectacularSwaggerView.as_view(url_name='schema')),
+
 ]
 
 if settings.DEBUG:

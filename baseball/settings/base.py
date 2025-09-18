@@ -27,7 +27,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'rest_framework',
+    'rest_framework',
+    'drf_spectacular',
+    'django_filters',
     'cal',
     'accounts',
     'posts',
@@ -106,3 +108,11 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ]
 CSRF_TRUSTED_ORIGINS = ['https://totheballpark.info', 'https://www.totheballpark.info']
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 50,
+}
+SPECTACULAR_SETTINGS = {"TITLE": "tothe_ballpark API", "VERSION": "v1"}
