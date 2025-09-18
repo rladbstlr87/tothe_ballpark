@@ -1,0 +1,26 @@
+name: To the Github Actions 실행
+
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    My-Deploy-Job:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: 저장소 체크아웃
+              uses: actions/checkout@v4
+
+            - name: Git 설정
+              run: |
+                git config user.name "rladbstlr87"
+                git config user.email "manylong@naver.com"
+
+            - name: 애드커밋푸시
+              run: |
+                echo "hello world"
+                git add .
+                git commit -m "Auto update $(date +'%Y-%m-%d %H:%M:%S')"
+                git push
