@@ -21,6 +21,6 @@ jobs:
             - name: 애드커밋푸시
               run: |
                 echo "hello world"
-                git add .
-                git commit -m "Auto update $(date +'%Y-%m-%d %H:%M:%S')"
-                git push
+                # git add .
+                # git commit -m "Auto update $(date +'%Y-%m-%d %H:%M:%S')"
+                # git push
