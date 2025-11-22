@@ -1,59 +1,59 @@
-name: After Game
+# name: After Game
 
-on:
-  schedule:
-    - cron: "50 14 * * *"   # 매일 23:30 KST (UTC)
-  workflow_dispatch:
+# on:
+#   schedule:
+#     - cron: "50 14 * * *"   # 매일 23:30 KST (UTC)
+#   workflow_dispatch:
 
-permissions:
-  contents: write
+# permissions:
+#   contents: write
 
-concurrency:
-  group: after-game-${{ github.ref }}
-  cancel-in-progress: true
+# concurrency:
+#   group: after-game-${{ github.ref }}
+#   cancel-in-progress: true
 
-jobs:
-  after-game:
-    runs-on: ubuntu-latest
-    env:
-      TZ: Asia/Seoul
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: master
+# jobs:
+#   after-game:
+#     runs-on: ubuntu-latest
+#     env:
+#       TZ: Asia/Seoul
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+#         with:
+#           ref: master
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+#       - name: Setup Python
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: "3.12"
 
-      - name: Install dependencies
-        run: |
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+#       - name: Install dependencies
+#         run: |
+#           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Run after-game scripts
-        run: |
-          python data/make_stat/00_hitters_stats.py
-          python data/make_stat/01_pitchers_stats.py
-          python data/make_stat/02_get_velocity.py
-          python data/make_stat/03_preprocessing.py
-          python data/make_stat/04_player_style.py
-          python data/make_stat/05_kbo_schedule.py
-          python data/make_stat/07_hitters_daily_stat.py
-          python data/make_stat/08_pitchers_daily_stat.py
+#       - name: Run after-game scripts
+#         run: |
+#           python data/make_stat/00_hitters_stats.py
+#           python data/make_stat/01_pitchers_stats.py
+#           python data/make_stat/02_get_velocity.py
+#           python data/make_stat/03_preprocessing.py
+#           python data/make_stat/04_player_style.py
+#           python data/make_stat/05_kbo_schedule.py
+#           python data/make_stat/07_hitters_daily_stat.py
+#           python data/make_stat/08_pitchers_daily_stat.py
 
-      - name: Git config
-        run: |
-          git config user.name "rladbstlr87"
-          git config user.email "manylong@naver.com"
+#       - name: Git config
+#         run: |
+#           git config user.name "rladbstlr87"
+#           git config user.email "manylong@naver.com"
 
-      - name: Commit & Push
-        run: |
-          git add .
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-            exit 0
-          fi
-          git commit -m "[skip ci] after-game auto update $(date +'%Y-%m-%d %H:%M:%S %Z')"
-          git push
+#       - name: Commit & Push
+#         run: |
+#           git add .
+#           if git diff --cached --quiet; then
+#             echo "No changes to commit."
+#             exit 0
+#           fi
+#           git commit -m "[skip ci] after-game auto update $(date +'%Y-%m-%d %H:%M:%S %Z')"
+#           git push
