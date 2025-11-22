@@ -1,59 +1,59 @@
-# # .github/workflows/before-game.yml
-# name: Before Game Update
+# .github/workflows/before-game.yml
+name: Before Game Update
 
-# on:
-#   schedule:
-#     - cron: "0 2 * * *"   # 매일 11:00 KST (UTC+9)
-#   workflow_dispatch:
+on:
+  schedule:
+    - cron: "0 2 * * *"   # 매일 11:00 KST (UTC+9)
+  workflow_dispatch:
 
-# permissions:
-#   contents: write
+permissions:
+  contents: write
 
-# concurrency:
-#   group: before-game-${{ github.ref }}
-#   cancel-in-progress: true
+concurrency:
+  group: before-game-${{ github.ref }}
+  cancel-in-progress: true
 
-# jobs:
-#   before-game:
-#     runs-on: ubuntu-latest
-#     env:
-#       TZ: Asia/Seoul
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
-#         with:
-#           ref: master
+jobs:
+  before-game:
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Seoul
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: master
 
-#       - name: Setup Python
-#         uses: actions/setup-python@v5
-#         with:
-#           python-version: "3.12"
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-#       - name: Install dependencies
-#         run: |
-#           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Install dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-#       - name: Run before-game scripts
-#         run: |
-#           python data/make_stat/05_kbo_schedule.py
-#           python data/make_stat/06_lineup.py
+      - name: Run before-game scripts
+        run: |
+          python data/make_stat/05_kbo_schedule.py
+          python data/make_stat/06_lineup.py
 
-#       - name: Git config
-#         run: |
-#           git config user.name "rladbstlr87"
-#           git config user.email "manylong@naver.com"
+      - name: Git config
+        run: |
+          git config user.name "rladbstlr87"
+          git config user.email "manylong@naver.com"
 
-#       - name: Commit & Push
-#         run: |
-#           git add .
-#           if git diff --cached --quiet; then
-#             echo "No changes to commit."
-#             exit 0
-#           fi
-#           git commit -m "[skip ci] before-game auto update $(date +'%Y-%m-%d %H:%M:%S %Z')"
-#           git push
+      - name: Commit & Push
+        run: |
+          git add .
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "[skip ci] before-game auto update $(date +'%Y-%m-%d %H:%M:%S %Z')"
+          git push
 
-#       - name: Github Actions 자체 변수 출력
-#         run: |
-#           echo $GITHUB_SHA
-#           echo $GITHUB_REPOSITORY
+      - name: Github Actions 자체 변수 출력
+        run: |
+          echo $GITHUB_SHA
+          echo $GITHUB_REPOSITORY

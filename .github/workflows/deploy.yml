@@ -1,38 +1,38 @@
-# name: To the Github Actions 실행
+name: To the Github Actions 실행
 
-# # Event : 실행되는 시점을 설정
-# # master라는 브랜치에 push 될 때 jobs를 실행
-# on:
-#     push:
-#         branches:
-#             - master
+# Event : 실행되는 시점을 설정
+# master라는 브랜치에 push 될 때 jobs를 실행
+on:
+    push:
+        branches:
+            - master
 
-# # 하나의 Workflow는 1개 이상의 Job으로 구성된다
-# # 여러 Job은 기본적으로 병렬적으로 수행된다
-# jobs:
-#     My-Deploy-Job:
-#         # ubuntu 환경 / 가장 최신 버전
-#         runs-on: ubuntu-latest
+# 하나의 Workflow는 1개 이상의 Job으로 구성된다
+# 여러 Job은 기본적으로 병렬적으로 수행된다
+jobs:
+    My-Deploy-Job:
+        # ubuntu 환경 / 가장 최신 버전
+        runs-on: ubuntu-latest
 
-#         # Step : 특정 작업을 수행하는 가장 작은 단위
-#         # Job은 여러 Step으로 구성되어 있다
-#         steps:
-#             - name: 저장소 체크아웃
-#               uses: actions/checkout@v4
+        # Step : 특정 작업을 수행하는 가장 작은 단위
+        # Job은 여러 Step으로 구성되어 있다
+        steps:
+            - name: 저장소 체크아웃
+              uses: actions/checkout@v4
 
-#             - name: Git 설정
-#               run: |
-#                 git config user.name "rladbstlr87"
-#                 git config user.email "manylong@naver.com"
+            - name: Git 설정
+              run: |
+                git config user.name "rladbstlr87"
+                git config user.email "manylong@naver.com"
 
-#             - name: 애드커밋푸시
-#               run: |
-#                 echo "hello world"
+            - name: 애드커밋푸시
+              run: |
+                echo "hello world"
             
-#             - name: Github Actions 자체 변수 출력해보기
-#               run: |
-#                 echo $GITHUB_SHA
-#                 echo $GITHUB_REPOSITORY
+            - name: Github Actions 자체 변수 출력해보기
+              run: |
+                echo $GITHUB_SHA
+                echo $GITHUB_REPOSITORY
 
-#             - name: 누구에게도 노출이 되면 안되는 값
-#               run: echo ${{ secrets.DB_NAME }}
+            - name: 누구에게도 노출이 되면 안되는 값
+              run: echo ${{ secrets.DB_NAME }}
