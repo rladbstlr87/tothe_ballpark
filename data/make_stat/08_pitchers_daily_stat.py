@@ -2,21 +2,10 @@ import csv
 import time
 import datetime
 from stat_def import TEAM_NAVER
-from urllib.parse import urlparse, parse_qs
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
+import json
+import urllib.request
 import pandas as pd
 
-
-# player_id 추출
-def extract_pid(th):
-    try:
-        a = th.find_element(By.TAG_NAME, 'a')
-        href = a.get_attribute('href')
-        return parse_qs(urlparse(href).query).get('playerId', [''])[0] if href else ''
-    except:
-        return ''
 
 # IP 문자열을 실수로 변환
 def convert_ip_to_float(ip_str):
@@ -41,38 +30,35 @@ def convert_ip_to_float(ip_str):
             return 0.0
     return 0.0
 
-# 개별 경기 기록 크롤링 함수
-def get_pitcher_record(date, team1_code, team2_code, game_id, driver):
-    url = f'https://m.sports.naver.com/game/{date}{team1_code}{team2_code}{game_id}/record'
-    driver.get(url)
-    time.sleep(1)
-
+def get_pitcher_record(date, team1_code, team2_code, game_id):
+    api_url = f"https://api-gw.sports.naver.com/schedule/games/{date}{team1_code}{team2_code}{game_id}/record"
     data = {'away': [], 'home': []}
     columns = ['IP', 'H', 'R', 'ER', 'BB', 'SO', 'HR', 'BF', 'AB', 'NP']
 
     try:
-        # 어웨이팀 기록
-        away_rows = driver.find_elements(By.CSS_SELECTOR, '#content div.PlayerRecord_comp_player_record__1tI5G.type_kbo > div:nth-child(3) > div > div:nth-child(2) tbody tr')
-        for row in away_rows:
-            try:
-                pid = extract_pid(row.find_element(By.TAG_NAME, 'th'))
-                vals = [td.text.strip() for td in row.find_elements(By.TAG_NAME, 'td')]
-                if len(vals) >= len(columns):
-                    data['away'].append(dict(zip(columns, vals[:len(columns)]), player_id=pid))
-            except:
-                continue
-
-        # 홈팀 기록
-        home_rows = driver.find_elements(By.CSS_SELECTOR, '#content div.PlayerRecord_comp_player_record__1tI5G.type_kbo > div:nth-child(2) > div > div:nth-child(2) tbody tr')
-        for row in home_rows:
-            try:
-                pid = extract_pid(row.find_element(By.TAG_NAME, 'th'))
-                vals = [td.text.strip() for td in row.find_elements(By.TAG_NAME, 'td')]
-                if len(vals) >= len(columns):
-                    data['home'].append(dict(zip(columns, vals[:len(columns)]), player_id=pid))
-            except:
-                continue
-    except:
+        res = urllib.request.urlopen(api_url, timeout=8)
+        obj = json.loads(res.read())
+        record = obj.get('result', {}).get('recordData', {})
+        pitchers = record.get('pitchersBoxscore', {})
+        for side in ['away', 'home']:
+            rows = pitchers.get(side, [])
+            for r in rows:
+                pid = str(r.get('pcode', '')).strip()
+                # API가 소수 이닝을 문자열로 주므로 그대로 사용 후 convert_ip_to_float에서 변환
+                vals = [
+                    r.get('inn', ''),
+                    r.get('hit', ''),
+                    r.get('r', ''),
+                    r.get('er', ''),
+                    r.get('bb', ''),
+                    r.get('kk', ''),
+                    r.get('hr', ''),
+                    r.get('bf', ''),
+                    r.get('ab', ''),
+                    r.get('np', ''),  # 투구수 np가 없을 수 있음
+                ]
+                data[side].append(dict(zip(columns, vals), player_id=pid))
+    except Exception:
         pass
 
     return data
@@ -117,15 +103,6 @@ for _, row in df_filtered.iterrows():
     game_map.setdefault(key, []).append((row, next_gid))
     next_gid += 1
 
-chrome_options = Options()
-chrome_options.add_argument('--headless')
-chrome_options.add_argument('--disable-gpu')
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--window-size=1920,1080')
-chrome_options.add_argument('--disable-dev-shm-usage')
-
-driver = webdriver.Chrome(options=chrome_options)
-
 # 기록 파일 열기 (없으면 헤더 작성)
 with open('data/pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as prout:
     pw = csv.writer(prout)
@@ -151,7 +128,7 @@ with open('data/pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as
             else:
                 gcode = '22025' if not double_header_failed else '02025'
 
-            rec = get_pitcher_record(d, t1c, t2c, gcode, driver)
+            rec = get_pitcher_record(d, t1c, t2c, gcode)
 
             # 1차 더블헤더 실패 시, 재시도 여부 판단
             if len(games_sorted) > 1 and idx == 0 and not rec['away'] and not rec['home']:
@@ -159,7 +136,7 @@ with open('data/pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as
 
             # 2차 더블헤더 실패 시, 일반 코드로 재시도
             if len(games_sorted) > 1 and idx == 1 and not rec['away'] and not rec['home'] and gcode == '22025':
-                rec = get_pitcher_record(d, t1c, t2c, '02025', driver)
+                rec = get_pitcher_record(d, t1c, t2c, '02025')
 
             if not rec['away'] and not rec['home']:
                 continue
@@ -178,5 +155,3 @@ with open('data/pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as
                     ])
 
             time.sleep(1.5)
-
-driver.quit()

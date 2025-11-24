@@ -26,6 +26,10 @@ KBO 리그에 대한 관심이 높아지면서 야구장을 직접 찾는 팬들
 | **Database**  | ![SQLite](https://img.shields.io/badge/sqlite-%2307405e.webp?style=for-the-badge&logo=sqlite&logoColor=white)|
 | **Crawling**  | ![Selenium](https://img.shields.io/badge/-selenium-%43B02A?style=for-the-badge&logo=selenium&logoColor=white)|
 | **DevOps**    | ![AWS](https://img.shields.io/badge/AWS-%23FF9900.webp?style=for-the-badge&logo=amazon-aws&logoColor=white) ![Nginx](https://img.shields.io/badge/nginx-%23009639.webp?style=for-the-badge&logo=nginx&logoColor=white) ![uWSGI](https://img.shields.io/badge/uWSGI-green?style=for-the-badge)
+
+### 데이터 수집 메모
+- 타자/투수 일별 기록(`07_hitters_daily_stat.py`, `08_pitchers_daily_stat.py`)은 비공식 응답을 사용합니다.
+- 공개 문서화된 API는 없습니다.
 ---
 
 ## 🏗️ 시스템 아키텍처
