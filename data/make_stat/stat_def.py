@@ -1,5 +1,12 @@
 import pandas as pd
 
+# 다른 크롤러에서 쓰는 팀코드
+TEAM_NAVER = {
+    'LT': 'LT', 'HT': 'HT', 'LG': 'LG', 'OB': 'OB', 'SK': 'SK',
+    'WO': 'WO', 'SS': 'SS', 'HH': 'HH', 'KT': 'KT', 'NC': 'NC',
+}
+TEAM_KBO = ["LG", "HH", "LT", "SS", "SK", "NC", "OB", "HT", "KT", "WO"]
+
 h = pd.read_csv('data/all_hitter_stats.csv')
 p = pd.read_csv('data/all_pitcher_stats.csv')
 

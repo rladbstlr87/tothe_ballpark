@@ -1,17 +1,13 @@
 import csv
 import time
 import datetime
+from stat_def import TEAM_NAVER
 from urllib.parse import urlparse, parse_qs
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
 
-# KBO 팀 코드 매핑
-TEAM_CODE = {
-    'LT': 'LT', 'HT': 'HT', 'LG': 'LG', 'OB': 'OB', 'SK': 'SK',
-    'WO': 'WO', 'SS': 'SS', 'HH': 'HH', 'KT': 'KT', 'NC': 'NC',
-}
 
 # player_id 추출
 def extract_pid(th):
@@ -143,7 +139,7 @@ with open('data/pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as
 
         for idx, (row, gid) in enumerate(games_sorted):
             d, t1, t2 = row['day'].replace('.', ''), row['team1'], row['team2']
-            t1c, t2c = TEAM_CODE.get(t1, ''), TEAM_CODE.get(t2, '')
+            t1c, t2c = TEAM_NAVER.get(t1, ''), TEAM_NAVER.get(t2, '')
             if not t1c or not t2c:
                 continue
 

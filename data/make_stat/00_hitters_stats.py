@@ -1,5 +1,6 @@
 # 파일: make_all_hitter_stats.py
 from __future__ import annotations
+from stat_def import TEAM_KBO
 
 import time
 import pandas as pd
@@ -18,9 +19,6 @@ from crawling_hitter_utils import (
 )
 
 BASE_URL = "https://www.koreabaseball.com/Record/Player/HitterBasic/Basic1.aspx?sort=HRA_RT"
-
-TEAMS = ["LG", "HH", "LT", "SS", "SK", "NC", "OB", "HT", "KT", "WO"]
-
 COLUMNS = ["team", "player_id", "player_name"] + HITTER_ORDER
 
 def main():
@@ -40,7 +38,7 @@ def main():
         # 새로 추가된 시리즈 필터는 기본값(0)으로 고정
         select_series_and_wait(driver, "0")
 
-        for team in TEAMS:
+        for team in TEAM_KBO:
             # 팀 선택 및 대기
             select_team_and_wait(driver, team)
 
