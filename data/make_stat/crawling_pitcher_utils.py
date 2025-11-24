@@ -1,4 +1,3 @@
-# 파일: data/make_stat/crawling_pitcher_utils.py
 from __future__ import annotations
 
 import time
@@ -19,6 +18,7 @@ PITCHER_ORDER: List[str] = [
 DETAIL_URL = "https://www.koreabaseball.com/Record/Player/PitcherDetail/Basic.aspx?playerId={pid}"
 
 def _wait_table_refresh(driver, timeout: int = 15) -> None:
+    """테이블 tbody가 새로 그려질 때까지 staleness/존재 대기"""
     try:
         tbody = driver.find_element(
             By.CSS_SELECTOR,
@@ -34,6 +34,7 @@ def _wait_table_refresh(driver, timeout: int = 15) -> None:
         )
 
 def find_team_select(driver, timeout: int = 15):
+    """팀 선택 드롭다운 요소를 여러 locator로 재시도하며 찾기"""
     locators = [
         (By.ID, "cphContents_cphContents_cphContents_ddlTeam_ddlTeam"),
         (By.CSS_SELECTOR, "select[id$='ddlTeam_ddlTeam']"),
@@ -48,13 +49,16 @@ def find_team_select(driver, timeout: int = 15):
     raise TimeoutException("팀 선택 드롭다운을 찾지 못했습니다.")
 
 def ensure_list_page(driver, base_url: str, timeout: int = 15):
+    """목록 페이지가 아니면 base_url로 이동 후 팀 드롭다운 확보"""
     try:
         return find_team_select(driver, timeout=5)
     except TimeoutException:
         driver.get(base_url)
         return find_team_select(driver, timeout=timeout)
 
+# ===== 투/타 공통 함수 =====
 def select_series_and_wait(driver: webdriver.Chrome, series_value: str = "0", timeout: int = 15) -> None:
+    """시리즈 드롭다운 선택 후 테이블 새로고침을 기다림"""
     sel = WebDriverWait(driver, timeout).until(
         EC.presence_of_element_located(
             (By.ID, "cphContents_cphContents_cphContents_ddlSeries_ddlSeries")
@@ -65,12 +69,14 @@ def select_series_and_wait(driver: webdriver.Chrome, series_value: str = "0", ti
     time.sleep(0.2)
 
 def select_team_and_wait(driver, team_value: str, timeout: int = 15) -> None:
+    """팀 드롭다운 선택 후 테이블 새로고침을 기다림"""
     sel = find_team_select(driver, timeout=timeout)
     Select(sel).select_by_value(team_value)
     _wait_table_refresh(driver, timeout=timeout)
     time.sleep(0.2)
 
 def collect_players_on_page(driver) -> List[Tuple[str, str]]:
+    """목록 테이블에서 (player_id, name)을 JS로 즉시 문자열화해 수집"""
     players = driver.execute_script(
         """
         return Array.from(
@@ -90,6 +96,7 @@ def collect_players_on_page(driver) -> List[Tuple[str, str]]:
     return out
 
 def fetch_one_selenium(driver, player_id: str, timeout: int = 15) -> Optional[list]:
+    """투수 상세 페이지를 열어 요약/세부 테이블을 병합해 반환"""
     url = DETAIL_URL.format(pid=player_id)
     driver.get(url)
     try:

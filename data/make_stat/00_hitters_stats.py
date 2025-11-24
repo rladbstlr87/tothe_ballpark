@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from crawling_hitter_utils import (
-    TARGET_ORDER,
+    HITTER_ORDER,
     collect_players_on_page,
     fetch_one_selenium,
     select_series_and_wait,
@@ -21,7 +21,7 @@ BASE_URL = "https://www.koreabaseball.com/Record/Player/HitterBasic/Basic1.aspx?
 
 TEAMS = ["LG", "HH", "LT", "SS", "SK", "NC", "OB", "HT", "KT", "WO"]
 
-COLUMNS = ["team", "player_id", "player_name"] + TARGET_ORDER
+COLUMNS = ["team", "player_id", "player_name"] + HITTER_ORDER
 
 def main():
     # Selenium 옵션
@@ -64,7 +64,7 @@ def main():
                 if not data:
                     continue  # 기록 없음/파싱 실패는 건너뜀
 
-                row = [team, pid, pname] + [data.get(k, "") for k in TARGET_ORDER]
+                row = [team, pid, pname] + [data.get(k, "") for k in HITTER_ORDER]
                 final_rows.append(row)
 
                 # 과도한 요청 방지

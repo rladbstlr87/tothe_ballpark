@@ -1,4 +1,3 @@
-# 파일: kbo_hitter_utils.py
 from __future__ import annotations
 
 import re
@@ -13,7 +12,7 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 
 
 # ===== 상수 =====
-TARGET_ORDER: List[str] = [
+HITTER_ORDER: List[str] = [
     "AVG", "G", "PA", "AB", "R", "H", "2B", "3B", "HR", "TB", "RBI",
     "SB", "CS", "SAC", "SF", "BB", "IBB", "HBP", "SO", "GDP",
     "SLG", "OBP", "E", "SB%", "MH", "OPS", "RISP", "PH-BA"
@@ -57,8 +56,8 @@ def _normalize_df(df: pd.DataFrame) -> pd.DataFrame:
     # 1행 승격: 지표명이 다수 보이면 1행을 헤더로
     if len(df) > 0:
         first = [str(x).strip() for x in df.iloc[0].tolist()]
-        score_keys = sum((_canon_key(x) in TARGET_ORDER) or (x in ALIAS) for x in first)
-        if score_keys >= 3 and not any((_canon_key(c) in TARGET_ORDER) for c in df.columns):
+        score_keys = sum((_canon_key(x) in HITTER_ORDER) or (x in ALIAS) for x in first)
+        if score_keys >= 3 and not any((_canon_key(c) in HITTER_ORDER) for c in df.columns):
             df.columns = first
             df = df.iloc[1:].reset_index(drop=True)
             df.columns = [str(c).strip() for c in df.columns]
@@ -80,7 +79,7 @@ def _pick_value_column(df: pd.DataFrame) -> int:
 
 
 def parse_hitter_detail(html: str) -> Dict[str, str] | None:
-    """렌더된 표(여러 개일 수 있음)를 합쳐 TARGET_ORDER dict로 반환"""
+    """렌더된 표(여러 개일 수 있음)를 합쳐 HITTER_ORDER dict로 반환"""
     from pandas.errors import EmptyDataError
     all_dfs: List[pd.DataFrame] = []
     for kwargs in ({}, {"header": None}):
@@ -100,31 +99,32 @@ def parse_hitter_detail(html: str) -> Dict[str, str] | None:
         # 가로형: 컬럼=지표, 값=행 → 값이 많은 행 선택
         if df.shape[0] >= 1 and df.shape[1] >= 2:
             cols = [_canon_key(c) for c in df.columns]
-            idxs = [i for i, k in enumerate(cols) if k in TARGET_ORDER]
+            idxs = [i for i, k in enumerate(cols) if k in HITTER_ORDER]
             if idxs:
                 sub = df.iloc[:, idxs]
                 best_row_idx = sub.apply(_num_score, axis=1).idxmax()
                 for i in idxs:
                     key = cols[i]
                     val = str(df.iloc[best_row_idx, i]).strip()
-                    if key in TARGET_ORDER and val and key not in stats:
+                    if key in HITTER_ORDER and val and key not in stats:
                         stats[key] = val
 
         # 세로형: 첫 열=지표, 값 열 자동 선택
         if df.shape[1] >= 2:
             kcol = df.iloc[:, 0].astype(str).str.strip()
-            if sum((_canon_key(k) in TARGET_ORDER) for k in kcol) >= 3:
+            if sum((_canon_key(k) in HITTER_ORDER) for k in kcol) >= 3:
                 vj = _pick_value_column(df)
                 vcol = df.iloc[:, vj].astype(str).str.strip()
                 for kk, vv in zip(kcol, vcol):
                     key = _canon_key(kk)
-                    if key in TARGET_ORDER and vv and key not in stats:
+                    if key in HITTER_ORDER and vv and key not in stats:
                         stats[key] = vv
 
-    return {k: stats.get(k, "") for k in TARGET_ORDER} if stats else None
+    return {k: stats.get(k, "") for k in HITTER_ORDER} if stats else None
 
 
-# ===== Selenium 상세 페이지 파싱 =====
+# ===== 투/타 공통 함수 =====
+# Selenium 상세 페이지 파싱
 def fetch_one_selenium(driver: webdriver.Chrome, player_id: str) -> Dict[str, str] | None:
     """Selenium으로 상세를 새 탭에서 열고 파싱한 뒤 닫는다."""
     url = f"https://www.koreabaseball.com/Record/Player/HitterDetail/Basic.aspx?playerId={player_id}"
@@ -162,7 +162,7 @@ def fetch_one_selenium(driver: webdriver.Chrome, player_id: str) -> Dict[str, st
                 driver.switch_to.window(base)
 
 
-# ===== 리스트 페이지 수집 =====
+# 리스트 페이지 수집
 def collect_players_on_page(driver: webdriver.Chrome) -> List[Tuple[str, str]]:
     """현재 페이지의 (player_id, player_name) 목록을 JS로 즉시 문자열화하여 수집"""
     players = driver.execute_script(
@@ -179,6 +179,7 @@ def collect_players_on_page(driver: webdriver.Chrome) -> List[Tuple[str, str]]:
     ]
 
 
+# 드롭다운 제어
 def select_series_and_wait(driver: webdriver.Chrome, series_value: str = "0") -> None:
     """시리즈 드롭다운 선택 후 테이블 로드를 기다린다."""
     sel = WebDriverWait(driver, 10).until(
