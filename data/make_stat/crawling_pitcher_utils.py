@@ -4,6 +4,7 @@ from __future__ import annotations
 import time
 from typing import List, Tuple, Optional
 
+from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
@@ -53,6 +54,16 @@ def ensure_list_page(driver, base_url: str, timeout: int = 15):
         driver.get(base_url)
         return find_team_select(driver, timeout=timeout)
 
+def select_series_and_wait(driver: webdriver.Chrome, series_value: str = "0", timeout: int = 15) -> None:
+    sel = WebDriverWait(driver, timeout).until(
+        EC.presence_of_element_located(
+            (By.ID, "cphContents_cphContents_cphContents_ddlSeries_ddlSeries")
+        )
+    )
+    Select(sel).select_by_value(series_value)
+    _wait_table_refresh(driver, timeout=timeout)
+    time.sleep(0.2)
+
 def select_team_and_wait(driver, team_value: str, timeout: int = 15) -> None:
     sel = find_team_select(driver, timeout=timeout)
     Select(sel).select_by_value(team_value)
@@ -60,15 +71,19 @@ def select_team_and_wait(driver, team_value: str, timeout: int = 15) -> None:
     time.sleep(0.2)
 
 def collect_players_on_page(driver) -> List[Tuple[str, str]]:
-    anchors = driver.find_elements(
-        By.CSS_SELECTOR,
-        "#cphContents_cphContents_cphContents_udpContent div.record_result table tbody tr td:nth-child(2) a",
-    )
+    players = driver.execute_script(
+        """
+        return Array.from(
+            document.querySelectorAll("#cphContents_cphContents_cphContents_udpContent div.record_result table tbody tr td:nth-child(2) a")
+        ).map(a => ({href: a.href || "", name: (a.textContent || "").trim()}))
+         .filter(p => p.href.includes("playerId=") && p.name);
+        """
+    ) or []
     out: List[Tuple[str, str]] = []
-    for a in anchors:
-        href = (a.get_attribute("href") or "").strip()
-        name = (a.text or "").strip()
-        if "playerId=" in href and name:
+    for p in players:
+        href = (p.get("href") or "").strip()
+        name = (p.get("name") or "").strip()
+        if href and name:
             pid = href.split("playerId=")[-1].strip()
             if pid:
                 out.append((pid, name))

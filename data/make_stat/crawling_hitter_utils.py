@@ -179,10 +179,22 @@ def collect_players_on_page(driver: webdriver.Chrome) -> List[Tuple[str, str]]:
     ]
 
 
+def select_series_and_wait(driver: webdriver.Chrome, series_value: str = "0") -> None:
+    """시리즈 드롭다운 선택 후 테이블 로드를 기다린다."""
+    sel = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "cphContents_cphContents_cphContents_ddlSeries_ddlSeries"))
+    )
+    Select(sel).select_by_value(series_value)
+    WebDriverWait(driver, 10).until(EC.staleness_of(sel))
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, "table tbody"))
+    )
+
+
 def select_team_and_wait(driver: webdriver.Chrome, team_code: str) -> None:
     """팀 드롭다운 재획득 → 선택 → staleness 대기 → 테이블 로드 대기"""
     sel = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//select[contains(@id,'ddlTeam')]"))
+        EC.presence_of_element_located((By.ID, "cphContents_cphContents_cphContents_ddlTeam_ddlTeam"))
     )
     Select(sel).select_by_value(team_code)
     WebDriverWait(driver, 10).until(EC.staleness_of(sel))

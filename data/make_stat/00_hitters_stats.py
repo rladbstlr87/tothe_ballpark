@@ -13,10 +13,12 @@ from crawling_hitter_utils import (
     TARGET_ORDER,
     collect_players_on_page,
     fetch_one_selenium,
+    select_series_and_wait,
     select_team_and_wait,
 )
 
 BASE_URL = "https://www.koreabaseball.com/Record/Player/HitterBasic/Basic1.aspx?sort=HRA_RT"
+
 TEAMS = ["LG", "HH", "LT", "SS", "SK", "NC", "OB", "HT", "KT", "WO"]
 
 COLUMNS = ["team", "player_id", "player_name"] + TARGET_ORDER
@@ -35,6 +37,8 @@ def main():
 
     try:
         driver.get(BASE_URL)
+        # 새로 추가된 시리즈 필터는 기본값(0)으로 고정
+        select_series_and_wait(driver, "0")
 
         for team in TEAMS:
             # 팀 선택 및 대기
