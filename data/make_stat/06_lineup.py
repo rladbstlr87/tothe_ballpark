@@ -13,9 +13,6 @@ TEAM_CODE = {
     'WO': 'WO', 'SS': 'SS', 'HH': 'HH', 'KT': 'KT', 'NC': 'NC',
 }
 
-def debug(msg):
-    print(f"[lineup-debug] {msg}", flush=True)
-
 # 특정 경기의 라인업 페이지에서 선수 이름과 playerId를 가져오는 함수
 def get_lineup(today, team1_code, team2_code, game_id, driver):
     url = f"https://m.sports.naver.com/game/{today}{team1_code}{team2_code}{game_id}/lineup"
@@ -162,9 +159,7 @@ with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
             else:
                 naver_game_id = '22025' if not double_header_failed else '02025'
 
-            debug(f"fetch lineup {date_str} {team1}-{team2} time:{time_str} naver:{naver_game_id} gid:{game_id}")
             team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, naver_game_id, driver)
-            debug(f"lineup len t1:{len(team1_lineup)} t2:{len(team2_lineup)}")
 
             # 더블헤더 첫 경기 실패 시 보정
             if len(games_sorted) > 1 and idx == 0 and not team1_lineup and not team2_lineup:
