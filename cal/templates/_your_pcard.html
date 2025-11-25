@@ -3,7 +3,7 @@
 <!-- 유저 상대팀 투수 카드 -->
 <div class="w-56 p-2">
     <div class="flex justify-center">
-    <img src="https://6ptotvmi5753.edge.naverncp.com/KBO_IMAGE/person/middle/2025/{{ lineup.pitcher.player_id }}.jpg?type=w150"
+    <img loading="lazy" src="https://6ptotvmi5753.edge.naverncp.com/KBO_IMAGE/person/middle/2025/{{ lineup.pitcher.player_id }}.jpg?type=w150"
         alt="{{ lineup.pitcher.player_name }}"
         class="w-24 shadow-lg cursor-pointer transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl"
         data-modal-target="modal-face"
@@ -41,7 +41,7 @@
     >
     </div>
     <div class="flex justify-center mt-1 space-x-1 relative group">
-        <img id="style-icon" src="{% static 'cal/images/icon/pitcher_icon/' %}{{ lineup.pitcher.style }}.webp" class="w-12 h-12 -mt-6 -ml-6 absolute z-10 left-14 cursor-pointer">
+        <img loading="lazy" id="style-icon" src="{% static 'cal/images/icon/pitcher_icon/' %}{{ lineup.pitcher.style }}.webp" class="w-12 h-12 -mt-6 -ml-6 absolute z-10 left-14 cursor-pointer">
         <!-- 툴팁 박스 -->
         <div class="opacity-0 w-max max-w-xs bg-black text-white text-center text-xs rounded-lg py-2 px-3 absolute z-20 group-hover:opacity-100 bottom-full left-1/2 -translate-x-1/2 mb-2 pointer-events-none">
             {{ lineup.pitcher|style_description }}

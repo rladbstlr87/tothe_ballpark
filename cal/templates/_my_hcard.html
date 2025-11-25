@@ -20,11 +20,11 @@
         data-ops="{{ lineup.hitter.OPS }}"
         data-sb="{{ lineup.hitter.SB }}"
         data-cs="{{ lineup.hitter.CS }}">
-        <img src="https://6ptotvmi5753.edge.naverncp.com/KBO_IMAGE/person/middle/2025/{{ lineup.hitter.player_id }}.jpg?type=w150"
+        <img loading="lazy" src="https://6ptotvmi5753.edge.naverncp.com/KBO_IMAGE/person/middle/2025/{{ lineup.hitter.player_id }}.jpg?type=w150"
             alt="{{ lineup.hitter.player_name }}"
             class="mx-2 w-[clamp(4rem,6vw,6rem)] transform transition-all hover:-translate-y-1 duration-300 shadow-lg hover:shadow-2xl">
         <div class="flex items-center mt-1 space-x-1 relative group">
-            <img id="style-icon" src="{% static 'cal/images/icon/hitter_icon/' %}{{ lineup.hitter.style }}.webp" class="w-8 h-8 -mt-10 -left-2 absolute z-10 rounded-br-2xl cursor-pointer">
+            <img loading="lazy" id="style-icon" src="{% static 'cal/images/icon/hitter_icon/' %}{{ lineup.hitter.style }}.webp" class="w-8 h-8 -mt-10 -left-2 absolute z-10 rounded-br-2xl cursor-pointer">
             <!-- 툴팁 박스 -->
             <div class="opacity-0 w-max max-w-xs bg-black text-white text-center text-xs rounded-lg py-2 px-3 absolute z-20 group-hover:opacity-100 bottom-full left-1/2 -translate-x-1/2 mb-2 pointer-events-none">
                 {{ lineup.hitter|style_description }}

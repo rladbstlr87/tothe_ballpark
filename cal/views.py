@@ -239,6 +239,7 @@ def calculate_pitcher_score(p):
 @login_required
 def lineup(request, game_id):
     game = get_object_or_404(Game, id=game_id)
+    # TODO: Use select_related to prefetch pitcher/hitter and avoid N+1 in templates (perf step 4)
     lineups = Lineup.objects.filter(game=game).order_by('id')
     has_lineup = lineups.exists()
 
@@ -247,6 +248,7 @@ def lineup(request, game_id):
     opponent_team = None
 
     # 타자 기록
+    # TODO: Filter by lineup player IDs instead of full-table scan (perf step 1)
     all_hitter_qs = Hitter_Daily.objects.all().order_by('-date')
     latest_daily_stats = {}
     for record in all_hitter_qs:
