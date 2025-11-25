@@ -1,0 +1,111 @@
+# ⚾ To the Ballpark: KBO 야구 팬들을 위한 올인원 직관 가이드
+
+**[Live Demo](http://ec2-13-209-80-237.ap-northeast-2.compute.amazonaws.com/)**
+
+KBO 리그에 대한 관심이 높아지면서 야구장을 직접 찾는 팬들이 늘고 있습니다. 하지만, 특히 신규 팬들에게는 경기 정보, 선수 정보, 구장 정보 등 직관에 필요한 정보가 흩어져 있어 불편함이 따릅니다. **To the Ballpark**는 이러한 문제점을 해결하고, 야구 직관의 모든 경험을 한 곳에서 관리하고 향상시키기 위해 개발된 웹 서비스입니다.
+
+---
+
+## ✨ 주요 기능
+
+*   **📅 경기 일정 캘린더:** 월별 경기 일정을 한눈에 확인하고, 응원하는 팀의 경기만 필터링하여 볼 수 있습니다. 직관 여부와 경기 결과도 손쉽게 기록하고 관리합니다.
+*   **📊 상세 경기 정보:** 선발 라인업, 선수별 스탯, 플레이 스타일 등 깊이 있는 정보를 제공하여 경기 이해도를 높여줍니다. 경기 후에는 오늘의 수훈 선수 정보를 확인할 수 있습니다.
+*   **🏟️ 구장 정보:** 구장별 좌석 정보, 맛집, 주차 정보 및 길찾기 링크를 제공하여 직관을 더욱 편리하게 만들어 줍니다.
+*   **📈 직관 전적 및 랭킹:** 나의 직관 승률을 기록하고, 다른 유저들과의 랭킹을 통해 새로운 재미를 선사합니다.
+*   **🗣️ 응원 게시판:** 팬들끼리 자유롭게 소통하고 응원글을 남길 수 있는 커뮤니티 공간입니다.
+*   **🤔 직관 유형 테스트:** 간단한 테스트를 통해 자신의 직관 스타일에 맞는 캐릭터를 추천받을 수 있습니다.
+
+---
+
+## 🛠️ 기술 스택
+
+| Category      | Technologies |
+| :------------ | :--- |
+| **Frontend**  | ![HTML5](https://img.shields.io/badge/html5-%23E34F26.webp?style=for-the-badge&logo=html5&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.webp?style=for-the-badge&logo=tailwind-css&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.webp?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)|
+| **Backend**   | ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![Django](https://img.shields.io/badge/django-%23092E20.webp?style=for-the-badge&logo=django&logoColor=white)|
+| **Database**  | ![SQLite](https://img.shields.io/badge/sqlite-%2307405e.webp?style=for-the-badge&logo=sqlite&logoColor=white)|
+| **Crawling**  | ![Selenium](https://img.shields.io/badge/-selenium-%43B02A?style=for-the-badge&logo=selenium&logoColor=white)|
+| **DevOps**    | ![AWS](https://img.shields.io/badge/AWS-%23FF9900.webp?style=for-the-badge&logo=amazon-aws&logoColor=white) ![Nginx](https://img.shields.io/badge/nginx-%23009639.webp?style=for-the-badge&logo=nginx&logoColor=white) ![uWSGI](https://img.shields.io/badge/uWSGI-green?style=for-the-badge)
+
+### 데이터 수집 메모
+- 타자/투수 일별 기록(`07_hitters_daily_stat.py`, `08_pitchers_daily_stat.py`)은 비공식 응답을 사용합니다.
+- 공개 문서화된 API는 없습니다.
+---
+
+## 🏗️ 시스템 아키텍처
+
+본 프로젝트는 **자동화된 데이터 파이프라인**을 구축하여 최신 KBO 리그 데이터를 사용자에게 제공합니다. 데이터 수집, 가공, 그리고 배포의 전 과정은 `crontab`과 쉘 스크립트를 통해 자동화되어 유지보수 부담을 최소화했습니다.
+
+```mermaid
+graph TD
+    subgraph "Local / Development"
+        A[Selenium을 이용한 데이터 크롤링] --> B{CSV 파일 생성};
+        B --> C[Git Push to `data` branch];
+    end
+
+    subgraph "Server / Production (AWS EC2)"
+        D[crontab: `git pull`] --> E{데이터 변경 감지};
+        E --> F[Django Custom Commands 실행];
+        F --> G[데이터베이스 업데이트];
+        G --> H[uWSGI & Nginx 재시작];
+        H --> I[사용자에게 최신 정보 제공];
+    end
+
+    C --> D;
+```
+
+1.  **데이터 수집 (Local):** `Selenium`을 사용하여 KBO 공식 기록 사이트에서 선수 및 경기 데이터를 크롤링하고, CSV 파일로 가공하여 저장합니다.
+2.  **코드 및 데이터 버전 관리 (Git):** 수집된 데이터(CSV)는 Git을 통해 버전 관리되며, 원격 저장소로 Push 됩니다.
+3.  **자동 배포 (Server):** 서버에서는 `crontab`이 주기적으로 Git 저장소의 변경 사항을 감지하고 `pull`합니다.
+4.  **데이터베이스 업데이트:** 새로운 데이터가 감지되면, Django의 `Custom Management Commands`가 실행되어 데이터베이스를 최신 상태로 업데이트합니다.
+5.  **서비스 재시작 및 적용:** 데이터베이스 업데이트 후, `uWSGI`와 `Nginx`가 자동으로 재시작되어 사용자에게 중단 없이 최신 정보를 제공합니다.
+
+---
+
+## 🖼️ 스크린샷
+
+| **경기 캘린더** | **경기 상세정보** |
+| :---: | :---: |
+| ![캘린더](static/readme/image-1.webp)| ![상세정보](static/readme/image-3.webp)|
+| **구장 정보** | **KBO 순위** |
+| ![구장정보](static/readme/image-4.webp)| ![순위](static/readme/image-5.webp)|
+| **응원글 게시판** | **직관 전적** |
+| ![게시판](static/readme/image-6.webp)| ![전적](static/readme/image-7.webp)|
+| **직관 유형 테스트** |   |
+| ![테스트](static/readme/image-8.webp)|   |
+
+
+---
+
+## ⚙️ 설치 및 실행
+
+1.  **저장소 복제**
+    ```bash
+    git clone https://github.com/rladbstlr87/tothe_ballpark.git
+    ```
+
+2.  **가상환경 설정 및 활성화**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+    ```
+
+3.  **의존성 패키지 설치**
+    ```bash
+    pip install uv
+    ```
+
+4.  **초기 데이터베이스 설정**
+    ```bash
+    python manage.py makemigrations
+    python manage.py migrate
+    ```
+
+5.  **초기 데이터 로드**
+    *   `data/make_stat/` 디렉토리의 스크립트들을 순서대로 실행하여 데이터를 생성합니다.
+    *   `cal/management/commands/`의 Django command들을 실행하여 데이터베이스에 데이터를 로드합니다.
+
+6.  **개발 서버 실행**
+    ```bash
+    python manage.py runserver
+    ```

@@ -1,4 +1,4 @@
-IP,H,R,ER,BB,SO,HR,BF,AB,NP,player_id,team,game_id,date
+﻿IP,H,R,ER,BB,SO,HR,BF,AB,NP,player_id,team,game_id,date
 3.0,4,1,1,0,4,0,51,13,,55633,away,1,20250308
 3.0,3,1,1,0,0,1,36,12,,69745,away,1,20250308
 1.0,2,2,2,1,1,0,23,5,,63342,away,1,20250308
