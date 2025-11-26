@@ -3,7 +3,8 @@ from django.conf import settings
 
 
 class Game(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='game_id')
+    # DB에는 기본 PK 컬럼(id)만 존재하므로 db_column을 지정하지 않는다.
+    id = models.IntegerField(primary_key=True)
     date = models.DateField(max_length=100)
     time = models.TimeField(max_length=100)
     team1 = models.CharField(max_length=100)
