@@ -35,11 +35,13 @@ class Calendar(HTMLCalendar):
                 games_by_day[day] = []
             # 팀이 지정된 경우, 해당 팀의 결과만 표시
             if self.team == game.team1:
-                result = game.team1_result
+                result = game.team1_result or ("취소" if game.note and "취소" in game.note else "")
             elif self.team == game.team2:
-                result = game.team2_result
+                result = game.team2_result or ("취소" if game.note and "취소" in game.note else "")
             else:
-                result = ''
+                result = game.team1_result or game.team2_result
+                if not result and game.note and "취소" in game.note:
+                    result = "취소"
 
             games_by_day[day].append({
                 'opponent': self.get_opponent(game),
