@@ -1,22 +1,25 @@
 from django.db import models
 from django.conf import settings
 
+
 class Game(models.Model):
-    date = models.DateField(max_length = 100)
-    time = models.TimeField(max_length = 100)
-    team1 = models.CharField(max_length = 100)
-    team2 = models.CharField(max_length = 100)
+    id = models.IntegerField(primary_key=True, db_column='game_id')
+    date = models.DateField(max_length=100)
+    time = models.TimeField(max_length=100)
+    team1 = models.CharField(max_length=100)
+    team2 = models.CharField(max_length=100)
     team1_score = models.IntegerField(null=True, blank=True)
     team2_score = models.IntegerField(null=True, blank=True)
-    team1_result = models.CharField(max_length = 100)
-    team2_result = models.CharField(max_length = 100)
-    stadium = models.CharField(max_length = 100)
+    team1_result = models.CharField(max_length=100)
+    team2_result = models.CharField(max_length=100)
+    stadium = models.CharField(max_length=100)
     note = models.CharField(max_length=100, null=True, blank=True)
-    
+
     attendance_users = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name='attendance_game',
     )
+
 
 class Hitter(models.Model):
     player_id = models.CharField(max_length=50, unique=True, primary_key=True, blank=True) # KBO 등록번호 5자리
