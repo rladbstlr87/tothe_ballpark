@@ -1,17 +1,13 @@
 import csv
 import time
 import datetime
+from stat_def import TEAM_NAVER
 from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 
-# KBO 팀 코드 매핑
-TEAM_CODE = {
-    'LT': 'LT', 'HT': 'HT', 'LG': 'LG', 'OB': 'OB', 'SK': 'SK',
-    'WO': 'WO', 'SS': 'SS', 'HH': 'HH', 'KT': 'KT', 'NC': 'NC',
-}
 
 # 특정 경기의 라인업 페이지에서 선수 이름과 playerId를 가져오는 함수
 def get_lineup(today, team1_code, team2_code, game_id, driver):
@@ -74,6 +70,36 @@ def get_lineup(today, team1_code, team2_code, game_id, driver):
 
     return team1, team2
 
+
+def resolve_year_code(date_str: str) -> str:
+    """
+    네이버 URL에서 연도 구간 보정.
+    2025 포스트시즌(10/6 이후)은 정규연도 대신
+    와일드카드/준PO/PO/KS 순으로 4444/3333/5555/7777이 노출된다.
+    그 외에는 날짜에서 연도를 그대로 사용.
+    """
+    base_year = date_str[:4] if len(date_str) >= 4 else "2025"
+
+    if base_year != "2025":
+        return base_year
+
+    try:
+        date_int = int(date_str)
+    except ValueError:
+        return base_year
+
+    if date_int >= 20251026:
+        return "7777"  # 한국시리즈
+    if date_int >= 20251017:
+        return "5555"  # 플레이오프
+    if date_int >= 20251009:
+        return "3333"  # 준플레이오프
+    if date_int >= 20251006:
+        return "4444"  # 와일드카드
+
+    return base_year
+
+
 today = datetime.date.today()
 
 # 기존 파일에서 마지막 저장된 날짜와 game_id 파악
@@ -89,6 +115,12 @@ try:
 except FileNotFoundError:
     pass
 
+base_start_date = datetime.date(2025, 10, 6)
+if last_date:
+    start_date = max(base_start_date, last_date + datetime.timedelta(days=1))
+else:
+    start_date = base_start_date
+
 # kbo_schedule.csv에서 오늘까지의 경기만 필터링하고 game_id 부여
 with open('data/kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
     reader = list(csv.DictReader(infile))
@@ -101,8 +133,8 @@ with open('data/kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
         date_str = row['day'].replace('.', '')
         game_date = datetime.datetime.strptime(date_str, '%Y%m%d').date()
 
-        # 이미 저장된 날짜 이후의 경기만 처리
-        if game_date > today or (last_date and game_date <= last_date):
+        # 10/6 이후 + lineups.csv 마지막 날짜 다음 날부터 append
+        if game_date < start_date or game_date > today:
             continue
 
         team1 = row['team1']
@@ -142,8 +174,10 @@ with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
             time_str = row['time']
             team1 = row['team1']
             team2 = row['team2']
-            team1_code = TEAM_CODE.get(team1, '')
-            team2_code = TEAM_CODE.get(team2, '')
+            team1_code = TEAM_NAVER.get(team1, '')
+            team2_code = TEAM_NAVER.get(team2, '')
+            year_code = resolve_year_code(date_str)
+            url_date = f"{year_code}{date_str[4:]}" if len(date_str) == 8 and year_code != date_str[:4] else date_str
 
             if not team1_code or not team2_code:
                 continue
@@ -152,14 +186,33 @@ with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
             stadium = row.get('stadium', '')
 
             # 네이버 경기 ID 결정 (일반, 더블헤더 1/2차전 등)
-            if len(games_sorted) == 1:
-                naver_game_id = '02025'
-            elif idx == 0:
-                naver_game_id = '12025'
-            else:
-                naver_game_id = '22025' if not double_header_failed else '02025'
+            # 접미 연도 구간만 포스트시즌 코드로 교체(4444/3333/5555/7777)
+            single_game_id = f'0{year_code}'
+            first_game_id = f'1{year_code}'
+            second_game_id = f'2{year_code}'
 
-            team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, naver_game_id, driver)
+            if len(games_sorted) == 1:
+                naver_game_id = single_game_id
+            elif idx == 0:
+                naver_game_id = first_game_id
+            else:
+                naver_game_id = second_game_id if not double_header_failed else single_game_id
+
+            attempts = []
+            attempts.append((url_date, naver_game_id))
+            if url_date != date_str:
+                attempts.append((date_str, naver_game_id))
+            base_id = f"{naver_game_id[0]}{date_str[:4]}"
+            if base_id != naver_game_id:
+                attempts.append((url_date, base_id))
+                if url_date != date_str:
+                    attempts.append((date_str, base_id))
+
+            team1_lineup, team2_lineup = [], []
+            for dt_for_url, gid in attempts:
+                team1_lineup, team2_lineup = get_lineup(dt_for_url, team1_code, team2_code, gid, driver)
+                if team1_lineup or team2_lineup:
+                    break
 
             # 더블헤더 첫 경기 실패 시 보정
             if len(games_sorted) > 1 and idx == 0 and not team1_lineup and not team2_lineup:
@@ -169,8 +222,8 @@ with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
                 first_game_lineup2 = team2_lineup
 
             # 더블헤더 두 번째 경기 재시도
-            if len(games_sorted) > 1 and idx == 1 and not team1_lineup and not team2_lineup and naver_game_id == '22025':
-                team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, '02025', driver)
+            if len(games_sorted) > 1 and idx == 1 and not team1_lineup and not team2_lineup and naver_game_id == second_game_id:
+                team1_lineup, team2_lineup = get_lineup(date_str, team1_code, team2_code, single_game_id, driver)
 
             # 더블헤더 두 번째 경기: 첫 타자 삽입
             if len(games_sorted) > 1 and idx == 1:
