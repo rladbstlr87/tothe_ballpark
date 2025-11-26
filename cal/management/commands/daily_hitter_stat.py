@@ -47,4 +47,4 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.ERROR(f"???�???�패: {e}"))
                     failed += 1
 
-        self.stdout.write(self.style.SUCCESS(f"???�료: {success}�??�?? {failed}�??�패 (�?{total})"))
+        self.stdout.write(self.style.SUCCESS(f"완료: {success}건 저장 {failed}건 실패 (총{total})"))

@@ -23,9 +23,15 @@ class Command(BaseCommand):
                 total += 1
                 try:
                     game = Game.objects.get(id=int(row["game_id"]))
-                    player_id = Pitcher.objects.get(player_id=row["player_id"])
                 except Game.DoesNotExist:
                     self.stdout.write(self.style.WARNING(f"??Game ID {row['game_id']} ?�음 ??건너?�"))
+                    failed += 1
+                    continue
+
+                try:
+                    player_obj = Pitcher.objects.get(player_id=row["player_id"])
+                except Pitcher.DoesNotExist:
+                    self.stdout.write(self.style.WARNING(f"Pitcher {row['player_id']} ??검색 실패, 건너뜀"))
                     failed += 1
                     continue
 
@@ -33,7 +39,7 @@ class Command(BaseCommand):
                     Pitcher_Daily.objects.create(
                         game_id=game,
                         date=datetime.datetime.strptime(row["date"], "%Y%m%d").date(),
-                        player=player_id,
+                        player=player_obj,
                         team=row["team"],
                         IP=self._float_or_zero(row["IP"]),
                         H=self._int_or_zero(row["H"]),
@@ -51,4 +57,4 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.ERROR(f"???�???�패: {e}"))
                     failed += 1
 
-        self.stdout.write(self.style.SUCCESS(f"???�료: {success}�??�?? {failed}�??�패 (�?{total})"))
+        self.stdout.write(self.style.SUCCESS(f"완료: {success}건 저장 {failed}건 실패 (총{total})"))
