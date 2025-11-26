@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
-from django.db.models import Q
+from django.db.models import Q, Max
 from accounts.models import User
 from django.utils import timezone
 from datetime import datetime, timedelta, date
@@ -246,53 +246,59 @@ def lineup(request, game_id):
     opponent_lineup = []
     opponent_team = None
 
-    # 타자 기록
-    # TODO: Filter by lineup player IDs instead of full-table scan (perf step 1)
-    all_hitter_qs = Hitter_Daily.objects.all().order_by('-date')
+    def latest_records(model, player_ids):
+        if not player_ids:
+            return model.objects.none()
+        latest_dates = (
+            model.objects.filter(player_id__in=player_ids)
+            .values('player_id')
+            .annotate(latest_date=Max('date'))
+        )
+        filters = None
+        for entry in latest_dates:
+            condition = Q(player_id=entry['player_id'], date=entry['latest_date'])
+            filters = condition if filters is None else filters | condition
+        return model.objects.filter(filters) if filters is not None else model.objects.none()
+
     latest_daily_stats = {}
-    for record in all_hitter_qs:
-        if record.player_id not in latest_daily_stats:
-            latest_daily_stats[record.player_id] = record
-
-    today_hitter_records = Hitter_Daily.objects.filter(game_id=game).order_by('-date')
-    for record in today_hitter_records:
-        latest_daily_stats[record.player_id] = record
-
-    # 투수 기록
-    all_pitcher_qs = Pitcher_Daily.objects.all().order_by('-date')
     latest_pitcher_stats = {}
-    for record in all_pitcher_qs:
-        if record.player_id not in latest_pitcher_stats:
-            latest_pitcher_stats[record.player_id] = record
 
-    today_pitcher_records = Pitcher_Daily.objects.filter(game_id=game).order_by('-date')
-    for record in today_pitcher_records:
-        latest_pitcher_stats[record.player_id] = record
-
-    # 유저 팀 정보
     user_team = request.user.team
-
-    # 우리 팀 소속 타자 ID들
     our_hitter_ids = set(Hitter.objects.filter(team_name=user_team).values_list('player_id', flat=True))
-
-    # 우리 팀 소속 투수 ID들
     our_pitcher_ids = set(Pitcher.objects.filter(team_name=user_team).values_list('player_id', flat=True))
 
-    today_hitters = [r for r in today_hitter_records if r.player_id in our_hitter_ids]
-    today_pitchers = [r for r in today_pitcher_records if r.player_id in our_pitcher_ids]
+    today_hitter_records = list(
+        Hitter_Daily.objects.filter(game_id=game, player_id__in=our_hitter_ids).order_by('-date')
+    )
+    today_pitcher_records = list(
+        Pitcher_Daily.objects.filter(game_id=game, player_id__in=our_pitcher_ids).order_by('-date')
+    )
 
-    # 오늘 기록이 없으면, 최신 기록 중 우리 팀만
-    if not today_hitters:
-        team_hitters = [r for r in latest_daily_stats.values() if r.player_id in our_hitter_ids]
-        best_hitter = max(team_hitters, key=calculate_hitter_score, default=None)
-    else:
-        best_hitter = max(today_hitters, key=calculate_hitter_score, default=None)
+    if has_lineup:
+        lineup_hitter_ids = [l.hitter_id for l in lineups if l.hitter_id]
+        lineup_pitcher_ids = [l.pitcher_id for l in lineups if l.pitcher_id]
 
-    if not today_pitchers:
-        team_pitchers = [r for r in latest_pitcher_stats.values() if r.player_id in our_pitcher_ids]
-        best_pitcher = max(team_pitchers, key=calculate_pitcher_score, default=None)
+        latest_daily_stats = {
+            record.player_id: record
+            for record in latest_records(Hitter_Daily, lineup_hitter_ids)
+        }
+        latest_pitcher_stats = {
+            record.player_id: record
+            for record in latest_records(Pitcher_Daily, lineup_pitcher_ids)
+        }
+
+    if today_hitter_records:
+        hitter_candidates = today_hitter_records
     else:
-        best_pitcher = max(today_pitchers, key=calculate_pitcher_score, default=None)
+        hitter_candidates = list(latest_records(Hitter_Daily, our_hitter_ids))
+
+    if today_pitcher_records:
+        pitcher_candidates = today_pitcher_records
+    else:
+        pitcher_candidates = list(latest_records(Pitcher_Daily, our_pitcher_ids))
+
+    best_hitter = max(hitter_candidates, key=calculate_hitter_score, default=None)
+    best_pitcher = max(pitcher_candidates, key=calculate_pitcher_score, default=None)
 
     hitter_score = calculate_hitter_score(best_hitter) if best_hitter else -999
     pitcher_score = calculate_pitcher_score(best_pitcher) if best_pitcher else -999
@@ -321,7 +327,6 @@ def lineup(request, game_id):
     
     is_today_best = best_player and best_player.date == game.date
 
-# 라인업 분기  (기존 슬라이싱 로직 대체)
     if has_lineup:
         # 선수 → 팀 매핑 준비 (1회 조회)
         pitcher_team = dict(Pitcher.objects.values_list('player_id', 'team_name'))
@@ -422,7 +427,7 @@ def lineup(request, game_id):
     # 구장별 예매 가능 날짜 계산
     stadium_info = booking_info.get(game.stadium, {})
     server_datetime = timezone.localtime().date()
-    days_before = stadium_info['days_before']
+    days_before = stadium_info.get('days_before', 0)
 
     booking_dates = []
     for i in range(days_before + 1):
