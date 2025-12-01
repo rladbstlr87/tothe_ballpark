@@ -174,7 +174,8 @@ def calendar_view(request):
     user_team = user.team
     attendance_ids = list(user.attendance_game.values_list('id', flat=True))
 
-    current_day = get_date(request.GET.get('day', None))
+    # current_day = get_date(request.GET.get('day', None))
+    current_day = get_date(2025, 09, 01)
     calendar = Calendar(current_day.year, current_day.month, team=user_team)
     cal_data = calendar.get_month_data()
 
