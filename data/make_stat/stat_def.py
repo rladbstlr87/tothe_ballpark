@@ -11,8 +11,12 @@ TEAM_KBO = ["LG", "HH", "LT", "SS", "SK", "NC", "OB", "HT", "KT", "WO"]
 DATA_YEAR = "2026"
 DATA_DIR = Path(__file__).resolve().parents[2] / "data" / DATA_YEAR
 
-h = pd.read_csv(DATA_DIR / "all_hitter_stats.csv")
-p = pd.read_csv(DATA_DIR / "all_pitcher_stats.csv")
+# CSV가 아직 생성되지 않은 초기 크롤링 단계에서도 임포트가 깨지지 않도록 안전 로드
+def _safe_read_csv(path: Path) -> pd.DataFrame:
+    return pd.read_csv(path) if path.exists() else pd.DataFrame()
+
+h = _safe_read_csv(DATA_DIR / "all_hitter_stats.csv")
+p = _safe_read_csv(DATA_DIR / "all_pitcher_stats.csv")
 
 def parsing_0(value):
     try:

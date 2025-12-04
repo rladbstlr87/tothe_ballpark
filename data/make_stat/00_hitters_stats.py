@@ -8,8 +8,8 @@ import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.common.exceptions import TimeoutException
 
 from crawling_hitter_utils import (
     HITTER_ORDER,
@@ -35,27 +35,42 @@ def main():
     final_rows = []
 
     try:
-        driver.get(BASE_URL)
-        # 새로 추가된 시리즈 필터는 기본값(0)으로 고정
-        select_series_and_wait(driver, "0")
-
         for team in TEAM_KBO:
+            # 매 팀마다 페이지를 새로 열어 1페이지 상태로 리셋
+            driver.get(BASE_URL)
+            # 새로 추가된 시리즈 필터는 기본값(0)으로 고정
+            select_series_and_wait(driver, "0")
+
             # 팀 선택 및 대기
             select_team_and_wait(driver, team)
 
             # 1페이지 선수 수집
             players = collect_players_on_page(driver)
+            first_pid = players[0][0] if players else None
 
             # 2페이지 있으면 수집
-            btn2 = driver.find_elements(By.XPATH, "//*[contains(@id,'ucPager')]//a[normalize-space()='2']")
+            btn2 = driver.find_elements(By.ID, "cphContents_cphContents_cphContents_ucPager_btnNo2")
+            if not btn2:
+                btn2 = driver.find_elements(By.XPATH, "//*[contains(@id,'ucPager')]//a[normalize-space()='2']")
             if btn2:
                 btn2[0].click()
-                WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable((By.XPATH, "//*[contains(@id,'ucPager')]//a[normalize-space()='1']"))
-                )
-                players += collect_players_on_page(driver)
-                # 1페이지 복귀
-                driver.find_element(By.XPATH, "//*[contains(@id,'ucPager')]//a[normalize-space()='1']").click()
+                # 페이지가 실제로 넘어갔는지(첫 선수 id가 달라질 때까지) 기다린다
+                page2_players = []
+                if first_pid:
+                    try:
+                        WebDriverWait(driver, 5).until(
+                            lambda d: (
+                                collect_players_on_page(d)
+                                and collect_players_on_page(d)[0][0] != first_pid
+                            )
+                        )
+                        page2_players = collect_players_on_page(driver)
+                    except TimeoutException:
+                        # 2페이지 버튼이 비활성/없음 등으로 실제 전환이 안 되는 경우
+                        page2_players = []
+                else:
+                    page2_players = collect_players_on_page(driver)
+                players += page2_players
 
             # 상세 파싱
             for pid, pname in players:

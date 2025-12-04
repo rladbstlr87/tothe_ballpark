@@ -174,8 +174,9 @@ def calendar_view(request):
     user_team = user.team
     attendance_ids = list(user.attendance_game.values_list('id', flat=True))
 
-    # 고정 날짜로 캘린더를 표시 (2025-09-01)
-    current_day = date(2025, 9, 1)
+    req_day = request.GET.get('day')
+    # 기본은 2025-09-01, 쿼리 파라미터가 있으면 해당 날짜 사용
+    current_day = get_date(req_day) if req_day else date(2025, 9, 1)
     calendar = Calendar(current_day.year, current_day.month, team=user_team)
     cal_data = calendar.get_month_data()
 

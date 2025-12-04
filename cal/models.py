@@ -110,13 +110,13 @@ class Seat(models.Model):
 class Parking(models.Model):
     stadium = models.ForeignKey(Stadium, on_delete=models.CASCADE)
     parking_name = models.CharField(max_length=50)
-    address = models.CharField(max_length=100, db_column='adress')
+    address = models.CharField(max_length=100, db_column='address')
     note = models.CharField(max_length=200)
 
 class Restaurant(models.Model):
     stadium = models.ForeignKey(Stadium, on_delete=models.CASCADE)
     restaurant_name = models.CharField(max_length=50)
-    address = models.CharField(max_length=100, db_column='adress')
+    address = models.CharField(max_length=100, db_column='address')
     note = models.CharField(max_length=200)
 
 class Lineup(models.Model):
