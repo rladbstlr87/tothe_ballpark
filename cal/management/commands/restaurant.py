@@ -5,7 +5,8 @@ from django.conf import settings
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-        file_path = settings.BASE_DIR / 'data' / 'restaurant.csv'
+        data_dir = settings.BASE_DIR / 'data' / '2025'
+        file_path = data_dir / 'restaurant.csv'
         with open(file_path, newline='', encoding='utf-8-sig') as f:
             reader = csv.DictReader(f)
             total, created_count, skipped = 0, 0, 0

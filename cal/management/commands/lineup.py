@@ -36,7 +36,8 @@ class Command(BaseCommand):
         parser.add_argument('--verbose', action='store_true')
 
     def handle(self, *args, **kwargs):
-        csv_file_path = settings.BASE_DIR / 'data' / 'lineups.csv'
+        data_dir = settings.BASE_DIR / 'data' / '2025'
+        csv_file_path = data_dir / 'lineups.csv'
         total_inserted = 0
 
         # 1) CSV → 게임별 버퍼링 (추가 검증을 위해 모아둠)

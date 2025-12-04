@@ -3,6 +3,7 @@ import time
 import re
 import calendar
 import pandas as pd
+from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -186,9 +187,10 @@ def fetch_day(target_day: str):
     return results, matched_header or matched_rows
 
 
-def crawl_kbo_schedule(year=2025):
-    os.makedirs("data", exist_ok=True)
-    output_path = os.path.join("data", "kbo_schedule.csv")
+def crawl_kbo_schedule(year=2026):
+    data_dir = Path(__file__).resolve().parents[2] / "data" / "2026"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    output_path = data_dir / "kbo_schedule.csv"
 
     if os.path.exists(output_path):
         os.remove(output_path)
@@ -226,9 +228,13 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="KBO schedule crawler (naver mobile)")
-    parser.add_argument("--year", type=int, default=2025)
+    parser.add_argument("--year", type=int, default=2026)
     parser.add_argument("--date")
     args = parser.parse_args()
+
+    data_dir = Path(__file__).resolve().parents[2] / "data" / "2026"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    output_path = data_dir / "kbo_schedule.csv"
 
     if args.date:
         target = args.date
@@ -237,16 +243,14 @@ if __name__ == "__main__":
         rows, matched = fetch_day(target.replace("-", "."))
         if matched and rows:
             df = pd.DataFrame(rows)
-            os.makedirs("data", exist_ok=True)
-            df.to_csv("data/kbo_schedule.csv", index=False, encoding="utf-8-sig")
+            df.to_csv(output_path, index=False, encoding="utf-8-sig")
             print(df)
-            print(f"[INFO] saved data/kbo_schedule.csv rows={len(rows)}")
+            print(f"[INFO] saved {output_path} rows={len(rows)}")
         elif matched:
-            print(f"[INFO] {target} 경기 없음")
+            print(f"[INFO] {target} ?? ??? ??")
         else:
-            print(f"[WARN] {target} 헤더를 찾지 못했습니다.")
+            print(f"[WARN] {target} ???? ?? ?????.")
         driver.quit()
     else:
         df = crawl_kbo_schedule(args.year)
-        print(df.head())
-        print("크롤링 완료")
+        print(df)

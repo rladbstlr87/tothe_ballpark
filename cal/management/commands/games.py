@@ -24,8 +24,9 @@ class Command(BaseCommand):
     help = "lineups.csv를 기준으로 game_id를 맞춰 Game 테이블을 생성/업데이트"
 
     def handle(self, *args, **kwargs):
-        lineups_path = settings.BASE_DIR / "data" / "lineups.csv"
-        schedule_path = settings.BASE_DIR / "data" / "kbo_schedule.csv"
+        data_dir = settings.BASE_DIR / "data" / "2025"
+        lineups_path = data_dir / "lineups.csv"
+        schedule_path = data_dir / "kbo_schedule.csv"
 
         # 1) 스케줄 로드 후 (date, stadium, teams) 키로 색인
         schedule_by_key = defaultdict(list)

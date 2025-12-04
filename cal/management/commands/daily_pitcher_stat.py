@@ -15,7 +15,8 @@ class Command(BaseCommand):
         return float(text) if text else 0.0
 
     def handle(self, *args, **kwargs):
-        file_path = settings.BASE_DIR / "data" / "pitchers_records.csv"
+        data_dir = settings.BASE_DIR / "data" / "2025"
+        file_path = data_dir / "pitchers_records.csv"
         with open(file_path, "r", encoding="utf-8-sig") as f:
             reader = csv.DictReader(f)
             total, success, failed = 0, 0, 0

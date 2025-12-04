@@ -5,7 +5,8 @@ from django.conf import settings
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-        csv_path = settings.BASE_DIR / 'data' / 'parking.csv'
+        data_dir = settings.BASE_DIR / 'data' / '2025'
+        csv_path = data_dir / 'parking.csv'
         if not csv_path.exists():
             self.stdout.write(self.style.ERROR(f"CSV 파일이 존재하지 않습니다: {csv_path}"))
             return

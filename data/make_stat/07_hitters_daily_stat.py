@@ -5,6 +5,7 @@ from stat_def import TEAM_NAVER
 import json
 import urllib.request
 import pandas as pd
+from pathlib import Path
 
 
 # 개별 경기 기록 크롤링 함수
@@ -63,6 +64,8 @@ def resolve_year_code(date_str: str) -> str:
     return base_year
 
 today = datetime.date.today()
+DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "2026"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # 기존 파일에서 마지막 저장된 날짜와 game_id 파악
 last_date = None
@@ -75,7 +78,7 @@ def _safe_date(s: str):
         return None
 
 try:
-    with open('data/hitters_records.csv', 'r', encoding='utf-8-sig') as f:
+    with open(DATA_DIR / 'hitters_records.csv', 'r', encoding='utf-8-sig') as f:
         rows = list(csv.DictReader(f))
         # 마지막 유효 날짜만 선택 (헤더 중복 등 방지)
         for r in reversed(rows):
@@ -90,10 +93,10 @@ try:
 except FileNotFoundError:
     pass
 
-df = pd.read_csv('data/kbo_schedule.csv')
+df = pd.read_csv(DATA_DIR / 'kbo_schedule.csv')
 game_map = {}
 next_gid = max_game_id + 1
-base_start_date = datetime.date(2025, 10, 6)
+base_start_date = datetime.date(2026, 1, 1)
 start_date = max(base_start_date, last_date + datetime.timedelta(days=1)) if last_date else base_start_date
 
 # 기준일자 이전 경기만 필터링 (이미 끝난 경기들만)
@@ -115,12 +118,12 @@ for _, row in df_filtered.iterrows():
     next_gid += 1
 
 # 기록 파일 열기 (없으면 헤더 작성)
-with open('data/hitters_records.csv', 'a', newline='', encoding='utf-8-sig') as rout:
+with open(DATA_DIR / 'hitters_records.csv', 'a', newline='', encoding='utf-8-sig') as rout:
     rw = csv.writer(rout)
     if last_date is None:
         rw.writerow(['AB','R','H','RBI','HR','BB','SO','SB','player_id','team','game_id','date'])
 
-    valid_pids = set(pd.read_csv('data/all_hitter_stats.csv', dtype={'player_id': str})['player_id'].astype(str))
+    valid_pids = set(pd.read_csv(DATA_DIR / 'all_hitter_stats.csv', dtype={'player_id': str})['player_id'].astype(str))
     for key, games in game_map.items():
         games_sorted = sorted(games, key=lambda x: x[0]['time'])
         double_header_failed = False

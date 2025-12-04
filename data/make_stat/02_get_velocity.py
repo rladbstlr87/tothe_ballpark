@@ -1,4 +1,5 @@
 import pandas as pd
+from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -13,7 +14,10 @@ chrome_options.add_argument("--disable-dev-shm-usage")
 
 driver = webdriver.Chrome(options=chrome_options)
 
-df = pd.read_csv('data/all_pitcher_stats.csv')
+DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "2026"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+df = pd.read_csv(DATA_DIR / 'all_pitcher_stats.csv')
 player_ids = df['player_id'].dropna().astype(int).tolist()
 
 results = []
@@ -60,4 +64,4 @@ driver.quit()
 # 결과 병합 및 저장
 speed_df = pd.DataFrame(results)
 df_merged = pd.merge(df, speed_df, on='player_id', how='left')
-df_merged.to_csv('data/all_pitcher_stats.csv', index=False)
+df_merged.to_csv(DATA_DIR / 'all_pitcher_stats.csv', index=False)

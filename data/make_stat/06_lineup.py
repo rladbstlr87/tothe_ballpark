@@ -1,6 +1,7 @@
 import csv
 import time
 import datetime
+from pathlib import Path
 from stat_def import TEAM_NAVER
 from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
@@ -100,13 +101,16 @@ def resolve_year_code(date_str: str) -> str:
     return base_year
 
 
+DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "2026"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+
 today = datetime.date.today()
 
 # 기존 파일에서 마지막 저장된 날짜와 game_id 파악
 last_date = None
 max_game_id = 0
 try:
-    with open('data/lineups.csv', 'r', encoding='utf-8-sig') as f:
+    with open(DATA_DIR / 'lineups.csv', 'r', encoding='utf-8-sig') as f:
         reader = list(csv.DictReader(f))
         if reader:
             last_row = reader[-1]
@@ -115,14 +119,14 @@ try:
 except FileNotFoundError:
     pass
 
-base_start_date = datetime.date(2025, 10, 6)
+base_start_date = datetime.date(2026, 1, 1)
 if last_date:
     start_date = max(base_start_date, last_date + datetime.timedelta(days=1))
 else:
     start_date = base_start_date
 
 # kbo_schedule.csv에서 오늘까지의 경기만 필터링하고 game_id 부여
-with open('data/kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
+with open(DATA_DIR / 'kbo_schedule.csv', 'r', encoding='utf-8-sig') as infile:
     reader = list(csv.DictReader(infile))
     game_map = {}
     game_info_map = {}
@@ -158,7 +162,7 @@ chrome_options.add_argument("--disable-dev-shm-usage")
 driver = webdriver.Chrome(options=chrome_options)
 
 # lineups.csv 파일에 이어서 저장
-with open('data/lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
+with open(DATA_DIR / 'lineups.csv', 'a', newline='', encoding='utf-8-sig') as outfile:
     writer = csv.writer(outfile)
     if last_date is None:
         writer.writerow(['date', 'batting_order', 'game_id', 'hitter_id', 'pitcher_id', 'stadium'])

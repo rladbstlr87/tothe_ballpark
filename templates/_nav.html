@@ -130,10 +130,10 @@
                     {% with winning_percent=winning_percent %}
                     <a id="fairy" href="{% url 'cal:user_games' user.id %}" class="inline-block w-fit">
                         {% if winning_percent >= 50 %}
-                            <img src="{% with T=user.team|upper %}{% static 'cal/images/fairy/'|add:T|add:'-winning.webp' %}{% endwith %}" alt="승리요정"
+                            <img src="{% with T=user.team|upper %}{% static 'cal/images/fairy/'|add:T|add:'{{ user.team }}-winning2.webp' %}{% endwith %}" alt="승리요정"
                                 class="w-full max-w-[100px] md:max-w-[160px] h-auto">
                         {% else %}
-                            <img src="{% with T=user.team|upper %}{% static 'cal/images/fairy/'|add:T|add:'-losing.webp' %}{% endwith %}" alt="패배요정"
+                            <img src="{% with T=user.team|upper %}{% static 'cal/images/fairy/'|add:T|add:'{{ user.team }}-losing1.webp' %}{% endwith %}" alt="패배요정"
                                 class="w-full max-w-[100px] md:max-w-[160px] h-auto">
                         {% endif %}
                     </a>

@@ -5,7 +5,8 @@ import csv
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-        csv_file_path = settings.BASE_DIR / 'data' / 'all_hitter_stats.csv'
+        data_dir = settings.BASE_DIR / 'data' / '2025'
+        csv_file_path = data_dir / 'all_hitter_stats.csv'
         with open(csv_file_path, newline='', encoding='utf-8-sig') as csvfile:
             reader = csv.DictReader(csvfile)
             count_created = 0

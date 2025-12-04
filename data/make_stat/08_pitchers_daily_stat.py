@@ -5,6 +5,7 @@ from stat_def import TEAM_NAVER
 import json
 import urllib.request
 import pandas as pd
+from pathlib import Path
 
 
 # IP 문자열을 실수로 변환
@@ -99,8 +100,11 @@ def _safe_date(s: str):
     except Exception:
         return None
 
+DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "2026"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+
 try:
-    with open('data/pitchers_records.csv', 'r', encoding='utf-8-sig') as f:
+    with open(DATA_DIR / 'pitchers_records.csv', 'r', encoding='utf-8-sig') as f:
         rows = list(csv.DictReader(f))
         for r in reversed(rows):
             d = _safe_date(r.get('date', ''))
@@ -113,10 +117,10 @@ try:
 except FileNotFoundError:
     pass
 
-df = pd.read_csv('data/kbo_schedule.csv')
+df = pd.read_csv(DATA_DIR / 'kbo_schedule.csv')
 game_map = {}
 next_gid = max_game_id + 1
-base_start_date = datetime.date(2025, 10, 6)
+base_start_date = datetime.date(2026, 1, 1)
 start_date = max(base_start_date, last_date + datetime.timedelta(days=1)) if last_date else base_start_date
 
 # 기준일자 이전 경기만 필터링 (이미 끝난 경기들만)
@@ -138,7 +142,7 @@ for _, row in df_filtered.iterrows():
     next_gid += 1
 
 # 기록 파일 열기 (없으면 헤더 작성)
-with open('data/pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as prout:
+with open(DATA_DIR / 'pitchers_records.csv', 'a', newline='', encoding='utf-8-sig') as prout:
     pw = csv.writer(prout)
 
     if last_date is None:

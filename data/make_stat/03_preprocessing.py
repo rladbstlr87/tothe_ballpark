@@ -1,3 +1,4 @@
+from pathlib import Path
 from stat_def import *
 
 h_cols = [
@@ -48,5 +49,8 @@ p['stamina'] = (normalize(game_count(p['stamina'], p['G']))/2 + 0.5).round(3)
 p['control'] = (normalize(game_count(p['control'], p['G']))/2 + 0.5).round(3)
 
 # CSV 저장
-h.to_csv('data/all_hitter_stats.csv', index=False)
-p.to_csv('data/all_pitcher_stats.csv', index=False)
+DATA_DIR = Path(__file__).resolve().parents[2] / "data" / "2026"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+h.to_csv(DATA_DIR / 'all_hitter_stats.csv', index=False)
+p.to_csv(DATA_DIR / 'all_pitcher_stats.csv', index=False)

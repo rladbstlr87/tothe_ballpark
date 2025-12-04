@@ -1,5 +1,6 @@
 from __future__ import annotations
 from stat_def import TEAM_KBO
+from pathlib import Path
 
 import time
 import pandas as pd
@@ -67,8 +68,11 @@ def main():
         driver.quit()
 
     df = pd.DataFrame(final_rows, columns=COLUMNS)
-    df.to_csv("data/all_pitcher_stats.csv", index=False, encoding="utf-8-sig")
-    print(f"saved rows: {len(df)} → data/all_pitcher_stats.csv")
+    data_dir = Path(__file__).resolve().parents[2] / "data" / "2026"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    output_path = data_dir / "all_pitcher_stats.csv"
+    df.to_csv(output_path, index=False, encoding="utf-8-sig")
+    print(f"saved rows: {len(df)} → {output_path}")
 
 
 if __name__ == "__main__":

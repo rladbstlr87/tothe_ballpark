@@ -11,7 +11,8 @@ class Command(BaseCommand):
         return int(text) if text else 0
 
     def handle(self, *args, **kwargs):
-        file_path = settings.BASE_DIR / "data" / "hitters_records.csv"
+        data_dir = settings.BASE_DIR / "data" / "2025"
+        file_path = data_dir / "hitters_records.csv"
         with open(file_path, "r", encoding="utf-8-sig") as f:
             reader = csv.DictReader(f)
             total, success, failed = 0, 0, 0

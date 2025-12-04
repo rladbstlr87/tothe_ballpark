@@ -1,3 +1,4 @@
+from pathlib import Path
 import pandas as pd
 
 # 다른 크롤러에서 쓰는 팀코드
@@ -7,8 +8,11 @@ TEAM_NAVER = {
 }
 TEAM_KBO = ["LG", "HH", "LT", "SS", "SK", "NC", "OB", "HT", "KT", "WO"]
 
-h = pd.read_csv('data/all_hitter_stats.csv')
-p = pd.read_csv('data/all_pitcher_stats.csv')
+DATA_YEAR = "2026"
+DATA_DIR = Path(__file__).resolve().parents[2] / "data" / DATA_YEAR
+
+h = pd.read_csv(DATA_DIR / "all_hitter_stats.csv")
+p = pd.read_csv(DATA_DIR / "all_pitcher_stats.csv")
 
 def parsing_0(value):
     try:

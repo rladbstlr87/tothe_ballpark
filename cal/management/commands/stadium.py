@@ -5,7 +5,8 @@ import pandas as pd
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-        csv_file_path = settings.BASE_DIR / 'data' / 'kbo_schedule.csv'
+        data_dir = settings.BASE_DIR / 'data' / '2025'
+        csv_file_path = data_dir / 'kbo_schedule.csv'
         try:
             df = pd.read_csv(csv_file_path, encoding='utf-8-sig')
             stadium_names = df['stadium'].unique()
