@@ -1,6 +1,6 @@
 # ⚾ To the Ballpark: KBO 야구 팬들을 위한 올인원 직관 가이드
 
-**[Live Demo](http://ec2-13-209-80-237.ap-northeast-2.compute.amazonaws.com/)**
+**[Live Demo](https://totheballpark.info/)**
 
 KBO 리그에 대한 관심이 높아지면서 야구장을 직접 찾는 팬들이 늘고 있습니다. 하지만, 특히 신규 팬들에게는 경기 정보, 선수 정보, 구장 정보 등 직관에 필요한 정보가 흩어져 있어 불편함이 따릅니다. **To the Ballpark**는 이러한 문제점을 해결하고, 야구 직관의 모든 경험을 한 곳에서 관리하고 향상시키기 위해 개발된 웹 서비스입니다.
 
