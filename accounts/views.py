@@ -258,7 +258,6 @@ def reconsent(request):
             form.save(request.user)
             messages.success(request, '약관 및 개인정보 처리방침에 동의가 완료되었습니다.')
             return redirect(calendar_url)
-        messages.error(request, '두 항목 모두 동의하지 않으면 서비스 이용이 어렵습니다.')
 
     return render(request, 'reconsent.html', {
         'form': form,

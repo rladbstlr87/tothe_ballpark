@@ -9,11 +9,6 @@
         <p class="text-sm text-gray-700">
             서비스 이용을 계속하시려면 최신 이용약관과 개인정보 처리방침에 동의해주세요.
         </p>
-        {% if messages %}
-            {% for message in messages %}
-                <p class="text-sm {% if 'error' in message.tags %}text-red-600{% else %}text-green-600{% endif %}">{{ message }}</p>
-            {% endfor %}
-        {% endif %}
         <form method="post" class="space-y-3">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ next }}">

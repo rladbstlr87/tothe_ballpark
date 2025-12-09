@@ -9,6 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('cal/', include('cal.urls')),
     path('accounts/', include('accounts.urls')),
+    path('api/accounts/', include('accounts.api_urls')),
     path('posts/', include('posts.urls')), 
     path('jikdoltest/', include('jikdoltest.urls')),
 ]

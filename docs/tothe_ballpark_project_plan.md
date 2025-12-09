@@ -88,3 +88,44 @@
 *   **안정적이고 확장 가능한 서비스 기반 마련:** MSA, 비동기 처리, 캐싱 전략을 통해 대규모 트래픽에도 안정적인 서비스를 제공하고, 향후 기능 확장에 유연하게 대처할 수 있는 기술적 기반을 확보합니다.
 *   **데이터 기반의 고도화된 서비스 제공:** 정제된 데이터를 기반으로 AI 예측 모델을 구축하여, 타 서비스와 차별화된 독창적인 콘텐츠와 사용자 경험을 제공할 수 있습니다.
 *   **효율적인 개발 및 운영 문화 구축:** CI/CD 파이프라인을 통한 배포 자동화는 개발 생산성을 향상시키고, 안정적인 서비스 운영을 가능하게 합니다.
+
+### **6. 보안 강화 계획 (우선순위 포함)**
+
+**현황 메모**
+- Prod: `SECURE_SSL_REDIRECT`, `HSTS`, `CSRF_COOKIE_SECURE`, `SESSION_COOKIE_SECURE` 적용. DRF 사용 시작.
+- DB: PostgreSQL 사용. ORM 위주 코드이며 raw SQL 사용 흔적 없음(`rg "raw\\(|execute\\("` 2025-12-09 기준).
+
+**우선순위 0 (즉시) — SQL Injection/계정 정보 노출 방지**
+- ORM 원칙 준수: raw SQL, `.extra()`, 수동 커서 금지. 불가피 시 파라미터 바인딩 필수.
+- DB 계정 최소 권한: 앱용 전용 계정(SELECT/INSERT/UPDATE/DELETE만) 사용, SUPERUSER/DDL 권한 분리. 비밀번호 주기 교체.
+- 입력 검증: 모든 입력(쿼리파라미터/폼/바디)에 대한 밸리데이션 유지. DRF Serializer, Django Form을 기본 경로로 사용.
+- 로깅 점검: 요청/응답/쿼리 로그에 민감 정보(비밀번호, 토큰, 세션ID) 남지 않도록 확인.
+- 점검 기록: 정기적으로 `rg "raw\\(|execute\\("` 등으로 수동 검색 후 기록.
+
+**우선순위 1 — 관리자/인증 강화**
+- Django superuser 1개 생성(강한 패스워드, MFA 지원 시 적용) → `/admin` 접근은 IP ACL/nginx로 제한.
+- 세션/쿠키 설정: `SESSION_COOKIE_HTTPONLY=True`, `CSRF_COOKIE_SAMESITE='Lax'`(Prod) 명시.
+- 로그인 시도 제한/봇 대응: django-axes(or nginx rate limit), 필요 시 reCAPTCHA 적용.
+
+**우선순위 2 — 전송/헤더 보강**
+- HTTPS만 노출(80→443 리다이렉트). HSTS 유지.
+- 보안 헤더 추가: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY 또는 SAMEORIGIN`, `Referrer-Policy: strict-origin-when-cross-origin`, `Content-Security-Policy`(스크립트/스타일/이미지 도메인 화이트리스트).
+
+**우선순위 3 — API 토큰/권한**
+- 외부 클라이언트용 JWT(SimpleJWT) 도입: `token/obtain/`, `token/refresh/`, access 짧게/refresh 길게.
+- DRF Throttling 설정(익명/인증 구분) 및 Permission 기본값 최소화.
+
+**우선순위 4 — 업로드/입력 경로 하드닝**
+- 파일 업로드: 확장자·MIME 검증, 용량 제한, 이미지 리사이즈 후 저장. 실행 권한 제거된 디렉터리 사용.
+- 에러 응답: 스택트레이스/쿼리 노출 금지, 공통 에러 핸들러로 메시지 최소화.
+
+**우선순위 5 — 운영/모니터링**
+- 로그 중앙화 및 알림: 로그인 실패 누적, 관리자 로그인, 4xx/5xx 급증 알림.
+- 백업/복구 리허설: DB/미디어 주기 백업 + 복원 테스트, 전송·저장 시 암호화 확인.
+
+**즉시 작업 제안**
+1) DB 계정 권한 분리 및 비번 교체(앱용 최소권한 계정 사용).  
+2) 코드베이스 raw SQL 사용 재점검(2025-12-09 검색 시 없음). 신규 개발 시 ORM 강제 가이드 배포.  
+3) Django superuser 생성 후 `/admin` IP 제한.  
+4) Prod 설정에 `SESSION_COOKIE_HTTPONLY=True`, `CSRF_COOKIE_SAMESITE='Lax'` 명시 검토.  
+5) nginx 보안 헤더 세트 적용(CSP·nosniff·frame옵션 등).

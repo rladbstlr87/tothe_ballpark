@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'rest_framework',
+    'rest_framework',
     'cal',
     'accounts',
     'posts',
@@ -99,6 +99,13 @@ LOGIN_URL = '/accounts/auth/?mode=login'
 
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
+
+# 공통 보안 기본값
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 # 약관/개인정보 처리방침 버전 및 노출 경로
 TERMS_VERSION = "v1"
