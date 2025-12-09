@@ -152,12 +152,12 @@ class ReconsentForm(forms.Form):
     terms_agree = forms.BooleanField(
         required=True,
         label='이용약관에 동의합니다.',
-        error_messages={'required': '서비스 이용약관에 동의해주세요.'}
+        error_messages={'required': '두 항목 모두 동의하지 않으면 서비스 이용이 어렵습니다.'}
     )
     privacy_agree = forms.BooleanField(
         required=True,
         label='개인정보 처리방침에 동의합니다.',
-        error_messages={'required': '개인정보 처리방침에 동의해주세요.'}
+        error_messages={'required': '두 항목 모두 동의하지 않으면 서비스 이용이 어렵습니다.'}
     )
 
     def save(self, user):

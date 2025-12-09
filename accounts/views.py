@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from django.conf import settings
+from django.urls import reverse
 from pathlib import Path
 from .forms import *
 from .models import User
@@ -243,18 +244,21 @@ def privacy(request):
 
 @login_required
 def reconsent(request):
-    # 이미 최신 버전이면 next로 바로 보내기
+    calendar_url = reverse('cal:calendar')
+
+    # 이미 최신 버전이면 캘린더로 이동
     if request.user.terms_version == getattr(settings, 'TERMS_VERSION', None) and \
        request.user.privacy_version == getattr(settings, 'PRIVACY_VERSION', None):
-        next_url = request.GET.get('next') or request.POST.get('next') or '/'
-        return redirect(next_url)
+        return redirect(calendar_url)
 
-    next_url = request.GET.get('next') or request.POST.get('next') or '/'
+    next_url = request.GET.get('next') or request.POST.get('next') or calendar_url
     form = ReconsentForm(request.POST or None)
-    if request.method == 'POST' and form.is_valid():
-        form.save(request.user)
-        messages.success(request, '약관 및 개인정보 처리방침에 동의가 완료되었습니다.')
-        return redirect(next_url)
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save(request.user)
+            messages.success(request, '약관 및 개인정보 처리방침에 동의가 완료되었습니다.')
+            return redirect(calendar_url)
+        messages.error(request, '두 항목 모두 동의하지 않으면 서비스 이용이 어렵습니다.')
 
     return render(request, 'reconsent.html', {
         'form': form,

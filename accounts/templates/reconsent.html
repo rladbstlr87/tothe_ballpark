@@ -9,12 +9,17 @@
         <p class="text-sm text-gray-700">
             서비스 이용을 계속하시려면 최신 이용약관과 개인정보 처리방침에 동의해주세요.
         </p>
+        {% if messages %}
+            {% for message in messages %}
+                <p class="text-sm {% if 'error' in message.tags %}text-red-600{% else %}text-green-600{% endif %}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
         <form method="post" class="space-y-3">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ next }}">
 
             <label class="flex items-start gap-2 text-sm">
-                <input type="checkbox" name="terms_agree" class="mt-1 h-4 w-4">
+                <input type="checkbox" name="terms_agree" class="mt-1 h-4 w-4" {% if form.terms_agree.value %}checked{% endif %}>
                 <span>이용약관에 동의합니다. (<a href="{{ terms_url }}" class="underline text-blue-600 hover:text-blue-800">보기</a>)</span>
             </label>
             {% for error in form.terms_agree.errors %}
@@ -22,7 +27,7 @@
             {% endfor %}
 
             <label class="flex items-start gap-2 text-sm">
-                <input type="checkbox" name="privacy_agree" class="mt-1 h-4 w-4">
+                <input type="checkbox" name="privacy_agree" class="mt-1 h-4 w-4" {% if form.privacy_agree.value %}checked{% endif %}>
                 <span>개인정보 처리방침에 동의합니다. (<a href="{{ privacy_url }}" class="underline text-blue-600 hover:text-blue-800">보기</a>)</span>
             </label>
             {% for error in form.privacy_agree.errors %}
