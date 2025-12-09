@@ -1,10 +1,23 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from .models import User
+from django.conf import settings
+from django.utils import timezone
 import os
 
 # 회원가입 폼
 class CustomUserCreationForm(UserCreationForm):
+    terms_agree = forms.BooleanField(
+        required=True,
+        label='이용약관 동의',
+        error_messages={'required': '서비스 이용약관에 동의해주세요.'}
+    )
+    privacy_agree = forms.BooleanField(
+        required=True,
+        label='개인정보 처리방침 동의',
+        error_messages={'required': '개인정보 처리방침에 동의해주세요.'}
+    )
+
     class Meta:
         model = User
         fields = ('username', 'nickname', 'email', 'team', 'profile_image', 'password1', 'password2')
@@ -45,6 +58,11 @@ class CustomUserCreationForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data.get('email')
+        user.terms_version = getattr(settings, 'TERMS_VERSION', None)
+        user.privacy_version = getattr(settings, 'PRIVACY_VERSION', None)
+        now = timezone.now()
+        user.terms_agreed_at = now
+        user.privacy_agreed_at = now
         if commit:
             user.save()
         return user
@@ -128,3 +146,25 @@ class ProfileImageForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+
+class ReconsentForm(forms.Form):
+    terms_agree = forms.BooleanField(
+        required=True,
+        label='이용약관에 동의합니다.',
+        error_messages={'required': '서비스 이용약관에 동의해주세요.'}
+    )
+    privacy_agree = forms.BooleanField(
+        required=True,
+        label='개인정보 처리방침에 동의합니다.',
+        error_messages={'required': '개인정보 처리방침에 동의해주세요.'}
+    )
+
+    def save(self, user):
+        user.terms_version = getattr(settings, 'TERMS_VERSION', None)
+        user.privacy_version = getattr(settings, 'PRIVACY_VERSION', None)
+        now = timezone.now()
+        user.terms_agreed_at = now
+        user.privacy_agreed_at = now
+        user.save()
+        return user

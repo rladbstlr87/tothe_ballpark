@@ -5,8 +5,11 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
+from django.conf import settings
+from pathlib import Path
 from .forms import *
 from .models import User
+from django.utils import timezone
 
 import json
 import string
@@ -42,6 +45,8 @@ def auth_view(request):
         'mode': mode,
         'signup_form': signup_form,
         'login_form': login_form,
+        'terms_url': getattr(settings, 'TERMS_URL', '#'),
+        'privacy_url': getattr(settings, 'PRIVACY_URL', '#'),
     }
     return render(request, 'auth.html', context)
 
@@ -218,3 +223,42 @@ def update_profile_image(request):
 
     messages.error(request, '프로필 이미지 변경에 실패했습니다.')
     return redirect('accounts:mypage')
+
+
+def _render_policy(request, title, path_obj, policy_type=None):
+    try:
+        content = Path(path_obj).read_text(encoding='utf-8')
+    except FileNotFoundError:
+        content = '문서가 존재하지 않습니다.'
+    return render(request, 'policy.html', {'title': title, 'content': content, 'policy_type': policy_type})
+
+
+def terms(request):
+    return _render_policy(request, '이용약관', getattr(settings, 'TERMS_DOC_PATH', ''), policy_type='terms')
+
+
+def privacy(request):
+    return _render_policy(request, '개인정보 처리방침', getattr(settings, 'PRIVACY_DOC_PATH', ''), policy_type='privacy')
+
+
+@login_required
+def reconsent(request):
+    # 이미 최신 버전이면 next로 바로 보내기
+    if request.user.terms_version == getattr(settings, 'TERMS_VERSION', None) and \
+       request.user.privacy_version == getattr(settings, 'PRIVACY_VERSION', None):
+        next_url = request.GET.get('next') or request.POST.get('next') or '/'
+        return redirect(next_url)
+
+    next_url = request.GET.get('next') or request.POST.get('next') or '/'
+    form = ReconsentForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        form.save(request.user)
+        messages.success(request, '약관 및 개인정보 처리방침에 동의가 완료되었습니다.')
+        return redirect(next_url)
+
+    return render(request, 'reconsent.html', {
+        'form': form,
+        'next': next_url,
+        'terms_url': getattr(settings, 'TERMS_URL', '#'),
+        'privacy_url': getattr(settings, 'PRIVACY_URL', '#'),
+    })

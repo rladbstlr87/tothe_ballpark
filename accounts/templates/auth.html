@@ -139,6 +139,30 @@
 					<p class="text-sm text-red-500 my-1">{{ error }}</p>
 				{% endfor %}
 
+				<div class="my-2 text-sm text-gray-700 space-y-2">
+					<label class="flex items-center gap-2">
+						<input type="checkbox" name="terms_agree" id="id_terms_agree" class="h-4 w-4"
+							{% if signup_form.terms_agree.value %}checked{% endif %} required>
+						<span>
+							<a href="{{ terms_url }}" class="underline text-blue-600 hover:text-blue-800">이용약관</a>에 동의합니다.
+						</span>
+					</label>
+					{% for error in signup_form.terms_agree.errors %}
+						<p class="text-sm text-red-500 my-1">{{ error }}</p>
+					{% endfor %}
+
+					<label class="flex items-center gap-2">
+						<input type="checkbox" name="privacy_agree" id="id_privacy_agree" class="h-4 w-4"
+							{% if signup_form.privacy_agree.value %}checked{% endif %} required>
+						<span>
+							<a href="{{ privacy_url }}" class="underline text-blue-600 hover:text-blue-800">개인정보 처리방침</a>에 동의합니다.
+						</span>
+					</label>
+					{% for error in signup_form.privacy_agree.errors %}
+						<p class="text-sm text-red-500 my-1">{{ error }}</p>
+					{% endfor %}
+				</div>
+
 				<button type="submit" class="button primary my-3">회원가입</button>
 			</form>
 			<div class="text-sm text-center text-gray-600">
@@ -381,6 +405,25 @@
 	}
 
 	document.addEventListener('DOMContentLoaded', function () {
+		// 정책 페이지에서 동의 후 돌아온 경우 체크박스 자동 체크
+		function applyPolicyFlags() {
+			const termsFlag = sessionStorage.getItem('policy_agreed_terms');
+			const privacyFlag = sessionStorage.getItem('policy_agreed_privacy');
+			const termsBox = document.getElementById('id_terms_agree');
+			const privacyBox = document.getElementById('id_privacy_agree');
+			if (termsFlag && termsBox) {
+				termsBox.checked = true;
+				sessionStorage.removeItem('policy_agreed_terms');
+			}
+			if (privacyFlag && privacyBox) {
+				privacyBox.checked = true;
+				sessionStorage.removeItem('policy_agreed_privacy');
+			}
+		}
+		applyPolicyFlags();
+		// 뒤로가기로 돌아왔을 때(bfcache)도 반영
+		window.addEventListener('pageshow', applyPolicyFlags);
+
 		function setPageTitle(title) {
 			document.title = title;
 		}

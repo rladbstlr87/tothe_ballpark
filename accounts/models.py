@@ -28,3 +28,9 @@ class User(AbstractUser):
     email = models.EmailField(max_length=254, unique=False, blank=True, null=True)
 
     profile_image = models.ImageField(upload_to='auth/images/', blank=True, null=True, verbose_name='프로필 이미지', default='')
+
+    # 약관/개인정보 동의 이력
+    terms_version = models.CharField(max_length=20, blank=True, null=True)
+    privacy_version = models.CharField(max_length=20, blank=True, null=True)
+    terms_agreed_at = models.DateTimeField(blank=True, null=True)
+    privacy_agreed_at = models.DateTimeField(blank=True, null=True)

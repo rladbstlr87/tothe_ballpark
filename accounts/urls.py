@@ -15,4 +15,7 @@ urlpatterns = [
     path('check-duplicate/', views.check_duplicate, name='check_duplicate'),
     path('mypage/', views.mypage, name='mypage'),
     path('update_profile_image/', views.update_profile_image, name='update_profile_image'),
+    path('terms/', views.terms, name='terms'),
+    path('privacy/', views.privacy, name='privacy'),
+    path('reconsent/', views.reconsent, name='reconsent'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

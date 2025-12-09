@@ -42,6 +42,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'accounts.middleware.PolicyConsentRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'baseball.urls'
@@ -99,6 +100,13 @@ LOGIN_URL = '/accounts/auth/?mode=login'
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
+# 약관/개인정보 처리방침 버전 및 노출 경로
+TERMS_VERSION = "v1"
+PRIVACY_VERSION = "v1"
+TERMS_DOC_PATH = BASE_DIR / 'docs' / 'terms-of-service.md'
+PRIVACY_DOC_PATH = BASE_DIR / 'docs' / 'privacy-policy.md'
+TERMS_URL = '/accounts/terms/'
+PRIVACY_URL = '/accounts/privacy/'
 
 ALLOWED_HOSTS = [
     'totheballpark.info',
